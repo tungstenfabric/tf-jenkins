@@ -1,0 +1,86 @@
+---
+- job-template:
+    name: devstack-{project}-aws
+    description: "Deploys {project}"
+    node: aws
+    defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 10
+    concurrent: true
+    wrappers:
+      - ssh-agent-credentials:
+          user: 'centos-jenkins'
+      - credentials-binding:
+          - amazon-web-services:
+              credential-id: aws-creds
+              access-key: AWS_ACCESS_KEY_ID
+              secret-key: AWS_SECRET_ACCESS_KEY
+    scm:
+      - tf-devstack
+    builders:
+      - shell: |
+          #!/bin/bash -ex
+          AWS_REGION=${{AWS_REGION:-ca-central-1}}
+          AWS_SUBNET=${{AWS_SUBNET:-subnet-05151ae63f9d5eef3}}
+          AWS_SG=${{AWS_SG:-sg-00c3713629ba82bdd}}
+          IMAGE_CENTOS7=${{IMAGE_CENTOS7:-ami-068051358509d0288}}
+          env|sort
+          # Spin VM
+          InstanceId=$(aws ec2 run-instances \
+              --region $AWS_REGION \
+              --image-id $IMAGE_CENTOS7 \
+              --count 1 \
+              --instance-type t2.xlarge \
+              --key-name jenkins \
+              --security-group-ids $AWS_SG \
+              --subnet-id $AWS_SUBNET | \
+                jq -r '.Instances[].InstanceId')
+          aws ec2 wait instance-running --region $AWS_REGION \
+              --instance-ids $InstanceId
+          aws ec2 create-tags \
+              --region $AWS_REGION \
+              --resources $InstanceId \
+              --tags Key=Name,Value=$BUILD_TAG
+          aws ec2 modify-instance-attribute --instance-id $InstanceId \
+              --region $AWS_REGION \
+              --block-device-mappings \
+                    "[{{\"DeviceName\":\"/dev/sda1\",\"Ebs\":{{\"DeleteOnTermination\":true}}}}]"
+          echo $InstanceId > .instanseId
+          aws ec2 describe-instances \
+              --region $AWS_REGION \
+              --filters \
+              "Name=instance-state-name,Values=running" \
+              "Name=instance-id,Values=$InstanceId" \
+              --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
+              --output text > .instanceIp
+      - shell: |
+          # Deploy devstack
+          SSH_OPTIONS="-o User=ec2-user -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectionAttempts=100"
+          tar cvzf tf-devstack.tgz tf-devstack/
+          scp $SSH_OPTIONS ./tf-devstack.tgz $(cat .instanceIp):./
+          ssh $SSH_OPTIONS -t $(cat .instanceIp) \
+              "tar -xzf tf-devstack.tgz && sudo yum install git -y"
+          ssh $SSH_OPTIONS -t $(cat .instanceIp) \
+              "export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin && cd tf-devstack/{project} && ./startup.sh"
+    publishers:
+      - postbuildscript:
+          builders:
+            - role: BOTH
+              build-on:
+                - SUCCESS
+                - FAILURE
+                - ABORTED
+              build-steps:
+                - shell: |
+                    #!/bin/bash -ex
+                    AWS_REGION=${{AWS_REGION:-ca-central-1}}
+                    aws ec2 terminate-instances --region $AWS_REGION \
+                        --instance-ids $(cat .instanseId)
+- project:
+    name: devstack
+    project:
+      - k8s_manifests
+      - ansible
+    jobs:
+      - 'devstack-{project}-aws'

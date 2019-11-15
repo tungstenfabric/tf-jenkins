@@ -1,0 +1,34 @@
+---
+- job:
+    name: example-pipeline-parallel-dsl-job
+    description: |
+        atm daily swarm tests.
+    project-type: pipeline
+    dsl: |
+        i = 0
+        jobs_sum = 6
+        slack_channel = '#atm'
+        parallel (
+            "aws" : { try { stage('aws') { build 'atm-swarm-test-aws'} } catch(err) { ++i } },
+            "kvm" : { try { stage('kvm') { build 'atm-swarm-test-kvm'} } catch(err) { ++i } },
+            "vmware" : { try { stage('vmware') { build 'atm-swarm-test-vmware' } } catch(err) { ++i } },
+            "quick-aws" : { try { stage('quick-aws') { build 'atm-quick-build-image-aws' } } catch(err) { ++i } },
+            "quick-vbox" : { try { stage('quick-vbox') { build 'atm-quick-build-image-vbox' } } catch(err) { ++i } }
+        )
+        try { stage('quick-kvm') { build 'atm-quick-build-image-kvm' } } catch(err) { ++i }
+        s = jobs_sum - i
+        if ( i == jobs_sum ) { currentBuild.result = 'FAILED'
+                slackSend channel: "${slack_channel}",
+                    color: '#FF0000',
+                    message: "*${currentBuild.currentResult}:* ${env.JOB_NAME}: All jobs failed.\n More info at: ${env.JOB_URL}"
+        }
+        if ( i > 0 && i < jobs_sum ){ currentBuild.result = 'UNSTABLE'
+                slackSend channel: "${slack_channel}",
+                    color: '#FFFF00',
+                    message: "*${currentBuild.currentResult}:* ${env.JOB_NAME} - ${s} job(s) passed. ${i} job(s) failed.\n More info at: ${env.JOB_URL}"
+        }
+        if ( currentBuild.currentResult == 'SUCCESS' ){
+                slackSend channel: "${slack_channel}",
+                   color: 'good',
+                   message: "*${currentBuild.currentResult}:* ${env.JOB_NAME} - All jobs passed.\n More info at: ${env.JOB_URL}"
+        }

@@ -1,0 +1,9 @@
+- defaults:
+    name: global
+    project-type: freestyle
+    disabled: false
+    block-downstream: false
+    block-upstream: false
+    properties:
+      - build-discarder:
+          num-to-keep: 30

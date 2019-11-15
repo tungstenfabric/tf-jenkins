@@ -1,0 +1,25 @@
+- job:
+    name: 'jenkins-update-jobs'
+    description: "Updates jenkins jobs"
+    defaults: global
+    node: jjb
+    wrappers:
+        - credentials-binding:
+          - username-password-separated:
+              credential-id: self-jenkins
+              username: USER
+              password: PASSWORD
+    scm:
+      - tf-jenkins:
+    builders:
+      - shell: |
+          #!/bin/bash -ex
+          cd jjb
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip3 install setuptools wheel --upgrade
+          pip3 install jenkins-job-builder 
+          echo "--------------------------------------------------------------------- test"
+          make test
+          echo "--------------------------------------------------------------------- update"
+          make update

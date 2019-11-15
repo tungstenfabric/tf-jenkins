@@ -1,0 +1,21 @@
+- job:
+    name: 'build-containers'
+    description: "build-containers"
+    defaults: global
+    node: aws
+    parameters:
+      - string:
+          name: STEP_VAR
+          description: "Test param 1"
+          default: 'NONE'
+      - string:
+          name: UPSTREAM_GLOBAL_VAR
+          description: "Test param 2"
+          default: 'NONE'
+    scm:
+      - tf-devstack:
+    builders:
+      - shell: |
+          #!/bin/bash -ex
+          env|sort
+          echo "Hello World"

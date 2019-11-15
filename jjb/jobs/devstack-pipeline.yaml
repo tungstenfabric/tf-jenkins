@@ -1,0 +1,16 @@
+
+---
+- job:
+    name: devstack-pipeline
+    node: aws
+    description: devstack-pipeline
+    project-type: pipeline
+    pipeline-scm:
+      scm:
+        - git:
+            url: https://github.com/progmaticlab/tf-jenkins.git
+            clean: true
+            branches:
+              - origin/master
+      script-path: pipelines/devstack.pipeline
+      lightweight-checkout: true

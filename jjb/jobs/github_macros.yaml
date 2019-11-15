@@ -1,0 +1,57 @@
+# Open repository in specified organization
+- scm:
+    name: github
+    scm:
+      - git:
+          url: 'https://github.com/{organization}/{repo}.git'
+          basedir: '{repo}'
+          branches:
+            - '*/master'
+          clean:
+              after: true
+              before: true
+          prune: true
+          wipe-workspace: true
+          skip-tag: true
+
+# Open repository in specified organization at branch
+- scm:
+    name: github-branch
+    scm:
+      - git:
+          url: 'https://github.com/{organization}/{repo}.git'
+          basedir: '{repo}'
+          branches:
+            - '*/{branch}'
+          clean:
+              after: true
+              before: true
+          prune: true
+          wipe-workspace: true
+          skip-tag: true
+
+# Repository in atom github
+- scm:
+    name: tf-jenkins
+    scm:
+      - git:
+          url: 'https://github.com/progmaticlab/tf-jenkins.git'
+          branches:
+            - '*/master'
+          clean:
+              after: true
+              before: true
+          prune: true
+          wipe-workspace: true
+          skip-tag: true
+- scm:
+    name: tf-devstack
+    scm:
+      - git:
+          url: 'https://github.com/tungstenfabric/tf-devstack.git'
+          branches:
+            - '*/master'
+          prune: true
+          wipe-workspace: true
+          skip-tag: true
+          basedir: tf-devstack

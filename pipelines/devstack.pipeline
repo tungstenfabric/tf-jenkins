@@ -1,0 +1,24 @@
+pipeline {
+    agent {
+        label 'aws'
+    }
+    environment {
+        GLOBAL_VAR = "GLOBAL_VAR_VALUE"
+        }
+    stages {
+        stage('tf-defstack'){
+            steps{
+                build job: 'build-containers',
+                    parameters: [[$class: 'StringParameterValue',
+                                   name: 'STEP_VAR', value: 'STEP_VAR_VALUE'],
+                                 [$class: 'StringParameterValue',
+                                   name: 'UPSTREAM_GLOBAL_VAR', value: GLOBAL_VAR]]
+            }
+        }
+    }
+    post {
+        cleanup {
+            sh "echo cleanup"
+        }
+    }
+}

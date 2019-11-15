@@ -1,0 +1,16 @@
+
+---
+- job:
+    name: example-pipeline-jenkinsfile-job
+    node: aws
+    description: example-pipeline
+    project-type: pipeline
+    pipeline-scm:
+      scm:
+        - git:
+            url: https://github.com/progmaticlab/tf-ci-deployer.git
+            clean: true
+            branches:
+              - origin/master
+      script-path: pipelines/example.pipeline
+      lightweight-checkout: true
