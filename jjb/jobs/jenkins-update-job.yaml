@@ -13,7 +13,7 @@
       - tf-jenkins:
     builders:
       - shell: |
-          #!/bin/bash -ex
+          #!/bin/bash -e
           cd jjb
           python3 -m venv .venv
           source .venv/bin/activate

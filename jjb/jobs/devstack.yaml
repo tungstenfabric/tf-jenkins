@@ -2,7 +2,7 @@
 - job-template:
     name: devstack-{project}-{slave}
     description: "Deploys {project}"
-    node: {slave}
+    node: '{slave}'
     defaults: global
     properties:
       - build-discarder:
@@ -45,6 +45,7 @@
               build-steps:
                 - shell: |
                     ./tf-jenkins/infra/{slave}/remove_vms.sh
+
 - project:
     name: devstack
     project:
