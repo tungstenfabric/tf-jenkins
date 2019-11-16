@@ -12,5 +12,5 @@
             clean: true
             branches:
               - origin/master
-      script-path: pipelines/devstack.pipeline
+      script-path: jjb/pipelines/devstack.pipeline
       lightweight-checkout: true

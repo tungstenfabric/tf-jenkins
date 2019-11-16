@@ -12,5 +12,5 @@
             clean: true
             branches:
               - origin/master
-      script-path: pipelines/example.pipeline
+      script-path: jjb/pipelines/example.pipeline
       lightweight-checkout: true
