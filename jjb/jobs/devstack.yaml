@@ -10,7 +10,8 @@
     concurrent: true
     wrappers:
       - ssh-agent-credentials:
-          user: 'worker'
+          users:
+            - 'worker'
       - credentials-binding:
           - amazon-web-services:
               credential-id: aws-creds

@@ -37,11 +37,11 @@
     scm:
       - github:
           organization: progmaticlab
-          repo: "tf-jenkins"
+          repo: tf-jenkins
 
 - scm:
     name: tf-devstack
     scm:
       - github:
           organization: progmaticlab
-          repo: "tf-devstack"
+          repo: tf-devstack
