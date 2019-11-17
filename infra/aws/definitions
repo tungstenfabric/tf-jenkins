@@ -3,3 +3,5 @@ AWS_SUBNET=${AWS_SUBNET:-subnet-05151ae63f9d5eef3}
 AWS_SG=${AWS_SG:-sg-04ff262ce1a68d85d}
 
 IMAGE_CENTOS7=${IMAGE_CENTOS7:-ami-068051358509d0288}
+IMAGE_SSH_USER='ec2-user'
+SSH_OPTIONS="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"

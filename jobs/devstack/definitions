@@ -1,2 +1,1 @@
-export OS_REGION_NAME=sjc1
 SSH_OPTIONS="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"

@@ -4,7 +4,7 @@
     scm:
       - git:
           url: 'https://github.com/{organization}/{repo}.git'
-          basedir: '{repo}'
+          basedir: 'src/{organization}/{repo}'
           branches:
             - '*/master'
           clean:
@@ -20,7 +20,7 @@
     scm:
       - git:
           url: 'https://github.com/{organization}/{repo}.git'
-          basedir: '{repo}'
+          basedir: 'src/{organization}/{repo}'
           branches:
             - '*/{branch}'
           clean:
@@ -43,5 +43,12 @@
     name: tf-devstack
     scm:
       - github:
-          organization: progmaticlab
+          organization: tungstenfabric
           repo: tf-devstack
+
+- scm:
+    name: tf-dev-env
+    scm:
+      - github:
+          organization: tungstenfabric
+          repo: tf-dev-env

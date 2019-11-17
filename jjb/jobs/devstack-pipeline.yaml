@@ -1,5 +1,5 @@
-
 ---
+
 - job:
     name: devstack-pipeline
     node: aws

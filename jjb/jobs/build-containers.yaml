@@ -13,9 +13,9 @@
           description: "Test param 2"
           default: 'NONE'
     scm:
-      - tf-devstack:
+      - tf-jenkins
+      - tf-devstack
+      - tf-dev-env
     builders:
       - shell: |
-          #!/bin/bash -ex
-          env|sort
-          echo "Hello World"
+          ./src/progmaticlab/tf-jenkins/jobs/build/run.sh

@@ -1,4 +1,4 @@
-#!/bin/bash -eEx
+#!/bin/bash -eE
 set -o pipefail
 
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -11,7 +11,8 @@ source "$my_dir/definitions"
 ENV_FILE="$WORKSPACE/stackrc"
 touch "$ENV_FILE"
 echo "ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
-echo "AWS_REGION='${AWS_REGION}'" >> "$ENV_FILE"
+echo "AWS_REGION=${AWS_REGION}" >> "$ENV_FILE"
+echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
 # Spin VM
 iname=$BUILD_TAG
@@ -38,3 +39,9 @@ instance_ip=$(aws ec2 describe-instances \
     --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
     --output text)
 echo "instance_ip=$instance_ip" >> "$ENV_FILE"
+
+timeout 60 bash -c "\
+while /bin/true ; do \
+  ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
+  sleep 5 ; \
+done"

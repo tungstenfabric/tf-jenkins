@@ -22,17 +22,9 @@
       - tf-devstack
     builders:
       - shell: |
-          ./tf-jenkins/infra/{slave}/create_vms.sh
+          ./src/progmaticlab/tf-jenkins/infra/{slave}/create_vms.sh
       - shell: |
-          # Deploy devstack
-          ENV_FILE="$WORKSPACE/stackrc"
-          SSH_OPTIONS="-o User=ec2-user -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o ConnectionAttempts=100"
-          tar cvzf tf-devstack.tgz tf-devstack/
-          scp $SSH_OPTIONS ./tf-devstack.tgz $instance_ip:./
-          ssh $SSH_OPTIONS -t $instance_ip \
-              "tar -xzf tf-devstack.tgz && sudo yum install git -y"
-          ssh $SSH_OPTIONS -t $instance_ip \
-              "export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin && cd tf-devstack/{project} && ./startup.sh"
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/run.sh
     publishers:
       - postbuildscript:
           builders:
@@ -45,7 +37,7 @@
                 - ABORTED
               build-steps:
                 - shell: |
-                    ./tf-jenkins/infra/{slave}/remove_vms.sh
+                    ./src/progmaticlab/tf-jenkins/infra/{slave}/remove_vms.sh
 
 - project:
     name: devstack
