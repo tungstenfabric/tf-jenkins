@@ -13,7 +13,7 @@ echo "ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
 echo "AWS_REGION='${AWS_REGION}'" >> "$ENV_FILE"
 
 # Spin VM
-iname=$BUIDL_TAG
+iname=$BUILD_TAG
 bdm='{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":60,"DeleteOnTermination":true}}'
 instance_id=$(aws ec2 run-instances \
     --region $AWS_REGION \
