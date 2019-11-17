@@ -2,7 +2,7 @@
     name: 'jenkins-update-jobs'
     description: "Updates jenkins jobs"
     defaults: global
-    node: master
+    node: aws
     wrappers:
         - credentials-binding:
           - username-password-separated:
@@ -14,7 +14,7 @@
     builders:
       - shell: |
           #!/bin/bash -e
-          cd jjb
+          cd tf-jenkins/jjb
           python3 -m venv .venv
           source .venv/bin/activate
           pip3 install setuptools wheel --upgrade
