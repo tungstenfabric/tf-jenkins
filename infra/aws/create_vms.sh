@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash -eEx
+set -o pipefail
 
 [ "${DEBUG,,}" == "true" ] && set -x
 
@@ -28,12 +29,12 @@ instance_id=$(aws ec2 run-instances \
     jq -r '.Instances[].InstanceId')
 echo "instance_id=$instance_id" >> "$ENV_FILE"
 aws ec2 wait instance-running --region $AWS_REGION \
-    --instance-ids $InstanceId
+    --instance-ids $instance_id
 instance_ip=$(aws ec2 describe-instances \
     --region $AWS_REGION \
     --filters \
     "Name=instance-state-name,Values=running" \
-    "Name=instance-id,Values=$InstanceId" \
+    "Name=instance-id,Values=$instance_id" \
     --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
     --output text)
 echo "instance_ip=$instance_ip" >> "$ENV_FILE"

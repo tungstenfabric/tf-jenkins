@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash -eE
+set -o pipefail
 
 [ "${DEBUG,,}" == "true" ] && set -x
 
