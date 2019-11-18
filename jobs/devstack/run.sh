@@ -10,7 +10,8 @@ source "$my_dir/definitions"
 
 ENV_FILE="$WORKSPACE/stackrc"
 source $ENV_FILE
+DEPLOYMENT=$(echo ${JOB_NAME} | cut -d '-' -f 2)
 
 rsync -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip \
-    "export PATH=\$PATH:/usr/sbin && cd src/tungstenfabric/tf-devstack/{project} && ./startup.sh"
+    "export PATH=\$PATH:/usr/sbin && cd src/tungstenfabric/tf-devstack/$DEPLOYMENT && ./startup.sh"
