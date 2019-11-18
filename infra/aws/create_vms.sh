@@ -40,7 +40,7 @@ instance_ip=$(aws ec2 describe-instances \
     --output text)
 echo "instance_ip=$instance_ip" >> "$ENV_FILE"
 
-timeout 60 bash -c "\
+timeout 300 bash -c "\
 while /bin/true ; do \
   ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
   sleep 5 ; \

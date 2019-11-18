@@ -4,4 +4,4 @@ AWS_SG=${AWS_SG:-sg-04ff262ce1a68d85d}
 
 IMAGE_CENTOS7=${IMAGE_CENTOS7:-ami-068051358509d0288}
 IMAGE_SSH_USER='ec2-user'
-SSH_OPTIONS="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+SSH_OPTIONS="-i $WORKER_SSH_KEY -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
