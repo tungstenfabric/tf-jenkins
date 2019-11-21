@@ -3,22 +3,162 @@ pipeline {
         label 'aws'
     }
     environment {
-        GLOBAL_VAR = "GLOBAL_VAR_VALUE"
+        AWS_REGION = "ca-central-1"
+        AWS_SUBNET = "subnet-05151ae63f9d5eef3"
+        AWS_SG = "sg-00c3713629ba82bdd"
+        IMAGE_CENTOS7 = "ami-e802818c"
+        PATCHSET_ID = "12345"
         }
     stages {
-        stage('tf-defstack'){
+        stage('Fetch') {
             steps{
-                build job: 'build-containers',
-                    parameters: [[$class: 'StringParameterValue',
-                                   name: 'STEP_VAR', value: 'STEP_VAR_VALUE'],
-                                 [$class: 'StringParameterValue',
-                                   name: 'UPSTREAM_GLOBAL_VAR', value: GLOBAL_VAR]]
+                script{
+                    job_fetch = build job: 'devstack-fetch',
+                        parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                    job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                }
+                copyArtifacts filter: '*',
+                        projectName: 'devstack-fetch',
+                        selector: specific( job_fetch_id )
             }
         }
-    }
-    post {
-        cleanup {
-            sh "echo cleanup"
+        stage('Check'){
+            parallel {
+                stage('Unit-test'){
+                    steps{
+                       build job: 'devstack-unit-test',
+                            parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                    }
+                }
+                stage('Lint'){
+                    steps{
+                        build job: 'devstack-lint',
+                            parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                    }
+                }
+                stage('Deploy k8s for manifests'){
+                    steps{
+                        script{
+                            job_fetch = build job: 'devstack-deploy-k8s_manifests-aws',
+                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                            job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                        }
+                        copyArtifacts filter: '*',
+                                projectName: 'devstack-deploy-k8s_manifests-aws',
+                                selector: specific( job_fetch_id )
+                    }
+                }
+                stage('Deploy k8s for helm'){
+                    steps{
+                        script{
+                            job_fetch = build job: 'devstack-deploy-k8s_helm-aws',
+                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                            job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                        }
+                        copyArtifacts filter: '*',
+                                projectName: 'devstack-deploy-k8s_helm-aws',
+                                selector: specific( job_fetch_id )
+                    }
+                }
+                stage('Deploy k8s for juju'){
+                    steps{
+                        script{
+                            job_fetch = build job: 'devstack-deploy-k8s_juju-aws',
+                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                            job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                        }
+                        copyArtifacts filter: '*',
+                                projectName: 'devstack-deploy-k8s_juju-aws',
+                                selector: specific( job_fetch_id )
+                    }
+                }
+                stage('Deploy openstack for helm'){
+                    steps{
+                        script{
+                            job_fetch = build job: 'devstack-deploy-os_helm-aws',
+                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                            job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                        }
+                        copyArtifacts filter: '*',
+                                projectName: 'devstack-deploy-os_helm-aws',
+                                selector: specific( job_fetch_id )
+                    }
+                }
+                stage('Build-test'){
+                    stages{
+                        stage('Build'){
+                            steps{
+                                build job: 'devstack-lint',
+                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                            }
+                        }
+                        stage('Deploy TF'){
+                            steps{
+                                script{
+                                    parallel(
+                                        "Deploy-test k8s for manifests":{
+                                            build job: 'devstack-deploy_test-k8s_manifests-aws',
+                                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            parallel(
+                                                "Test sanity k8s for manifests":{
+                                                build job: 'devstack-test_sanity-k8s_manifests-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                },
+                                                "Test smoke k8s for manifests":{
+                                                build job: 'devstack-test_smoke-k8s_manifests-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                }
+                                            )
+                                        },
+                                        "Deploy-test k8s for helm":{
+                                            build job: 'devstack-deploy_test-k8s_helm-aws',
+                                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            parallel(
+                                                "Test sanity k8s for manifests":{
+                                                build job: 'devstack-test_sanity-k8s_helm-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                },
+                                                "Test smoke k8s for manifests":{
+                                                build job: 'devstack-test_smoke-k8s_helm-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                }
+                                            )
+                                        },
+                                        "Deploy-test k8s for juju":{
+                                            build job: 'devstack-deploy_test-k8s_juju-aws',
+                                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            parallel(
+                                                "Test sanity k8s for juju":{
+                                                build job: 'devstack-test_sanity-k8s_juju-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                },
+                                                "Test smoke k8s for manifests":{
+                                                build job: 'devstack-test_smoke-k8s_juju-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                }
+                                            )
+                                        },
+                                        "Deploy-test openstack for helm":{
+                                            build job: 'devstack-deploy_test-os_helm-aws',
+                                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            parallel(
+                                                "Test sanity openstack for helm":{
+                                                build job: 'devstack-test_sanity-os_helm-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                },
+                                                "Test smoke openstack for helm":{
+                                                build job: 'devstack-test_smoke-os_helm-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                }
+                                            )
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

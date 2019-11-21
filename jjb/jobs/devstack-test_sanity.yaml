@@ -1,0 +1,39 @@
+---
+- job-template:
+    name: devstack-test_sanity-{project}-{slave}
+    description: "devstack test sanity for {project}"
+    node: '{slave}'
+    defaults: global
+    parameters:
+      - string:
+          name: PATCHSET_ID
+          description: PATCHSET_ID
+          default: 'NONE'
+    properties:
+      - build-discarder:
+          num-to-keep: 10
+    concurrent: true
+    wrappers:
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+    scm:
+      - tf-jenkins
+      - tf-devstack
+    builders:
+      - shell: |
+          echo "ssh IP1-IP4; git clone tf-test;"
+- project:
+    name: devstack-test_sanity
+    project:
+      - k8s_manifests
+      - k8s_helm
+      - os_helm
+      - k8s_juju
+    slave:
+      - aws
+    jobs:
+      - 'devstack-test_sanity-{project}-{slave}'

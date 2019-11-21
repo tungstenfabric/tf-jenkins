@@ -1,0 +1,12 @@
+- job:
+    name: "devstack-lint"
+    description: "devstack-lint"
+    defaults: global
+    parameters:
+      - string:
+          name: PATCHSET_ID
+          description: PATCHSET_ID
+          default: 'NONE'
+    builders:
+      - shell: |
+          echo "//docker pull tf-dev-env; tf-dev-env/run.sh lint"

@@ -1,0 +1,18 @@
+- job:
+    name: "devstack-fetch"
+    description: "devstack-fetch"
+    defaults: global
+    node: aws
+    parameters:
+      - string:
+          name: PATCHSET_ID
+          description: PATCHSET_ID
+          default: 'NONE'
+    builders:
+      - shell: |
+          echo "{ git clone tf-dev-env; tf-dev-env/run.sh; docker commit; docker push tf-dev-env }"
+          echo "0" > src.tar.gz
+          echo "env" > fetch.env
+    publishers:
+      - archive:
+          artifacts: '*.tar.gz,fetch.env'

@@ -1,0 +1,49 @@
+---
+- job-template:
+    name: devstack-deploy_test-{project}-{slave}
+    description: "devstack deploy-test for {project}"
+    node: '{slave}'
+    defaults: global
+    parameters:
+      - string:
+          name: PATCHSET_ID
+          description: PATCHSET_ID
+          default: 'NONE'
+    properties:
+      - build-discarder:
+          num-to-keep: 10
+    concurrent: true
+    wrappers:
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+    scm:
+      - tf-jenkins
+      - tf-devstack
+    builders:
+      - shell: |
+          echo "Deploy k8s for manifests"
+          echo "ssh IP1; SKIP_K8S_DEPLOYMENT=true tf-devstack/k8s_manifests/run.sh"
+          
+          echo 'Deploy k8s for helm'
+          echo "ssh IP2; SKIP_K8S_DEPLOYMENT=true tf-devstack/helm/run.sh"
+
+          echo 'Deploy k8s for juju'
+          echo "ssh IP3; SKIP_K8S_DEPLOYMENT=true tf-devstack/juju/run.sh"
+
+          echo 'Deploy openstack for helm'
+          echo "ssh IP4; SKIP_K8S_DEPLOYMENT=true SKIP_OPENSTACK_DEPLOYMENT=true tf-devstack/helm/run.sh"
+- project:
+    name: devstack-deploy_test
+    project:
+      - k8s_manifests
+      - k8s_helm
+      - os_helm
+      - k8s_juju
+    slave:
+      - aws
+    jobs:
+      - 'devstack-deploy_test-{project}-{slave}'

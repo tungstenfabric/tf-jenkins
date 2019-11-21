@@ -1,0 +1,62 @@
+---
+- job-template:
+    name: devstack-deploy-{project}-{slave}
+    description: "devstack deploy for {project}"
+    node: '{slave}'
+    defaults: global
+    parameters:
+      - string:
+          name: PATCHSET_ID
+          description: PATCHSET_ID
+          default: 'NONE'
+    properties:
+      - build-discarder:
+          num-to-keep: 10
+    concurrent: true
+    wrappers:
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - amazon-web-services:
+              credential-id: aws-creds
+              access-key: AWS_ACCESS_KEY_ID
+              secret-key: AWS_SECRET_ACCESS_KEY
+    scm:
+      - tf-jenkins
+      - tf-devstack
+    builders:
+      - shell: |
+          echo "Deploy k8s for manifests"
+          echo "//add_machine.sh > file"
+          echo "IP1 //ssh IP1; git clone tf-devstack; SKIP_CONTRAIL_DEPLOYMENT=true SKIP_MANIFEST_CREATION=true tf-devstack/k8s_manifests/run.sh"
+          
+          echo 'Deploy k8s for helm'
+          echo "//add_machine.sh IP2"
+          echo "//ssh IP2; git clone tf-devstack; ORCHESTRATOR=k8s SKIP_CONTRAIL_DEPLOYMENT=true tf-devstack/helm/run.sh"
+
+          echo 'Deploy k8s for juju'
+          echo "//add_machine.sh IP3"
+          echo "//ssh IP3; git clone tf-devstack; SKIP_CONTRAIL_DEPLOYMENT=true tf-devstack/juju/run.sh"
+
+          echo 'Deploy openstack for helm'
+          echo "//add_machine.sh IP4"
+          echo "//ssh IP4; git clone tf-devstack; ORCHESTRATOR=openstack SKIP_CONTRAIL_DEPLOYMENT=true SKIP_MANIFEST_CREATION=true tf-devstack/helm/run.sh"
+          echo "INSTANCE_IP=INSTANCE_IP" > {project}.env
+    publishers:
+      - archive:
+          artifacts: '*.env'
+- project:
+    name: devstack-deploy
+    project:
+      - k8s_manifests
+      - k8s_helm
+      - os_helm
+      - k8s_juju
+    slave:
+      - aws
+    jobs:
+      - 'devstack-deploy-{project}-{slave}'

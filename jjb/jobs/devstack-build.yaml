@@ -1,0 +1,13 @@
+- job:
+    name: "devstack-build"
+    description: "devstack-build"
+    defaults: global
+    node: aws
+    parameters:
+      - string:
+          name: PATCHSET_ID
+          description: PATCHSET_ID
+          default: 'NONE'
+    builders:
+      - shell: |
+          echo "//docker pull tf-dev-env; tf-dev-env/run.sh build"
