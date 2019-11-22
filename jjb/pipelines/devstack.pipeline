@@ -8,6 +8,7 @@ pipeline {
         AWS_SG = "sg-00c3713629ba82bdd"
         IMAGE_CENTOS7 = "ami-e802818c"
         PATCHSET_ID = "12345"
+        ERRORS = 0
         }
     stages {
         stage('Fetch') {
@@ -26,34 +27,42 @@ pipeline {
             parallel {
                 stage('Unit-test'){
                     steps{
-                       build job: 'devstack-unit-test',
-                            parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                            build job: 'devstack-unit-test',
+                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                            }
+                        }
                     }
-                }
                 stage('Lint'){
                     steps{
-                        build job: 'devstack-lint',
-                            parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                            build job: 'devstack-lint',
+                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                        }
                     }
                 }
                 stage('Deploy k8s for manifests'){
                     steps{
-                        script{
-                            job_fetch = build job: 'devstack-deploy-k8s_manifests-aws',
-                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
-                            job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                            script{
+                                job_fetch = build job: 'devstack-deploy-k8s_manifests-aws',
+                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                            }
+                            copyArtifacts filter: '*',
+                                    projectName: 'devstack-deploy-k8s_manifests-aws',
+                                    selector: specific( job_fetch_id )
                         }
-                        copyArtifacts filter: '*',
-                                projectName: 'devstack-deploy-k8s_manifests-aws',
-                                selector: specific( job_fetch_id )
                     }
                 }
                 stage('Deploy k8s for helm'){
                     steps{
-                        script{
-                            job_fetch = build job: 'devstack-deploy-k8s_helm-aws',
-                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
-                            job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                            script{
+                                job_fetch = build job: 'devstack-deploy-k8s_helm-aws',
+                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                            }
                         }
                         copyArtifacts filter: '*',
                                 projectName: 'devstack-deploy-k8s_helm-aws',
@@ -62,10 +71,12 @@ pipeline {
                 }
                 stage('Deploy k8s for juju'){
                     steps{
-                        script{
-                            job_fetch = build job: 'devstack-deploy-k8s_juju-aws',
-                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
-                            job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                            script{
+                                job_fetch = build job: 'devstack-deploy-k8s_juju-aws',
+                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                            }
                         }
                         copyArtifacts filter: '*',
                                 projectName: 'devstack-deploy-k8s_juju-aws',
@@ -74,10 +85,12 @@ pipeline {
                 }
                 stage('Deploy openstack for helm'){
                     steps{
-                        script{
-                            job_fetch = build job: 'devstack-deploy-os_helm-aws',
-                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
-                            job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                            script{
+                                job_fetch = build job: 'devstack-deploy-os_helm-aws',
+                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
+                            }
                         }
                         copyArtifacts filter: '*',
                                 projectName: 'devstack-deploy-os_helm-aws',
@@ -88,8 +101,10 @@ pipeline {
                     stages{
                         stage('Build'){
                             steps{
-                                build job: 'devstack-lint',
-                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
+                                    build job: 'devstack-build',
+                                        parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                }
                             }
                         }
                         stage('Deploy TF'){
@@ -97,8 +112,12 @@ pipeline {
                                 script{
                                     parallel(
                                         "Deploy-test k8s for manifests":{
-                                            build job: 'devstack-deploy_test-k8s_manifests-aws',
-                                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            try {
+                                                build job: 'devstack-deploy_test-k8s_manifests-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            } catch (err) {
+                                                ++env.ERRORS
+                                            }
                                             parallel(
                                                 "Test sanity k8s for manifests":{
                                                 build job: 'devstack-test_sanity-k8s_manifests-aws',
@@ -111,8 +130,12 @@ pipeline {
                                             )
                                         },
                                         "Deploy-test k8s for helm":{
+                                            try {
                                             build job: 'devstack-deploy_test-k8s_helm-aws',
                                                 parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            } catch (err) {
+                                                ++env.ERRORS
+                                            }
                                             parallel(
                                                 "Test sanity k8s for manifests":{
                                                 build job: 'devstack-test_sanity-k8s_helm-aws',
@@ -125,8 +148,12 @@ pipeline {
                                             )
                                         },
                                         "Deploy-test k8s for juju":{
-                                            build job: 'devstack-deploy_test-k8s_juju-aws',
-                                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            try {
+                                                build job: 'devstack-deploy_test-k8s_juju-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            } catch (err) {
+                                                ++env.ERRORS
+                                            }
                                             parallel(
                                                 "Test sanity k8s for juju":{
                                                 build job: 'devstack-test_sanity-k8s_juju-aws',
@@ -139,8 +166,12 @@ pipeline {
                                             )
                                         },
                                         "Deploy-test openstack for helm":{
-                                            build job: 'devstack-deploy_test-os_helm-aws',
-                                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            try {
+                                                build job: 'devstack-deploy_test-os_helm-aws',
+                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                            } catch (err) {
+                                                ++env.ERRORS
+                                            }
                                             parallel(
                                                 "Test sanity openstack for helm":{
                                                 build job: 'devstack-test_sanity-os_helm-aws',
@@ -153,6 +184,10 @@ pipeline {
                                             )
                                         }
                                     )
+                                    if ( env.ERRORS > 0 ) {
+                                        currentBuild.result = 'FAILED'
+                                        sh "exit 1"
+                                    }
                                 }
                             }
                         }
