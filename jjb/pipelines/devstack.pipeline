@@ -161,4 +161,21 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+            sh "echo 'Destroy VMs'"
+        }
+        failure {
+            sh "echo 'archiveArtifacts'"
+            sh "echo 'gerrit vote'"
+        }
+        success {
+            sh "echo 'gerrit vote'"
+            sh "echo publishArtifact"
+        }
+        cleanup {
+            sh "echo 'remove trash'"
+            //deleteDir()
+        }
+    }
 }
