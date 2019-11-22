@@ -8,7 +8,6 @@ pipeline {
         AWS_SG = "sg-00c3713629ba82bdd"
         IMAGE_CENTOS7 = "ami-e802818c"
         PATCHSET_ID = "12345"
-        ERRORS = 0
         }
     stages {
         stage('Fetch') {
@@ -110,13 +109,14 @@ pipeline {
                         stage('Deploy TF'){
                             steps{
                                 script{
+                                    int ERRORS = 0
                                     parallel(
                                         "Deploy-test k8s for manifests":{
                                             try {
                                                 build job: 'devstack-deploy_test-k8s_manifests-aws',
                                                     parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
                                             } catch (err) {
-                                                ++env.ERRORS
+                                                ++ERRORS
                                             }
                                             parallel(
                                                 "Test sanity k8s for manifests":{
@@ -134,7 +134,7 @@ pipeline {
                                             build job: 'devstack-deploy_test-k8s_helm-aws',
                                                 parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
                                             } catch (err) {
-                                                ++env.ERRORS
+                                                ++ERRORS
                                             }
                                             parallel(
                                                 "Test sanity k8s for manifests":{
@@ -152,7 +152,7 @@ pipeline {
                                                 build job: 'devstack-deploy_test-k8s_juju-aws',
                                                     parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
                                             } catch (err) {
-                                                ++env.ERRORS
+                                                ++ERRORS
                                             }
                                             parallel(
                                                 "Test sanity k8s for juju":{
@@ -170,7 +170,7 @@ pipeline {
                                                 build job: 'devstack-deploy_test-os_helm-aws',
                                                     parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
                                             } catch (err) {
-                                                ++env.ERRORS
+                                                ++ERRORS
                                             }
                                             parallel(
                                                 "Test sanity openstack for helm":{
@@ -184,7 +184,7 @@ pipeline {
                                             )
                                         }
                                     )
-                                    if ( env.ERRORS > 0 ) {
+                                    if ( ERRORS > 0 ) {
                                         currentBuild.result = 'FAILED'
                                         sh "exit 1"
                                     }
