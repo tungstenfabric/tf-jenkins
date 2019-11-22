@@ -13,7 +13,7 @@
           default: 'NONE'
     builders:
       - shell: |
-          ./src/progmaticlab/tf-jenkins/infra/create_vms.sh
+          ./src/progmaticlab/tf-jenkins/infra/{slave}/create_vms.sh
       - shell: |
           # TODO: pass nexus creds
           ./src/progmaticlab/tf-jenkins/jobs/build/run.sh

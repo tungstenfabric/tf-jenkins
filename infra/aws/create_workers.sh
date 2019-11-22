@@ -1,12 +1,8 @@
 #!/bin/bash -eE
 set -o pipefail
 
-
-
 # WARNING !!!!
 # it creates only one machine for now !
-
-
 
 [ "${DEBUG,,}" == "true" ] && set -x
 

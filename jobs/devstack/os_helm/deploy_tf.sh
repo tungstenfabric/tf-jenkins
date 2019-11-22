@@ -11,12 +11,12 @@ source "$my_dir/definitions"
 ENV_FILE="$WORKSPACE/stackrc"
 source $ENV_FILE
 
-echo 'Deploy k8s for helm'
+echo 'Deploy TF for helm'
 
 rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 cat <<EOF
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/helm
-ORCHESTRATOR=k8s SKIP_CONTRAIL_DEPLOYMENT=true ./run.sh
+ORCHESTRATOR=openstack SKIP_K8S_DEPLOYMENT=true SKIP_OPENSTACK_DEPLOYMENT=true ./run.sh
 EOF | ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip

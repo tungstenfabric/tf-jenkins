@@ -1,9 +1,15 @@
 ---
+
 - job-template:
-    name: devstack-{project}-{slave}
-    description: "Deploys {project}"
+    name: devstack-deploy-platform-{project}-{slave}
+    description: "devstack deploy platform for {project}"
     node: '{slave}'
     defaults: global
+    parameters:
+      - string:
+          name: PATCHSET_ID
+          description: PATCHSET_ID
+          default: 'NONE'
     properties:
       - build-discarder:
           num-to-keep: 10
@@ -25,30 +31,22 @@
       - tf-devstack
     builders:
       - shell: |
-          ./src/progmaticlab/tf-jenkins/infra/{slave}/create_vms.sh
+          export CLOUD={slave}
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/create_vms.sh {slave}
       - shell: |
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/run.sh
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/run.sh
     publishers:
-      - postbuildscript:
-          builders:
-            - role: BOTH
-              build-on:
-                - SUCCESS
-                - UNSTABLE
-                - FAILURE
-                - NOT_BUILT
-                - ABORTED
-              build-steps:
-                - shell: |
-                    ./src/progmaticlab/tf-jenkins/infra/{slave}/remove_vms.sh
+      - archive:
+          artifacts: '*.env'
 
 - project:
-    name: devstack
+    name: devstack-deploy
     project:
       - k8s_manifests
-      - ansible
+      - k8s_helm
+      - os_helm
+      - k8s_juju
     slave:
       - aws
-      - vexxhost
     jobs:
-      - 'devstack-{project}-{slave}'
+      - 'devstack-deploy-platform-{project}-{slave}'

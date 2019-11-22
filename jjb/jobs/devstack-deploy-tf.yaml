@@ -1,7 +1,7 @@
 ---
 - job-template:
-    name: devstack-deploy_test-{project}-{slave}
-    description: "devstack deploy-test for {project}"
+    name: devstack-deploy-tf-{project}-{slave}
+    description: "devstack deploy TF for {project}"
     node: '{slave}'
     defaults: global
     parameters:
@@ -25,17 +25,7 @@
       - tf-devstack
     builders:
       - shell: |
-          echo "Deploy k8s for manifests"
-          echo "ssh IP1; SKIP_K8S_DEPLOYMENT=true tf-devstack/k8s_manifests/run.sh"
-
-          echo 'Deploy k8s for helm'
-          echo "ssh IP2; SKIP_K8S_DEPLOYMENT=true tf-devstack/helm/run.sh"
-
-          echo 'Deploy k8s for juju'
-          echo "ssh IP3; SKIP_K8S_DEPLOYMENT=true tf-devstack/juju/run.sh"
-
-          echo 'Deploy openstack for helm'
-          echo "ssh IP4; SKIP_K8S_DEPLOYMENT=true SKIP_OPENSTACK_DEPLOYMENT=true tf-devstack/helm/run.sh"
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/run.sh
 
 - project:
     name: devstack-deploy_test
@@ -47,4 +37,4 @@
     slave:
       - aws
     jobs:
-      - 'devstack-deploy_test-{project}-{slave}'
+      - 'devstack-deploy-tf-{project}-{slave}'

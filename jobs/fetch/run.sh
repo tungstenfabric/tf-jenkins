@@ -8,6 +8,8 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+exit 0
+
 export $??_REGISTRY=???_REGISTRY
 export ??_TAG=??_TAG
 export DEV_ENV_IMAGE=???

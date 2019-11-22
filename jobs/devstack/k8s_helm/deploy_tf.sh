@@ -19,4 +19,4 @@ cat <<EOF
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/helm
 ORCHESTRATOR=k8s SKIP_K8S_DEPLOYMENT=true ./run.sh
-EOF | bash $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip
+EOF | ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip
