@@ -7,10 +7,6 @@
     project-type: pipeline
     pipeline-scm:
       scm:
-        - git:
-            url: https://github.com/progmaticlab/tf-jenkins.git
-            clean: true
-            branches:
-              - origin/master
-      script-path: jjb/pipelines/devstack.pipeline
+        - tf-jenkins
+      script-path: src/progmaticlab/tf-jenkins/jjb/pipelines/devstack.pipeline
       lightweight-checkout: true

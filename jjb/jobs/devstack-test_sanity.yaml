@@ -1,7 +1,8 @@
 ---
+
 - job-template:
-    name: devstack-test_sanity-{project}-{slave}
-    description: "devstack test sanity for {project}"
+    name: devstack-test-sanity
+    description: "devstack test sanity"
     node: '{slave}'
     defaults: global
     parameters:
@@ -25,15 +26,4 @@
       - tf-devstack
     builders:
       - shell: |
-          echo "ssh IP1-IP4; git clone tf-test;"
-- project:
-    name: devstack-test_sanity
-    project:
-      - k8s_manifests
-      - k8s_helm
-      - os_helm
-      - k8s_juju
-    slave:
-      - aws
-    jobs:
-      - 'devstack-test_sanity-{project}-{slave}'
+          ./src/progmaticlab/tf-jenkins/jobs/sanity_test/run.sh $env_file_name

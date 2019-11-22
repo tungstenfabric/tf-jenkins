@@ -8,13 +8,9 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ENV_FILE="$WORKSPACE/stackrc"
-source $ENV_FILE
-
-rsync tf-dev-env $IP:
-cat <<EOF
 export $??_REGISTRY=???_REGISTRY
 export ??_TAG=??_TAG
 export DEV_ENV_IMAGE=???
-??/tf-dev-env/run.sh build
-EOF | ssh $IP
+./src/tungstenfabric/tf-dev-env/run.sh
+docker commit ???
+docker push $REGISTRY/tf-dev-env-centos:$PATCHSET_ID

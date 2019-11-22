@@ -3,6 +3,9 @@
     description: "devstack-fetch"
     defaults: global
     node: aws
+    scm:
+      - tf-jenkins
+      - tf-dev-env
     parameters:
       - string:
           name: PATCHSET_ID
@@ -10,9 +13,8 @@
           default: 'NONE'
     builders:
       - shell: |
-          echo "{ git clone tf-dev-env; tf-dev-env/run.sh; docker commit; docker push tf-dev-env }"
-          echo "0" > src.tar.gz
-          echo "env" > fetch.env
+          ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh
     publishers:
       - archive:
-          artifacts: '*.tar.gz,fetch.env'
+          artifacts: '**'
+          allow-empty: true

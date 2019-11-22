@@ -1,4 +1,5 @@
 ---
+
 - job-template:
     name: devstack-deploy-{project}-{slave}
     description: "devstack deploy for {project}"
@@ -30,10 +31,16 @@
       - tf-devstack
     builders:
       - shell: |
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/create_vms.sh {slave}
+          # TODO: this should be inside create_vms.sh
+          echo "INSTANCE_IP=INSTANCE_IP" > {project}.env
+      - shell: |
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/run.sh
+
           echo "Deploy k8s for manifests"
           echo "//add_machine.sh > file"
           echo "IP1 //ssh IP1; git clone tf-devstack; SKIP_CONTRAIL_DEPLOYMENT=true SKIP_MANIFEST_CREATION=true tf-devstack/k8s_manifests/run.sh"
-          
+
           echo 'Deploy k8s for helm'
           echo "//add_machine.sh IP2"
           echo "//ssh IP2; git clone tf-devstack; ORCHESTRATOR=k8s SKIP_CONTRAIL_DEPLOYMENT=true tf-devstack/helm/run.sh"
@@ -45,10 +52,10 @@
           echo 'Deploy openstack for helm'
           echo "//add_machine.sh IP4"
           echo "//ssh IP4; git clone tf-devstack; ORCHESTRATOR=openstack SKIP_CONTRAIL_DEPLOYMENT=true SKIP_MANIFEST_CREATION=true tf-devstack/helm/run.sh"
-          echo "INSTANCE_IP=INSTANCE_IP" > {project}.env
     publishers:
       - archive:
           artifacts: '*.env'
+
 - project:
     name: devstack-deploy
     project:

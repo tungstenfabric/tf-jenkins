@@ -27,7 +27,7 @@
       - shell: |
           echo "Deploy k8s for manifests"
           echo "ssh IP1; SKIP_K8S_DEPLOYMENT=true tf-devstack/k8s_manifests/run.sh"
-          
+
           echo 'Deploy k8s for helm'
           echo "ssh IP2; SKIP_K8S_DEPLOYMENT=true tf-devstack/helm/run.sh"
 
@@ -36,6 +36,7 @@
 
           echo 'Deploy openstack for helm'
           echo "ssh IP4; SKIP_K8S_DEPLOYMENT=true SKIP_OPENSTACK_DEPLOYMENT=true tf-devstack/helm/run.sh"
+
 - project:
     name: devstack-deploy_test
     project:

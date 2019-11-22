@@ -3,6 +3,9 @@
     description: "devstack-build"
     defaults: global
     node: aws
+    scm:
+      - tf-jenkins
+      - tf-dev-env
     parameters:
       - string:
           name: PATCHSET_ID
@@ -10,4 +13,7 @@
           default: 'NONE'
     builders:
       - shell: |
-          echo "//docker pull tf-dev-env; tf-dev-env/run.sh build"
+          ./src/progmaticlab/tf-jenkins/infra/create_vms.sh
+      - shell: |
+          # TODO: pass nexus creds
+          ./src/progmaticlab/tf-jenkins/jobs/build/run.sh
