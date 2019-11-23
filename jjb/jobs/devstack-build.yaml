@@ -6,9 +6,8 @@
       - tf-jenkins
       - tf-dev-env
     parameters:
-      - node:
+      - label:
           name: SLAVE
-          allowed-multiselect: false
       - string:
           name: PATCHSET_ID
           description: PATCHSET_ID
