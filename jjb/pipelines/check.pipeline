@@ -3,7 +3,7 @@ pipeline {
         label 'aws'
     }
     environment {
-        SLAVE = "vexxhost"
+        SLAVE = "aws"
         PATCHSET_ID = "12345/1"
         CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
     }
@@ -27,6 +27,7 @@ pipeline {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             build job: 'devstack-unit-test',
                                 parameters: [
+                                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
                                     string(name: 'PATCHSET_ID', value: PATCHSET_ID)
                                 ]
                             }
@@ -36,7 +37,10 @@ pipeline {
                     steps{
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             build job: 'devstack-lint',
-                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                parameters: [
+                                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                    string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                ]
                         }
                     }
                 }
@@ -45,7 +49,10 @@ pipeline {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             script{
                                 job_fetch = build job: 'devstack-deploy-k8s_manifests-aws',
-                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                    parameters: [
+                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                    ]
                                 job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
                             }
                             copyArtifacts filter: '*',
@@ -59,7 +66,10 @@ pipeline {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             script{
                                 job_fetch = build job: 'devstack-deploy-k8s_helm-aws',
-                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                    parameters: [
+                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                    ]
                                 job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
                             }
                         }
@@ -73,7 +83,10 @@ pipeline {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             script{
                                 job_fetch = build job: 'devstack-deploy-k8s_juju-aws',
-                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                    parameters: [
+                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                    ]
                                 job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
                             }
                         }
@@ -87,7 +100,10 @@ pipeline {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             script{
                                 job_fetch = build job: 'devstack-deploy-os_helm-aws',
-                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                    parameters: [
+                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                    ]
                                 job_fetch_id = "$job_fetch.buildVariables.BUILD_ID"
                             }
                         }
@@ -117,72 +133,108 @@ pipeline {
                                         "Deploy-test k8s for manifests":{
                                             try {
                                                 build job: 'devstack-deploy_test-k8s_manifests-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                             } catch (err) {
                                                 ++ERRORS
                                             }
                                             parallel(
                                                 "Test sanity k8s for manifests":{
                                                 build job: 'devstack-test_sanity-k8s_manifests-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                                 },
                                                 "Test smoke k8s for manifests":{
                                                 build job: 'devstack-test_smoke-k8s_manifests-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                                 }
                                             )
                                         },
                                         "Deploy-test k8s for helm":{
                                             try {
-                                            build job: 'devstack-deploy_test-k8s_helm-aws',
-                                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                build job: 'devstack-deploy_test-k8s_helm-aws',
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                             } catch (err) {
                                                 ++ERRORS
                                             }
                                             parallel(
                                                 "Test sanity k8s for manifests":{
                                                 build job: 'devstack-test_sanity-k8s_helm-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                                 },
                                                 "Test smoke k8s for manifests":{
                                                 build job: 'devstack-test_smoke-k8s_helm-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                                 }
                                             )
                                         },
                                         "Deploy-test k8s for juju":{
                                             try {
                                                 build job: 'devstack-deploy_test-k8s_juju-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                             } catch (err) {
                                                 ++ERRORS
                                             }
                                             parallel(
                                                 "Test sanity k8s for juju":{
                                                 build job: 'devstack-test_sanity-k8s_juju-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                                 },
                                                 "Test smoke k8s for manifests":{
                                                 build job: 'devstack-test_smoke-k8s_juju-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                                 }
                                             )
                                         },
                                         "Deploy-test openstack for helm":{
                                             try {
                                                 build job: 'devstack-deploy_test-os_helm-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                             } catch (err) {
                                                 ++ERRORS
                                             }
                                             parallel(
                                                 "Test sanity openstack for helm":{
                                                 build job: 'devstack-test_sanity-os_helm-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                                 },
                                                 "Test smoke openstack for helm":{
                                                 build job: 'devstack-test_smoke-os_helm-aws',
-                                                    parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                                    parameters: [
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
+                                                        string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                                    ]
                                                 }
                                             )
                                         }

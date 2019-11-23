@@ -6,10 +6,11 @@
     node: '{slave}'
     defaults: global
     parameters:
+      - label:
+          name: SLAVE
       - string:
           name: PATCHSET_ID
           description: PATCHSET_ID
-          default: 'NONE'
     properties:
       - build-discarder:
           num-to-keep: 10
