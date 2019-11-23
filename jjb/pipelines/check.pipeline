@@ -3,7 +3,7 @@ pipeline {
         label 'aws'
     }
     environment {
-        SLAVE = "aws"
+        SLAVE = "vexx"
         PATCHSET_ID = "12345/1"
         CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
     }
