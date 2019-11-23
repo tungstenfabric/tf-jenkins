@@ -1,0 +1,12 @@
+---
+
+- job:
+    name: check-pipeline
+    node: aws
+    description: check-pipeline
+    project-type: pipeline
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: src/progmaticlab/tf-jenkins/jjb/pipelines/check.pipeline
+      lightweight-checkout: true

@@ -3,12 +3,10 @@ pipeline {
         label 'aws'
     }
     environment {
-        AWS_REGION = "ca-central-1"
-        AWS_SUBNET = "subnet-05151ae63f9d5eef3"
-        AWS_SG = "sg-00c3713629ba82bdd"
-        IMAGE_CENTOS7 = "ami-e802818c"
-        PATCHSET_ID = "12345"
-        }
+        SLAVE = "aws"
+        PATCHSET_ID = "12345/1"
+        CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
+    }
     stages {
         stage('Fetch') {
             steps{
@@ -28,7 +26,9 @@ pipeline {
                     steps{
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             build job: 'devstack-unit-test',
-                                parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                parameters: [
+                                    string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                ]
                             }
                         }
                     }
@@ -102,7 +102,10 @@ pipeline {
                             steps{
                                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                                     build job: 'devstack-build',
-                                        parameters: [string(name: 'PATCHSET_ID', value: PATCHSET_ID)]
+                                        parameters: [
+                                            string(name: 'SLAVE', value: SLAVE),
+                                            string(name: 'PATCHSET_ID', value: PATCHSET_ID)
+                                        ]
                                 }
                             }
                         }

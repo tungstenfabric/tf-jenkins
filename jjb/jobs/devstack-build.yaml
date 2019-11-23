@@ -2,17 +2,20 @@
     name: "devstack-build"
     description: "devstack-build"
     defaults: global
-    node: aws
     scm:
       - tf-jenkins
       - tf-dev-env
     parameters:
+      - node:
+          name: SLAVE
+          allowed-multiselect: false
       - string:
           name: PATCHSET_ID
           description: PATCHSET_ID
-          default: 'NONE'
     builders:
       - shell: |
+          echo $SLAVE
+          exit 1
           ./src/progmaticlab/tf-jenkins/infra/{slave}/create_vms.sh
       - shell: |
           # TODO: pass nexus creds
