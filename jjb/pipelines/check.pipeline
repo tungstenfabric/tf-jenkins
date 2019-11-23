@@ -103,7 +103,7 @@ pipeline {
                                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                                     build job: 'devstack-build',
                                         parameters: [
-                                            string(name: 'SLAVE', value: SLAVE),
+                                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}" ],
                                             string(name: 'PATCHSET_ID', value: PATCHSET_ID)
                                         ]
                                 }
