@@ -16,7 +16,7 @@ pipeline {
         }
         stage('Fetch') {
             steps{
-                load stackrc-$BUILD_ID.env
+                load "stackrc-$BUILD_ID.env"
                 script {
                     build 'fetch-sources'
                 }
@@ -96,7 +96,7 @@ pipeline {
                     stages{
                         stage('Build'){
                             steps{
-                                load stackrc-$BUILD_ID.env
+                                load "stackrc-$BUILD_ID.env"
                                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                                     build job: 'build',
                                         parameters: [
