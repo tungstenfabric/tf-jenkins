@@ -95,8 +95,8 @@ pipeline {
                 stage('Build-test'){
                     stages{
                         stage('Build'){
-                            load stackrc-$BUILD_ID.env
                             steps{
+                                load stackrc-$BUILD_ID.env
                                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                                     build job: 'build',
                                         parameters: [
