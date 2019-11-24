@@ -1,13 +1,10 @@
 - job:
-    name: "devstack-unit-test"
-    description: "devstack-unit-test"
+    name: "test-unit"
+    description: "unit tests"
     defaults: global
     parameters:
       - label:
           name: SLAVE
-      - string:
-          name: PATCHSET_ID
-          description: PATCHSET_ID
     builders:
       - shell: |
           echo "docker pull tf-dev-env; tf-dev-env/run.sh test //Detect target tests"

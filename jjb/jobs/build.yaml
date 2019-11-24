@@ -1,6 +1,6 @@
 - job:
-    name: "devstack-build"
-    description: "devstack-build"
+    name: "build"
+    description: "build"
     defaults: global
     scm:
       - tf-jenkins
@@ -8,14 +8,9 @@
     parameters:
       - label:
           name: SLAVE
-      - string:
-          name: PATCHSET_ID
-          description: PATCHSET_ID
     builders:
       - shell: |
-          echo $SLAVE
-          exit 1
-          ./src/progmaticlab/tf-jenkins/infra/{slave}/create_vms.sh
+          ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/create_vms.sh
       - shell: |
           # TODO: pass nexus creds
           ./src/progmaticlab/tf-jenkins/jobs/build/run.sh

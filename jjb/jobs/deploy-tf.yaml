@@ -1,0 +1,69 @@
+---
+
+- job-template:
+    name: deploy-platform-{project}
+    description: "devstack deploy platform for {project}"
+    defaults: global
+    parameters:
+      - label:
+          name: SLAVE
+    properties:
+      - build-discarder:
+          num-to-keep: 10
+    concurrent: true
+    wrappers:
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - amazon-web-services:
+              credential-id: aws-creds
+              access-key: AWS_ACCESS_KEY_ID
+              secret-key: AWS_SECRET_ACCESS_KEY
+    scm:
+      - tf-jenkins
+      - tf-devstack
+    builders:
+      - shell: |
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/create_workers.sh
+      - shell: |
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_platform.sh
+
+- job-template:
+    name: deploy-tf-{project}
+    description: "devstack deploy TF for {project}"
+    defaults: global
+    parameters:
+      - label:
+          name: SLAVE
+    properties:
+      - build-discarder:
+          num-to-keep: 10
+    concurrent: true
+    wrappers:
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+    scm:
+      - tf-jenkins
+      - tf-devstack
+    builders:
+      - shell: |
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh
+
+- project:
+    name: deploy
+    project:
+      - k8s_manifests
+      - k8s_helm
+      - os_helm
+      - k8s_juju
+    jobs:
+      - 'deploy-platform-{project}'
+      - 'deploy-tf-{project}'

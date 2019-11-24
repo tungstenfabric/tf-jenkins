@@ -1,0 +1,12 @@
+- job:
+    name: "fetch-sources"
+    description: "fetch sources"
+    defaults: global
+    scm:
+      - tf-jenkins
+      - tf-dev-env
+    builders:
+      - shell: |
+          #!/bin/bash -ex
+          env|sort
+          ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh
