@@ -12,12 +12,10 @@ pipeline {
             steps {
                 sh 'echo "PATCHSET_ID=$PATCHSET_ID" > stackrc-$BUILD_ID.env'
                 sh 'echo "CONTAINER_REGISTRY=$CONTAINER_REGISTRY" >> stackrc-$BUILD_ID.env'
-                stash name:env, includes:stackrc-$BUILD_ID.env
             }
         }
         stage('Fetch') {
             steps{
-                unstash env
                 load stackrc-$BUILD_ID.env
                 script {
                     build 'fetch-sources'
@@ -97,7 +95,6 @@ pipeline {
                 stage('Build-test'){
                     stages{
                         stage('Build'){
-                            unstash env
                             load stackrc-$BUILD_ID.env
                             steps{
                                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
