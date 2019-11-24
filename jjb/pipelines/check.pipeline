@@ -8,15 +8,8 @@ pipeline {
         CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
     }
     stages {
-        stage('Prepare environment file') {
-            steps {
-                sh 'echo "PATCHSET_ID=$PATCHSET_ID" > stackrc-$BUILD_ID.env'
-                sh 'echo "CONTAINER_REGISTRY=$CONTAINER_REGISTRY" >> stackrc-$BUILD_ID.env'
-            }
-        }
         stage('Fetch') {
-            steps{
-                load "stackrc-$BUILD_ID.env"
+            steps {
                 script {
                     build 'fetch-sources'
                 }
@@ -96,7 +89,6 @@ pipeline {
                     stages{
                         stage('Build'){
                             steps{
-                                load "stackrc-$BUILD_ID.env"
                                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                                     build job: 'build',
                                         parameters: [
