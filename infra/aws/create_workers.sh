@@ -15,6 +15,13 @@ ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
 echo "ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
 echo "AWS_REGION=${AWS_REGION}" >> "$ENV_FILE"
+
+IMAGE_VAR_NAME="IMAGE_${ENVIRONMENT_OS^^}"
+IMAGE=${!IMAGE_VAR_NAME}
+echo "IMAGE=$IMAGE" >> "$ENV_FILE"
+
+IMAGE_SSH_USER_VAR_NAME="IMAGE_${ENVIRONMENT_OS^^}_SSH_USER"
+IMAGE_SSH_USER=${!IMAGE_SSH_USER_VAR_NAME}
 echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
 # Spin VM
@@ -24,7 +31,7 @@ instance_id=$(aws ec2 run-instances \
     --region $AWS_REGION \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$iname}]" \
     --block-device-mappings "[${bdm}]" \
-    --image-id $IMAGE_CENTOS7 \
+    --image-id $IMAGE \
     --count 1 \
     --instance-type t2.xlarge \
     --key-name worker \
