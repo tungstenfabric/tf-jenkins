@@ -17,8 +17,6 @@ echo "ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
 echo "AWS_REGION=${AWS_REGION}" >> "$ENV_FILE"
 echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
-exit 0
-
 # Spin VM
 iname=$BUILD_TAG
 bdm='{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":60,"DeleteOnTermination":true}}'

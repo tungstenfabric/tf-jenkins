@@ -8,7 +8,7 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ENV_FILE="$WORKSPACE/stackrc"
+ENV_FILE="$WORKSPACE/stackrc.deploy-platform-k8s_manifests.env"
 source $ENV_FILE
 
 echo 'Deploy tf with manifests'

@@ -8,11 +8,7 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ls -l $WORKSPACE
-cat *.env
-exit 0
-
-ENV_FILE="$WORKSPACE/stackrc"
+ENV_FILE="$WORKSPACE/stackrc.deploy-platform-k8s_helm.env"
 source $ENV_FILE
 
 echo 'Deploy k8s for helm'

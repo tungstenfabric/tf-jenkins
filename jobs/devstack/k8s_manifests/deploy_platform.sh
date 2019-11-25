@@ -8,7 +8,7 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ENV_FILE="$WORKSPACE/stackrc"
+ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 source $ENV_FILE
 
 echo 'INFO: Deploy k8s for manifests job'
