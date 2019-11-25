@@ -15,8 +15,8 @@ echo 'Deploy tf with manifests'
 
 rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-cat <<EOF
+cat <<EOF | ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/k8s_manifests
 ORCHESTRATOR=k8s SKIP_K8S_DEPLOYMENT=true ./run.sh
-EOF | ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip
+EOF

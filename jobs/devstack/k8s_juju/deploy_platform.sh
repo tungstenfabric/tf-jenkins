@@ -15,8 +15,8 @@ echo 'Deploy juju bundle with platform only'
 
 rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-cat <<EOF
+cat <<EOF | ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=k8s CLOUD=local SKIP_CONTRAIL_DEPLOYMENT=true ./run.sh
-EOF | ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip
+EOF
