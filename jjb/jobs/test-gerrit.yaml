@@ -7,9 +7,28 @@
     parameters:
       - label:
           name: SLAVE
+
     scm:
-      - tf-jenkins
+      - git:
+          choosing-strategy: gerrit
+          url: ssh://jenkins@review.opencontrail.org:29418/$GERRIT_PROJECT
+          refspec: $GERRIT_REFSPEC
+          branches: $GERRIT_BRANCH
+
+    triggers:
+      - gerrit:
+          server-name: review.opencontrail.org
+          dynamic-trigger-enabled: true
+          dynamic-trigger-url: file:///var/jenkins_home/gerrit_test_trigger.txt
+          skip-vote:
+            successful: true
+            failed: true
+            unstable: true
+            notbuilt: true
+
     builders:
       - shell: |
           #!/bin/bash -e
           echo "test-gerrit"
+          pwd
+          env | sort
