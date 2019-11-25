@@ -5,6 +5,7 @@
     node: aws
     description: check-pipeline
     project-type: pipeline
+    concurrent: true
     pipeline-scm:
       scm:
         - tf-jenkins
