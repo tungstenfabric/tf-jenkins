@@ -11,9 +11,10 @@
     scm:
       - git:
           choosing-strategy: gerrit
-          url: ssh://jenkins@review.opencontrail.org:29418/$GERRIT_PROJECT
+          url: ssh://zuul-tf@review.opencontrail.org:29418/$GERRIT_PROJECT
           refspec: $GERRIT_REFSPEC
-          branches: $GERRIT_BRANCH
+          # branches:
+          #   - $GERRIT_BRANCH
 
     triggers:
       - gerrit:
