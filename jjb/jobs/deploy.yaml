@@ -76,11 +76,11 @@
     project:
       - k8s_manifests:
           environment_os: ubuntu18
-      - k8s_helm
+      - k8s_helm:
           environment_os: centos7
-      - os_helm
+      - os_helm:
           environment_os: ubuntu18
-      - k8s_juju
+      - k8s_juju:
           environment_os: centos7
     jobs:
       - 'deploy-platform-{project}'
