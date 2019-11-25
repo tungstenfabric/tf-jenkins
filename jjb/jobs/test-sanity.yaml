@@ -7,6 +7,10 @@
     parameters:
       - label:
           name: SLAVE
+      - string:
+          name: UPSTREAM_DEPLOY_PROJECT
+      - string:
+          name: DEPLOY_TF_PROJECT
     properties:
       - build-discarder:
           num-to-keep: 10
@@ -22,5 +26,10 @@
       - tf-jenkins
       - tf-devstack
     builders:
+      - copyartifact:
+          project: ${{DEPLOY_TF_PROJECT}}
+          filter: "*.env"
+          which-build: specific-build
+          build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
       - shell: |
           ./src/progmaticlab/tf-jenkins/jobs/sanity_test/run.sh

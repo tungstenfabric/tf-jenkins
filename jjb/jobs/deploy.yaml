@@ -66,6 +66,9 @@
           build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
       - shell: |
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh
+    publishers:
+      - archive:
+          artifacts: '*.env'
 
 - project:
     name: deploy
