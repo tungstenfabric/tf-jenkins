@@ -8,9 +8,9 @@
       - label:
           name: SLAVE
       - string:
-          name: UPSTREAM_DEPLOY_PROJECT
-      - string:
           name: DEPLOY_TF_PROJECT
+      - string:
+          name: DEPLOY_PLATFORM_JOB_NUMBER
     properties:
       - build-discarder:
           num-to-keep: 10
