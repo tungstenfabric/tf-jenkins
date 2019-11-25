@@ -6,6 +6,10 @@ pipeline {
         SLAVE = "aws"
         PATCHSET_ID = "12345/1"
         CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
+        JOB_NUMBER_K8S_MANIFESTS = ""
+        JOB_NUMBER_K8S_HELM = ""
+        JOB_NUMBER_K8S_JUJU = ""
+        JOB_NUMBER_OS_HELM = ""
     }
     stages {
         stage('Fetch') {
