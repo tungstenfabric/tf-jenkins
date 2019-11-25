@@ -1,0 +1,15 @@
+---
+
+- job:
+    name: test-gerrit
+    description: "gerrit events test"
+    defaults: global
+    parameters:
+      - label:
+          name: SLAVE
+    scm:
+      - tf-jenkins
+    builders:
+      - shell: |
+          #!/bin/bash -e
+          echo "test-gerrit"
