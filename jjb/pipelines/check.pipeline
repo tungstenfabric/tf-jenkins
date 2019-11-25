@@ -107,104 +107,112 @@ pipeline {
                                     int ERRORS = 0
                                     parallel(
                                         "Deploy-test k8s for manifests": {
-                                            try {
-                                                build job: 'deploy-tf-k8s_manifests',
-                                                    parameters: [
-                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_K8S_MANIFESTS),
-                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                                                    ]
-                                            } catch (err) {
-                                                ++ERRORS
-                                            }
-                                            parallel(
-                                                "Test sanity k8s for manifests": {
-                                                    build job: 'test-sanity',
-                                                        parameters: [
+                                            if (env.JOB_NUMBER_K8S_MANIFESTS){
+                                                try {
+                                                    build job: 'deploy-tf-k8s_manifests',
+                                                       parameters: [
+                                                            string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_K8S_MANIFESTS),
                                                             [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                                                         ]
-                                                },
-                                                "Test smoke k8s for manifests": {
-                                                    build job: 'test-smoke',
-                                                        parameters: [
-                                                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                                                        ]
+                                                } catch (err) {
+                                                    ++ERRORS
                                                 }
-                                            )
+                                                parallel(
+                                                    "Test sanity k8s for manifests": {
+                                                        build job: 'test-sanity',
+                                                            parameters: [
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                            ]
+                                                    },
+                                                    "Test smoke k8s for manifests": {
+                                                        build job: 'test-smoke',
+                                                            parameters: [
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                            ]
+                                                    }
+                                                )
+                                            }
                                         },
                                         "Deploy-test k8s for helm": {
-                                            try {
-                                                build job: 'deploy-tf-k8s_helm',
-                                                    parameters: [
-                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_K8S_HELM),
-                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                                                    ]
-                                            } catch (err) {
-                                                ++ERRORS
-                                            }
-                                            parallel(
-                                                "Test sanity k8s for manifests": {
-                                                    build job: 'test-sanity',
+                                            if(env.JOB_NUMBER_K8S_HELM){
+                                                try {
+                                                    build job: 'deploy-tf-k8s_helm',
                                                         parameters: [
+                                                            string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_K8S_HELM),
                                                             [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                                                         ]
-                                                },
-                                                "Test smoke k8s for manifests": {
-                                                    build job: 'test-smoke',
-                                                        parameters: [
-                                                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                                                        ]
+                                                } catch (err) {
+                                                    ++ERRORS
                                                 }
-                                            )
+                                                parallel(
+                                                    "Test sanity k8s for manifests": {
+                                                        build job: 'test-sanity',
+                                                            parameters: [
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                            ]
+                                                    },
+                                                    "Test smoke k8s for manifests": {
+                                                        build job: 'test-smoke',
+                                                            parameters: [
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                            ]
+                                                    }
+                                                )
+                                            }
                                         },
                                         "Deploy-test k8s for juju": {
-                                            try {
-                                                build job: 'deploy-tf-k8s_juju',
-                                                    parameters: [
-                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_K8S_JUJU),
-                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                                                    ]
-                                            } catch (err) {
-                                                ++ERRORS
-                                            }
-                                            parallel(
-                                                "Test sanity k8s for juju": {
-                                                    build job: 'test-sanity',
+                                            if (env.JOB_NUMBER_K8S_JUJU){
+                                                try {
+                                                    build job: 'deploy-tf-k8s_juju',
                                                         parameters: [
+                                                            string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_K8S_JUJU),
                                                             [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                                                         ]
-                                                },
-                                                "Test smoke k8s for manifests": {
-                                                    build job: 'test-smoke',
-                                                        parameters: [
-                                                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                                                        ]
+                                                } catch (err) {
+                                                    ++ERRORS
                                                 }
-                                            )
+                                                parallel(
+                                                    "Test sanity k8s for juju": {
+                                                        build job: 'test-sanity',
+                                                            parameters: [
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                            ]
+                                                    },
+                                                    "Test smoke k8s for manifests": {
+                                                        build job: 'test-smoke',
+                                                            parameters: [
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                            ]
+                                                    }
+                                                )
+                                            }
                                         },
                                         "Deploy-test openstack for helm": {
-                                            try {
-                                                build job: 'deploy-tf-os_helm',
-                                                    parameters: [
-                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_OS_HELM),
-                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                                                    ]
-                                            } catch (err) {
-                                                ++ERRORS
-                                            }
-                                            parallel(
-                                                "Test sanity openstack for helm": {
-                                                    build job: 'test-sanity',
+                                            if(env.JOB_NUMBER_OS_HELM){
+                                                try {
+                                                    build job: 'deploy-tf-os_helm',
                                                         parameters: [
+                                                            string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_OS_HELM),
                                                             [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                                                         ]
-                                                },
-                                                "Test smoke openstack for helm": {
-                                                    build job: 'test-smoke',
-                                                        parameters: [
-                                                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                                                        ]
+                                                } catch (err) {
+                                                    ++ERRORS
                                                 }
-                                            )
+                                                parallel(
+                                                    "Test sanity openstack for helm": {
+                                                        build job: 'test-sanity',
+                                                            parameters: [
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                            ]
+                                                    },
+                                                    "Test smoke openstack for helm": {
+                                                        build job: 'test-smoke',
+                                                            parameters: [
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                            ]
+                                                    }
+                                                )
+                                            }
                                         }
                                     )
                                     if ( ERRORS > 0 ) {
