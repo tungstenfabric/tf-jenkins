@@ -75,13 +75,13 @@
     name: deploy
     project:
       - k8s_manifests:
-          environment_os: ubuntu18
+          environment_os: centos7
       - k8s_helm:
           environment_os: centos7
       - os_helm:
           environment_os: ubuntu18
       - k8s_juju:
-          environment_os: centos7
+          environment_os: ubuntu18
     jobs:
       - 'deploy-platform-{project}'
       - 'deploy-tf-{project}'
