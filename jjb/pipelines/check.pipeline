@@ -114,7 +114,7 @@ pipeline {
                                             try {
                                                 build job: 'deploy-tf-k8s_manifests',
                                                     parameters: [
-                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: JOB_NUMBER_K8S_MANIFESTS),
+                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_K8S_MANIFESTS),
                                                         [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                                                     ]
                                             } catch (err) {
@@ -139,7 +139,7 @@ pipeline {
                                             try {
                                                 build job: 'deploy-tf-k8s_helm',
                                                     parameters: [
-                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: JOB_NUMBER_K8S_HELM),
+                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_K8S_HELM),
                                                         [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                                                     ]
                                             } catch (err) {
@@ -164,7 +164,7 @@ pipeline {
                                             try {
                                                 build job: 'deploy-tf-k8s_juju',
                                                     parameters: [
-                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: JOB_NUMBER_K8S_JUJU),
+                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_K8S_JUJU),
                                                         [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                                                     ]
                                             } catch (err) {
@@ -189,7 +189,7 @@ pipeline {
                                             try {
                                                 build job: 'deploy-tf-os_helm',
                                                     parameters: [
-                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: JOB_NUMBER_OS_HELM),
+                                                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_OS_HELM),
                                                         [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                                                     ]
                                             } catch (err) {
