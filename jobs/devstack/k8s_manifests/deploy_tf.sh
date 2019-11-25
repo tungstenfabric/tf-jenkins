@@ -18,5 +18,5 @@ rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 cat <<EOF | ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/k8s_manifests
-ORCHESTRATOR=kubernetes SKIP_K8S_DEPLOYMENT=true ./run.sh
+ORCHESTRATOR=kubernetes ./run.sh
 EOF
