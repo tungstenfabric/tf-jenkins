@@ -65,6 +65,7 @@
           which-build: specific-build
           build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
       - shell: |
+          export ENVIRONMENT_OS={environment_os}
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh
     publishers:
       - archive:
@@ -73,10 +74,14 @@
 - project:
     name: deploy
     project:
-      - k8s_manifests
+      - k8s_manifests:
+          environment_os: ubuntu18
       - k8s_helm
+          environment_os: centos7
       - os_helm
+          environment_os: ubuntu18
       - k8s_juju
+          environment_os: centos7
     jobs:
       - 'deploy-platform-{project}'
       - 'deploy-tf-{project}'
