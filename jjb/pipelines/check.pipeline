@@ -1,7 +1,3 @@
-def JOB_NUMBER_K8S_MANIFESTS
-def JOB_NUMBER_K8S_HELM
-def JOB_NUMBER_K8S_JUJU
-def JOB_NUMBER_OS_HELM
 pipeline {
     agent {
         label 'aws'
