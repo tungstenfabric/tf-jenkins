@@ -8,6 +8,10 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+ls -l $WORKSPACE
+cat *.env
+exit 0
+
 ENV_FILE="$WORKSPACE/stackrc"
 source $ENV_FILE
 

@@ -31,6 +31,9 @@
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/create_workers.sh
       - shell: |
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_platform.sh
+    publishers:
+      - archive:
+          artifacts: '*.env'
 
 - job-template:
     name: deploy-tf-{project}
@@ -39,6 +42,8 @@
     parameters:
       - label:
           name: SLAVE
+      - string:
+          name: DEPLOY_PLATFORM_JOB_NUMBER
     properties:
       - build-discarder:
           num-to-keep: 10
@@ -54,6 +59,11 @@
       - tf-jenkins
       - tf-devstack
     builders:
+      - copyartifact:
+          project: deploy-platform-{project}
+          filter: "*.env"
+          which-build: specific-build
+          build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
       - shell: |
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh
 

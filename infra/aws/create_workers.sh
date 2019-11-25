@@ -11,11 +11,13 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ENV_FILE="$WORKSPACE/stackrc.$BUILD_TAG.env"
+ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
 echo "ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
 echo "AWS_REGION=${AWS_REGION}" >> "$ENV_FILE"
 echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
+
+exit 0
 
 # Spin VM
 iname=$BUILD_TAG

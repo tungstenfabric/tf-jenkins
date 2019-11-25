@@ -13,6 +13,10 @@ source $ENV_FILE
 
 echo 'Deploy k8s for helm'
 
+ls -l $WORKSPACE
+cat *.env
+exit 0
+
 rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 cat <<EOF
