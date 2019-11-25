@@ -28,6 +28,7 @@
       - tf-devstack
     builders:
       - shell: |
+          export ENVIRONMENT_OS={environment_os}
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/create_workers.sh
       - shell: |
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_platform.sh
@@ -65,7 +66,6 @@
           which-build: specific-build
           build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
       - shell: |
-          export ENVIRONMENT_OS={environment_os}
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh
     publishers:
       - archive:
