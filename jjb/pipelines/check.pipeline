@@ -221,6 +221,7 @@ pipeline {
     }
     post {
         always {
+            sh "env|sort"
             sh "echo 'Destroy VMs'"
         }
         failure {
