@@ -219,10 +219,6 @@ pipeline {
                                             }
                                         }
                                     )
-                                    if ( ERRORS > 0 ) {
-                                        currentBuild.result = 'FAILED'
-                                        sh "exit 1"
-                                    }
                                 }
                             }
                         }
@@ -239,6 +235,13 @@ pipeline {
             sh "echo ${env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU}"
             sh "echo ${env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM}"
             sh "echo 'Destroy VMs'"
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                                credentialsId: 'aws-creds',
+                                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                sh './src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh'
+                }
+
         }
         failure {
             sh "echo 'archiveArtifacts'"
