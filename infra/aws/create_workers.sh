@@ -1,4 +1,4 @@
-#!/bin/bash -eE
+#!/bin/bash -eEx
 set -o pipefail
 
 # WARNING !!!!
