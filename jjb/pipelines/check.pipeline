@@ -47,6 +47,9 @@ pipeline {
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS = "$job.buildVariables.BUILD_NUMBER"
                             }
+                            copyArtifacts filter: '*.env', projectName: 'deploy-platform-k8s_manifests',
+                                selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS)
+
                         }
                     }
                 }
@@ -60,6 +63,8 @@ pipeline {
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM = "$job.buildVariables.BUILD_NUMBER"
                             }
+                            copyArtifacts filter: '*.env', projectName: 'deploy-platform-k8s_helm',
+                                selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM)
                         }
                     }
                 }
@@ -73,6 +78,8 @@ pipeline {
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU = "$job.buildVariables.BUILD_NUMBER"
                             }
+                            copyArtifacts filter: '*.env', projectName: 'deploy-platform-k8s_juju',
+                                selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU)
                         }
                     }
                 }
@@ -86,6 +93,8 @@ pipeline {
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM = "$job.buildVariables.BUILD_NUMBER"
                             }
+                            copyArtifacts filter: '*.env', projectName: 'deploy-platform-os_helm',
+                                selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM)
                         }
                     }
                 }
