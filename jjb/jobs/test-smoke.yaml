@@ -1,5 +1,6 @@
 ---
-- project:
+
+- job:
     name: test-smoke
     description: "smoke test for deployment"
     defaults: global

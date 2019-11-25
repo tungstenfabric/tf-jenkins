@@ -1,6 +1,6 @@
 ---
 
-- project:
+- job:
     name: test-sanity
     description: "devstack test sanity"
     defaults: global
