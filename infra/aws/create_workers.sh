@@ -10,6 +10,7 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
+source "$WORKSPACE/global.env"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
@@ -29,7 +30,7 @@ iname=$BUILD_TAG
 bdm='{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":60,"DeleteOnTermination":true}}'
 instance_id=$(aws ec2 run-instances \
     --region $AWS_REGION \
-    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$iname}]" \
+    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$iname},{Key=Pipeline,Value=$PIPELINE_BUILD_TAG}]" \
     --block-device-mappings "[${bdm}]" \
     --image-id $IMAGE \
     --count 1 \
