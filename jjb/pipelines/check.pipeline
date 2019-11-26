@@ -11,7 +11,10 @@ pipeline {
         stage('Fetch') {
             steps {
                 script {
-                    build 'fetch-sources'
+                    build job: 'fetch-sources',
+                        parameters: [
+                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                        ]
                 }
             }
         }

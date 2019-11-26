@@ -2,6 +2,9 @@
     name: "fetch-sources"
     description: "fetch sources"
     defaults: global
+    parameters:
+      - label:
+          name: SLAVE
     scm:
       - tf-jenkins
       - tf-dev-env
