@@ -4,9 +4,7 @@
     name: test-gerrit
     description: "gerrit events test"
     defaults: global
-    parameters:
-      - label:
-          name: SLAVE
+    node: aws
 
     scm:
       - git:
@@ -16,6 +14,12 @@
           refspec: $GERRIT_REFSPEC
           # branches:
           #   - $GERRIT_BRANCH
+
+# Syntax
+# dynamic-trigger-url: file:///var/jenkins_home/gerrit_test_trigger.txt
+#cat /var/jenkins_home/gerrit_test_trigger.txt
+#p=Juniper/contrail-container-builder
+#b^master
 
     triggers:
       - gerrit:
@@ -43,4 +47,5 @@
           #!/bin/bash -e
           echo "test-gerrit"
           pwd
+          ls -lh
           env | sort
