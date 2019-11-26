@@ -10,6 +10,18 @@
           name: SLAVE
       - string:
           name: PIPELINE_BUILD_NUMBER
+    wrappers:
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - amazon-web-services:
+              credential-id: aws-creds
+              access-key: AWS_ACCESS_KEY_ID
+              secret-key: AWS_SECRET_ACCESS_KE
     builders:
       - copyartifact:
           project: check-pipeline
