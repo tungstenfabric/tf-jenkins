@@ -28,7 +28,13 @@
             unstable: true
             notbuilt: true
           trigger-on:
-            - comment-added-contains-even:
+            - patchset-created-event:
+              exclude-drafts: true
+              exclude-trivial-rebase: true
+              exclude-no-code-change: true
+              exclude-private: true
+              exclude-wip: true
+            - comment-added-contains-event:
                 comment-contains-value: "check tf-jenkins"
           trigger-for-unreviewed-patches: true
 
