@@ -11,6 +11,7 @@
     scm:
       - git:
           choosing-strategy: gerrit
+          credentials-id: zuul-tf-gerrit
           url: ssh://zuul-tf@review.opencontrail.org:29418/$GERRIT_PROJECT
           refspec: $GERRIT_REFSPEC
           # branches:
@@ -26,6 +27,10 @@
             failed: true
             unstable: true
             notbuilt: true
+          trigger-on:
+            comment-added-contains-even:
+              comment-contains-value: "check tf-jenkins"
+          trigger-for-unreviewed-patches: true
 
     builders:
       - shell: |
