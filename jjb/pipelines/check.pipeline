@@ -1,7 +1,8 @@
+def condition_k8s_manifests = createCondition()
+def condition_k8s_helm = createCondition()
+def condition_k8s_juju = createCondition()
+def condition_os_helm = createCondition()
 pipeline {
-    agent {
-        label 'aws'
-    }
     environment {
         SLAVE = "aws"
         CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
@@ -11,15 +12,18 @@ pipeline {
         timestamps()
         timeout(time: 3, unit: 'HOURS')
     }
+    agent {
+        label aws
+    }
     stages {
         stage('Pre-build') {
             steps {
                 script {
-                        sh """
-                        echo "CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" > global.env
-                        echo "PATCHSET_ID=${PATCHSET_ID}" >> global.env
-                        echo "PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
-                        """
+                    sh """
+                    echo "CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" > global.env
+                    echo "PATCHSET_ID=${PATCHSET_ID}" >> global.env
+                    echo "PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
+                    """
                 }
                 archiveArtifacts artifacts: 'global.env'
             }
@@ -37,18 +41,18 @@ pipeline {
         }
         stage('Check'){
             parallel {
-                stage('Unit-test'){
-                    steps{
+                stage('Unit-test') {
+                    steps {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             build job: 'test-unit',
                                 parameters: [
                                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
                                     [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                 ]
-                            }
                         }
                     }
-                stage('Lint'){
+                }
+                stage('Lint') {
                     steps{
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             build job: 'test-lint',
@@ -72,8 +76,8 @@ pipeline {
                             }
                             copyArtifacts filter: '*.env', projectName: 'deploy-platform-k8s_manifests',
                                 selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS)
-
                         }
+                        signallAll(condition: condition_k8s_manifests)
                     }
                 }
                 stage('Deploy k8s for helm'){
@@ -90,6 +94,7 @@ pipeline {
                             copyArtifacts filter: '*.env', projectName: 'deploy-platform-k8s_helm',
                                 selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM)
                         }
+                        signallAll(condition: condition_k8s_helm)
                     }
                 }
                 stage('Deploy k8s for juju'){
@@ -106,6 +111,7 @@ pipeline {
                             copyArtifacts filter: '*.env', projectName: 'deploy-platform-k8s_juju',
                                 selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU)
                         }
+                        signallAll(condition: condition_k8s_juju)
                     }
                 }
                 stage('Deploy openstack for helm'){
@@ -122,6 +128,7 @@ pipeline {
                             copyArtifacts filter: '*.env', projectName: 'deploy-platform-os_helm',
                                 selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM)
                         }
+                        signallAll(condition: condition_os_helm)
                     }
                 }
                 stage('Build-test'){
@@ -142,6 +149,7 @@ pipeline {
                                 script {
                                     parallel(
                                         "Deploy-test k8s for manifests": {
+                                            awaitCondition condition_k8s_manifests
                                             if (env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS) {
                                                 job = build job: 'deploy-tf-k8s_manifests',
                                                     parameters: [
@@ -173,6 +181,7 @@ pipeline {
                                             }
                                         },
                                         "Deploy-test k8s for helm": {
+                                            awaitCondition condition_k8s_helm
                                             if (env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM) {
                                                 job = build job: 'deploy-tf-k8s_helm',
                                                     parameters: [
@@ -204,6 +213,7 @@ pipeline {
                                             }
                                         },
                                         "Deploy-test k8s for juju": {
+                                            awaitCondition condition_k8s_juju
                                             if (env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU) {
                                                 job = build job: 'deploy-tf-k8s_juju',
                                                     parameters: [
@@ -235,6 +245,7 @@ pipeline {
                                             }
                                         },
                                         "Deploy-test openstack for helm": {
+                                            awaitCondition condition_os_helm
                                             if (env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM) {
                                                 job = build job: 'deploy-tf-os_helm',
                                                     parameters: [
@@ -277,18 +288,13 @@ pipeline {
     post {
         always {
             sh "env|sort"
-            sh "echo ${env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM}"
-            sh "echo ${env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS}"
-            sh "echo ${env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU}"
-            sh "echo ${env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM}"
             sh "echo 'Destroy VMs'"
             withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
                                 credentialsId: 'aws-creds',
                                 accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                                 secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                 sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh"
-                }
-
+            }
         }
         failure {
             sh "echo 'archiveArtifacts'"
