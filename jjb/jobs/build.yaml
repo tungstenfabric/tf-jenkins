@@ -10,7 +10,8 @@
           name: SLAVE
     builders:
       - shell: |
-          ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/create_workers.sh
+          export ENVIRONMENT_OS=centos7
+          ./src/progmaticlab/tf-jenkins/jobs/build/create_workers.sh
       - shell: |
           # TODO: pass nexus creds
           ./src/progmaticlab/tf-jenkins/jobs/build/run.sh
