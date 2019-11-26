@@ -45,6 +45,8 @@
           name: SLAVE
       - string:
           name: DEPLOY_PLATFORM_JOB_NUMBER
+      - string:
+          name: PIPELINE_BUILD_NUMBER
     properties:
       - build-discarder:
           num-to-keep: 10
@@ -64,7 +66,12 @@
           project: deploy-platform-{project}
           filter: "*.env"
           which-build: specific-build
-          build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
+          build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
+      - copyartifact:
+          project: check-pipeline
+          filter: "global.env"
+          which-build: specific-build
+          build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh
     publishers:

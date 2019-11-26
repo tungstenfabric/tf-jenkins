@@ -4,16 +4,34 @@ pipeline {
     }
     environment {
         SLAVE = "aws"
-        PATCHSET_ID = "12345/1"
         CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
+        PATCHSET_ID = "12345/1"
+    }
+    options {
+        timestamps()
+        timeout(time: 3, unit: 'HOURS')
     }
     stages {
+        stage('Pre-build') {
+            steps {
+                deleteDir()
+                script {
+                        sh """
+                        echo "CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
+                        echo "PATCHSET_ID=${PATCHSET_ID}" >> global.env
+                        echo "PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
+                        """
+                }
+                archiveArtifacts artifacts: 'global.env'
+            }
+        }
         stage('Fetch') {
             steps {
                 script {
                     build job: 'fetch-sources',
                         parameters: [
-                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                            [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                         ]
                 }
             }
@@ -25,7 +43,8 @@ pipeline {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             build job: 'test-unit',
                                 parameters: [
-                                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                    [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                 ]
                             }
                         }
@@ -35,7 +54,8 @@ pipeline {
                         catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                             build job: 'test-lint',
                                 parameters: [
-                                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                    [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                 ]
                         }
                     }
@@ -46,7 +66,8 @@ pipeline {
                             script {
                                 job = build job: 'deploy-platform-k8s_manifests',
                                     parameters: [
-                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                        [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS = "$job.buildVariables.BUILD_NUMBER"
                             }
@@ -62,7 +83,8 @@ pipeline {
                             script {
                                 job = build job: 'deploy-platform-k8s_helm',
                                     parameters: [
-                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                        [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM = "$job.buildVariables.BUILD_NUMBER"
                             }
@@ -77,7 +99,8 @@ pipeline {
                             script {
                                 job = build job: 'deploy-platform-k8s_juju',
                                     parameters: [
-                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                        [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU = "$job.buildVariables.BUILD_NUMBER"
                             }
@@ -92,7 +115,8 @@ pipeline {
                             script {
                                 job = build job: 'deploy-platform-os_helm',
                                     parameters: [
-                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                        [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM = "$job.buildVariables.BUILD_NUMBER"
                             }
@@ -108,7 +132,8 @@ pipeline {
                                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE'){
                                     build job: 'build',
                                         parameters: [
-                                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                            [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                         ]
                                 }
                             }
@@ -116,14 +141,14 @@ pipeline {
                         stage('Deploy TF') {
                             steps{
                                 script {
-                                    int ERRORS = 0
                                     parallel(
                                         "Deploy-test k8s for manifests": {
                                             if (env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS) {
                                                 job = build job: 'deploy-tf-k8s_manifests',
                                                     parameters: [
                                                         string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS),
-                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                        [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                     ]
                                                 env.JOB_NUMBER_DEPLOY_TF_K8S_MANIFESTS = "$job.buildVariables.BUILD_NUMBER"
                                                 parallel(
@@ -132,7 +157,8 @@ pipeline {
                                                             parameters: [
                                                                 string(name: 'DEPLOY_TF_PROJECT', value: 'deploy-tf-k8s_manifests'),
                                                                 string(name: 'DEPLOY_TF_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_TF_K8S_MANIFESTS),
-                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                                [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                             ]
                                                     },
                                                     "Test smoke k8s for manifests": {
@@ -140,7 +166,8 @@ pipeline {
                                                             parameters: [
                                                                 string(name: 'DEPLOY_TF_PROJECT', value: 'deploy-tf-k8s_manifests'),
                                                                 string(name: 'DEPLOY_TF_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_TF_K8S_MANIFESTS),
-                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                                [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                             ]
                                                     }
                                                 )
@@ -151,7 +178,8 @@ pipeline {
                                                 job = build job: 'deploy-tf-k8s_helm',
                                                     parameters: [
                                                         string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM),
-                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                        [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                     ]
                                                 env.JOB_NUMBER_DEPLOY_TF_K8S_HELM = "$job.buildVariables.BUILD_NUMBER"
                                                 parallel(
@@ -160,7 +188,8 @@ pipeline {
                                                             parameters: [
                                                                 string(name: 'DEPLOY_TF_PROJECT', value: 'deploy-tf-k8s_helm'),
                                                                 string(name: 'DEPLOY_TF_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_TF_K8S_HELM),
-                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                                [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                             ]
                                                     },
                                                     "Test smoke k8s for manifests": {
@@ -168,7 +197,8 @@ pipeline {
                                                             parameters: [
                                                                 string(name: 'DEPLOY_TF_PROJECT', value: 'deploy-tf-k8s_helm'),
                                                                 string(name: 'DEPLOY_TF_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_TF_K8S_HELM),
-                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                                [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                             ]
                                                     }
                                                 )
@@ -179,7 +209,8 @@ pipeline {
                                                 job = build job: 'deploy-tf-k8s_juju',
                                                     parameters: [
                                                         string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU),
-                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                        [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                     ]
                                                 env.JOB_NUMBER_DEPLOY_TF_K8S_JUJU = "$job.buildVariables.BUILD_NUMBER"
                                                 parallel(
@@ -188,7 +219,8 @@ pipeline {
                                                             parameters: [
                                                                 string(name: 'DEPLOY_TF_PROJECT', value: 'deploy-tf-k8s_juju'),
                                                                 string(name: 'DEPLOY_TF_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_TF_K8S_JUJU),
-                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                                [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                             ]
                                                     },
                                                     "Test smoke k8s for manifests": {
@@ -196,7 +228,8 @@ pipeline {
                                                             parameters: [
                                                                 string(name: 'DEPLOY_TF_PROJECT', value: 'deploy-tf-k8s_juju'),
                                                                 string(name: 'DEPLOY_TF_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_TF_K8S_JUJU),
-                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                                [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                             ]
                                                     }
                                                 )
@@ -207,7 +240,8 @@ pipeline {
                                                 job = build job: 'deploy-tf-os_helm',
                                                     parameters: [
                                                         string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM),
-                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                        [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                     ]
                                                 env.JOB_NUMBER_DEPLOY_TF_OS_HELM = "$job.buildVariables.BUILD_NUMBER"
                                                 parallel(
@@ -216,7 +250,8 @@ pipeline {
                                                             parameters: [
                                                                 string(name: 'DEPLOY_TF_PROJECT', value: 'deploy-tf-os_helm'),
                                                                 string(name: 'DEPLOY_TF_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_TF_OS_HELM),
-                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                                [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                             ]
                                                     },
                                                     "Test smoke openstack for helm": {
@@ -224,7 +259,8 @@ pipeline {
                                                             parameters: [
                                                                 string(name: 'DEPLOY_TF_PROJECT', value: 'deploy-tf-os_helm'),
                                                                 string(name: 'DEPLOY_TF_JOB_NUMBER', value: env.JOB_NUMBER_DEPLOY_TF_OS_HELM),
-                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                                                                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+                                                                [$class: 'StringParameterValue', name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"]
                                                             ]
                                                     }
                                                 )

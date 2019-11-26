@@ -8,7 +8,14 @@
     parameters:
       - label:
           name: SLAVE
+      - string:
+          name: PIPELINE_BUILD_NUMBER
     builders:
+      - copyartifact:
+          project: check-pipeline
+          filter: "global.env"
+          which-build: specific-build
+          build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
           export ENVIRONMENT_OS=centos7
           ./src/progmaticlab/tf-jenkins/jobs/build/create_workers.sh

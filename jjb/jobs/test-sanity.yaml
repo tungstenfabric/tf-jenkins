@@ -11,6 +11,8 @@
           name: DEPLOY_TF_PROJECT
       - string:
           name: DEPLOY_PLATFORM_JOB_NUMBER
+      - string:
+          name: PIPELINE_BUILD_NUMBER
     properties:
       - build-discarder:
           num-to-keep: 10
@@ -27,9 +29,14 @@
       - tf-devstack
     builders:
       - copyartifact:
-          project: ${{DEPLOY_TF_PROJECT}}
+          project: check-pipeline
+          filter: "global.env"
+          which-build: specific-build
+          build-number: ${PIPELINE_BUILD_NUMBER}
+      - copyartifact:
+          project: ${DEPLOY_TF_PROJECT}
           filter: "*.env"
           which-build: specific-build
-          build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
+          build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
       - shell: |
           ./src/progmaticlab/tf-jenkins/jobs/sanity_test/run.sh

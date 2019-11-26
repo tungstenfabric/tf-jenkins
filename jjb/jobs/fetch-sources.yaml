@@ -5,10 +5,17 @@
     parameters:
       - label:
           name: SLAVE
+      - string:
+          name: PIPELINE_BUILD_NUMBER
     scm:
       - tf-jenkins
       - tf-dev-env
     builders:
+      - copyartifact:
+          project: check-pipeline
+          filter: "global.env"
+          which-build: specific-build
+          build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
           #!/bin/bash -ex
           env|sort
