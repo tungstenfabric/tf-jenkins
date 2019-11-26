@@ -28,8 +28,8 @@
             unstable: true
             notbuilt: true
           trigger-on:
-            comment-added-contains-even:
-              comment-contains-value: "check tf-jenkins"
+            - comment-added-contains-even:
+                comment-contains-value: "check tf-jenkins"
           trigger-for-unreviewed-patches: true
 
     builders:
