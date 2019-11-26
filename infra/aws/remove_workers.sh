@@ -10,6 +10,7 @@ source "$my_dir/definitions"
 source "$WORKSPACE/global.env"
 
 PIPELINE_AWS_INSTANCES=$(aws ec2 describe-instances \
+                            --region $AWS_REGION \
                             --query 'Reservations[].Instances[].InstanceId' \
                             --filters "Name=tag:Pipeline,Values=${PIPELINE_BUILD_TAG}" \
                             --output text)
