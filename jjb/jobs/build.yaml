@@ -21,7 +21,7 @@
           - amazon-web-services:
               credential-id: aws-creds
               access-key: AWS_ACCESS_KEY_ID
-              secret-key: AWS_SECRET_ACCESS_KE
+              secret-key: AWS_SECRET_ACCESS_KEY
     builders:
       - copyartifact:
           project: check-pipeline
