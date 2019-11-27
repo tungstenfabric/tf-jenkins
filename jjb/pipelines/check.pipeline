@@ -1,8 +1,4 @@
 def SLAVE='aws'
-def condition_k8s_manifests = createCondition()
-def condition_k8s_helm = createCondition()
-def condition_k8s_juju = createCondition()
-def condition_os_helm = createCondition()
 pipeline {
     environment {
         CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
@@ -75,7 +71,6 @@ pipeline {
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS = "$job.buildVariables.BUILD_NUMBER"
                             }
                         }
-                        signallAll(condition: condition_k8s_manifests)
                     }
                 }
                 stage('Deploy k8s for helm'){
@@ -90,7 +85,6 @@ pipeline {
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM = "$job.buildVariables.BUILD_NUMBER"
                             }
                         }
-                        signallAll(condition: condition_k8s_helm)
                     }
                 }
                 stage('Deploy k8s for juju'){
@@ -105,7 +99,6 @@ pipeline {
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU = "$job.buildVariables.BUILD_NUMBER"
                             }
                         }
-                        signallAll(condition: condition_k8s_juju)
                     }
                 }
                 stage('Deploy openstack for helm'){
@@ -120,7 +113,6 @@ pipeline {
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM = "$job.buildVariables.BUILD_NUMBER"
                             }
                         }
-                        signallAll(condition: condition_os_helm)
                     }
                 }
                 stage('Build-test'){
@@ -141,7 +133,6 @@ pipeline {
                                 script {
                                     parallel(
                                         "Deploy-test k8s for manifests": {
-                                            awaitCondition condition_k8s_manifests
                                             if (env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS) {
                                                 job = build job: 'deploy-tf-k8s_manifests',
                                                     parameters: [
@@ -173,7 +164,6 @@ pipeline {
                                             }
                                         },
                                         "Deploy-test k8s for helm": {
-                                            awaitCondition condition_k8s_helm
                                             if (env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM) {
                                                 job = build job: 'deploy-tf-k8s_helm',
                                                     parameters: [
@@ -205,7 +195,6 @@ pipeline {
                                             }
                                         },
                                         "Deploy-test k8s for juju": {
-                                            awaitCondition condition_k8s_juju
                                             if (env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU) {
                                                 job = build job: 'deploy-tf-k8s_juju',
                                                     parameters: [
@@ -237,7 +226,6 @@ pipeline {
                                             }
                                         },
                                         "Deploy-test openstack for helm": {
-                                            awaitCondition condition_os_helm
                                             if (env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM) {
                                                 job = build job: 'deploy-tf-os_helm',
                                                     parameters: [
