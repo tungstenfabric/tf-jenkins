@@ -1,10 +1,10 @@
+def SLAVE='aws'
 def condition_k8s_manifests = createCondition()
 def condition_k8s_helm = createCondition()
 def condition_k8s_juju = createCondition()
 def condition_os_helm = createCondition()
 pipeline {
     environment {
-        SLAVE = "aws"
         CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
         PATCHSET_ID = "12345/1"
     }
@@ -13,7 +13,7 @@ pipeline {
         timeout(time: 3, unit: 'HOURS')
     }
     agent {
-        label aws
+        label "${SLAVE}"
     }
     stages {
         stage('Pre-build') {
@@ -74,8 +74,6 @@ pipeline {
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS = "$job.buildVariables.BUILD_NUMBER"
                             }
-                            copyArtifacts filter: '*.env', projectName: 'deploy-platform-k8s_manifests',
-                                selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_MANIFESTS)
                         }
                         signallAll(condition: condition_k8s_manifests)
                     }
@@ -91,8 +89,6 @@ pipeline {
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM = "$job.buildVariables.BUILD_NUMBER"
                             }
-                            copyArtifacts filter: '*.env', projectName: 'deploy-platform-k8s_helm',
-                                selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_HELM)
                         }
                         signallAll(condition: condition_k8s_helm)
                     }
@@ -108,8 +104,6 @@ pipeline {
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU = "$job.buildVariables.BUILD_NUMBER"
                             }
-                            copyArtifacts filter: '*.env', projectName: 'deploy-platform-k8s_juju',
-                                selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_K8S_JUJU)
                         }
                         signallAll(condition: condition_k8s_juju)
                     }
@@ -125,8 +119,6 @@ pipeline {
                                     ]
                                 env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM = "$job.buildVariables.BUILD_NUMBER"
                             }
-                            copyArtifacts filter: '*.env', projectName: 'deploy-platform-os_helm',
-                                selector: specific(env.JOB_NUMBER_DEPLOY_PLATFORM_OS_HELM)
                         }
                         signallAll(condition: condition_os_helm)
                     }
