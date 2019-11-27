@@ -13,6 +13,8 @@ source $ENV_FILE
 
 rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
+exit 0
+
 cat <<EOF | ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-dev-env
