@@ -8,9 +8,9 @@
       - label:
           name: SLAVE
       - string:
-          name: DEPLOY_TF_PROJECT
+          name: DEPLOY_PLATFORM_PROJECT
       - string:
-          name: DEPLOY_TF_JOB_NUMBER
+          name: DEPLOY_PLATFORM_JOB_NUMBER
       - string:
           name: PIPELINE_BUILD_NUMBER
     properties:
@@ -33,9 +33,9 @@
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - copyartifact:
-          project: ${DEPLOY_TF_PROJECT}
+          project: ${DEPLOY_PLATFORM_PROJECT}
           filter: "*.env"
           which-build: specific-build
-          build-number: ${DEPLOY_TF_JOB_NUMBER}
+          build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
       - shell: |
           echo "TODO: ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh"
