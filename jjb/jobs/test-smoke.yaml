@@ -10,7 +10,7 @@
       - string:
           name: DEPLOY_TF_PROJECT
       - string:
-          name: DEPLOY_PLATFORM_JOB_NUMBER
+          name: DEPLOY_TF_JOB_NUMBER
       - string:
           name: PIPELINE_BUILD_NUMBER
     properties:
@@ -26,7 +26,6 @@
               passphrase-variable: WORKER_PASSPHRASE
     scm:
       - tf-jenkins
-      - tf-devstack
     builders:
       - copyartifact:
           project: check-pipeline
@@ -39,4 +38,4 @@
           which-build: specific-build
           build-number: ${DEPLOY_TF_JOB_NUMBER}
       - shell: |
-          ./src/progmaticlab/tf-jenkins/jobs/smoke_test/run.sh
+          echo "TODO: ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh"

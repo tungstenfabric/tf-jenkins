@@ -52,3 +52,10 @@
       - github:
           organization: tungstenfabric
           repo: tf-dev-env
+
+- scm:
+    name: tf-test
+    scm:
+      - github:
+          organization: tungstenfabric
+          repo: tf-test

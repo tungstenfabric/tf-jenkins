@@ -10,7 +10,7 @@
       - string:
           name: DEPLOY_TF_PROJECT
       - string:
-          name: DEPLOY_PLATFORM_JOB_NUMBER
+          name: DEPLOY_TF_JOB_NUMBER
       - string:
           name: PIPELINE_BUILD_NUMBER
     properties:
@@ -26,7 +26,7 @@
               passphrase-variable: WORKER_PASSPHRASE
     scm:
       - tf-jenkins
-      - tf-devstack
+      - tf-test
     builders:
       - copyartifact:
           project: check-pipeline
@@ -37,6 +37,6 @@
           project: ${DEPLOY_TF_PROJECT}
           filter: "*.env"
           which-build: specific-build
-          build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
+          build-number: ${DEPLOY_TF_JOB_NUMBER}
       - shell: |
-          ./src/progmaticlab/tf-jenkins/jobs/sanity_test/run.sh
+          ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh
