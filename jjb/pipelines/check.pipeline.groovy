@@ -98,8 +98,7 @@ pipeline {
                   return 'status' in top_job_results[name]
                 }
                 if (top_job_results[name]['status'] != 'SUCCESS') {
-                  println "Deploy platform failed - skip deploy TF and tests for ${name}"
-                  return
+                  unstable("Deploy platform failed - skip deploy TF and tests for ${name}")
                 }
                 top_job_number = top_job_results[name]['build_number']
 
