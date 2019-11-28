@@ -8,7 +8,7 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ENV_FILE="$WORKSPACE/stackrc.$DEPLOY_TF_PROJECT.env"
+ENV_FILE="$WORKSPACE/stackrc.$DEPLOY_PLATFORM_PROJECT.env"
 source $ENV_FILE
 
 rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
