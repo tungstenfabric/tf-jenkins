@@ -100,7 +100,7 @@ pipeline {
                 job = build job: "deploy-tf-${name}",
                   parameters: [
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                    string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: top_job_number),
+                    string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]
               } catch (err) {
@@ -116,7 +116,7 @@ pipeline {
                     parameters: [
                       string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                       string(name: 'DEPLOY_TF_PROJECT', value: "deploy-tf-${name}"),
-                      string(name: 'DEPLOY_TF_JOB_NUMBER', value: inner_job_number),
+                      string(name: 'DEPLOY_TF_JOB_NUMBER', value: "${inner_job_number}"),
                       [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                     ]
                 }
