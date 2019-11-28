@@ -89,19 +89,26 @@ pipeline {
                   return 'status' in top_job_results[name]
                 }
               }
+              println "1: deploy TF and test for ${name}"
               if (top_job_results[name]['status'] != 'SUCCESS') {
+                println "err status: deploy TF and test for ${name}"
                 return
               }
+              println "2: deploy TF and test for ${name}"
               top_job_number = top_job_results[name]['build_number']
 
+              println "3: deploy TF and test for ${name}"
               job = build job: "deploy-tf-${name}",
                 parameters: [
                   string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                   string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: top_job_number),
                   [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                 ]
+              println "4: deploy TF and test for ${name}"
               inner_job_number = job.getNumber()
+              println "5: deploy TF and test for ${name}"
               test_jobs = [:]
+              println "6: deploy TF and test for ${name}"
               ['test-sanity', 'test-smoke'].each {
                 test_name -> test_jobs["${test_name} for deploy-tf-${name}"] = {
                   build job: test_name,
@@ -113,7 +120,9 @@ pipeline {
                     ]
                 }
               }
+              println "7: deploy TF and test for ${name}"
               parallel test_jobs
+              println "8: deploy TF and test for ${name}"
 
               println "Finished deploy TF and test for ${name} with ${top_job_results[name]}"
             }

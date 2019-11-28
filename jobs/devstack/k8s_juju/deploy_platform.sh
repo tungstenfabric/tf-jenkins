@@ -11,13 +11,16 @@ source "$my_dir/definitions"
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 source $ENV_FILE
 
-echo 'Deploy juju bundle with platform only'
+echo 'INFO: Deploy juju bundle with platform only'
 
 rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-cat <<EOF | ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip
+cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+[ "${DEBUG,,}" == "true" ] && set -x
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=kubernetes CLOUD=local ./run.sh platform
 EOF
+
+echo "INFO: Deploy platform finished"

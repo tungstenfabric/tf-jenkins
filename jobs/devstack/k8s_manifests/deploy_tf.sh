@@ -11,13 +11,16 @@ source "$my_dir/definitions"
 ENV_FILE="$WORKSPACE/stackrc.deploy-platform-k8s_manifests.env"
 source $ENV_FILE
 
-echo 'Deploy tf with manifests'
+echo 'INFO: Deploy TF with manifests'
 
 rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-cat <<EOF | ssh $SSH_OPTIONS -t $IMAGE_SSH_USER@$instance_ip
+cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+[ "${DEBUG,,}" == "true" ] && set -x
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/k8s_manifests
 ORCHESTRATOR=kubernetes ./run.sh
 EOF
+
+echo "INFO: Deploy TF finished"
