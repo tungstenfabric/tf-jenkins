@@ -9,5 +9,5 @@
     pipeline-scm:
       scm:
         - tf-jenkins
-      script-path: jjb/pipelines/check.pipeline
+      script-path: jjb/pipelines/check.pipeline.groovy
       lightweight-checkout: true

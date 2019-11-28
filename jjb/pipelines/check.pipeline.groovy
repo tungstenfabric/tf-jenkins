@@ -60,7 +60,7 @@ pipeline {
           }
 
           test_configurations.each {
-            name -> top_jobs[name] = {
+            name -> top_jobs["Deploy platform for ${name}"] = {
               println "Started deploy platform for ${name}"
               top_job_results[name] = [:]
               try {
@@ -80,12 +80,14 @@ pipeline {
             }
           }
           test_configurations.each {
-            name -> inner_jobs[name] = {
+            name -> inner_jobs["Deploy TF for ${name}"] = {
               println "Started deploy TF and test for ${name}"
               // just wait for deploy-platform job - build job just is a previous step
-              waitUntil {
-                sleep 15
-                return 'status' in top_job_results[name]
+              timeout(time: 60, unit: 'MINUTES') {
+                waitUntil {
+                  sleep 15
+                  return 'status' in top_job_results[name]
+                }
               }
               if (top_job_results[name]['status'] != 'SUCCESS') {
                 return
@@ -99,18 +101,10 @@ pipeline {
                   [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                 ]
               inner_job_number = job.getNumber()
-              parallel(
-                "Test sanity k8s for manifests": {
-                  build job: 'test-sanity',
-                    parameters: [
-                      string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                      string(name: 'DEPLOY_TF_PROJECT', value: "deploy-tf-${name}"),
-                      string(name: 'DEPLOY_TF_JOB_NUMBER', value: inner_job_number),
-                      [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                    ]
-                },
-                "Test smoke k8s for manifests": {
-                  build job: 'test-smoke',
+              test_jobs = [:]
+              ['test-sanity', 'test-smoke'].each {
+                test_name -> test_jobs["${test_name} for deploy-tf-${name}"] = {
+                  build job: test_name,
                     parameters: [
                       string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                       string(name: 'DEPLOY_TF_PROJECT', value: "deploy-tf-${name}"),
@@ -118,7 +112,8 @@ pipeline {
                       [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                     ]
                 }
-              )
+              }
+              parallel test_jobs
 
               println "Finished deploy TF and test for ${name} with ${top_job_results[name]}"
             }
@@ -142,11 +137,12 @@ pipeline {
     always {
         sh "env|sort"
         sh "echo 'Destroy VMs'"
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
-                            credentialsId: 'aws-creds',
-                            accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-            sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh"
+        withCredentials(
+          [[$class: 'AmazonWebServicesCredentialsBinding',
+             credentialsId: 'aws-creds',
+             accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+             secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+          sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh"
         }
     }
     failure {
