@@ -96,12 +96,18 @@ pipeline {
               top_job_number = top_job_results[name]['build_number']
 
               println "3: deploy TF and test for ${name} tjnum=${top_job_number}"
-              job = build job: "deploy-tf-${name}",
-                parameters: [
-                  string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                  string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: top_job_number),
-                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                ]
+              try {
+                job = build job: "deploy-tf-${name}",
+                  parameters: [
+                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                    string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: top_job_number),
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                  ]
+              } catch (err) {
+                println "Failed to run deploy TF deploy platform for ${name} "
+                println err.getMessage()
+                error(err.getMessage())
+              }
               inner_job_number = job.getNumber()
               test_jobs = [:]
               ['test-sanity', 'test-smoke'].each {
