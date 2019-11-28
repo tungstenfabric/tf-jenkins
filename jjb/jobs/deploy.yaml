@@ -98,6 +98,8 @@
           environment_os: centos7
       - k8s_juju:
           environment_os: ubuntu18
+      - os_ansible:
+          environment_os: centos7
     jobs:
       - 'deploy-platform-{project}'
       - 'deploy-tf-{project}'
