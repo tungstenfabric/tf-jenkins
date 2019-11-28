@@ -19,7 +19,7 @@ cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
-cd src/tungstenfabric/tf-test
+cd src/tungstenfabric/tf-test/contrail-sanity
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh
 EOF
 
