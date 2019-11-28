@@ -1,6 +1,7 @@
 def SLAVE = 'aws'
 
-def test_configurations = ['k8s_helm', 'k8s_manifests', 'k8s_juju', 'os_helm', 'os_ansible']
+//def test_configurations = ['k8s_helm', 'k8s_manifests', 'k8s_juju', 'os_helm', 'os_ansible']
+def test_configurations = ['k8s_manifests', 'os_ansible']
 def top_jobs = [:]
 def top_job_results = [:]
 def inner_jobs = [:]
@@ -45,95 +46,105 @@ pipeline {
       steps {
         script {
           top_jobs['test-unit'] = {
-            build job: 'test-unit',
+            stage('test-unit') {
+              build job: 'test-unit',
                 parameters: [
                   string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                   [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                 ]
+            }
           }
           top_jobs['test-lint'] = {
-            build job: 'test-lint',
+            stage('test-lint') {
+              build job: 'test-lint',
                 parameters: [
                   string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                   [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                 ]
+            }
           }
 
           test_configurations.each {
             name -> top_jobs["Deploy platform for ${name}"] = {
-              println "Started deploy platform for ${name}"
-              top_job_results[name] = [:]
-              try {
-                job = build job: "deploy-platform-${name}",
-                  parameters: [
-                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                  ]
-                top_job_results[name]['build_number'] = job.getNumber()
-                top_job_results[name]['status'] = job.getResult()
-                println "Finished deploy platform for ${name} with ${top_job_results[name]}"
-              } catch (err) {
-                println "Failed deploy platform for ${name}"
-                top_job_results[name]['status'] = 'FAILURE'
-                error(err.getMessage())
+              stage("Deploy platform for ${name}") {
+                println "Started deploy platform for ${name}"
+                top_job_results[name] = [:]
+                try {
+                  timeout(time: 60, unit: 'MINUTES') {
+                    job = build job: "deploy-platform-${name}",
+                      parameters: [
+                        string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                      ]
+                  }
+                  top_job_results[name]['build_number'] = job.getNumber()
+                  top_job_results[name]['status'] = job.getResult()
+                  println "Finished deploy platform for ${name} with ${top_job_results[name]}"
+                } catch (err) {
+                  println "Failed deploy platform for ${name}"
+                  top_job_results[name]['status'] = 'FAILURE'
+                  error(err.getMessage())
+                }
               }
             }
           }
           test_configurations.each {
             name -> inner_jobs["Deploy TF for ${name}"] = {
-              println "Started deploy TF and test for ${name}"
-              // just wait for deploy-platform job - build job just is a previous step
-              timeout(time: 60, unit: 'MINUTES') {
+              stage("Deploy TF for ${name}") {
+                println "Started deploy TF and test for ${name}"
+                // just wait for deploy-platform job - build job just is a previous step
                 waitUntil {
                   sleep 15
                   return 'status' in top_job_results[name]
                 }
-              }
-              if (top_job_results[name]['status'] != 'SUCCESS') {
-                println "Deploy platform failed - skip deploy TF and tests for ${name}"
-                return
-              }
-              top_job_number = top_job_results[name]['build_number']
+                if (top_job_results[name]['status'] != 'SUCCESS') {
+                  println "Deploy platform failed - skip deploy TF and tests for ${name}"
+                  return
+                }
+                top_job_number = top_job_results[name]['build_number']
 
-              println "3: deploy TF and test for ${name} tjnum=${top_job_number}"
-              try {
-                job = build job: "deploy-tf-${name}",
-                  parameters: [
-                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                    string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                  ]
-              } catch (err) {
-                println "Failed to run deploy TF deploy platform for ${name} "
-                println err.getMessage()
-                error(err.getMessage())
-              }
-              inner_job_number = job.getNumber()
-              test_jobs = [:]
-              ['test-sanity', 'test-smoke'].each {
-                test_name -> test_jobs["${test_name} for deploy-tf-${name}"] = {
-                  build job: test_name,
+                try {
+                  job = build job: "deploy-tf-${name}",
                     parameters: [
                       string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                      string(name: 'DEPLOY_TF_PROJECT', value: "deploy-tf-${name}"),
-                      string(name: 'DEPLOY_TF_JOB_NUMBER', value: "${inner_job_number}"),
+                      string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                       [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                     ]
+                } catch (err) {
+                  println "Failed to run deploy TF deploy platform for ${name} "
+                  println err.getMessage()
+                  error(err.getMessage())
                 }
+                inner_job_number = job.getNumber()
+                test_jobs = [:]
+                ['test-sanity', 'test-smoke'].each {
+                  test_name -> test_jobs["${test_name} for deploy-tf-${name}"] = {
+                    stage(test_name) {
+                      build job: test_name,
+                        parameters: [
+                          string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                          string(name: 'DEPLOY_TF_PROJECT', value: "deploy-tf-${name}"),
+                          string(name: 'DEPLOY_TF_JOB_NUMBER', value: "${inner_job_number}"),
+                          [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                        ]
+                    }
+                  }
+                }
+                parallel test_jobs
+                println "Finished deploy TF and test for ${name} with ${top_job_results[name]}"
               }
-              parallel test_jobs
-
-              println "Finished deploy TF and test for ${name} with ${top_job_results[name]}"
             }
           }
 
           top_jobs['build-and-test'] = {
-            build job: 'build',
-              parameters: [
-                string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-              ]
-            parallel inner_jobs
+            stage('build') {
+              build job: 'build',
+                parameters: [
+                  string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                ]
+              parallel inner_jobs
+            }
           }
 
           parallel top_jobs
@@ -143,15 +154,15 @@ pipeline {
   }
   post {
     always {
-        sh "env|sort"
-        sh "echo 'Destroy VMs'"
-        withCredentials(
-          [[$class: 'AmazonWebServicesCredentialsBinding',
-             credentialsId: 'aws-creds',
-             accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-             secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-          sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh"
-        }
+      sh "env|sort"
+      sh "echo 'Destroy VMs'"
+      withCredentials(
+        [[$class: 'AmazonWebServicesCredentialsBinding',
+            credentialsId: 'aws-creds',
+            accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+        sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh"
+      }
     }
     failure {
       sh "echo 'archiveArtifacts'"
