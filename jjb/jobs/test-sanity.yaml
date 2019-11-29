@@ -39,4 +39,5 @@
           which-build: specific-build
           build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
       - shell: |
+          export DEBUG=true
           ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh

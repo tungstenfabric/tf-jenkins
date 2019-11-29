@@ -38,4 +38,5 @@
           which-build: specific-build
           build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
       - shell: |
+          export DEBUG=true
           echo "TODO: ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh"
