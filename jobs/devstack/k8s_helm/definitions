@@ -3,4 +3,4 @@ CONTROLLER_FLAVOR=t2.xlarge
 CONTROLLER_MEM=8192
 COMPUTES_COUNT=0
 
-SSH_OPTIONS="-i $WORKER_SSH_KEY -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+SSH_OPTIONS="-T -i $WORKER_SSH_KEY -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
