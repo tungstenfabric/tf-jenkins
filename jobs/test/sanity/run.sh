@@ -15,10 +15,13 @@ rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 echo "INFO: Test sanity started"
 
+# TODO: fix uploading test image to tungstenfabric and remove TF_TEST_IMAGE below
+
 cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
+export TF_TEST_IMAGE="opencontrailnightly/contrail-test-test:master-latest"
 cd src/tungstenfabric/tf-test/contrail-sanity
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh
 EOF
