@@ -99,10 +99,11 @@ pipeline {
                 }
                 if (top_job_results[name]['status'] != 'SUCCESS') {
                   unstable("Deploy platform failed - skip deploy TF and tests for ${name}")
+                  return
                 }
-                top_job_number = top_job_results[name]['build_number']
-                println "top_job_number = ${top_job_number} (type is ${top_job_number.getClass().getName()})"
 
+                top_job_number = top_job_results[name]['build_number']
+                println "top_job_number = ${top_job_number}"
                 try {
                   build job: "deploy-tf-${name}",
                     parameters: [
@@ -119,7 +120,9 @@ pipeline {
                 ['test-sanity', 'test-smoke'].each {
                   test_name -> test_jobs["${test_name} for deploy-tf-${name}"] = {
                     stage(test_name) {
-                      println "top_job_number(inner) = ${top_job_number} (type is ${top_job_number.getClass().getName()})"
+                      // next variable must be taken again due to closure limitations for free variables
+                      top_job_number = top_job_results[name]['build_number']
+                      println "top_job_number(inner) = ${top_job_number}"
                       build job: test_name,
                         parameters: [
                           string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
