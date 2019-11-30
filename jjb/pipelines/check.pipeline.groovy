@@ -1,6 +1,7 @@
 def SLAVE = 'aws'
 
-def test_configurations = ['k8s_manifests', 'os_ansible', 'k8s_juju', 'k8s_helm', 'os_helm']
+//def test_configurations = ['k8s_manifests', 'os_ansible', 'k8s_juju', 'k8s_helm', 'os_helm']
+def test_configurations = ['k8s_manifests', 'os_ansible', 'k8s_juju']
 def top_jobs = [:]
 def top_job_results = [:]
 def inner_jobs = [:]
