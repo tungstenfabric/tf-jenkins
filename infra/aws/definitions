@@ -2,6 +2,14 @@ AWS_REGION=${AWS_REGION:-ca-central-1}
 AWS_SUBNET=${AWS_SUBNET:-subnet-05151ae63f9d5eef3}
 AWS_SG=${AWS_SG:-sg-04ff262ce1a68d85d}
 
+#                CPU     Memory     AWS (Canada)   vm_type
+# v2-standard-1   1       4 GB      t2.small       xsmall
+# v2-standard-2   2       8 GB      t2.large       small
+# v2-standard-4   4       16 GB     t2.xlarge      medium
+# v2-standard-8   8       32 GB     m5.2xlarge     large
+
+declare -A VM_TYPES=( ['large']='m5.2xlarge' ['medium']='t2.xlarge' ['small']='t2.large' ['xsmall']='t2.small' )
+
 IMAGE_CENTOS7='ami-068051358509d0288'
 IMAGE_CENTOS7_SSH_USER='ec2-user'
 

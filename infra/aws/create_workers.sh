@@ -25,6 +25,12 @@ IMAGE_SSH_USER_VAR_NAME="IMAGE_${ENVIRONMENT_OS^^}_SSH_USER"
 IMAGE_SSH_USER=${!IMAGE_SSH_USER_VAR_NAME}
 echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
+VM_TYPE=${VM_TYPE:-'medium'}
+INSTANCE_TYPE=${VM_TYPES[VM_TYPE]}
+if [[ -z "$INSTANCE_TYPE" ]]; then
+    echo "ERROR: invalid VM_TYPE=$VM_TYPE"
+fi
+
 # Spin VM
 iname=$BUILD_TAG
 bdm='{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":60,"DeleteOnTermination":true}}'
@@ -34,7 +40,7 @@ instance_id=$(aws ec2 run-instances \
     --block-device-mappings "[${bdm}]" \
     --image-id $IMAGE \
     --count 1 \
-    --instance-type t2.xlarge \
+    --instance-type $INSTANCE_TYPE \
     --key-name worker \
     --security-group-ids $AWS_SG \
     --subnet-id $AWS_SUBNET | \
