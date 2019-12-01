@@ -10,6 +10,7 @@ pipeline {
   environment {
     CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
     PATCHSET_ID = "12345/1"
+    DO_BUILD=1
   }
   options {
     timestamps()
@@ -139,13 +140,19 @@ pipeline {
             }
           }
 
-          top_jobs['build-and-test'] = {
-            stage('build') {
-              build job: 'build',
-                parameters: [
-                  string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                ]
+          if (DO_BUILD == 1) {
+            top_jobs['build-and-test'] = {
+              stage('build') {
+                build job: 'build',
+                  parameters: [
+                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                  ]
+                parallel inner_jobs
+              }
+            }
+          } else {
+            top_jobs['just-test'] = {
               parallel inner_jobs
             }
           }

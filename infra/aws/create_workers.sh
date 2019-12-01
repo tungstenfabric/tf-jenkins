@@ -26,9 +26,10 @@ IMAGE_SSH_USER=${!IMAGE_SSH_USER_VAR_NAME}
 echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
 VM_TYPE=${VM_TYPE:-'medium'}
-INSTANCE_TYPE=${VM_TYPES[VM_TYPE]}
+INSTANCE_TYPE=${VM_TYPES[$VM_TYPE]}
 if [[ -z "$INSTANCE_TYPE" ]]; then
     echo "ERROR: invalid VM_TYPE=$VM_TYPE"
+    exit 1
 fi
 
 # Spin VM
