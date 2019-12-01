@@ -24,9 +24,9 @@ pipeline {
       steps {
         script {
           sh """
-            echo "CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" > global.env
+            echo "PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
+            echo "CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
             echo "PATCHSET_ID=${PATCHSET_ID}" >> global.env
-            echo "PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
           """
         }
         archiveArtifacts artifacts: 'global.env'

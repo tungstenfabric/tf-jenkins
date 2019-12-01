@@ -29,6 +29,7 @@
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
+          # TODO: set OS to rhel for rhel builds
           export ENVIRONMENT_OS=centos7
           ./src/progmaticlab/tf-jenkins/jobs/build/create_workers.sh
       - shell: |

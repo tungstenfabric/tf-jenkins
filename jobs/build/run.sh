@@ -19,8 +19,20 @@ cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
+export IMAGE=tf-dev-env
+export DEVENVTAG="$PATCHSET_ID"
+export CONTRAIL_BUILD_FROM_SOURCE=1
+export CONTRAIL_CONTAINER_TAG="$PATCHSET_ID"
+export OPENSTACK_VERSIONS="ocata,queens,rocky"
+#export SRC_ROOT="{{ ansible_env.HOME }}/{{ packaging.target_dir }}"
+#export EXTERNAL_REPOS="{{ ansible_env.HOME }}/src"
+#export CANONICAL_HOSTNAME="{{ zuul.project.canonical_hostname }}"
+export REGISTRY_IP="pnexus.sytes.net"
+export REGISTRY_PORT="5001"
+export SITE_MIRROR="http://pnexus.sytes.net/repository"
+
 cd src/tungstenfabric/tf-dev-env
-bash -ex ./run.sh build
+./run.sh build
 EOF
 
 echo "INFO: Build finished"
