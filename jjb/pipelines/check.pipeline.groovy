@@ -10,7 +10,7 @@ pipeline {
   environment {
     CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
     PATCHSET_ID = "12345/1"
-    DO_BUILD=1
+    DO_BUILD = '1'
   }
   options {
     timestamps()
@@ -140,7 +140,7 @@ pipeline {
             }
           }
 
-          if (DO_BUILD == 1) {
+          if (DO_BUILD == '1') {
             top_jobs['build-and-test'] = {
               stage('build') {
                 build job: 'build',
