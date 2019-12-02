@@ -1,7 +1,7 @@
 #!/bin/bash -eE
 set -o pipefail
 
-# to remove just job's workers
+# to cleanup all workers created by current pipeline
 
 [ "${DEBUG,,}" == "true" ] && set -x
 
@@ -10,10 +10,6 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 source "$WORKSPACE/global.env"
-
-DEFAULT_ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-ENV_FILE=${ENV_FILE:-$DEFAULT_ENV_FILE}
-source $ENV_FILE
 
 PIPELINE_AWS_INSTANCES=$(aws ec2 describe-instances \
                             --region $AWS_REGION \

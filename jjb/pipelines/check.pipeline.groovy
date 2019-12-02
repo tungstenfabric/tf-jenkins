@@ -171,7 +171,7 @@ pipeline {
             credentialsId: 'aws-creds',
             accessKeyVariable: 'AWS_ACCESS_KEY_ID',
             secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-        sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh"
+        sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/cleanup_pipeline_workers.sh"
       }
     }
     failure {
