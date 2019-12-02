@@ -137,9 +137,9 @@ pipeline {
                 try {
                   parallel test_jobs
                 } finally {
+                  top_job_number = top_job_results[name]['build_number']
+                  println "Trying to cleanup workers for ${name} job ${top_job_number}"
                   try {
-                    top_job_number = top_job_results[name]['build_number']
-                    println "Trying to cleanup workers for ${name} job ${top_job_number}"
                     copyArtifacts filter: "stackrc.deploy-platform-${name}.env",
                       fingerprintArtifacts: true,
                       projectName: "deploy-platform-${name}",

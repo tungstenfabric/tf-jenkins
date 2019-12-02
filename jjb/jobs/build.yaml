@@ -35,7 +35,9 @@
           ./src/progmaticlab/tf-jenkins/jobs/build/create_workers.sh
       - shell: |
           # TODO: pass nexus creds
+          export DEBUG=true
           source "$WORKSPACE/global.env"
+          env|sort
           ./src/progmaticlab/tf-jenkins/jobs/build/run.sh
       - shell: |
           source "$WORKSPACE/global.env"
