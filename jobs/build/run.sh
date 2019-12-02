@@ -20,7 +20,7 @@ cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
 export IMAGE=tf-dev-env
-export DEVENVTAG="$PATCHSET_ID"
+export DEVENVTAG="master"
 #export CONTRAIL_BUILD_FROM_SOURCE=1
 export CONTRAIL_CONTAINER_TAG="$PATCHSET_ID"
 export OPENSTACK_VERSIONS="rocky"
