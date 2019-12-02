@@ -11,6 +11,8 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 source "$WORKSPACE/global.env"
 
+# TODO: check if it's locked and do not fail job
+
 PIPELINE_AWS_INSTANCES=$(aws ec2 describe-instances \
                             --region $AWS_REGION \
                             --query 'Reservations[].Instances[].InstanceId' \

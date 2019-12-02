@@ -15,4 +15,6 @@ DEFAULT_ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 ENV_FILE=${ENV_FILE:-$DEFAULT_ENV_FILE}
 source $ENV_FILE
 
+# TODO: check if it's locked and do not fail job
+
 aws ec2 terminate-instances --region $AWS_REGION --instance-ids $instance_id

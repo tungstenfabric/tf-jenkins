@@ -18,6 +18,8 @@ rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 export DEBUG=$DEBUG
+export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
+export CONTRAIL_CONTAINER_TAG="$PATCHSET_ID"
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/helm
 ORCHESTRATOR=openstack ./run.sh
