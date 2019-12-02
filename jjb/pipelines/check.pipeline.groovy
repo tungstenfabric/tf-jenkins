@@ -113,7 +113,7 @@ pipeline {
                       [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                     ]
                 } catch (err) {
-                  println "Failed to run deploy TF deploy platform for ${name} "
+                  println "Failed to run deploy TF deploy platform for ${name}"
                   println err.getMessage()
                   error(err.getMessage())
                 }
@@ -134,8 +134,24 @@ pipeline {
                     }
                   }
                 }
-                parallel test_jobs
-                println "Finished deploy TF and test for ${name} with ${top_job_results[name]}"
+                try {
+                  parallel test_jobs
+                } finally {
+                  copyArtifacts filter: "stackrc.deploy-platform-${name}.env",
+                    fingerprintArtifacts: true,
+                    projectName: "deploy-platform-${name}",
+                    selector: specific("${top_job_number}")
+                  withCredentials(
+                    [[$class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-creds',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    sh """
+                      export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
+                      sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh"
+                    """
+                  }
+                }
               }
             }
           }
