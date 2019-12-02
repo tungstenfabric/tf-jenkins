@@ -24,9 +24,9 @@ pipeline {
       steps {
         script {
           sh """
-            echo "PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
-            echo "CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
-            echo "PATCHSET_ID=${PATCHSET_ID}" >> global.env
+            echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
+            echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
+            echo "export PATCHSET_ID=${PATCHSET_ID}" >> global.env
           """
         }
         archiveArtifacts artifacts: 'global.env'
@@ -137,19 +137,26 @@ pipeline {
                 try {
                   parallel test_jobs
                 } finally {
-                  copyArtifacts filter: "stackrc.deploy-platform-${name}.env",
-                    fingerprintArtifacts: true,
-                    projectName: "deploy-platform-${name}",
-                    selector: specific("${top_job_number}")
-                  withCredentials(
-                    [[$class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: 'aws-creds',
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                    sh """
-                      export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
-                      sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh"
-                    """
+                  try {
+                    top_job_number = top_job_results[name]['build_number']
+                    println "Trying to cleanup workers for ${name} job ${top_job_number}"
+                    copyArtifacts filter: "stackrc.deploy-platform-${name}.env",
+                      fingerprintArtifacts: true,
+                      projectName: "deploy-platform-${name}",
+                      selector: specific("${top_job_number}")
+                    withCredentials(
+                      [[$class: 'AmazonWebServicesCredentialsBinding',
+                          credentialsId: 'aws-creds',
+                          accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                      sh """
+                        export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
+                        "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh"
+                      """
+                    }
+                  } catch(err) {
+                    println "Failed to cleanup workers for ${name}"
+                    println err.getMessage()
                   }
                 }
               }

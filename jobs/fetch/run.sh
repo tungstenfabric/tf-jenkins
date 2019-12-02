@@ -6,13 +6,17 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-source "$my_dir/definitions"
+echo 'INFO: Run fetch with tf-dev-env'
 
-exit 0
+[ "${DEBUG,,}" == "true" ] && set -x
+export CONTAINER_REGISTRY
+export CONTRAIL_CONTAINER_TAG="$PATCHSET_ID"
+cd src/tungstenfabric/tf-dev-env
+# TODO: remove condition
+if ./run.sh fetch ; then
+  echo "INFO: Fetch finished successfully"
+else
+  echo "INFO: Fetch failed"
+fi
 
-export $??_REGISTRY=???_REGISTRY
-export ??_TAG=??_TAG
-export DEV_ENV_IMAGE=???
-./src/tungstenfabric/tf-dev-env/run.sh
-docker commit ???
-docker push $REGISTRY/tf-dev-env-centos:$PATCHSET_ID
+# TODO: commit and push dev-env
