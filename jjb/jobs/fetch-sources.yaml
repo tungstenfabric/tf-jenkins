@@ -17,6 +17,5 @@
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
-          #!/bin/bash -ex
-          env|sort
+          source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh

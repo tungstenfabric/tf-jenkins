@@ -14,5 +14,6 @@
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
+          source "$WORKSPACE/global.env"
           echo "TODO: ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh"
           # inside will do "docker pull tf-dev-env; tf-dev-env/run.sh test //Detect target tests"

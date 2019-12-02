@@ -40,4 +40,5 @@
           build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
       - shell: |
           export DEBUG=true
+          source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh

@@ -36,9 +36,11 @@
           build-number: ${{PIPELINE_BUILD_NUMBER}}
       - shell: |
           export ENVIRONMENT_OS={environment_os}
+          source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/create_workers.sh
       - shell: |
           export DEBUG=true
+          source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_platform.sh
     publishers:
       - archive:
@@ -82,6 +84,7 @@
           build-number: ${{PIPELINE_BUILD_NUMBER}}
       - shell: |
           export DEBUG=true
+          source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh
     publishers:
       - archive:
