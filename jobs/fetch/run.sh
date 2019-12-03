@@ -53,19 +53,20 @@ if [[ $result != 0 ]] ; then
 fi
 echo "INFO: Fetch finished successfully"
 
+
+target_name="tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG"
+target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$CONTRAIL_CONTAINER_TAG"
 echo "INFO: Save tf-sandbox started"
 cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 
 echo "INFO: commit tf-developer-sandbox container"
-target_name="tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG"
 if ! sudo docker commit tf-developer-sandbox $target_name ; then
   echo "ERROR: failed to commit tf-developer-sandbox"
   exit 1
 fi
 
 echo "INFO: tag tf-developer-sandbox container"
-target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$CONTRAIL_CONTAINER_TAG"
 if ! sudo docker tag $target_name $target_tag ; then
   echo "ERROR: failed to tag container $target_tag"
   exit 1
