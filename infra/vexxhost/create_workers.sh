@@ -18,9 +18,9 @@ echo "ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
 echo "OS_REGION_NAME=${OS_REGION_NAME}" >> "$ENV_FILE"
 
 IMAGE_TEMPLATE_NAME=${OS_IMAGES["${ENVIRONMENT_OS^^}"]}
-IMAGE=$(openstack image list --private -c Name --format value | grep ${IMAGE_TEMPLATE_NAME} | sort -nr | head -n 1)
+openstack image list
+IMAGE=$(openstack image list --private -c Name -f value | grep ${IMAGE_TEMPLATE_NAME} | sort -nr | head -n 1)
 echo "IMAGE=$IMAGE" >> "$ENV_FILE"
-
 echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
 VM_TYPE=${VM_TYPE:-'medium'}
