@@ -31,13 +31,13 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
 fi
 
 OBJECT_NAME=$BUILD_TAG
-VOLUME_ID=$(openstack volume create -c id --format value  \
+volume_id=$(openstack volume create -c id --format value  \
     --size 60 \
     --image ${IMAGE} \
     --property Pipeline=${PIPELINE_BUILD_TAG} \
     --bootable \
     ${OBJECT_NAME} )
-echo "volume_id=$VOLUME_ID" >> "$ENV_FILE"
+echo "volume_id=$volume_id" >> "$ENV_FILE"
 
 for ((i=0; i<10; ++i)); do
   sleep 5
@@ -47,7 +47,7 @@ for ((i=0; i<10; ++i)); do
   fi
 done
 
-INSTANCE_ID=$(openstack server create -c id -f value \
+instance_id=$(openstack server create -c id -f value \
     --volume ${VOLUME_ID} \
     --flavor ${INSTANCE_TYPE} \
     --security-group ${OS_SG} \
@@ -57,13 +57,13 @@ INSTANCE_ID=$(openstack server create -c id -f value \
     --availability-zone=${OS_AZ} \
     --wait \
     $OBJECT_NAME | tr -d '\n')
-echo "instance_id=$INSTANCE_ID" >> "$ENV_FILE"
+echo "instance_id=$instance_id" >> "$ENV_FILE"
 
-INSTANCE_IP=$(openstack server show $OBJECT_NAME -c addresses -f value | cut -f2 -d=)
-echo "instance_ip=$INSTANCE_IP" >> "$ENV_FILE"
+instance_ip=$(openstack server show $OBJECT_NAME -c addresses -f value | cut -f2 -d=)
+echo "instance_ip=$instance_ip" >> "$ENV_FILE"
 
 timeout 300 bash -c "\
 while /bin/true ; do \
-  ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
+  ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip= 'uname -a' && break ; \
   sleep 5 ; \
 done"
