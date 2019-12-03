@@ -56,7 +56,7 @@ INSTANCE_ID=$(openstack server create -c id -f value \
     --network=${OS_NETWORK} \
     --availability-zone=${OS_AZ} \
     --wait \
-    $OBJECT_NAME)
+    $OBJECT_NAME | tr -d "\n\r")
 echo "instance_id=$INSTANCE_ID" >> "$ENV_FILE"
 
 INSTANCE_IP=$(openstack server show $OBJECT_NAME -c addresses -f value | cut -f2 -d=)
