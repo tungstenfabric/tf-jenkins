@@ -18,3 +18,23 @@
         - tf-jenkins
       script-path: jjb/pipelines/check.pipeline.groovy
       lightweight-checkout: true
+    triggers:
+      - gerrit:
+          server-name: review.opencontrail.org
+          dynamic-trigger-enabled: true
+          dynamic-trigger-url: file:///var/jenkins_home/gerrit_test_trigger.txt
+          skip-vote:
+            successful: true
+            failed: true
+            unstable: true
+            notbuilt: true
+          trigger-on:
+            - patchset-created-event:
+                exclude-drafts: true
+                exclude-trivial-rebase: true
+                exclude-no-code-change: true
+                exclude-private: true
+                exclude-wip: true
+            - comment-added-contains-event:
+                comment-contains-value: "check tf-jenkins"
+          trigger-for-unreviewed-patches: true

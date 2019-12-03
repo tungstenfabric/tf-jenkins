@@ -6,7 +6,6 @@ def inner_jobs = [:]
 
 pipeline {
   environment {
-    PATCHSET_ID = "12345/1"
     CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
     DO_BUILD = '1'
   }
@@ -24,12 +23,14 @@ pipeline {
     stage('Pre-build') {
       steps {
         script {
-          CONTRAIL_CONTAINER_TAG = PATCHSET_ID.replace('/', '-')
+          CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
           sh """
             echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
-            echo "export PATCHSET_ID=${PATCHSET_ID}" >> global.env
             echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
+            echo "export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}" >> global.env
+            echo "export GERRIT_CHANGE_URL=${GERRIT_CHANGE_URL}" >> global.env
+            echo "export GERRIT_BRANCH=${GERRIT_BRANCH}" >> global.env
           """
         }
         archiveArtifacts artifacts: 'global.env'

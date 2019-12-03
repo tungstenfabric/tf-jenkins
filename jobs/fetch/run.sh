@@ -17,25 +17,35 @@ echo "INFO: Fetch started"
 
 cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
-export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
-export IMAGE=tf-dev-env
-export DEVENVTAG="master"
-#export CONTRAIL_BUILD_FROM_SOURCE=1
-export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG"
+export DEBUG=$DEBUG
+# export CONTRAIL_BUILD_FROM_SOURCE=1
+# export CANONICAL_HOSTNAME="{{ zuul.project.canonical_hostname }}"
+export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG
 export OPENSTACK_VERSIONS="rocky"
-#export OPENSTACK_VERSIONS="ocata,queens,rocky"
-#export SRC_ROOT="{{ ansible_env.HOME }}/{{ packaging.target_dir }}"
-#export EXTERNAL_REPOS="{{ ansible_env.HOME }}/src"
-#export CANONICAL_HOSTNAME="{{ zuul.project.canonical_hostname }}"
 export REGISTRY_IP="pnexus.sytes.net"
 export REGISTRY_PORT="5001"
 export SITE_MIRROR="http://pnexus.sytes.net/repository"
+# to not to bind contrail sources to container
+export CONTRAIL_DIR=""
 
 cd src/tungstenfabric/tf-dev-env
-./run.sh fetch
+./run.sh fetch || exit 1
 
-# TODO: push created container here
+target_name="tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG"
+sudo docker commit tf-developer-sandbox $target_name || {
+  echo "ERROR: failed to commit tf-developer-sandbox"
+  exit 1
+}
+target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$CONTRAIL_CONTAINER_TAG"
+sudo docker tag $target_name $target_tag || {
+  echo "ERROR: failed to tag container $target_tag"
+  exit 1
+}
+sudo docker push $target_tag || {
+  echo "ERROR: failed to push container $target_tag"
+  exit 1
+}
 
 EOF
 
