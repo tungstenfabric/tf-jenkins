@@ -26,14 +26,14 @@ export CONTRAIL_DEPLOY_REGISTRY=0
 # skip rpm repo at fetch stage
 export CONTRAIL_DEPLOY_RPM_REPO=0
 
-export REGISTRY_IP="pnexus.sytes.net"
-export REGISTRY_PORT="5001"
-export SITE_MIRROR="http://pnexus.sytes.net/repository"
+export REGISTRY_IP=$REGISTRY_IP
+export REGISTRY_PORT=$REGISTRY_PORT
+export SITE_MIRROR=http://${REGISTRY_IP}/repository
 
+# TODO: enable later
 # export CONTRAIL_BUILD_FROM_SOURCE=1
-# export CANONICAL_HOSTNAME="{{ zuul.project.canonical_hostname }}"
 
-export OPENSTACK_VERSIONS="rocky"
+export OPENSTACK_VERSIONS=rocky
 export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG
 
 export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}
@@ -48,10 +48,10 @@ cd src/tungstenfabric/tf-dev-env
 EOF
 result=$?
 if [[ $result != 0 ]] ; then
-  echo "ERROR: Fetch finished with errors"
+  echo "ERROR: Fetch failed"
   exit $result
 fi
-echo "INFO: Fetch finished succeeded"
+echo "INFO: Fetch finished successfully"
 
 echo "INFO: Save tf-sandbox started"
 cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
@@ -79,7 +79,7 @@ fi
 EOF
 result=$?
 if [[ $result != 0 ]] ; then
-  echo "ERROR: Save tf-sandbox finished with errors"
+  echo "ERROR: Save tf-sandbox failed"
   exit $result
 fi
-echo "INFO: Save tf-sandbox succeeded"
+echo "INFO: Save tf-sandbox finished successfully"

@@ -6,7 +6,8 @@ def inner_jobs = [:]
 
 pipeline {
   environment {
-    CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
+    REGISTRY_IP = "pnexus.sytes.net"
+    REGISTRY_PORT = "5001"
     DO_BUILD = '1'
   }
   parameters {
@@ -26,7 +27,9 @@ pipeline {
           CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
           sh """
             echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
-            echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
+            echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
+            echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
+            echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
             echo "export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}" >> global.env
             echo "export GERRIT_CHANGE_URL=${GERRIT_CHANGE_URL}" >> global.env
