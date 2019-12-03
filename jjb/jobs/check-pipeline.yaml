@@ -8,7 +8,7 @@
     concurrent: true
     parameters:
       - choice:
-          name: HOSTING
+          name: SLAVE
           choices:
             - aws
             - vexxhost

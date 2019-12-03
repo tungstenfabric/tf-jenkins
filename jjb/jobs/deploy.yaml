@@ -51,6 +51,7 @@
           which-build: specific-build
           build-number: ${{PIPELINE_BUILD_NUMBER}}
       - shell: |
+          export DEBUG=true
           export ENVIRONMENT_OS={environment_os}
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/create_workers.sh
