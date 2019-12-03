@@ -1,6 +1,6 @@
-OS_REGION_NAME="sjc1"
-OS_NETWORK="management"
-OS_SG="zuul"
+export OS_REGION_NAME="sjc1"
+export OS_NETWORK="management"
+export OS_SG="zuul"
 
 #                CPU     Memory     AWS (Canada)   vm_type
 # v2-standard-1   1       4 GB      t2.small       xsmall
