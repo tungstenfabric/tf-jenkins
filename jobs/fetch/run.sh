@@ -13,9 +13,13 @@ source $ENV_FILE
 
 rsync -a -e "ssh $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-echo "INFO: Fetch started"
+# set to force devenv rebuild each time
+BUILD_DEV_ENV=0
 
-cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+function run_dev_env() {
+  local stage=$1
+  local devenv=$2
+  cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
 export DEBUG=$DEBUG
@@ -43,31 +47,32 @@ export GERRIT_BRANCH=${GERRIT_BRANCH}
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
+export BUILD_DEV_ENV=$BUILD_DEV_ENV
+export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
+export DEVENVTAG=$devenv
+
 cd src/tungstenfabric/tf-dev-env
-./run.sh fetch
+./run.sh $stage
 EOF
-result=$?
-if [[ $result != 0 ]] ; then
-  echo "ERROR: Fetch failed"
-  exit $result
-fi
-echo "INFO: Fetch finished successfully"
+return $?
+}
 
-
-target_name="tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG"
-target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$CONTRAIL_CONTAINER_TAG"
-echo "INFO: Save tf-sandbox started"
-cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+function push_dev_env() {
+  local tag=$1
+  local commit_name="tf-developer-sandbox-$tag"
+  local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
+  echo "INFO: Save tf-sandbox started: $target_tag"
+  cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 
 echo "INFO: commit tf-developer-sandbox container"
-if ! sudo docker commit tf-developer-sandbox $target_name ; then
+if ! sudo docker commit tf-developer-sandbox $commit_name ; then
   echo "ERROR: failed to commit tf-developer-sandbox"
   exit 1
 fi
 
 echo "INFO: tag tf-developer-sandbox container"
-if ! sudo docker tag $target_name $target_tag ; then
+if ! sudo docker tag $commit_name $target_tag ; then
   echo "ERROR: failed to tag container $target_tag"
   exit 1
 fi
@@ -78,9 +83,27 @@ if ! sudo docker push $target_tag ; then
   exit 1
 fi
 EOF
-result=$?
-if [[ $result != 0 ]] ; then
-  echo "ERROR: Save tf-sandbox failed"
-  exit $result
+}
+
+echo "INFO: Build dev env"
+if ! run_dev_env none stable ; then
+  echo "ERROR: Build dev env failed"
+  exit 1
 fi
-echo "INFO: Save tf-sandbox finished successfully"
+if ! push_dev_env stable ; then
+  echo "ERROR: Save dev-env failed"
+  exit 1
+fi
+
+
+echo "INFO: Sync started"
+if ! run_dev_env fetch stable ; then
+  echo "ERROR: Sync failed"
+  exit 1
+fi
+if ! push_dev_env $CONTRAIL_CONTAINER_TAG ; then
+  echo "ERROR: Save tf-sandbox failed"
+  exit 1
+fi
+
+echo "INFO: Fetch done"
