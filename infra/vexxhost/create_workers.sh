@@ -48,7 +48,7 @@ for ((i=0; i<10; ++i)); do
 done
 
 instance_id=$(openstack server create -c id -f value \
-    --volume ${VOLUME_ID} \
+    --volume ${volume_id} \
     --flavor ${INSTANCE_TYPE} \
     --security-group ${OS_SG} \
     --key-name=worker \
