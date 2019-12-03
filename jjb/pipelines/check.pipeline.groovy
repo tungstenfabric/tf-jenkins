@@ -11,7 +11,7 @@ pipeline {
     DO_BUILD = '1'
   }
   parameters {
-    choice(name: 'HOSTING', choices: ['aws', 'vexxhost'], description: '')
+    choice(name: 'SLAVE', choices: ['aws', 'vexxhost'], description: '')
     }
   options {
     timestamps()
