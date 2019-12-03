@@ -38,6 +38,6 @@
           which-build: specific-build
           build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
       - shell: |
-          source "$WORKSPACE/global.env"
           export DEBUG=true
-          echo "TODO: ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh"
+          source "$WORKSPACE/global.env"
+          ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh
