@@ -22,6 +22,10 @@ export DEBUG=$DEBUG
 
 # dont setup own registry
 export CONTRAIL_DEPLOY_REGISTRY=0
+
+# skip rpm repo at fetch stage
+export CONTRAIL_DEPLOY_RPM_REPO=0
+
 export REGISTRY_IP="pnexus.sytes.net"
 export REGISTRY_PORT="5001"
 export SITE_MIRROR="http://pnexus.sytes.net/repository"
@@ -40,27 +44,33 @@ export GERRIT_BRANCH=${GERRIT_BRANCH}
 export CONTRAIL_DIR=""
 
 cd src/tungstenfabric/tf-dev-env
+echo "INFO: sync contrail sources"
 if ! ./run.sh fetch ; then
   echo "ERROR: failed to fetch contrail sources"
   exit 1
 fi
 
+echo "INFO: commit tf-developer-sandbox container"
 target_name="tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG"
 if ! sudo docker commit tf-developer-sandbox $target_name ; then
   echo "ERROR: failed to commit tf-developer-sandbox"
   exit 1
 fi
 
+echo "INFO: tag tf-developer-sandbox container"
 target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$CONTRAIL_CONTAINER_TAG"
 if ! sudo docker tag $target_name $target_tag ; then
   echo "ERROR: failed to tag container $target_tag"
   exit 1
 fi
+
+echo "INFO: push tf-developer-sandbox container"
 if ! sudo docker push $target_tag ; then
   echo "ERROR: failed to push container $target_tag"
   exit 1
 fi
-
+exit 0
 EOF
-
-echo "INFO: Fetch finished"
+result=$?
+echo "INFO: Fetch finished with result $result"
+exit $result
