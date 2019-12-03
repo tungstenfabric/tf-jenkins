@@ -6,6 +6,13 @@
     description: check-pipeline
     project-type: pipeline
     concurrent: true
+    parameters:
+      - choice:
+          name: HOSTING
+          choices:
+            - aws
+            - vexxhost
+          description: "On which project to run?"
     pipeline-scm:
       scm:
         - tf-jenkins

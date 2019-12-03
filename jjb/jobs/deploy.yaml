@@ -25,6 +25,22 @@
               credential-id: aws-creds
               access-key: AWS_ACCESS_KEY_ID
               secret-key: AWS_SECRET_ACCESS_KEY
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: VEXX_OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: VEXX_OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: VEXX_OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: VEXX_OS_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: VEXX_OS_AUTH_URL
     scm:
       - tf-jenkins
       - tf-devstack

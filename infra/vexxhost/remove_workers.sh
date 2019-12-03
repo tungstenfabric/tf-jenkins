@@ -7,6 +7,11 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
+source "$WORKSPACE/global.env"
 
-# TODO:
-exit 1
+DEFAULT_ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
+ENV_FILE=${ENV_FILE:-$DEFAULT_ENV_FILE}
+source $ENV_FILE
+
+openstack server delete --wait $instance_id
+openstack volume delete --force $volume_id

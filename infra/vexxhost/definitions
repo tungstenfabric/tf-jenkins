@@ -1,2 +1,22 @@
-export OS_REGION_NAME=sjc1
+OS_REGION_NAME="sjc1"
+OS_NETWORK="management"
+OS_SG="zuul"
+
+#                CPU     Memory     AWS (Canada)   vm_type
+# v2-standard-1   1       4 GB      t2.small       xsmall
+# v2-standard-2   2       8 GB      t2.large       small
+# v2-standard-4   4       16 GB     t2.xlarge      medium
+# v2-standard-8   8       32 GB     m4.2xlarge     large
+
+declare -A VM_TYPES=( ['large']='v2-standard-8' \
+                      ['medium']='v2-standard-4' \
+                      ['small']='v2-standard-2' \
+                      ['xsmall']='v2-standard-1' )
+
+declare -A OS_IMAGES=( ['IMAGE_CENTOS7']='template-centos-7' \
+                       ['IMAGE_RHEL7']='template-rhel-7' \
+                       ['IMAGE_UBUNTU16']='template-ubuntu-xenial' \
+                       ['IMAGE_UBUNTU18']='template-ubuntu-bionic' )
+
+IMAGE_SSH_USER="zuul"
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"

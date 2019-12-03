@@ -1,4 +1,4 @@
-def SLAVE = 'aws'
+def SLAVE = "$HOSTING"
 
 //def test_configurations = ['k8s_manifests', 'os_ansible', 'k8s_juju', 'k8s_helm', 'os_helm']
 def test_configurations = ['k8s_manifests', 'os_ansible', 'k8s_juju']
@@ -12,6 +12,9 @@ pipeline {
     CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
     DO_BUILD = '1'
   }
+  parameters {
+    choice(name: 'HOSTING', choices: ['aws', 'vexxhost'], description: '')
+    }
   options {
     timestamps()
     timeout(time: 4, unit: 'HOURS')
@@ -150,10 +153,16 @@ pipeline {
                       [[$class: 'AmazonWebServicesCredentialsBinding',
                           credentialsId: 'aws-creds',
                           accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
+                      [string(credentialsId: 'VEXX_OS_USERNAME', variable: 'VEXX_OS_USERNAME')],
+                      [string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'VEXX_OS_PROJECT_NAME')],
+                      [string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'VEXX_OS_PASSWORD')],
+                      [string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'VEXX_OS_DOMAIN_NAME')],
+                      [string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'VEXX_OS_AUTH_URL')]]
+                      ) {
                       sh """
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
-                        "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/remove_workers.sh"
+                        "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
                       """
                     }
                   } catch(err) {
@@ -195,8 +204,13 @@ pipeline {
         [[$class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: 'aws-creds',
             accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-        sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/cleanup_pipeline_workers.sh"
+            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
+        [string(credentialsId: 'VEXX_OS_USERNAME', variable: 'VEXX_OS_USERNAME')],
+        [string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'VEXX_OS_PROJECT_NAME')],
+        [string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'VEXX_OS_PASSWORD')],
+        [string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'VEXX_OS_DOMAIN_NAME')],
+        [string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'VEXX_OS_AUTH_URL')]]) {
+        sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/cleanup_pipeline_workers.sh"
       }
     }
     failure {
