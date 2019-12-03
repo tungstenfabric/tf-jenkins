@@ -19,33 +19,47 @@ cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
 export DEBUG=$DEBUG
-# export CONTRAIL_BUILD_FROM_SOURCE=1
-# export CANONICAL_HOSTNAME="{{ zuul.project.canonical_hostname }}"
-export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG
-export OPENSTACK_VERSIONS="rocky"
+
+# dont setup own registry
+export CONTRAIL_DEPLOY_REGISTRY=0
 export REGISTRY_IP="pnexus.sytes.net"
 export REGISTRY_PORT="5001"
 export SITE_MIRROR="http://pnexus.sytes.net/repository"
+
+# export CONTRAIL_BUILD_FROM_SOURCE=1
+# export CANONICAL_HOSTNAME="{{ zuul.project.canonical_hostname }}"
+
+export OPENSTACK_VERSIONS="rocky"
+export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG
+
+export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}
+export GERRIT_CHANGE_URL=${GERRIT_CHANGE_URL}
+export GERRIT_BRANCH=${GERRIT_BRANCH}
+
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
 cd src/tungstenfabric/tf-dev-env
-./run.sh fetch || exit 1
+if ! ./run.sh fetch ; then
+  echo "ERROR: failed to fetch contrail sources"
+  exit 1
+fi
 
 target_name="tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG"
-sudo docker commit tf-developer-sandbox $target_name || {
+if ! sudo docker commit tf-developer-sandbox $target_name ; then
   echo "ERROR: failed to commit tf-developer-sandbox"
   exit 1
-}
+fi
+
 target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$CONTRAIL_CONTAINER_TAG"
-sudo docker tag $target_name $target_tag || {
+if ! sudo docker tag $target_name $target_tag ; then
   echo "ERROR: failed to tag container $target_tag"
   exit 1
-}
-sudo docker push $target_tag || {
+fi
+if ! sudo docker push $target_tag ; then
   echo "ERROR: failed to push container $target_tag"
   exit 1
-}
+fi
 
 EOF
 
