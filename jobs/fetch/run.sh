@@ -44,11 +44,18 @@ export GERRIT_BRANCH=${GERRIT_BRANCH}
 export CONTRAIL_DIR=""
 
 cd src/tungstenfabric/tf-dev-env
-echo "INFO: sync contrail sources"
-if ! ./run.sh fetch ; then
-  echo "ERROR: failed to fetch contrail sources"
-  exit 1
+./run.sh fetch
+EOF
+result=$?
+if [[ $result != 0 ]] ; then
+  echo "ERROR: Fetch finished with errors"
+  exit $result
 fi
+echo "INFO: Fetch finished succeeded"
+
+echo "INFO: Save tf-sandbox started"
+cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+[ "${DEBUG,,}" == "true" ] && set -x
 
 echo "INFO: commit tf-developer-sandbox container"
 target_name="tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG"
@@ -69,8 +76,10 @@ if ! sudo docker push $target_tag ; then
   echo "ERROR: failed to push container $target_tag"
   exit 1
 fi
-exit 0
 EOF
 result=$?
-echo "INFO: Fetch finished with result $result"
-exit $result
+if [[ $result != 0 ]] ; then
+  echo "ERROR: Save tf-sandbox finished with errors"
+  exit $result
+fi
+echo "INFO: Save tf-sandbox succeeded"
