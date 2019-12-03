@@ -154,11 +154,11 @@ pipeline {
                           credentialsId: 'aws-creds',
                           accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
-                      [string(credentialsId: 'VEXX_OS_USERNAME', variable: 'VEXX_OS_USERNAME')],
-                      [string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'VEXX_OS_PROJECT_NAME')],
-                      [string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'VEXX_OS_PASSWORD')],
-                      [string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'VEXX_OS_DOMAIN_NAME')],
-                      [string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'VEXX_OS_AUTH_URL')]]
+                      [string(credentialsId: 'VEXX_OS_USERNAME', variable: 'OS_USERNAME')],
+                      [string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'OS_PROJECT_NAME')],
+                      [string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'OS_PASSWORD')],
+                      [string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_DOMAIN_NAME')],
+                      [string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]]
                       ) {
                       sh """
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
@@ -205,11 +205,11 @@ pipeline {
             credentialsId: 'aws-creds',
             accessKeyVariable: 'AWS_ACCESS_KEY_ID',
             secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
-        [string(credentialsId: 'VEXX_OS_USERNAME', variable: 'VEXX_OS_USERNAME')],
-        [string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'VEXX_OS_PROJECT_NAME')],
-        [string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'VEXX_OS_PASSWORD')],
-        [string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'VEXX_OS_DOMAIN_NAME')],
-        [string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'VEXX_OS_AUTH_URL')]]) {
+        [string(credentialsId: 'VEXX_OS_USERNAME', variable: 'OS_USERNAME')],
+        [string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'OS_PROJECT_NAME')],
+        [string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'OS_PASSWORD')],
+        [string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_DOMAIN_NAME')],
+        [string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]]) {
         sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/cleanup_pipeline_workers.sh"
       }
     }
