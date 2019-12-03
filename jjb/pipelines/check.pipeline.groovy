@@ -12,7 +12,7 @@ pipeline {
   }
   parameters {
     choice(name: 'SLAVE', choices: ['aws', 'vexxhost'], description: '')
-    }
+  }
   options {
     timestamps()
     timeout(time: 4, unit: 'HOURS')
@@ -207,7 +207,10 @@ pipeline {
         string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'OS_PASSWORD'),
         string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_DOMAIN_NAME'),
         string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
-        sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/cleanup_pipeline_workers.sh"
+        sh """
+          export DEBUG=true
+          $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/cleanup_pipeline_workers.sh"
+        """
       }
     }
     failure {
