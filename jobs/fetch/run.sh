@@ -14,7 +14,7 @@ source $ENV_FILE
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 # set to force devenv rebuild each time
-BUILD_DEV_ENV=0
+export BUILD_DEV_ENV=${BUILD_DEV_ENV:-0}
 
 function run_dev_env() {
   local stage=$1
