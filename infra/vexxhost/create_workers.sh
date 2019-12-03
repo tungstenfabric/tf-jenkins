@@ -56,8 +56,14 @@ INSTANCE_ID=$(openstack server create -c id -f value \
     --network=${OS_NETWORK} \
     --availability-zone=${OS_AZ} \
     --wait \
-    $OBJECT_NAME | tr -d "\n\r")
+    $OBJECT_NAME | tr -d '\n)
 echo "instance_id=$INSTANCE_ID" >> "$ENV_FILE"
 
 INSTANCE_IP=$(openstack server show $OBJECT_NAME -c addresses -f value | cut -f2 -d=)
 echo "instance_ip=$INSTANCE_IP" >> "$ENV_FILE"
+
+timeout 300 bash -c "\
+while /bin/true ; do \
+  ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
+  sleep 5 ; \
+done"
