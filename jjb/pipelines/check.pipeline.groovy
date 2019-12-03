@@ -8,8 +8,8 @@ def inner_jobs = [:]
 
 pipeline {
   environment {
-    CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
     PATCHSET_ID = "12345/1"
+    CONTAINER_REGISTRY = "pnexus.sytes.net:5001"
     DO_BUILD = '1'
   }
   options {
@@ -25,8 +25,9 @@ pipeline {
         script {
           sh """
             echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
-            echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
             echo "export PATCHSET_ID=${PATCHSET_ID}" >> global.env
+            echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
+            echo "export CONTRAIL_CONTAINER_TAG=$(echo ${PATCHSET_ID} | tr '/' '-')" >> global.env
           """
         }
         archiveArtifacts artifacts: 'global.env'

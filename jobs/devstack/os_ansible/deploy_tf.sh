@@ -19,7 +19,7 @@ cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 export DEBUG=$DEBUG
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
-export CONTRAIL_CONTAINER_TAG="$PATCHSET_ID"
+export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG"
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/ansible
 ORCHESTRATOR=openstack ./run.sh

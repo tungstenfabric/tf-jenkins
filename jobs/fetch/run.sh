@@ -10,7 +10,7 @@ echo 'INFO: Run fetch with tf-dev-env'
 
 [ "${DEBUG,,}" == "true" ] && set -x
 export CONTAINER_REGISTRY
-export CONTRAIL_CONTAINER_TAG="$PATCHSET_ID"
+export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG"
 cd src/tungstenfabric/tf-dev-env
 # TODO: remove condition
 if ./run.sh fetch ; then
