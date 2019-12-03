@@ -27,7 +27,7 @@ pipeline {
             echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
             echo "export PATCHSET_ID=${PATCHSET_ID}" >> global.env
             echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
-            CONTRAIL_CONTAINER_TAG=$(echo ${PATCHSET_ID} | tr '/' '-')
+            CONTRAIL_CONTAINER_TAG=`echo ${PATCHSET_ID} | tr '/' '-'`
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
           """
         }
