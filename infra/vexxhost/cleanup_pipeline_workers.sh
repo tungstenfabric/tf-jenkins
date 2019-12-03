@@ -1,5 +1,6 @@
 #!/bin/bash -eE
 set -o pipefail
+set -x
 
 # to cleanup all workers created by current pipeline
 
