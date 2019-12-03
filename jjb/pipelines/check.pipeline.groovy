@@ -159,7 +159,7 @@ pipeline {
                       [string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'OS_PASSWORD')],
                       [string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_DOMAIN_NAME')],
                       [string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]]
-                      ) {
+                    ) {
                       sh """
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
@@ -209,7 +209,8 @@ pipeline {
         [string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'OS_PROJECT_NAME')],
         [string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'OS_PASSWORD')],
         [string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_DOMAIN_NAME')],
-        [string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]]) {
+        [string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]]
+      ) {
         sh "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/cleanup_pipeline_workers.sh"
       }
     }

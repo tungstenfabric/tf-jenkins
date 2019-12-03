@@ -36,18 +36,15 @@ VOLUME_ID=$(openstack volume create -c id --format value  \
     --image ${IMAGE} \
     --property Pipeline=${PIPELINE_BUILD_TAG} \
     --bootable \
-    ${BUILD_TAG} )
+    ${OBJECT_NAME} )
 echo "volume_id=$VOLUME_ID" >> "$ENV_FILE"
 
-i=0
-while [ $i -lt 10 ]
-do
+for ((i=0; i<10; ++i)); do
   sleep 5
-  volume_status=$(openstack volume list -c Status -f value --name ${BUILD_TAG})
+  volume_status=$(openstack volume list -c Status -f value --name ${OBJECT_NAME})
   if [[ "$volume_status" == 'available' ]]; then
     break
   fi
-  ((i=i+1))
 done
 
 INSTANCE_ID=$(openstack server create -c id -f value \
