@@ -16,7 +16,6 @@
     properties:
       - build-discarder:
           num-to-keep: 10
-    concurrent: true
     wrappers:
       - credentials-binding:
           - ssh-user-private-key:
