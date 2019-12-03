@@ -22,7 +22,7 @@ for i in $(openstack server list -c ID -f value --name jenkins); do
     PIPELINE_VEXXHOST_INSTANCES="$i $PIPELINE_VEXXHOST_INSTANCES"
   fi
 done
-openstack server delete --wait $PIPELINE_VEXXHOST_INSTANCES
+openstack server delete --wait $PIPELINE_VEXXHOST_INSTANCES || true
 
 PIPELINE_VEXXHOST_VOLUMES=""
 for v in $(openstack volume list -c ID -f value --name jenkins); do
@@ -32,4 +32,4 @@ for v in $(openstack volume list -c ID -f value --name jenkins); do
     PIPELINE_VEXXHOST_VOLUMES="$v $PIPELINE_VOLUMES"
   fi
 done
-openstack volume delete --force $PIPELINE_VEXXHOST_VOLUMES
+openstack volume delete --force $PIPELINE_VEXXHOST_VOLUMES || true
