@@ -41,7 +41,7 @@ EOF
 
 result=$?
 if [[ $result != 0 ]] ; then
-  echo "ERROR: Build failed"
+  echo "ERROR: UT failed"
   exit $result
 fi
 echo "INFO: UT finished successfully"

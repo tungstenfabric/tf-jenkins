@@ -55,20 +55,30 @@ pipeline {
         script {
           top_jobs['test-unit'] = {
             stage('test-unit') {
-              build job: 'test-unit',
-                parameters: [
-                  string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                ]
+              try {
+                build job: 'test-unit',
+                  parameters: [
+                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                  ]
+              } catch (err) {
+                println "Failed to run fetch: " + err.getMessage())
+                error(err.getMessage())
+              }
             }
           }
           top_jobs['test-lint'] = {
             stage('test-lint') {
-              build job: 'test-lint',
-                parameters: [
-                  string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                ]
+              try {
+                build job: 'test-lint',
+                  parameters: [
+                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                  ]
+              } catch (err) {
+                println "Failed to run fetch: " + err.getMessage())
+                error(err.getMessage())
+              }
             }
           }
 
