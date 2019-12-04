@@ -8,4 +8,4 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-"$my_dir/../../infra/${SLAVE}/create_workers.sh"
+"$my_dir/../../../infra/${SLAVE}/create_workers.sh"
