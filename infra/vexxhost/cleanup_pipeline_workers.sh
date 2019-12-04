@@ -13,4 +13,4 @@ source "$WORKSPACE/global.env"
 
 # TODO: check if it's locked and do not fail job
 
-openstack server delete --wait $(nova list --tags "-${PIPELINE_BUILD_TAG}-" --minimal | awk '{print $2}' | grep -v ID | grep -v "^$")
+openstack server delete --wait $(nova list --tags "x${PIPELINE_BUILD_TAG}x" --minimal | awk '{print $2}' | grep -v ID | grep -v "^$")
