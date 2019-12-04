@@ -17,6 +17,6 @@ declare -A OS_IMAGES=( ['CENTOS7']='template-centos-7' \
                        ['RHEL7']='template-rhel-7' \
                        ['UBUNTU16']='template-ubuntu-xenial' \
                        ['UBUNTU18']='template-ubuntu-bionic' )
+declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' ['RHEL7']='centos' ['UBUNTU16']='ubuntu' ['UBUNTU18']='ubuntu' )
 
-IMAGE_SSH_USER="zuul"
 SSH_OPTIONS="-T -i $WORKER_SSH_KEY -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"

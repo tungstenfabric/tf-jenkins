@@ -20,6 +20,8 @@ echo "OS_REGION_NAME=${OS_REGION_NAME}" >> "$ENV_FILE"
 IMAGE_TEMPLATE_NAME=${OS_IMAGES["${ENVIRONMENT_OS^^}"]}
 IMAGE=$(openstack image list --private -c Name -f value | grep ${IMAGE_TEMPLATE_NAME} | sort -nr | head -n 1)
 echo "IMAGE=$IMAGE" >> "$ENV_FILE"
+
+IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
 echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
 VM_TYPE=${VM_TYPE:-'medium'}
