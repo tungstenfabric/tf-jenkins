@@ -8,10 +8,10 @@ pipeline {
   environment {
     REGISTRY_IP = "pnexus.sytes.net"
     REGISTRY_PORT = "5001"
-    DO_BUILD = '1'
   }
   parameters {
     choice(name: 'SLAVE', choices: ['vexxhost', 'aws'], description: '')
+    string(name: 'DO_BUILD', defaultValue: '1', description: '')
   }
   options {
     timestamps()

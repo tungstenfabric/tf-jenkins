@@ -13,6 +13,10 @@
             - vexxhost
             - aws
           description: "On which project to run?"
+      - string:
+          name: DO_BUILD
+          default: "1"
+          description: ""
     pipeline-scm:
       scm:
         - tf-jenkins
