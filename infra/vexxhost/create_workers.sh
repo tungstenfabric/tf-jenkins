@@ -42,7 +42,7 @@ nova boot --flavor ${INSTANCE_TYPE} \
           --poll \
           $OBJECT_NAME
 
-instance_id=$(openstack server show -c id -f $OBJECT_NAME | tr -d '\n')
+instance_id=$(openstack server show $OBJECT_NAME -c id -f value | tr -d '\n')
 echo "instance_id=$instance_id" >> "$ENV_FILE"
 instance_ip=$(openstack server show $OBJECT_NAME -c addresses -f value | cut -f 2 -d '=')
 echo "instance_ip=$instance_ip" >> "$ENV_FILE"
