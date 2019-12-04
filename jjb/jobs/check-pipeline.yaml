@@ -10,8 +10,8 @@
       - choice:
           name: SLAVE
           choices:
-            - aws
             - vexxhost
+            - aws
           description: "On which project to run?"
     pipeline-scm:
       scm:
