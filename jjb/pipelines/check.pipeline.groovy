@@ -35,9 +35,9 @@ pipeline {
             echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
             echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
-            echo "export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}" >> global.env
-            echo "export GERRIT_CHANGE_URL=${GERRIT_CHANGE_URL}" >> global.env
-            echo "export GERRIT_BRANCH=${GERRIT_BRANCH}" >> global.env
+            echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
+            echo "export GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}" >> global.env
+            echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
           """
         }
         archiveArtifacts artifacts: 'global.env'
