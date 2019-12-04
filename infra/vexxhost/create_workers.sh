@@ -18,7 +18,6 @@ echo "ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
 echo "OS_REGION_NAME=${OS_REGION_NAME}" >> "$ENV_FILE"
 
 IMAGE_TEMPLATE_NAME=${OS_IMAGES["${ENVIRONMENT_OS^^}"]}
-openstack image list
 IMAGE=$(openstack image list --private -c Name -f value | grep ${IMAGE_TEMPLATE_NAME} | sort -nr | head -n 1)
 echo "IMAGE=$IMAGE" >> "$ENV_FILE"
 echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
@@ -59,11 +58,11 @@ instance_id=$(openstack server create -c id -f value \
     $OBJECT_NAME | tr -d '\n')
 echo "instance_id=$instance_id" >> "$ENV_FILE"
 
-instance_ip=$(openstack server show $OBJECT_NAME -c addresses -f value | cut -f2 -d=)
+instance_ip=$(openstack server show $OBJECT_NAME -c addresses -f value | cut -f 2 -d '=')
 echo "instance_ip=$instance_ip" >> "$ENV_FILE"
 
 timeout 300 bash -c "\
 while /bin/true ; do \
-  ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip= 'uname -a' && break ; \
-  sleep 5 ; \
+  ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
+  sleep 10 ; \
 done"
