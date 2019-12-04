@@ -24,7 +24,11 @@ pipeline {
     stage('Pre-build') {
       steps {
         script {
-          CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
+          if (env.GERRIT_CHANGE_NUMBER && env.GERRIT_PATCHSET_NUMBER) {
+            CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
+          } else {
+            CONTRAIL_CONTAINER_TAG = 'dev'
+          }
           sh """
             echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
             echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
