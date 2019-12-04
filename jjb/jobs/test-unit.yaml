@@ -2,11 +2,45 @@
     name: "test-unit"
     description: "unit tests"
     defaults: global
+    scm:
+      - tf-jenkins
+      - tf-dev-env
     parameters:
       - label:
           name: SLAVE
       - string:
           name: PIPELINE_BUILD_NUMBER
+    wrappers:
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - amazon-web-services:
+              credential-id: aws-creds
+              access-key: AWS_ACCESS_KEY_ID
+              secret-key: AWS_SECRET_ACCESS_KEY
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
     builders:
       - copyartifact:
           project: check-pipeline
@@ -14,6 +48,14 @@
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
+          export DEBUG=true
+          export ENVIRONMENT_OS=centos7
           source "$WORKSPACE/global.env"
-          echo "TODO: ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh"
-          # inside will do "docker pull tf-dev-env; tf-dev-env/run.sh test //Detect target tests"
+          ./src/progmaticlab/tf-jenkins/jobs/test/unit/create_workers.sh
+      - shell: |
+          export DEBUG=true
+          source "$WORKSPACE/global.env"
+          ./src/progmaticlab/tf-jenkins/jobs/test/unit/run.sh
+      - shell: |
+          source "$WORKSPACE/global.env"
+          ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
