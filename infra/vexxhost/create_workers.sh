@@ -39,7 +39,7 @@ nova boot --flavor ${INSTANCE_TYPE} \
           --tags "x${PIPELINE_BUILD_TAG}x" \
           --nic net-name=${OS_NETWORK} \
           --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=60,bootindex=0 \
-          --poll
+          --poll \
           $OBJECT_NAME
 
 instance_id=$(openstack server show -c id -f $OBJECT_NAME | tr -d '\n')
