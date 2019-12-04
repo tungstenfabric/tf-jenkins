@@ -13,22 +13,4 @@ source "$WORKSPACE/global.env"
 
 # TODO: check if it's locked and do not fail job
 
-PIPELINE_VEXXHOST_INSTANCES=""
-for i in $(openstack server list -c ID -f value --name jenkins); do
-  server_property=$(openstack server show -c properties -f value $i)
-  server_pipeline=$(echo ${server_property#Pipeline=} | awk -F\' '{print $2}')
-  if [ "$server_pipeline" == "${PIPELINE_BUILD_TAG}" ]; then
-    PIPELINE_VEXXHOST_INSTANCES="$i $PIPELINE_VEXXHOST_INSTANCES"
-  fi
-done
-openstack server delete --wait $PIPELINE_VEXXHOST_INSTANCES || true
-
-PIPELINE_VEXXHOST_VOLUMES=""
-for v in $(openstack volume list -c ID -f value --name jenkins); do
-  volume_property=$(openstack volume show -c properties -f value $v)
-  volume_pipeline=$(echo ${volume_property#Pipeline=} | awk -F\' '{print $2}')
-  if [ "$volume_pipeline" == "${PIPELINE_BUILD_TAG}" ]; then
-    PIPELINE_VEXXHOST_VOLUMES="$v $PIPELINE_VOLUMES"
-  fi
-done
-openstack volume delete --force $PIPELINE_VEXXHOST_VOLUMES || true
+openstack server delete --wait $(nova list --tags "-${PIPELINE_BUILD_TAG}-" --minimal | awk '{print $2}' | grep -v ID | grep -v "^$")

@@ -159,7 +159,8 @@ pipeline {
                         string(credentialsId: 'VEXX_OS_USERNAME', variable: 'OS_USERNAME'),
                         string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'OS_PROJECT_NAME'),
                         string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'OS_PASSWORD'),
-                        string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_DOMAIN_NAME'),
+                        string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_USER_DOMAIN_NAME'),
+                        string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_PROJECT_DOMAIN_NAME'),
                         string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
                       sh """
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
@@ -209,7 +210,8 @@ pipeline {
          string(credentialsId: 'VEXX_OS_USERNAME', variable: 'OS_USERNAME'),
          string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'OS_PROJECT_NAME'),
          string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'OS_PASSWORD'),
-         string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_DOMAIN_NAME'),
+         string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_USER_DOMAIN_NAME'),
+         string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_PROJECT_DOMAIN_NAME'),
          string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
         sh """
           export DEBUG=true

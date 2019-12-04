@@ -34,7 +34,10 @@
               variable: OS_PASSWORD
           - text:
               credential-id: VEXX_OS_DOMAIN_NAME
-              variable: OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
           - text:
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL

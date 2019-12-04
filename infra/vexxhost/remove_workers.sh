@@ -18,4 +18,3 @@ source $ENV_FILE
 # TODO: check if it's locked and do not fail job
 
 openstack server delete --wait $instance_id
-openstack volume delete --force $volume_id

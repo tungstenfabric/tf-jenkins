@@ -18,7 +18,8 @@ echo "ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
 echo "OS_REGION_NAME=${OS_REGION_NAME}" >> "$ENV_FILE"
 
 IMAGE_TEMPLATE_NAME=${OS_IMAGES["${ENVIRONMENT_OS^^}"]}
-IMAGE=$(openstack image list --private -c Name -f value | grep ${IMAGE_TEMPLATE_NAME} | sort -nr | head -n 1)
+IMAGE_NAME=$(openstack image list --private -c Name -f value | grep ${IMAGE_TEMPLATE_NAME} | sort -nr | head -n 1)
+IMAGE=$(openstack image show -c id -f value $IMAGE_NAME)
 echo "IMAGE=$IMAGE" >> "$ENV_FILE"
 
 IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
@@ -32,34 +33,17 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
 fi
 
 OBJECT_NAME=$BUILD_TAG
-volume_id=$(openstack volume create -c id --format value  \
-    --size 60 \
-    --image ${IMAGE} \
-    --property Pipeline=${PIPELINE_BUILD_TAG} \
-    --bootable \
-    ${OBJECT_NAME} )
-echo "volume_id=$volume_id" >> "$ENV_FILE"
+nova boot --flavor ${INSTANCE_TYPE} \
+          --security-groups ${OS_SG} \
+          --key-name=worker \
+          --tags "-${PIPELINE_BUILD_TAG}-" \
+          --nic net-name=${OS_NETWORK} \
+          --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=60,bootindex=0 \
+          --poll
+          $OBJECT_NAME
 
-for ((i=0; i<10; ++i)); do
-  sleep 5
-  volume_status=$(openstack volume list -c Status -f value --name ${OBJECT_NAME})
-  if [[ "$volume_status" == 'available' ]]; then
-    break
-  fi
-done
-
-instance_id=$(openstack server create -c id -f value \
-    --volume ${volume_id} \
-    --flavor ${INSTANCE_TYPE} \
-    --security-group ${OS_SG} \
-    --key-name=worker \
-    --property Pipeline=${PIPELINE_BUILD_TAG} \
-    --network=${OS_NETWORK} \
-    --availability-zone=${OS_AZ} \
-    --wait \
-    $OBJECT_NAME | tr -d '\n')
+instance_id=$(openstack server show -c id -f $OBJECT_NAME | tr -d '\n')
 echo "instance_id=$instance_id" >> "$ENV_FILE"
-
 instance_ip=$(openstack server show $OBJECT_NAME -c addresses -f value | cut -f 2 -d '=')
 echo "instance_ip=$instance_ip" >> "$ENV_FILE"
 
