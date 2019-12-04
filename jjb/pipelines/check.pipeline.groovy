@@ -27,7 +27,7 @@ pipeline {
           if (env.GERRIT_CHANGE_NUMBER && env.GERRIT_PATCHSET_NUMBER) {
             CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
           } else {
-            CONTRAIL_CONTAINER_TAG = 'dev'
+            CONTRAIL_CONTAINER_TAG = 'master-nightly'
           }
           sh """
             echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
@@ -35,10 +35,14 @@ pipeline {
             echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
             echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
-            echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
-            echo "export GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}" >> global.env
-            echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
           """
+          if (env.GERRIT_CHANGE_ID) {
+            sh """
+              echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
+              echo "export GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}" >> global.env
+              echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
+            """
+          }
         }
         archiveArtifacts artifacts: 'global.env'
       }
