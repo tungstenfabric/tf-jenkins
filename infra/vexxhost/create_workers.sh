@@ -17,8 +17,8 @@ touch "$ENV_FILE"
 echo "ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
 echo "OS_REGION_NAME=${OS_REGION_NAME}" >> "$ENV_FILE"
 
-IMAGE_TEMPLATE_NAME=${OS_IMAGES["${ENVIRONMENT_OS^^}"]}
-IMAGE_NAME=$(openstack image list --private -c Name -f value | grep ${IMAGE_TEMPLATE_NAME} | sort -nr | head -n 1)
+IMAGE_TEMPLATE_NAME="${OS_IMAGES["${ENVIRONMENT_OS^^}"]}"
+IMAGE_NAME=$(openstack image list --private -c Name -f value | grep "${IMAGE_TEMPLATE_NAME}" | sort -nr | head -n 1)
 IMAGE=$(openstack image show -c id -f value $IMAGE_NAME)
 echo "IMAGE=$IMAGE" >> "$ENV_FILE"
 
