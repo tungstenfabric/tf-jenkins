@@ -24,6 +24,9 @@ export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG"
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/k8s_manifests
 ORCHESTRATOR=kubernetes ./run.sh
+#TODO Collect logs only if previous run.sh fails!!
+./run.sh logs
+
 EOF
 
 echo "INFO: Deploy TF finished"

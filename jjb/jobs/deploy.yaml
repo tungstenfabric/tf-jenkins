@@ -103,7 +103,10 @@
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh
+          res=0
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh  || res=1
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/collect_logs.sh || /bin/true
+          exit 0 
     publishers:
       - archive:
           artifacts: '*.env'
