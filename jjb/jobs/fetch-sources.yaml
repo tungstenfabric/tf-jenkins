@@ -56,11 +56,11 @@
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh
+          ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh || res = 1
+          ./src/progmaticlab/tf-jenkins/jobs/fetch/collect_logs.sh || /bin/true
+          exit $res
       - shell: |
           source "$WORKSPACE/global.env"
           res=0
-          ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh || res = 1
-          ./src/progmaticlab/tf-jenkins/jobs/fetch/collect_logs.sh || /bin/true
-          exit $res
-          
+          ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh 
+ 
