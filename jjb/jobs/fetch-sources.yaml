@@ -59,12 +59,14 @@
           ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh
       - conditional-step:
             condition-kind: always
+            on-evaluation-failure: run
             steps:
                 - shell: |
                     source "$WORKSPACE/global.env"
                     ./src/progmaticlab/tf-jenkins/jobs/fetch/collect_logs.sh
       - conditional-step:
             condition-kind: always
+            on-evaluation-failure: run
             steps:
                 - shell: |
                     source "$WORKSPACE/global.env"
