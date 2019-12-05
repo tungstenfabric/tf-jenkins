@@ -1,0 +1,123 @@
+---
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+        - string:
+            description: "VEXX_OS_USERNAME"
+            id: "VEXX_OS_USERNAME"
+            scope: GLOBAL
+            secret: ""
+        - string:
+            description: "VEXX_OS_PROJECT_NAME"
+            id: "VEXX_OS_PROJECT_NAME"
+            scope: GLOBAL
+            secret: ""
+        - string:
+            description: "VEXX_OS_PASSWORD"
+            id: "VEXX_OS_PASSWORD"
+            scope: GLOBAL
+            secret: ""
+        - string:
+            description: "VEXX_OS_DOMAIN_NAME"
+            id: "VEXX_OS_DOMAIN_NAME"
+            scope: GLOBAL
+            secret: ""
+        - string:
+            description: "VEXX_OS_AUTH_URL"
+            id: "VEXX_OS_AUTH_URL"
+            scope: GLOBAL
+            secret: ""
+        - basicSSHUserPrivateKey:
+            description: "Gerrit key"
+            id: "zuul-tf-gerrit"
+            privateKeySource:
+              directEntry:
+                privateKey: "{xxxx==}"
+            scope: GLOBAL
+            username: "zuul-tf"
+        - basicSSHUserPrivateKey:
+            description: "Slave key"
+            id: "jenkins-ssh-key"
+            privateKeySource:
+              directEntry:
+                privateKey: "{xxxx==}"
+            scope: GLOBAL
+            username: "jenkins"
+        - usernamePassword:
+            description: "jjb login"
+            id: "self-jenkins"
+            password: ""
+            scope: GLOBAL
+            username: "self-jenkins"
+        - usernamePassword:
+            description: "Nexus login"
+            id: "docker"
+            password: ""
+            scope: GLOBAL
+            username: "docker"
+        - aws:
+            accessKey: "AKXXXXXXXXXXXXXXX"
+            id: "aws-creds"
+            scope: GLOBAL
+            secretKey: ""
+jenkins:
+  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
+  numExecutors: 5
+  scmCheckoutRetryCount: 2
+  mode: NORMAL
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "self-jenkins"
+          password: "passw0rd"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  remotingSecurity:
+    enabled: true
+  nodes:
+    - permanent:
+        labelString: "aws"
+        launcher:
+          ssh:
+            credentialsId: "jenkins-ssh-key"
+            host: "10.0.0.1"
+            port: 22
+            sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
+        name: "slave-aws-01"
+        numExecutors: 20
+        remoteFS: "/home/jenkins"
+        retentionStrategy: "always"
+    - permanent:
+        labelString: "vexxhost vexx"
+        launcher:
+          ssh:
+            credentialsId: "jenkins-ssh-key"
+            host: "10.0.0.2"
+            port: 22
+            sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
+        name: "slave-vexxhost-01"
+        numExecutors: 20
+        remoteFS: "/home/jenkins"
+        retentionStrategy: "always"
+unclassified:
+  location:
+    adminAddress: "you@example.com"
+    url: "http://192.168.30.38:8080/"
+security:
+  scriptApproval:
+    approvedSignatures:
+      - "method hudson.model.Actionable getAction java.lang.Class"
+      - "method hudson.model.ParametersAction getParameters"
+      - "method java.util.concurrent.Semaphore acquire"
+      - "method java.util.concurrent.Semaphore release"
+      - "method java.util.concurrent.locks.Lock lock"
+      - "method java.util.concurrent.locks.Lock unlock"
+      - "new java.util.concurrent.Semaphore int"
+      - "new java.util.concurrent.locks.ReentrantLock"
+      - "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods next java.lang.String"
