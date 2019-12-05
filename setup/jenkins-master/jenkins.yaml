@@ -86,10 +86,10 @@ jenkins:
         launcher:
           ssh:
             credentialsId: "jenkins-ssh-key"
-            host: "10.0.0.1"
+            host: "slave01.aws.tf-jenkins.progmaticlab.com"
             port: 22
             sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
-        name: "slave-aws-01"
+        name: "slave01-aws"
         numExecutors: 20
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
@@ -98,17 +98,17 @@ jenkins:
         launcher:
           ssh:
             credentialsId: "jenkins-ssh-key"
-            host: "10.0.0.2"
+            host: "slave01.vexx.tf-jenkins.progmaticlab.com"
             port: 22
             sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
-        name: "slave-vexxhost-01"
+        name: "slave01-vexxhost"
         numExecutors: 20
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
 unclassified:
   location:
-    adminAddress: "you@example.com"
-    url: "http://192.168.30.38:8080/"
+    adminAddress: "jenkins@progmaticlab.com"
+    url: "https://tf-jenkins.progmaticlab.com/"
 security:
   scriptApproval:
     approvedSignatures:
