@@ -56,7 +56,7 @@
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh || res = 1
+          ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh || res=1
           ./src/progmaticlab/tf-jenkins/jobs/fetch/collect_logs.sh || /bin/true
           exit $res
       - shell: |
