@@ -57,6 +57,12 @@
           export DEBUG=true
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh
-      - shell: |
-          source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
+      - conditional-step:
+            condition-kind: always
+            steps:
+                - shell: |
+                    source "$WORKSPACE/global.env"
+                    ./src/progmaticlab/tf-jenkins/jobs/fetch/collect_logs.sh
+                - shell: |
+                    source "$WORKSPACE/global.env"
+                    ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
