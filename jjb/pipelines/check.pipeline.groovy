@@ -41,6 +41,8 @@ pipeline {
               echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
               echo "export GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}" >> global.env
               echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
+              echo "export GERRIT_PROJECT=${env.GERRIT_PROJECT}" >> global.env
+              echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
               echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
             """
           }
