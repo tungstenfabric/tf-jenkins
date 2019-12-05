@@ -60,7 +60,10 @@
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_platform.sh
+          res=0
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_platform.sh || res=1
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/collect_logs.sh || /bin/true
+          exit $res
     publishers:
       - archive:
           artifacts: '*.env'
@@ -103,10 +106,7 @@
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          res=0
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh  || res=1
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/collect_logs.sh || /bin/true
-          exit 0 
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh  
     publishers:
       - archive:
           artifacts: '*.env'
