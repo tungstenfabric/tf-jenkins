@@ -36,7 +36,7 @@ export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 
 cd src/tungstenfabric/tf-dev-env
-./run.sh test src/contrail-api-client/api-lib:test
+./run.sh test
 EOF
 
 result=$?
