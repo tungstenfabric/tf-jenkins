@@ -12,7 +12,7 @@ source "$my_dir/definitions"
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 source $ENV_FILE
 
-rsync -a -e "ssh $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:./etc/os-release $WORKSPACE/os-release-test
+rsync -a -e "ssh $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:/etc/os-release $WORKSPACE/os-release-test
 
 cat $WORKSPACE/os-release-test
 
