@@ -65,7 +65,6 @@
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/create_workers.sh
       - shell: |
-          export ARCHIVE_HOST=pnexus.sytes.net #TODO Move Var to Proper Place
           export DEBUG=true
           source "$WORKSPACE/global.env"
           res=0
