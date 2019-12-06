@@ -57,6 +57,11 @@
           export DEBUG=true
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/test/unit/run.sh
-      - shell: |
-          source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
+    publishers:
+      - postbuildscript:
+        builders:
+          - build-on: ['SUCCESS', 'UNSTABLE', 'FAILURE', 'NOT_BUILT', 'ABORTED']
+            build-steps:
+              - shell: |
+                  source "$WORKSPACE/global.env"
+                  ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
