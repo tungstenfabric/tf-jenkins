@@ -27,7 +27,7 @@
               secret-key: AWS_SECRET_ACCESS_KEY
       - credentials-binding:
           - ssh-user-private-key:
-              credential-id: zuul
+              credential-id: archive_credentials
               key-file-variable: ARCHIVE_USERNAME
               username-variable: ARCHIVE_SSH_KEY
       - credentials-binding:
