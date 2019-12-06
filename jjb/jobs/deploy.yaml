@@ -68,6 +68,7 @@
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/create_workers.sh
       - shell: |
+          export ARCHIVE_HOST=${ARCHIVE_HOST:-pnexus.sytes.net}
           export DEBUG=true
           source "$WORKSPACE/global.env"
           res=0
