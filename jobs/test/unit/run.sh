@@ -41,10 +41,10 @@ cd src/tungstenfabric/tf-dev-env
 EOF
 result=$?
 
-#if rsync -a -e "ssh $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:./src/tungstenfabric/tf-dev-env/logs.tgz $WORKSPACE/ ; then
+#if rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:./src/tungstenfabric/tf-dev-env/logs.tgz $WORKSPACE/ ; then
 #  pushd $WORKSPACE
 #  tar -xzf logs.tgz
-#  wget --recursive logs pnexus.sytes.net:8082/patchet_url/ || /bin/true
+#  rsync logs ARCHIVE_HOST:/patchet_url/ || /bin/true
 #  popd
 #fi
 
