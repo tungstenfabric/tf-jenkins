@@ -29,7 +29,8 @@ tar xzf $WORKSPACE/logs.tgz
 
 #TODO Remove after global.env will be fixed
 ARCHIVE_HOST=pnexus.sytes.net
-ls -lr $WORKSPACE/logs
+ls -la $WORKSPACE/logs.tgz
+ls -lr $WORKSPACE
 
 ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST "mkdir -p /var/www/logs/jenkins_logs/$instance_id"
 
