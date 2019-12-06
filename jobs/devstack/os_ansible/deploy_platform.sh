@@ -14,6 +14,8 @@ source $ENV_FILE
 
 echo 'INFO: Deploy platform for $JOB_NAME'
 
+exit 0
+
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
