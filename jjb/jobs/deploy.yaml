@@ -26,6 +26,11 @@
               access-key: AWS_ACCESS_KEY_ID
               secret-key: AWS_SECRET_ACCESS_KEY
       - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: zuul
+              key-file-variable: ARCHIVE_USERNAME
+              username-variable: ARCHIVE_SSH_KEY
+      - credentials-binding:
           - text:
               credential-id: VEXX_OS_USERNAME
               variable: OS_USERNAME
@@ -44,6 +49,7 @@
           - text:
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL
+
     scm:
       - tf-jenkins
       - tf-devstack
