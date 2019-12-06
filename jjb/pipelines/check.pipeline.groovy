@@ -8,6 +8,7 @@ pipeline {
   environment {
     REGISTRY_IP = "pnexus.sytes.net"
     REGISTRY_PORT = "5001"
+    ARCHIVE_HOST = "pnexus.sytes.net"
   }
   parameters {
     choice(name: 'SLAVE', choices: ['vexxhost', 'aws'], description: '')

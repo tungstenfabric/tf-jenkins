@@ -26,7 +26,7 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:l
 tar xzf $WORKSPACE/logs.tgz
 
 cat <<EOF | ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_SSH_KEY@$ARCHIVE_HOST
-mkdir -p /var/www/logs/jansins_logs/$instance_id
+mkdir -p /var/www/logs/jenkins_logs/$instance_id
 EOF
 
 rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_SSH_KEY@$ARCHIVE_HOST:/var/www/logs/jenkins_logs/$instance_id
