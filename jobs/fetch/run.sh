@@ -20,11 +20,17 @@ function run_dev_env() {
   local stage=$1
   local devenv=$2
 <<<<<<< HEAD
+<<<<<<< HEAD
   cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 =======
   cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 export WORKSPACE=\$HOME
 >>>>>>> 881388de78ca8147c7b280ee51e85e39adb06774
+=======
+
+  cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+export WORKSPACE=\$HOME
+>>>>>>> 9e8436dc48c92dc25d019529d9c095e37c794526
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
 export DEBUG=$DEBUG
@@ -70,8 +76,10 @@ function push_dev_env() {
   local commit_name="tf-developer-sandbox-$tag"
   local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
   echo "INFO: Save tf-sandbox started: $target_tag"
+
   cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 export WORKSPACE=\$HOME
+6
 [ "${DEBUG,,}" == "true" ] && set -x
 
 echo "INFO: commit tf-developer-sandbox container"
