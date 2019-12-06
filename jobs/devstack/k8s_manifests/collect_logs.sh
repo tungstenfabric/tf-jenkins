@@ -25,7 +25,8 @@ EOF
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
 
-tar xzf $WORKSPACE/logs.tgz
+cd $WORKSPACE
+tar xzf logs.tgz
 
 #TODO Remove after global.env will be fixed
 ARCHIVE_HOST=pnexus.sytes.net
