@@ -49,6 +49,9 @@
           - text:
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL
+          - test:
+              credential-id: ARCHIVE_HOST
+              variable: ARCHIVE_HOST
 
     scm:
       - tf-jenkins

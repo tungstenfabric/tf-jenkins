@@ -60,6 +60,6 @@ echo "instance_ip=$instance_ip" >> "$ENV_FILE"
 
 timeout 300 bash -c "\
 while /bin/true ; do \
-  ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
+  ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
   sleep 5 ; \
 done"
