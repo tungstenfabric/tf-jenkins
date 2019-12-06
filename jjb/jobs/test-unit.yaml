@@ -60,7 +60,12 @@
     publishers:
       - postbuildscript:
         builders:
-          - build-on: ['SUCCESS', 'UNSTABLE', 'FAILURE', 'NOT_BUILT', 'ABORTED']
+          - build-on:
+                - SUCCESS
+                - UNSTABLE
+                - FAILURE
+                - NOT_BUILT
+                - ABORTED
             build-steps:
               - shell: |
                   source "$WORKSPACE/global.env"
