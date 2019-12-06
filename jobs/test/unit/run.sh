@@ -41,12 +41,13 @@ cd src/tungstenfabric/tf-dev-env
 EOF
 result=$?
 
-#if rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:./src/tungstenfabric/tf-dev-env/logs.tgz $WORKSPACE/ ; then
-#  pushd $WORKSPACE
-#  tar -xzf logs.tgz
-#  rsync logs ARCHIVE_HOST:/patchet_url/ || /bin/true
-#  popd
-#fi
+tar -cvf build_* >> logs.tgz
+if rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:./src/tungstenfabric/tf-dev-env/logs.tgz $WORKSPACE/ ; then
+  pushd $WORKSPACE
+  tar -xzf logs.tgz
+  rsync logs ARCHIVE_HOST:/patchet_url/ || /bin/true
+  popd
+fi
 
 if [[ $result != 0 ]] ; then
   echo "ERROR: UT failed"
