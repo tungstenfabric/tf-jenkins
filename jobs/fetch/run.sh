@@ -19,7 +19,12 @@ BUILD_DEV_ENV=0
 function run_dev_env() {
   local stage=$1
   local devenv=$2
+<<<<<<< HEAD
   cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+=======
+  cat <<EOF | ssh $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+export WORKSPACE=\$HOME
+>>>>>>> 881388de78ca8147c7b280ee51e85e39adb06774
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
 export DEBUG=$DEBUG
@@ -43,6 +48,9 @@ export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG
 export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}
 export GERRIT_CHANGE_URL=${GERRIT_CHANGE_URL}
 export GERRIT_BRANCH=${GERRIT_BRANCH}
+export GERRIT_PROJECT=${GERRIT_PROJECT}
+export GERRIT_CHANGE_NUMBER=${GERRIT_CHANGE_NUMBER}
+export GERRIT_PATCHSET_NUMBER=${GERRIT_PATCHSET_NUMBER}
 
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
@@ -63,6 +71,7 @@ function push_dev_env() {
   local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
   echo "INFO: Save tf-sandbox started: $target_tag"
   cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+export WORKSPACE=\$HOME
 [ "${DEBUG,,}" == "true" ] && set -x
 
 echo "INFO: commit tf-developer-sandbox container"

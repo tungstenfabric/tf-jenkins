@@ -7,6 +7,8 @@
           name: SLAVE
       - string:
           name: PIPELINE_BUILD_NUMBER
+    wrappers:
+      - timestamps
     builders:
       - copyartifact:
           project: check-pipeline
