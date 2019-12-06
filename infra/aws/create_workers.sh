@@ -34,7 +34,7 @@ fi
 
 # Spin VM
 iname=$BUILD_TAG
-bdm='{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":60,"DeleteOnTermination":true}}'
+bdm='{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":120,"DeleteOnTermination":true}}'
 instance_id=$(aws ec2 run-instances \
     --region $AWS_REGION \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$iname},{Key=Pipeline,Value=$PIPELINE_BUILD_TAG}]" \

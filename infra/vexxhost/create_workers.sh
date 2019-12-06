@@ -38,7 +38,7 @@ nova boot --flavor ${INSTANCE_TYPE} \
           --key-name=worker \
           --tags "x${PIPELINE_BUILD_TAG}x" \
           --nic net-name=${OS_NETWORK} \
-          --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=60,bootindex=0 \
+          --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=120,bootindex=0 \
           --poll \
           $OBJECT_NAME
 
