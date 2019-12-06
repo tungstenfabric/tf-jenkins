@@ -28,8 +28,8 @@
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: archive_credentials
-              key-file-variable: ARCHIVE_USERNAME
-              username-variable: ARCHIVE_SSH_KEY
+              key-file-variable: ARCHIVE_SSH_KEY
+              username-variable: ARCHIVE_USERNAME
       - credentials-binding:
           - text:
               credential-id: VEXX_OS_USERNAME
