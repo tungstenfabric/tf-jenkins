@@ -13,6 +13,7 @@
       - build-discarder:
           num-to-keep: 10
     wrappers:
+      - timestamps
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: worker
@@ -83,6 +84,7 @@
       - build-discarder:
           num-to-keep: 10
     wrappers:
+      - timestamps
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: worker
