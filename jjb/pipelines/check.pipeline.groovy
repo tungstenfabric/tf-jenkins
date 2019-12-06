@@ -121,38 +121,38 @@ pipeline {
                   return
                 }
 
-                top_job_number = top_job_results[name]['build_number']
-                println "top_job_number = ${top_job_number}"
                 try {
-                  build job: "deploy-tf-${name}",
-                    parameters: [
-                      string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                      string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                      [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                    ]
-                } catch (err) {
-                  println "Failed to run deploy TF deploy platform for ${name}"
-                  println err.getMessage()
-                  error(err.getMessage())
-                }
-                test_jobs = [:]
-                ['test-sanity', 'test-smoke'].each {
-                  test_name -> test_jobs["${test_name} for deploy-tf-${name}"] = {
-                    stage(test_name) {
-                      // next variable must be taken again due to closure limitations for free variables
-                      top_job_number = top_job_results[name]['build_number']
-                      println "top_job_number(inner) = ${top_job_number}"
-                      build job: test_name,
-                        parameters: [
-                          string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                          string(name: 'DEPLOY_PLATFORM_PROJECT', value: "deploy-platform-${name}"),
-                          string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                          [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                        ]
+                  top_job_number = top_job_results[name]['build_number']
+                  println "top_job_number = ${top_job_number}"
+                  try {
+                    build job: "deploy-tf-${name}",
+                      parameters: [
+                        string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
+                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                      ]
+                  } catch (err) {
+                    println "Failed to run deploy TF deploy platform for ${name}"
+                    println err.getMessage()
+                    error(err.getMessage())
+                  }
+                  test_jobs = [:]
+                  ['test-sanity', 'test-smoke'].each {
+                    test_name -> test_jobs["${test_name} for deploy-tf-${name}"] = {
+                      stage(test_name) {
+                        // next variable must be taken again due to closure limitations for free variables
+                        top_job_number = top_job_results[name]['build_number']
+                        println "top_job_number(inner) = ${top_job_number}"
+                        build job: test_name,
+                          parameters: [
+                            string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                            string(name: 'DEPLOY_PLATFORM_PROJECT', value: "deploy-platform-${name}"),
+                            string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
+                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                          ]
+                      }
                     }
                   }
-                }
-                try {
                   parallel test_jobs
                 } finally {
                   top_job_number = top_job_results[name]['build_number']

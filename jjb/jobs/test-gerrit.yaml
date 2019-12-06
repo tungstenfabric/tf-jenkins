@@ -2,6 +2,7 @@
 
 - job:
     name: test-gerrit
+    disabled: true
     description: "gerrit events test"
     defaults: global
     node: aws

@@ -11,6 +11,7 @@
       - string:
           name: PIPELINE_BUILD_NUMBER
     wrappers:
+      - timestamps
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: worker

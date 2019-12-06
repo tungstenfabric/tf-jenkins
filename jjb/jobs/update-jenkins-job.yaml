@@ -1,5 +1,5 @@
 - job:
-    name: 'jenkins-update-jobs'
+    name: 'update-jenkins-jobs'
     description: "Updates jenkins jobs"
     defaults: global
     node: aws
