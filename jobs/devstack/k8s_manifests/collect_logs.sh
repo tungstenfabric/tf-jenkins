@@ -21,22 +21,16 @@ cd src/tungstenfabric/tf-devstack/k8s_manifests
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh logs
 EOF
 
-#TODO Remove after debugging
-echo WORKER_SSH_KEY = $WORKER_SSH_KEY 
-echo SSH_OPTIONS = $SSH_OPTIONS
-echo IMAGE_SSH_USER = $IMAGE_SSH_USER
-echo ARCHIVE_SSH_KEY = $ARCHIVE_SSH_KEY
-echo ARCHIVE_USERNAME = $ARCHIVE_USERNAME
-echo ARCHIVE_HOST = $ARCHIVE_HOST
+
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
 
 tar xzf $WORKSPACE/logs.tgz
 
+#TODO Remove after global.env will be fixed
+ARCHIVE_HOST=pnexus.sytes.net
 ls -lr $WORKSPACE/logs
 
-cat <<EOF | ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST
-mkdir -p /var/www/logs/jenkins_logs/$instance_id
-EOF
+ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST "mkdir -p /var/www/logs/jenkins_logs/$instance_id"
 
 rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:/var/www/logs/jenkins_logs/$instance_id
