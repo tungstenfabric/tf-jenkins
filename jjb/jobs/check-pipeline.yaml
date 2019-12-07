@@ -13,10 +13,27 @@
             - vexxhost
             - aws
           description: "On which project to run?"
-      - string:
+      - bool:
           name: DO_BUILD
-          default: "1"
-          description: ""
+          default: true
+      - bool:
+          name: DO_RUN_UT_LINT
+          default: true
+      - bool:
+          name: DO_CHECK_K8S_MANIFESTS
+          default: true
+      - bool:
+          name: DO_CHECK_K8S_JUJU
+          default: true
+      - bool:
+          name: DO_CHECK_OS_ANSIBLE
+          default: true
+      - bool:
+          name: DO_CHECK_K8S_HELM
+          default: false
+      - bool:
+          name: DO_CHECK_OS_HELM
+          default: false
     pipeline-scm:
       scm:
         - tf-jenkins
