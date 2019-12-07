@@ -10,14 +10,22 @@ pipeline {
     ARCHIVE_HOST = "pnexus.sytes.net"
   }
   parameters {
-    choice(name: 'SLAVE', choices: ['vexxhost', 'aws'], description: '')
-    booleanParam(name: 'DO_BUILD', defaultValue: true, description: '')
-    booleanParam(name: 'DO_RUN_UT_LINT', defaultValue: true, description: '')
-    booleanParam(name: 'DO_CHECK_K8S_MANIFESTS', defaultValue: true, description: '')
-    booleanParam(name: 'DO_CHECK_K8S_JUJU', defaultValue: true, description: '')
-    booleanParam(name: 'DO_CHECK_OS_ANSIBLE', defaultValue: true, description: '')
-    booleanParam(name: 'DO_CHECK_K8S_HELM', defaultValue: false, description: '')
-    booleanParam(name: 'DO_CHECK_OS_HELM', defaultValue: false, description: '')
+    choice(name: 'SLAVE', choices: ['vexxhost', 'aws'],
+      description: 'Slave where all jobs will be run: vexxhost, aws')
+    booleanParam(name: 'DO_BUILD', defaultValue: true,
+      description: 'Run full build and use images later. Otherwise use nightly build.')
+    booleanParam(name: 'DO_RUN_UT_LINT', defaultValue: true,
+      description: 'Run UT and Lint jobs.')
+    booleanParam(name: 'DO_CHECK_K8S_MANIFESTS', defaultValue: true,
+      description: 'Run checks for k8s with manifests.')
+    booleanParam(name: 'DO_CHECK_K8S_JUJU', defaultValue: true,
+      description: 'Run checks for k8s with juju.')
+    booleanParam(name: 'DO_CHECK_OS_ANSIBLE', defaultValue: true,
+      description: 'Run checks for OpenStack with ansible-deployer.')
+    booleanParam(name: 'DO_CHECK_K8S_HELM', defaultValue: false,
+      description: 'Run checks for k8s with helm-deployer.')
+    booleanParam(name: 'DO_CHECK_OS_HELM', defaultValue: false,
+      description: 'Run checks for OpenStack with helm-deployer.')
   }
   options {
     timestamps()
