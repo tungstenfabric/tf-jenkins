@@ -35,6 +35,7 @@ pipeline {
           if (params.DO_CHECK_OS_ANSIBLE) test_configurations += 'os_ansible'
           if (params.DO_CHECK_K8S_HELM) test_configurations += 'k8s_helm'
           if (params.DO_CHECK_OS_HELM) test_configurations += 'os_helm'
+          println 'Test configurations: ' + test_configurations
           test_configurations
           if (env.GERRIT_CHANGE_NUMBER && env.GERRIT_PATCHSET_NUMBER) {
             CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
@@ -65,7 +66,7 @@ pipeline {
     stage('Fetch') {
       steps {
         script {
-          if (params.DO_BUILD || DO_RUN_UT_LINT) {
+          if (params.DO_BUILD || params.DO_RUN_UT_LINT) {
             build job: 'fetch-sources',
               parameters: [
                 string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
