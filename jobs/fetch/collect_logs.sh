@@ -1,6 +1,5 @@
 #!/bin/bash -eE
 set -o pipefail
-set -x
 
 [ "${DEBUG,,}" == "true" ] && set -x
 
@@ -15,4 +14,3 @@ source $ENV_FILE
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:/etc/os-release $WORKSPACE/os-release-test
 
 cat $WORKSPACE/os-release-test
-
