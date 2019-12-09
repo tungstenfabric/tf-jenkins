@@ -13,7 +13,7 @@ source "$my_dir/definitions"
 echo "Here must be a few env files:"
 ls -la $WORKSPACE
 
-ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
+ENV_FILE=${$ENV_FILE:-"$WORKSPACE/stackrc.$JOB_NAME.env"}
 echo "ORCHESTRATOR=kubernetes" >> "$ENV_FILE"
 source $ENV_FILE
 
