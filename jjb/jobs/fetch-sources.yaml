@@ -12,6 +12,7 @@
           name: PIPELINE_BUILD_NUMBER
     wrappers:
       - timestamps
+      - workspace-cleanup
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: worker
@@ -60,7 +61,17 @@
           ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh || res=1
           ./src/progmaticlab/tf-jenkins/jobs/fetch/collect_logs.sh || /bin/true
           exit $res
-      - shell: |
-          source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh 
- 
+    publishers:
+        - postbuildscript:
+            builders:
+              - role: SLAVE
+                build-on:
+                    - SUCCESS
+                    - FAILURE
+                    - ABORTED
+                    - NOT_BUILT
+                    - UNSTABLE
+                build-steps:
+                    - shell: |
+                        source "$WORKSPACE/global.env"
+                        ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh

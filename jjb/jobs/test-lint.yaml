@@ -8,6 +8,7 @@
       - string:
           name: PIPELINE_BUILD_NUMBER
     wrappers:
+      - workspace-cleanup
       - timestamps
     builders:
       - copyartifact:
@@ -19,3 +20,17 @@
           source "$WORKSPACE/global.env"
           echo "TODO: ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh"
           # inside will do "docker pull tf-dev-env; tf-dev-env/run.sh test //Detect target tests"
+    publishers:
+      - postbuildscript:
+          builders:
+            - role: SLAVE
+              build-on:
+                - SUCCESS
+                - FAILURE
+                - ABORTED
+                - NOT_BUILT
+                - UNSTABLE
+              build-steps:
+                - shell: |
+                    source "$WORKSPACE/global.env"
+                    ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
