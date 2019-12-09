@@ -26,7 +26,7 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:l
 cd $WORKSPACE
 tar -xzf logs.tgz
 
-ARCH_FOLDER_NAME="$JOB_NAME_$BUILD_NUMBER"
+ARCH_FOLDER_NAME="$JOB_NAME\_$BUILD_NUMBER"
 
 ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST "mkdir -p /var/www/logs/jenkins_logs/$ARCH_FOLDER_NAME"
 
