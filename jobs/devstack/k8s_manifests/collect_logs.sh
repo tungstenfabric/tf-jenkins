@@ -9,6 +9,10 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+#TODO Remove after debug
+echo "Here must be a few env files:"
+ls -la $WORKSPACE
+
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 echo "ORCHESTRATOR=kubernetes" >> "$ENV_FILE"
 source $ENV_FILE
