@@ -191,6 +191,7 @@ pipeline {
                       projectName: "deploy-platform-${name}",
                       selector: specific("${top_job_number}")
                     withCredentials(
+                      bindings:
                         [[$class: 'AmazonWebServicesCredentialsBinding',
                           credentialsId: 'aws-creds',
                           accessKeyVariable: 'AWS_ACCESS_KEY_ID',
