@@ -8,10 +8,10 @@
     concurrent: true
     wrappers:
       - credentials-binding:
-        - ssh-user-private-key:
-            credential-id: archive_credentials
-            key-file-variable: ARCHIVE_SSH_KEY
-            username-variable: ARCHIVE_USERNAME
+          - ssh-user-private-key:
+              credential-id: archive_credentials
+              key-file-variable: ARCHIVE_SSH_KEY
+              username-variable: ARCHIVE_USERNAME
     parameters:
       - choice:
           name: SLAVE
