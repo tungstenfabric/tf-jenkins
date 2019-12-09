@@ -203,7 +203,7 @@ pipeline {
                         string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
                       sh """
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
-                        "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/collect_logs.sh" || /bin/true
+                        "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
                       """
                     }
