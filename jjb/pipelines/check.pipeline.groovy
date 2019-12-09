@@ -54,6 +54,7 @@ pipeline {
             echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
             echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
             echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
+            echo "export ARCHIVE_HOST=${ARCHIVE_HOST}" >> global.env
             echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
           """
