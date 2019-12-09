@@ -38,7 +38,7 @@ export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 
 cd src/tungstenfabric/tf-dev-env
 ./run.sh test
-tar -czvf /home/centos/tf-dev-env/logs.tgz /home/centos/tf-dev-env/build_*
+tar -czvf /home/centos/tf-dev-env/logs.tgz /home/centos/build_*
 EOF
 result=$?
 
