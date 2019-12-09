@@ -41,11 +41,12 @@ cd src/tungstenfabric/tf-dev-env
 EOF
 result=$?
 
-tar -cvf build_* >> logs.tgz
+# here script is running on slave and has to copy collected logs from worker to slave
+# and then untar the archive and upload it to logs server (nexus)
 if rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:./src/tungstenfabric/tf-dev-env/logs.tgz $WORKSPACE/ ; then
   pushd $WORKSPACE
   tar -xzf logs.tgz
-  rsync logs ARCHIVE_HOST:/patchet_url/ || /bin/true
+  # TODO: rsync logs ARCHIVE_HOST:/??/ || /bin/true
   popd
 fi
 

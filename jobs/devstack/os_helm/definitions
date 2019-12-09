@@ -1,6 +1,3 @@
-CONTROLLERS_COUNT=1
-CONTROLLER_FLAVOR=t2.xlarge
-CONTROLLER_MEM=8192
-COMPUTES_COUNT=0
+export VM_TYPE=large
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"

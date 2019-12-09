@@ -62,6 +62,5 @@
           exit $res
       - shell: |
           source "$WORKSPACE/global.env"
-          res=0
           ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh 
  

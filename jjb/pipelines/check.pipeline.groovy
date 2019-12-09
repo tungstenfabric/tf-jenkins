@@ -1,5 +1,4 @@
-//def test_configurations = ['k8s_manifests', 'os_ansible', 'k8s_juju', 'k8s_helm', 'os_helm']
-def test_configurations = ['k8s_manifests', 'os_ansible', 'k8s_juju']
+def test_configurations = []
 def top_jobs = [:]
 def top_job_results = [:]
 def inner_jobs = [:]
@@ -11,8 +10,22 @@ pipeline {
     ARCHIVE_HOST = "pnexus.sytes.net"
   }
   parameters {
-    choice(name: 'SLAVE', choices: ['vexxhost', 'aws'], description: '')
-    string(name: 'DO_BUILD', defaultValue: '1', description: '')
+    choice(name: 'SLAVE', choices: ['vexxhost', 'aws'],
+      description: 'Slave where all jobs will be run: vexxhost, aws')
+    booleanParam(name: 'DO_BUILD', defaultValue: true,
+      description: 'Run full build and use images later. Otherwise use nightly build.')
+    booleanParam(name: 'DO_RUN_UT_LINT', defaultValue: true,
+      description: 'Run UT and Lint jobs.')
+    booleanParam(name: 'DO_CHECK_K8S_MANIFESTS', defaultValue: true,
+      description: 'Run checks for k8s with manifests.')
+    booleanParam(name: 'DO_CHECK_K8S_JUJU', defaultValue: true,
+      description: 'Run checks for k8s with juju.')
+    booleanParam(name: 'DO_CHECK_OS_ANSIBLE', defaultValue: true,
+      description: 'Run checks for OpenStack with ansible-deployer.')
+    booleanParam(name: 'DO_CHECK_K8S_HELM', defaultValue: false,
+      description: 'Run checks for k8s with helm-deployer.')
+    booleanParam(name: 'DO_CHECK_OS_HELM', defaultValue: false,
+      description: 'Run checks for OpenStack with helm-deployer.')
   }
   options {
     timestamps()
@@ -25,6 +38,13 @@ pipeline {
     stage('Pre-build') {
       steps {
         script {
+          if (params.DO_CHECK_K8S_MANIFESTS) test_configurations += 'k8s_manifests'
+          if (params.DO_CHECK_K8S_JUJU) test_configurations += 'k8s_juju'
+          if (params.DO_CHECK_OS_ANSIBLE) test_configurations += 'os_ansible'
+          if (params.DO_CHECK_K8S_HELM) test_configurations += 'k8s_helm'
+          if (params.DO_CHECK_OS_HELM) test_configurations += 'os_helm'
+          println 'Test configurations: ' + test_configurations
+          test_configurations
           if (env.GERRIT_CHANGE_NUMBER && env.GERRIT_PATCHSET_NUMBER) {
             CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
           } else {
@@ -54,33 +74,39 @@ pipeline {
     stage('Fetch') {
       steps {
         script {
-          build job: 'fetch-sources',
-            parameters: [
-              string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-              [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
-            ]
+          if (params.DO_BUILD || params.DO_RUN_UT_LINT) {
+            build job: 'fetch-sources',
+              parameters: [
+                string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+              ]
+          } else {
+            println "Build and UT&Lint jobs are switched off. Skipping fetch job."
+          }
         }
       }
     }
     stage('Check') {
       steps {
         script {
-          top_jobs['test-unit'] = {
-            stage('test-unit') {
-              build job: 'test-unit',
-                parameters: [
-                  string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                ]
+          if (params.DO_RUN_UT_LINT) {
+            top_jobs['test-unit'] = {
+              stage('test-unit') {
+                build job: 'test-unit',
+                  parameters: [
+                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                  ]
+              }
             }
-          }
-          top_jobs['test-lint'] = {
-            stage('test-lint') {
-              build job: 'test-lint',
-                parameters: [
-                  string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                ]
+            top_jobs['test-lint'] = {
+              stage('test-lint') {
+                build job: 'test-lint',
+                  parameters: [
+                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                  ]
+              }
             }
           }
 
@@ -188,7 +214,7 @@ pipeline {
             }
           }
 
-          if (DO_BUILD == '1') {
+          if (params.DO_BUILD) {
             top_jobs['build-and-test'] = {
               stage('build') {
                 build job: 'build',
