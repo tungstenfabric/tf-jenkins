@@ -69,7 +69,9 @@
           source "$WORKSPACE/global.env"
           res=0
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_platform.sh || res=1
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/collect_logs.sh || /bin/true
+          if [[ $res == 1 ]]; then 
+            ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/collect_logs.sh || /bin/true
+          fi
           exit $res
     publishers:
       - archive:
