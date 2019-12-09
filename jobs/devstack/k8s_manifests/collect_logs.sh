@@ -26,10 +26,10 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:l
 cd $WORKSPACE
 tar -xzf logs.tgz
 
-FOLDER_NAME="k8s_manifests_platform_$ENV_BUILD_ID"
+ARCH_FOLDER_NAME="k8s_manifests_platform_$ENV_BUILD_ID"
 
-ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST "mkdir -p /var/www/logs/jenkins_logs/$FOLDER_NAME"
+ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST "mkdir -p /var/www/logs/jenkins_logs/$ARCH_FOLDER_NAME"
 
-rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:/var/www/logs/jenkins_logs/$FOLDER_NAME
+rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:/var/www/logs/jenkins_logs/$ARCH_FOLDER_NAME
 
 cd $OLDPWD
