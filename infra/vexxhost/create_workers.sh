@@ -25,7 +25,7 @@ echo "IMAGE=$IMAGE" >> "$ENV_FILE"
 IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
 echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
-VM_TYPE=${VM_TYPE:-'medium'}
+VM_TYPE=${VM_TYPE:-'large'}
 INSTANCE_TYPE=${VM_TYPES[$VM_TYPE]}
 if [[ -z "$INSTANCE_TYPE" ]]; then
     echo "ERROR: invalid VM_TYPE=$VM_TYPE"
