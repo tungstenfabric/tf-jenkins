@@ -1,0 +1,1 @@
+echo "Collect logs for finally"
