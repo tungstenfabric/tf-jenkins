@@ -197,6 +197,7 @@ pipeline {
                           accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
                         sshUserPrivateKey(credentialsId: "archive_credentials", keyFileVariable: 'ARCHIVE_SSH_KEY',usernameVariable: 'ARCHIVE_USERNAME'),
+                        sshUserPrivateKey(credentialsId: "worker", keyFileVariable: "WORKER_SSH_KEY"),
                         string(credentialsId: 'VEXX_OS_USERNAME', variable: 'OS_USERNAME'),
                         string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'OS_PROJECT_NAME'),
                         string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'OS_PASSWORD'),
