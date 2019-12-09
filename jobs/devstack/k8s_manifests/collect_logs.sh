@@ -26,13 +26,10 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:l
 cd $WORKSPACE
 tar -xzf logs.tgz
 
-echo ARCHIVE_HOST from global.env is $ARCHIVE_HOST
+FOLDER_NAME="k8s_manifests_platform_$ENV_BUILD_ID"
 
-#TODO Remove after global.env will be fixed
-ARCHIVE_HOST=pnexus.sytes.net
-ls -la $WORKSPACE/logs.tgz
-ls -lr $WORKSPACE
+ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST "mkdir -p /var/www/logs/jenkins_logs/$FOLDER_NAME"
 
-ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST "mkdir -p /var/www/logs/jenkins_logs/$instance_id"
+rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:/var/www/logs/jenkins_logs/$FOLDER_NAME
 
-rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:/var/www/logs/jenkins_logs/$instance_id
+cd $OLDPWD
