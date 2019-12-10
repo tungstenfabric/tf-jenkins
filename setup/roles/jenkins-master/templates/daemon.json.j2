@@ -1,0 +1,10 @@
+{
+  {% if ansible_default_ipv4.mtu < 1500 %}
+  "mtu": {{ ansible_default_ipv4.mtu }},
+  {% endif -%}
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3" 
+  }
+}

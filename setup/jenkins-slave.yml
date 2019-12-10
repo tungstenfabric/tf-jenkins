@@ -1,0 +1,8 @@
+---
+- name: Configure jenkins slave
+  hosts: jenkins-slave
+  gather_facts: false
+  become: yes
+  roles:
+    - common
+    - jenkins-slave

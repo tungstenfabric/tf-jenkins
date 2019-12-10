@@ -1,0 +1,44 @@
+- name: Install required packages
+  apt:
+    name: "{{ required_pkgs }}"
+    state: present
+    update_cache: yes
+
+- name: Install pip packages for aws
+  pip:
+    name: awscli
+    executable: pip3
+  when: cloud == 'aws'
+
+- name: Install pip packages for vexx
+  pip:
+    name:
+      - python-openstackclient
+      - python-novaclient
+    executable: pip3
+  when: cloud == 'vexxhost'
+
+- name: Add user jenkins
+  user:
+    name: "{{ jenkins_user }}"
+
+- name: Make ~/.ssh directory
+  file:
+    path: /home/{{ jenkins_user }}/.ssh
+    owner: "{{ jenkins_user }}"
+    group: "{{ jenkins_user }}"
+    mode: "0700"
+    state: directory
+
+- name: Add trusted ssh pubkeys to jenkins authorized_keys file
+  blockinfile:
+    dest: /home/{{ jenkins_user }}/.ssh/authorized_keys
+    create: yes
+    marker: "# {mark} Ansible managed default keys"
+    block: |
+      {% for key in jenkins_ssh_pubkeys %}
+      {{ key }}
+      {% endfor %}
+    owner: "{{ jenkins_user }}"
+    group: "{{ jenkins_user }}"
+    mode: "0600"

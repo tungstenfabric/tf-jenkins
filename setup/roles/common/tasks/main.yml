@@ -1,0 +1,39 @@
+- name: Make ~/.ssh directory
+  file:
+    path: /home/{{ ssh_user }}/.ssh
+    owner: "{{ ssh_user }}"
+    group: "{{ ssh_user }}"
+    mode: "0700"
+    state: directory
+
+- name: Add trusted ssh pubkeys to ssh_user authorized_keys file
+  blockinfile:
+    dest: /home/{{ ssh_user }}/.ssh/authorized_keys
+    create: yes
+    marker: "# {mark} Ansible managed default keys"
+    block: |
+      {% for key in ssh_pubkeys %}
+      {{ key }}
+      {% endfor %}
+    owner: "{{ ssh_user }}"
+    group: "{{ ssh_user }}"
+    mode: "0600"
+  become: no
+
+- name: Install aptitude using apt
+  apt:
+    name: aptitude
+    state: latest
+    update_cache: yes
+    force_apt_get: yes
+
+- name: Install required packages
+  apt:
+    name: "{{ required_pkgs }}"
+    state: present
+
+- name: Upgrade all packages to the latest version
+  apt:
+    name: "*"
+    state: latest
+    update_cache: yes
