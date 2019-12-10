@@ -38,18 +38,12 @@ export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 
 cd src/tungstenfabric/tf-dev-env
 ./run.sh test
-tar -czvf /home/centos/tf-dev-env/logs.tgz /home/centos/build_*
+tar -czvf /root/contrail/logs.tgz /root/contrail/logs/
+mv /root/contrail/logs.tgz
 EOF
 result=$?
 
-# here script is running on slave and has to copy collected logs from worker to slave
-# and then untar the archive and upload it to logs server (nexus)
-if rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:/home/centos/tf-dev-env/logs.tgz $WORKSPACE/ ; then
-  pushd $WORKSPACE
-  tar -xzf logs.tgz
-  # TODO: rsync logs ARCHIVE_HOST:/??/ || /bin/true
-  popd
-fi
+# TODO: rsync logs  fron shared folder to ARCHIVE_HOST:/??/ || /bin/true
 
 if [[ $result != 0 ]] ; then
   echo "ERROR: UT failed"
