@@ -8,7 +8,7 @@ pipeline {
     REGISTRY_IP = "pnexus.sytes.net"
     REGISTRY_PORT = "5001"
     ARCHIVE_HOST = "pnexus.sytes.net"
-    LOGS_FILE_PATH = "/var/www/logs/jenkins_logs/"
+    LOGS_FILE_PATH_BASE = "/var/www/logs/jenkins_logs/"
   }
   parameters {
     choice(name: 'SLAVE', choices: ['vexxhost', 'aws'],
@@ -56,18 +56,24 @@ pipeline {
             echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
             echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
             echo "export ARCHIVE_HOST=${ARCHIVE_HOST}" >> global.env
-            echo "export LOGS_FILE_PATH=${LOGS_FILE_PATH}" >> global.env
             echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
           """
           if (env.GERRIT_CHANGE_ID) {
             sh """
+
+
               echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
               echo "export GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}" >> global.env
               echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
               echo "export GERRIT_PROJECT=${env.GERRIT_PROJECT}" >> global.env
               echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
               echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
+              echo "export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/gerrit/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/" >> global.env
+            """
+          } else {
+            sh """
+              echo "export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/manual/" >> global.env
             """
           }
         }
