@@ -8,6 +8,7 @@ pipeline {
     REGISTRY_IP = "pnexus.sytes.net"
     REGISTRY_PORT = "5001"
     ARCHIVE_HOST = "pnexus.sytes.net"
+    LOGS_FILE_PATH_BASE = "/var/www/logs/jenkins_logs/"
   }
   parameters {
     choice(name: 'SLAVE', choices: ['vexxhost', 'aws'],
@@ -66,6 +67,11 @@ pipeline {
               echo "export GERRIT_PROJECT=${env.GERRIT_PROJECT}" >> global.env
               echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
               echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
+              echo "export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/gerrit/${GERRIT_CHANGE_NUMBER: -2}/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}/" >> global.env
+            """
+          } else {
+            sh """
+              echo "export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/manual/" >> global.env
             """
           }
         }
@@ -206,6 +212,8 @@ pipeline {
                         string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
                       sh """
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
+                        export CONF_PLATFORM="${name}"
+                        export BUILD_TAG
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
                       """
