@@ -60,16 +60,16 @@ pipeline {
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
           """
           if (env.GERRIT_CHANGE_ID) {
+            gcn = env.GERRIT_CHANGE_NUMBER
+            two_sym_gcn = gcn.length() > 2 ? gcn.substring(gcn.length() - 2) : gcn
             sh """
-
-
               echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
               echo "export GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}" >> global.env
               echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
               echo "export GERRIT_PROJECT=${env.GERRIT_PROJECT}" >> global.env
               echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
               echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
-              echo "export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/gerrit/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/" >> global.env
+              echo "export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/gerrit/${two_sym_gcn}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/" >> global.env
             """
           } else {
             sh """
