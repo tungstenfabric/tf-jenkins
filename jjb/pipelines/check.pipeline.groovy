@@ -50,9 +50,12 @@ pipeline {
           test_configurations
           if (env.GERRIT_CHANGE_NUMBER && env.GERRIT_PATCHSET_NUMBER) {
             CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
+            LOGS_PATH_TYPE="gerrit"
           } else {
             CONTRAIL_CONTAINER_TAG = 'master-nightly'
+            LOGS_PATH_TYPE="manual"
           }
+
           sh """
             echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
             echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
@@ -215,6 +218,7 @@ pipeline {
                         string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
                       sh """
                         set -x
+                        echo "INFO: LOGS_PATH_TYPE = ${LOGS_PATH_TYPE}"
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
                         export CONF_PLATFORM="${name}"
                         export BUILD_TAG=${BUILD_TAG}
