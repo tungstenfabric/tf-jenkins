@@ -74,6 +74,7 @@
       path: "{{ docker_build_dir.path }}"
       pull: yes
     name: jenkins-master
+    source: build
     tag: latest
     force_tag: yes
     force_source: yes
