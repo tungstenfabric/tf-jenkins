@@ -9,6 +9,7 @@ pipeline {
     REGISTRY_PORT = "5001"
     ARCHIVE_HOST = "pnexus.sytes.net"
     LOGS_FILE_PATH_BASE = "/var/www/logs/jenkins_logs/"
+    SANITY_LOGS_PATH="/home/centos/src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs/"
   }
   parameters {
     choice(name: 'SLAVE', choices: ['vexxhost', 'aws'],
@@ -56,6 +57,7 @@ pipeline {
             echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
             echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
             echo "export ARCHIVE_HOST=${ARCHIVE_HOST}" >> global.env
+            echo "export SANITY_LOGS_PATH=${SANITY_LOGS_PATH}" >> global.env
             echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
           """
@@ -216,6 +218,7 @@ pipeline {
                         export BUILD_TAG
                         export DEBUG=true
                         export LOGS_FILE_PATH
+                        export SANITY_LOGS_PATH
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
                       """

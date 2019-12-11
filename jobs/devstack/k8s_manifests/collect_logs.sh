@@ -23,12 +23,12 @@ ORCHESTRATOR=$ORCHESTRATOR ./run.sh logs
 EOF
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
-
 pushd $WORKSPACE
 tar -xzf logs.tgz
 
-# Collect sanity logs
-#/home/centos/src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs/
+# Collect sanity logs from worker
+mkdir -p logs/sanity
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:$SANITY_LOGS_PATH $WORKSPACE/logs/sanity/
 
 #TODO Remove after debug
 echo INFO: LOGS_FILE_PATH = $LOGS_FILE_PATH
