@@ -218,11 +218,12 @@ pipeline {
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
                         export CONF_PLATFORM="${name}"
                         export BUILD_TAG=${BUILD_TAG}
+                        GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}
                         export DEBUG=true
-                        if [[  -n "${GERRIT_CHANGE_ID}" ]]; then
-                          export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/gerrit/${GERRIT_CHANGE_NUMBER: -2}/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}/
+                        if [[  -n "$GERRIT_CHANGE_ID" ]]; then
+                          export LOGS_FILE_PATH="${LOGS_FILE_PATH_BASE}/gerrit/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/"
                         else
-                          export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/manual/
+                          export LOGS_FILE_PATH="${LOGS_FILE_PATH_BASE}/manual/"
                         fi
                         export SANITY_LOGS_PATH=${SANITY_LOGS_PATH}
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
