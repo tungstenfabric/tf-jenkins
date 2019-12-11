@@ -1,13 +1,3 @@
-- name: Remove packages
-  apt:
-    name:
-      - docker
-      - docker-engine
-      - docker.io
-      - containerd
-      - runc
-    state: absent
-
 - name: Install required packages
   apt:
     name: "{{ required_pkgs }}"
@@ -45,3 +35,91 @@
       - docker-ce-cli
       - containerd.io
     state: latest
+
+- name: Install pip packages
+  pip:
+    name:
+      - docker
+      - requests
+    executable: "/usr/bin/pip3"
+
+- name: Create temporary build directory
+  tempfile:
+    state: directory
+    suffix: docker-build
+  register: docker_build_dir
+  when: jenkins_custom_docker_image
+
+- name: Copy jenkins Dockerfile
+  template:
+    src: "jenkins-Dockerfile.j2"
+    dest: "{{ docker_build_dir.path }}/Dockerfile"
+  when: jenkins_custom_docker_image
+
+- name: Copy plug-in list to build directory
+  template:
+    src: "plugins.txt.j2"
+    dest: "{{ docker_build_dir.path }}/plugins.txt"
+  when: jenkins_custom_docker_image
+
+- name: Copy CaC config to build directory
+  template:
+    src: "jenkins-CaC.yaml.j2"
+    dest: "{{ docker_build_dir.path }}/jenkins.yaml"
+  when: jenkins_custom_docker_image and jenkins_deploy_configuration
+
+- name: Build jenkins image
+  docker_image:
+    build:
+      path: "{{ docker_build_dir.path }}"
+      pull: yes
+    name: jenkins-master
+    tag: latest
+    force_tag: yes
+    force_source: yes
+  when: jenkins_custom_docker_image 
+  register: jenkins_image
+
+- name: Create nginx-proxy container
+  docker_container:
+    name: nginx-proxy
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    network_mode: bridge
+
+- name: Create letsencrypt container
+  docker_container:
+    name: letsencrypt
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    env:
+      NGINX_PROXY_CONTAINER: nginx-proxy
+    volumes:
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    network_mode: bridge
+
+- name: Create jenkins container
+  docker_container:
+    name: nginx-master
+    image: "{{ (jenkins_image.image.RepoTags | join('\n')) | default('jenkins/jenkins:lts') }}"
+    ports:
+      - "8080:8080"
+    env:
+      VIRTUAL_HOST: "{{ jenkins_fqdn }}"
+      VIRTUAL_PORT: "8080"
+      LETSENCRYPT_HOST: "{{ jenkins_fqdn }}"
+      LETSENCRYPT_EMAIL: "{{ jenkins_admin_email }}"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    network_mode: bridge
