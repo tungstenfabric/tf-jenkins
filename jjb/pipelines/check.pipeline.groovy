@@ -225,7 +225,7 @@ pipeline {
                         export CONF_PLATFORM="${name}"
                         export BUILD_TAG=${BUILD_TAG}
                         export DEBUG=true
-                        if [[ "${LOGS_PATH_TYPE}" == "gerrit" ]]: then
+                        if [[ "${LOGS_PATH_TYPE}" == "gerrit" ]]; then
                           export LOGS_FILE_PATH="${LOGS_FILE_PATH_BASE}/gerrit/${LOGS_CHANGE_NO}/${LOGS_PATCHSET_NO}/"
                         else
                           export LOGS_FILE_PATH="${LOGS_FILE_PATH_BASE}/manual/"
