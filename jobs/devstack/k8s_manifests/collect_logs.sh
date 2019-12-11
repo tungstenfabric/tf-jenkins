@@ -24,10 +24,17 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:l
 
 pushd $WORKSPACE
 tar -xzf logs.tgz
+
+# Collect sanity logs
+#/home/centos/src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs/
+
+#TODO Remove after debug
+echo INFO: LOGS_FILE_PATH = $LOGS_FILE_PATH
+
 if [[ -z $CONF_PLATFORM ]]; then # The script starts from job directly
-    FULL_LOGS_FILE_PATH="$LOGS_FILE_PATH\/$PIPELINE_BUILD_TAG\/job_$JOB_NAME\_$BUILD_NUMBER"
+    FULL_LOGS_FILE_PATH="${LOGS_FILE_PATH}/${PIPELINE_BUILD_TAG}/job_${JOB_NAME}_${BUILD_NUMBER}"
 else # The script starts from pipeline
-    FULL_LOGS_FILE_PATH="$LOGS_FILE_PATH\/$BUILD_TAG\/pipeline_$CONF_PLATFORM\_$BUILD_NUMBER"
+    FULL_LOGS_FILE_PATH="${LOGS_FILE_PATH}/${BUILD_TAG}/pipeline_${CONF_PLATFORM}_${BUILD_NUMBER}"
 fi
 ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST "mkdir -p $FULL_LOGS_FILE_PATH"
 rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:$FULL_LOGS_FILE_PATH
