@@ -39,39 +39,44 @@ pipeline {
     stage('Pre-build') {
       steps {
         script {
-          if (params.DO_CHECK_K8S_MANIFESTS) test_configurations += 'k8s_manifests'
-          if (params.DO_CHECK_K8S_JUJU) test_configurations += 'k8s_juju'
-          if (params.DO_CHECK_OS_ANSIBLE) test_configurations += 'os_ansible'
-          if (params.DO_CHECK_K8S_HELM) test_configurations += 'k8s_helm'
-          if (params.DO_CHECK_OS_HELM) test_configurations += 'os_helm'
-          println 'Test configurations: ' + test_configurations
-          if (env.GERRIT_CHANGE_NUMBER && env.GERRIT_PATCHSET_NUMBER) {
-            CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
-            hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
-            LOGS_PATH="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${PIPELINE_BUILD_NUMBER}"
-          } else {
-            CONTRAIL_CONTAINER_TAG = 'master-nightly'
-            LOGS_PATH="${LOGS_BASE_PATH}/manual/pipeline_${PIPELINE_BUILD_NUMBER}"
-          }
+          try {
+            if (params.DO_CHECK_K8S_MANIFESTS) test_configurations += 'k8s_manifests'
+            if (params.DO_CHECK_K8S_JUJU) test_configurations += 'k8s_juju'
+            if (params.DO_CHECK_OS_ANSIBLE) test_configurations += 'os_ansible'
+            if (params.DO_CHECK_K8S_HELM) test_configurations += 'k8s_helm'
+            if (params.DO_CHECK_OS_HELM) test_configurations += 'os_helm'
+            println 'Test configurations: ' + test_configurations
+            if (env.GERRIT_CHANGE_NUMBER && env.GERRIT_PATCHSET_NUMBER) {
+              CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
+              hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
+              LOGS_PATH="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${PIPELINE_BUILD_NUMBER}"
+            } else {
+              CONTRAIL_CONTAINER_TAG = 'master-nightly'
+              LOGS_PATH="${LOGS_BASE_PATH}/manual/pipeline_${PIPELINE_BUILD_NUMBER}"
+            }
 
-          sh """
-            echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
-            echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
-            echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
-            echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
-            echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
-            echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
-            echo "export LOGS_PATH=${LOGS_PATH}" >> global.env
-          """
-          if (env.GERRIT_CHANGE_ID) {
             sh """
-              echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
-              echo "export GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}" >> global.env
-              echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
-              echo "export GERRIT_PROJECT=${env.GERRIT_PROJECT}" >> global.env
-              echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
-              echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
+              echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
+              echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
+              echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
+              echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
+              echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
+              echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
+              echo "export LOGS_PATH=${LOGS_PATH}" >> global.env
             """
+            if (env.GERRIT_CHANGE_ID) {
+              sh """
+                echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
+                echo "export GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}" >> global.env
+                echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
+                echo "export GERRIT_PROJECT=${env.GERRIT_PROJECT}" >> global.env
+                echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
+                echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
+              """
+            }
+          } catch (err) {
+            println "Failed set environment ${err.getMessage()}"
+            error(err.getMessage())
           }
         }
         archiveArtifacts artifacts: 'global.env'
