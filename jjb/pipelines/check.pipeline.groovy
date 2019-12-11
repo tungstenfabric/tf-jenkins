@@ -214,6 +214,7 @@ pipeline {
                         string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_PROJECT_DOMAIN_NAME'),
                         string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
                       sh """
+                        set -x
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
                         export CONF_PLATFORM="${name}"
                         export BUILD_TAG=${BUILD_TAG}
