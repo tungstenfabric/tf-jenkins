@@ -54,6 +54,8 @@ pipeline {
           } else {
             CONTRAIL_CONTAINER_TAG = 'master-nightly'
             LOGS_PATH_TYPE="manual"
+            LOGS_CHANGE_NO = env.GERRIT_CHANGE_NUMBER
+            LOGS_PATCHSET_NO = env.GERRIT_PATCHSET_NUMBER
           }
 
           sh """
@@ -223,7 +225,11 @@ pipeline {
                         export CONF_PLATFORM="${name}"
                         export BUILD_TAG=${BUILD_TAG}
                         export DEBUG=true
-                        export LOGS_FILE_PATH="${LOGS_FILE_PATH_BASE}/manual/"
+                        if [[ "${LOGS_PATH_TYPE}" == "gerrit" ]]: then
+                          export LOGS_FILE_PATH="${LOGS_FILE_PATH_BASE}/gerrit/${LOGS_CHANGE_NO}/${LOGS_PATCHSET_NO}/"
+                        else
+                          export LOGS_FILE_PATH="${LOGS_FILE_PATH_BASE}/manual/"
+                        fi
                         export SANITY_LOGS_PATH=${SANITY_LOGS_PATH}
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
