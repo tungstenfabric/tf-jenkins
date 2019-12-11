@@ -1,6 +1,7 @@
+configuration-as-code
+{% if jenkins_install_plugins is sameas true %}
 aws-credentials
 build-timeout
-configuration-as-code
 copyartifact
 email-ext
 external-monitor-job
@@ -18,3 +19,4 @@ rebuild
 ssh-slaves
 timestamper
 ws-cleanup
+{% endif %}
