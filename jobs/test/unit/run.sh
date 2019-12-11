@@ -43,7 +43,7 @@ mv /root/contrail/logs.tgz
 EOF
 result=$?
 
-# TODO: rsync logs  fron shared folder to ARCHIVE_HOST:/??/ || /bin/true
+rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:$FULL_LOGS_FILE_PATH || /bin/true
 
 if [[ $result != 0 ]] ; then
   echo "ERROR: UT failed"
