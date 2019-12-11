@@ -9,7 +9,6 @@ pipeline {
     REGISTRY_PORT = "5001"
     LOGS_HOST = "pnexus.sytes.net"
     LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
-    SANITY_LOGS_PATH = "/home/centos/src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs/"
   }
   parameters {
     choice(name: 'SLAVE', choices: ['vexxhost', 'aws'],
@@ -60,7 +59,6 @@ pipeline {
             echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
             echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
             echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
-            echo "export SANITY_LOGS_PATH=${SANITY_LOGS_PATH}" >> global.env
             echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
             echo "export LOGS_PATH=${LOGS_PATH}" >> global.env
@@ -166,7 +164,9 @@ pipeline {
                         string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                         [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                       ]
+                    top_job_results[name]['status-tf'] = 'SUCCESS'
                   } catch (err) {
+                    top_job_results[name]['status-tf'] = 'FAILURE'
                     println "Failed to run deploy TF deploy platform for ${name}"
                     println err.getMessage()
                     error(err.getMessage())
@@ -217,8 +217,10 @@ pipeline {
                         export DEBUG=true
                         export LOGS_PATH="${LOGS_PATH}"
                         export JOB_LOGS_PATH="${name}-${top_job_number}"
-                        export SANITY_LOGS_PATH=${SANITY_LOGS_PATH}
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
+                        if [[ ${top_job_results[name]['status-tf']} == 'SUCCESS' ]]; then
+                          "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh" || /bin/true
+                        fi
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
                       """
                     }

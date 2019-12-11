@@ -23,13 +23,9 @@ ORCHESTRATOR=$ORCHESTRATOR ./run.sh logs
 EOF
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
-pushd $WORKSPACE || /bin/true
+
+pushd $WORKSPACE
 tar -xzf logs.tgz
-
-# Collect sanity logs from worker
-mkdir -p logs/sanity
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:$SANITY_LOGS_PATH $WORKSPACE/logs/sanity/ || /bin/true
-
 FULL_LOGS_PATH="${LOGS_PATH}/${JOB_LOGS_PATH}"
 ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
 rsync -a -e "ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $LOGS_HOST_USERNAME@$LOGS_HOST:$FULL_LOGS_PATH
