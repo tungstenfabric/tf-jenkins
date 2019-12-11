@@ -49,10 +49,10 @@ pipeline {
             if (env.GERRIT_CHANGE_NUMBER && env.GERRIT_PATCHSET_NUMBER) {
               CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
               hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
-              LOGS_PATH="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${PIPELINE_BUILD_NUMBER}"
+              LOGS_PATH="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
             } else {
               CONTRAIL_CONTAINER_TAG = 'master-nightly'
-              LOGS_PATH="${LOGS_BASE_PATH}/manual/pipeline_${PIPELINE_BUILD_NUMBER}"
+              LOGS_PATH="${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
             }
 
             sh """
