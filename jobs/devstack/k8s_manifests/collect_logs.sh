@@ -16,20 +16,29 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
+echo INFO: Sanity logs path content
+ls -la /home/centos/src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs/ || /bin/true
 cd src/tungstenfabric/tf-devstack/k8s_manifests
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh logs
 EOF
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
-
-pushd $WORKSPACE
+pushd $WORKSPACE || /bin/true
 tar -xzf logs.tgz
+
+# Collect sanity logs from worker
+mkdir -p logs/sanity
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:$SANITY_LOGS_PATH $WORKSPACE/logs/sanity/ || /bin/true
+
+#TODO Remove after debug
+echo INFO: LOGS_FILE_PATH = $LOGS_FILE_PATH
+
 if [[ -z $CONF_PLATFORM ]]; then # The script starts from job directly
-    FULL_LOGS_FILE_PATH="$LOGS_FILE_PATH\/$PIPELINE_BUILD_TAG\/job_$JOB_NAME\_$BUILD_NUMBER"
+    FULL_LOGS_FILE_PATH="${LOGS_FILE_PATH}/${PIPELINE_BUILD_TAG}/job_${JOB_NAME}_${BUILD_NUMBER}"
 else # The script starts from pipeline
-    FULL_LOGS_FILE_PATH="$LOGS_FILE_PATH\/$BUILD_TAG\/pipeline_$CONF_PLATFORM\_$BUILD_NUMBER"
+    FULL_LOGS_FILE_PATH="${LOGS_FILE_PATH}/${BUILD_TAG}/pipeline_${CONF_PLATFORM}_${BUILD_NUMBER}"
 fi
 ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST "mkdir -p $FULL_LOGS_FILE_PATH"
-rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:$FULL_LOGS_FILE_PATH
+rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:$FULL_LOGS_FILE_PATH || /bin/true
 rm -rf $WORKSPACE/logs
 popd
