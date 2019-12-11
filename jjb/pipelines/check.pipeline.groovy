@@ -9,7 +9,10 @@ pipeline {
     REGISTRY_PORT = "5001"
     ARCHIVE_HOST = "pnexus.sytes.net"
     LOGS_FILE_PATH_BASE = "/var/www/logs/jenkins_logs/"
-    SANITY_LOGS_PATH="/home/centos/src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs/"
+    SANITY_LOGS_PATH = "/home/centos/src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs/"
+    GERRIT_CHANGE_ID = env.GERRIT_CHANGE_ID
+    GERRIT_CHANGE_NUMBER = env.GERRIT_CHANGE_NUMBER
+    GERRIT_PATCHSET_NUMBER = env.GERRIT_PATCHSET_NUMBER
   }
   parameters {
     choice(name: 'SLAVE', choices: ['vexxhost', 'aws'],
@@ -217,7 +220,11 @@ pipeline {
                         export CONF_PLATFORM="${name}"
                         export BUILD_TAG=${BUILD_TAG}
                         export DEBUG=true
-                        export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/manual/
+                        if [[  -n "${GERRIT_CHANGE_ID}" ]]; then
+                          export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/gerrit/${GERRIT_CHANGE_NUMBER: -2}/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}/
+                        else
+                          export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/manual/
+                        fi
                         export SANITY_LOGS_PATH=${SANITY_LOGS_PATH}
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
