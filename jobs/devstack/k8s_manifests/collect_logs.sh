@@ -23,12 +23,12 @@ ORCHESTRATOR=$ORCHESTRATOR ./run.sh logs
 EOF
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
-pushd $WORKSPACE
+pushd $WORKSPACE || /bin/true
 tar -xzf logs.tgz
 
 # Collect sanity logs from worker
 mkdir -p logs/sanity
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:$SANITY_LOGS_PATH $WORKSPACE/logs/sanity/
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:$SANITY_LOGS_PATH $WORKSPACE/logs/sanity/ || /bin/true
 
 #TODO Remove after debug
 echo INFO: LOGS_FILE_PATH = $LOGS_FILE_PATH
@@ -39,6 +39,6 @@ else # The script starts from pipeline
     FULL_LOGS_FILE_PATH="${LOGS_FILE_PATH}/${BUILD_TAG}/pipeline_${CONF_PLATFORM}_${BUILD_NUMBER}"
 fi
 ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS $ARCHIVE_USERNAME@$ARCHIVE_HOST "mkdir -p $FULL_LOGS_FILE_PATH"
-rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:$FULL_LOGS_FILE_PATH
+rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:$FULL_LOGS_FILE_PATH || /bin/true
 rm -rf $WORKSPACE/logs
 popd
