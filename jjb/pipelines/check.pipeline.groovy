@@ -215,6 +215,7 @@ pipeline {
                         export CONF_PLATFORM="${name}"
                         export BUILD_TAG
                         export DEBUG=true
+                        export LOGS_FILE_PATH
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
                       """
