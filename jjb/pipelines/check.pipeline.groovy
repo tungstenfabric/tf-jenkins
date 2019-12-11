@@ -7,10 +7,9 @@ pipeline {
   environment {
     REGISTRY_IP = "pnexus.sytes.net"
     REGISTRY_PORT = "5001"
-    ARCHIVE_HOST = "pnexus.sytes.net"
-    LOGS_FILE_PATH_BASE = "/var/www/logs/jenkins_logs/"
+    LOGS_HOST = "pnexus.sytes.net"
+    LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
     SANITY_LOGS_PATH = "/home/centos/src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs/"
-
   }
   parameters {
     choice(name: 'SLAVE', choices: ['vexxhost', 'aws'],
@@ -47,25 +46,24 @@ pipeline {
           if (params.DO_CHECK_K8S_HELM) test_configurations += 'k8s_helm'
           if (params.DO_CHECK_OS_HELM) test_configurations += 'os_helm'
           println 'Test configurations: ' + test_configurations
-          test_configurations
           if (env.GERRIT_CHANGE_NUMBER && env.GERRIT_PATCHSET_NUMBER) {
             CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
-            LOGS_PATH_TYPE="gerrit"
+            hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
+            LOGS_PATH="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${PIPELINE_BUILD_NUMBER}"
           } else {
             CONTRAIL_CONTAINER_TAG = 'master-nightly'
-            LOGS_PATH_TYPE="manual"
-            LOGS_CHANGE_NO = env.GERRIT_CHANGE_NUMBER
-            LOGS_PATCHSET_NO = env.GERRIT_PATCHSET_NUMBER
+            LOGS_PATH="${LOGS_BASE_PATH}/manual/pipeline_${PIPELINE_BUILD_NUMBER}"
           }
 
           sh """
             echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
             echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
             echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
-            echo "export ARCHIVE_HOST=${ARCHIVE_HOST}" >> global.env
+            echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
             echo "export SANITY_LOGS_PATH=${SANITY_LOGS_PATH}" >> global.env
             echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
             echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
+            echo "export LOGS_PATH=${LOGS_PATH}" >> global.env
           """
           if (env.GERRIT_CHANGE_ID) {
             sh """
@@ -75,11 +73,6 @@ pipeline {
               echo "export GERRIT_PROJECT=${env.GERRIT_PROJECT}" >> global.env
               echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
               echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
-              echo "export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/gerrit/${GERRIT_CHANGE_NUMBER: -2}/${GERRIT_CHANGE_NUMBER}/${GERRIT_PATCHSET_NUMBER}/" >> global.env
-            """
-          } else {
-            sh """
-              echo "export LOGS_FILE_PATH=${LOGS_FILE_PATH_BASE}/manual/" >> global.env
             """
           }
         }
@@ -210,7 +203,7 @@ pipeline {
                           credentialsId: 'aws-creds',
                           accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                           secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
-                        sshUserPrivateKey(credentialsId: "archive_credentials", keyFileVariable: 'ARCHIVE_SSH_KEY',usernameVariable: 'ARCHIVE_USERNAME'),
+                        sshUserPrivateKey(credentialsId: "logs_host", keyFileVariable: 'LOGS_HOST_SSH_KEY',usernameVariable: 'LOGS_HOST_USERNAME'),
                         sshUserPrivateKey(credentialsId: "worker", keyFileVariable: "WORKER_SSH_KEY"),
                         string(credentialsId: 'VEXX_OS_USERNAME', variable: 'OS_USERNAME'),
                         string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'OS_PROJECT_NAME'),
@@ -220,16 +213,10 @@ pipeline {
                         string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
                       sh """
                         set -x
-                        echo "INFO: LOGS_PATH_TYPE = ${LOGS_PATH_TYPE}"
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
-                        export CONF_PLATFORM="${name}"
-                        export BUILD_TAG=${BUILD_TAG}
                         export DEBUG=true
-                        if [[ "${LOGS_PATH_TYPE}" == "gerrit" ]]; then
-                          export LOGS_FILE_PATH="${LOGS_FILE_PATH_BASE}/gerrit/${LOGS_CHANGE_NO}/${LOGS_PATCHSET_NO}/"
-                        else
-                          export LOGS_FILE_PATH="${LOGS_FILE_PATH_BASE}/manual/"
-                        fi
+                        export LOGS_PATH="${LOGS_PATH}"
+                        export JOB_LOGS_PATH="${name}-${top_job_number}"
                         export SANITY_LOGS_PATH=${SANITY_LOGS_PATH}
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
