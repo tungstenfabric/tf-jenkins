@@ -196,7 +196,7 @@ pipeline {
                   parallel test_jobs
                 } finally {
                   top_job_number = top_job_results[name]['build_number']
-                  println "Trying to cleanup workers for ${name} job ${top_job_number}"
+                  println "Trying to collect logs and cleanup workers for ${name} job ${top_job_number}"
                   try {
                     copyArtifacts filter: "stackrc.deploy-platform-${name}.env",
                       fingerprintArtifacts: true,
@@ -219,7 +219,6 @@ pipeline {
                       sh """
                         set -x
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
-                        export DEBUG=true
                         export LOGS_PATH="${LOGS_PATH}"
                         export JOB_LOGS_PATH="${name}-${top_job_number}"
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
