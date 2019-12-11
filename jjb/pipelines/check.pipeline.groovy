@@ -10,9 +10,7 @@ pipeline {
     ARCHIVE_HOST = "pnexus.sytes.net"
     LOGS_FILE_PATH_BASE = "/var/www/logs/jenkins_logs/"
     SANITY_LOGS_PATH = "/home/centos/src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs/"
-    GERRIT_CHANGE_ID = env.GERRIT_CHANGE_ID
-    GERRIT_CHANGE_NUMBER = env.GERRIT_CHANGE_NUMBER
-    GERRIT_PATCHSET_NUMBER = env.GERRIT_PATCHSET_NUMBER
+
   }
   parameters {
     choice(name: 'SLAVE', choices: ['vexxhost', 'aws'],
