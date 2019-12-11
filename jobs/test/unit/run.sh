@@ -38,12 +38,14 @@ export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 
 cd src/tungstenfabric/tf-dev-env
 ./run.sh test
-tar -czvf /root/contrail/logs.tgz /root/contrail/logs/
-mv /root/contrail/logs.tgz
+tar -czvf /root/contrail/ut_logs.tgz $WORKSPACE/contrail/ut_logs/
 EOF
 result=$?
 
-rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:$FULL_LOGS_FILE_PATH || /bin/true
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:/root/tf-dev-env/ut_logs.tgz  $WORKSPACE/
+mkdir -p $WORKSPACE/ut_logs/
+tar -zxvf  $WORKSPACE/ut_logs.tgz -C $WORKSPACE/ut_logs/
+rsync -a -e "ssh -i $ARCHIVE_SSH_KEY $SSH_OPTIONS" $WORKSPACE/ut_logs $ARCHIVE_USERNAME@$ARCHIVE_HOST:$FULL_LOGS_FILE_PATH || /bin/true
 
 if [[ $result != 0 ]] ; then
   echo "ERROR: UT failed"
