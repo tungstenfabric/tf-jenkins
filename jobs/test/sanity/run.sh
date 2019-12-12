@@ -19,6 +19,7 @@ echo "INFO: Test sanity started"
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
+export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
 export TF_TEST_IMAGE="opencontrailnightly/contrail-test-test:master-latest"
