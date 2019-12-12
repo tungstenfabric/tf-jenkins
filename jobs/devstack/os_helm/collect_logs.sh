@@ -24,6 +24,7 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:l
 
 pushd $WORKSPACE
 tar -xzf logs.tgz
+curl $CONSOLE_OUT_URL > logs/console_out.txt || /bin/true
 FULL_LOGS_PATH="${LOGS_PATH}/${JOB_LOGS_PATH}"
 ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
 rsync -a -e "ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $LOGS_HOST_USERNAME@$LOGS_HOST:$FULL_LOGS_PATH
