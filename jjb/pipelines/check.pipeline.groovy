@@ -220,13 +220,15 @@ pipeline {
                         string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_USER_DOMAIN_NAME'),
                         string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_PROJECT_DOMAIN_NAME'),
                         string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
+                      // TODO: remove this hack that obtains deployer from job name
+                      deployer = name.split('_')[1]
                       sh """
                         set -x
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
                         export LOGS_PATH="${LOGS_PATH}"
                         export JOB_LOGS_PATH="${name}-${top_job_number}"
                         export CONSOLE_OUT_URL=${BUILD_URL}/consoleText
-                        "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
+                        "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${deployer}/collect_logs.sh" || /bin/true
                         if [[ ${top_job_results[name]['status-tf']} == 'SUCCESS' ]]; then
                           DEBUG=true "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh" || /bin/true
                         fi
