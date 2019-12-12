@@ -49,7 +49,6 @@
           - text:
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL
-
     scm:
       - tf-jenkins
       - tf-devstack
@@ -62,16 +61,18 @@
       - shell: |
           export DEBUG=true
           export ENVIRONMENT_OS={environment_os}
+          export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/create_workers.sh
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/create_workers.sh
       - shell: |
           export DEBUG=true
+          export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
           res=0
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_platform.sh || res=1
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_platform.sh || res=1
           if [[ $res == 1 ]]; then
             export JOB_LOGS_PATH={project}-${BUILD_ID}
-            ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/collect_logs.sh || /bin/true
+            ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/collect_logs.sh || /bin/true
           fi
           exit $res
     publishers:
@@ -117,7 +118,8 @@
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/{project}/deploy_tf.sh  
+          source "$WORKSPACE/stackrc.deploy-platform-{project}.env"
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_tf.sh  
     publishers:
       - archive:
           artifacts: '*.env'
@@ -127,14 +129,28 @@
     project:
       - k8s_manifests:
           environment_os: centos7
+          deployer: k8s_manifests
+          orchestrator: kubernetes
       - k8s_helm:
           environment_os: centos7
+          deployer: helm
+          orchestrator: kubernetes
       - os_helm:
           environment_os: centos7
+          deployer: helm
+          orchestrator: openstack
       - k8s_juju:
           environment_os: ubuntu18
+          deployer: juju
+          orchestrator: kubernetes
+      - k8s_juju:
+          environment_os: ubuntu18
+          deployer: juju
+          orchestrator: openstack
       - os_ansible:
           environment_os: centos7
+          deployer: ansible
+          orchestrator: openstack
     jobs:
       - 'deploy-platform-{project}'
       - 'deploy-tf-{project}'

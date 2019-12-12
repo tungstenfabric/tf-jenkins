@@ -19,8 +19,10 @@ pipeline {
       description: 'Run UT and Lint jobs.')
     booleanParam(name: 'DO_CHECK_K8S_MANIFESTS', defaultValue: true,
       description: 'Run checks for k8s with manifests.')
-    booleanParam(name: 'DO_CHECK_K8S_JUJU', defaultValue: true,
+    booleanParam(name: 'DO_CHECK_K8S_JUJU', defaultValue: false,
       description: 'Run checks for k8s with juju.')
+    booleanParam(name: 'DO_CHECK_OS_JUJU', defaultValue: false,
+      description: 'Run checks for OpenStack with juju.')
     booleanParam(name: 'DO_CHECK_OS_ANSIBLE', defaultValue: true,
       description: 'Run checks for OpenStack with ansible-deployer.')
     booleanParam(name: 'DO_CHECK_K8S_HELM', defaultValue: false,
@@ -42,6 +44,7 @@ pipeline {
           try {
             if (params.DO_CHECK_K8S_MANIFESTS) test_configurations += 'k8s_manifests'
             if (params.DO_CHECK_K8S_JUJU) test_configurations += 'k8s_juju'
+            if (params.DO_CHECK_OS_JUJU) test_configurations += 'os_juju'
             if (params.DO_CHECK_OS_ANSIBLE) test_configurations += 'os_ansible'
             if (params.DO_CHECK_K8S_HELM) test_configurations += 'k8s_helm'
             if (params.DO_CHECK_OS_HELM) test_configurations += 'os_helm'

@@ -9,7 +9,7 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-echo "ORCHESTRATOR=kubernetes" >> "$ENV_FILE"
+echo "ORCHESTRATOR=$ORCHESTRATOR" >> "$ENV_FILE"
 source $ENV_FILE
 
 echo 'INFO: Deploy platform for $JOB_NAME'
@@ -23,7 +23,7 @@ export DEBUG=$DEBUG
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG"
 export PATH=\$PATH:/usr/sbin
-cd src/tungstenfabric/tf-devstack/helm
+cd src/tungstenfabric/tf-devstack/k8s_manifests
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh platform
 EOF
 

@@ -8,11 +8,7 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-echo "ORCHESTRATOR=kubernetes" >> "$ENV_FILE"
-source $ENV_FILE
-
-echo 'INFO: Deploy platform for $JOB_NAME'
+echo 'INFO: Deploy TF with juju'
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
@@ -23,8 +19,8 @@ export DEBUG=$DEBUG
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG"
 export PATH=\$PATH:/usr/sbin
-cd src/tungstenfabric/tf-devstack/k8s_manifests
-ORCHESTRATOR=$ORCHESTRATOR ./run.sh platform
+cd src/tungstenfabric/tf-devstack/juju
+ORCHESTRATOR=$ORCHESTRATOR CLOUD=local ./run.sh
 EOF
 
 echo "INFO: Deploy platform finished"
