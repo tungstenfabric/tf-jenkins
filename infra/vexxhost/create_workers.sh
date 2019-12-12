@@ -14,16 +14,16 @@ source "$WORKSPACE/global.env"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
-echo "ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
-echo "OS_REGION_NAME=${OS_REGION_NAME}" >> "$ENV_FILE"
+echo "export ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
+echo "export OS_REGION_NAME=${OS_REGION_NAME}" >> "$ENV_FILE"
 
 IMAGE_TEMPLATE_NAME="${OS_IMAGES["${ENVIRONMENT_OS^^}"]}"
 IMAGE_NAME=$(openstack image list -c Name -f value | grep "${IMAGE_TEMPLATE_NAME}" | sort -nr | head -n 1)
 IMAGE=$(openstack image show -c id -f value "$IMAGE_NAME")
-echo "IMAGE=$IMAGE" >> "$ENV_FILE"
+echo "export IMAGE=$IMAGE" >> "$ENV_FILE"
 
 IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
-echo "IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
+echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
 VM_TYPE=${VM_TYPE:-'medium'}
 INSTANCE_TYPE=${VM_TYPES[$VM_TYPE]}
@@ -43,9 +43,9 @@ nova boot --flavor ${INSTANCE_TYPE} \
           $OBJECT_NAME
 
 instance_id=$(openstack server show $OBJECT_NAME -c id -f value | tr -d '\n')
-echo "instance_id=$instance_id" >> "$ENV_FILE"
+echo "export instance_id=$instance_id" >> "$ENV_FILE"
 instance_ip=$(openstack server show $OBJECT_NAME -c addresses -f value | cut -f 2 -d '=')
-echo "instance_ip=$instance_ip" >> "$ENV_FILE"
+echo "export instance_ip=$instance_ip" >> "$ENV_FILE"
 
 timeout 300 bash -c "\
 while /bin/true ; do \
