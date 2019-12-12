@@ -128,7 +128,7 @@
       - k8s_manifests:
           environment_os: centos7
       - k8s_helm:
-          environment_os: ubuntu18
+          environment_os: centos7
       - os_helm:
           environment_os: centos7
       - k8s_juju:
