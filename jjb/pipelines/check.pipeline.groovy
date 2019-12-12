@@ -223,7 +223,7 @@ pipeline {
                         export JOB_LOGS_PATH="${name}-${top_job_number}"
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
                         if [[ ${top_job_results[name]['status-tf']} == 'SUCCESS' ]]; then
-                          "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh" || /bin/true
+                          DEBUG=true "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh" || /bin/true
                         fi
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
                       """
