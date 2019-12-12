@@ -37,3 +37,4 @@
     name: "*"
     state: latest
     update_cache: yes
+  when: apt_upgrade_all

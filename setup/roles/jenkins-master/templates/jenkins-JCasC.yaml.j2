@@ -80,35 +80,41 @@ jenkins:
       excludeClientIPFromCrumb: false
   remotingSecurity:
     enabled: true
+{% if ('aws' in groups and groups['aws']) or ('vexxhost' in groups and groups['vexxhost']) %}
   nodes:
+{% for host in groups['aws'] %}
     - permanent:
         labelString: "aws"
         launcher:
           ssh:
             credentialsId: "jenkins-ssh-key"
-            host: "slave01.aws.tf-jenkins.progmaticlab.com"
+            host: "{{ host }}"
             port: 22
             sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
-        name: "slave01-aws"
+        name: "slave{{ loop.index }}-aws"
         numExecutors: 20
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
+{% endfor %}
+{% for host in groups['vexxhost'] %}
     - permanent:
         labelString: "vexxhost vexx"
         launcher:
           ssh:
             credentialsId: "jenkins-ssh-key"
-            host: "slave01.vexx.tf-jenkins.progmaticlab.com"
+            host: "{{ host }}"
             port: 22
             sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
-        name: "slave01-vexxhost"
+        name: "slave{{ loop.index }}-vexxhost"
         numExecutors: 20
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
+{% endfor %}
+{% endif %}
 unclassified:
   location:
-    adminAddress: "jenkins@progmaticlab.com"
-    url: "https://tf-jenkins.progmaticlab.com/"
+    adminAddress: "{{ jenkins_admin_email }}"
+    url: "https://{{ jenkins_fqdn }}/"
 security:
   scriptApproval:
     approvedSignatures:

@@ -1,6 +1,6 @@
 ---
 - name: Configure jenkins master
-  hosts: jenkins-master
+  hosts: jenkins_master
   gather_facts: true
   become: yes
   roles:

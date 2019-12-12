@@ -62,9 +62,9 @@
     dest: "{{ docker_build_dir.path }}/plugins.txt"
   when: jenkins_custom_docker_image
 
-- name: Copy CaC config to build directory
+- name: Copy JCasC config to build directory
   template:
-    src: "jenkins-CaC.yaml.j2"
+    src: "jenkins-JCasC.yaml.j2"
     dest: "{{ docker_build_dir.path }}/jenkins.yaml"
   when: jenkins_custom_docker_image and jenkins_deploy_configuration
 
@@ -78,7 +78,7 @@
     tag: latest
     force_tag: yes
     force_source: yes
-  when: jenkins_custom_docker_image 
+  when: jenkins_custom_docker_image
   register: jenkins_image
 
 - name: Create nginx-proxy container
@@ -124,3 +124,13 @@
     volumes:
       - jenkins_home:/var/jenkins_home
     network_mode: bridge
+
+- name: Get infos on volume
+  docker_volume_info:
+    name: jenkins_home
+  register: volume_jenkins
+
+- name: Clean JCasC config file after jenkins deploy
+  file:
+    state: absent
+    path: "{{ volume_jenkins.volume.Mountpoint }}/jenkins.yaml"
