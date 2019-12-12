@@ -63,6 +63,7 @@ pipeline {
               echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
               echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
               echo "export LOGS_PATH=${LOGS_PATH}" >> global.env
+              echo "export CONSOLE_OUT_URL=${BUILD_URL}/consoleText" >> global.env
             """
             if (env.GERRIT_CHANGE_ID) {
               sh """
@@ -221,6 +222,7 @@ pipeline {
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
                         export LOGS_PATH="${LOGS_PATH}"
                         export JOB_LOGS_PATH="${name}-${top_job_number}"
+                        export CONSOLE_OUT_URL=${BUILD_URL}/consoleText
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${name}/collect_logs.sh" || /bin/true
                         if [[ ${top_job_results[name]['status-tf']} == 'SUCCESS' ]]; then
                           DEBUG=true "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh" || /bin/true
