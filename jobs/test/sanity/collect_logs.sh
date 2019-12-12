@@ -11,7 +11,7 @@ source "$my_dir/definitions"
 ENV_FILE=${ENV_FILE:-"$WORKSPACE/stackrc.$JOB_NAME.env"}
 source $ENV_FILE
 
-SANITY_LOGS_PATH = "src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs"
+SANITY_LOGS_PATH="src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs"
 pushd $WORKSPACE
 mkdir -p logs
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:$SANITY_LOGS_PATH $WORKSPACE/logs/ || /bin/true
