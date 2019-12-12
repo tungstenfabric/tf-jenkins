@@ -143,7 +143,7 @@
           environment_os: ubuntu18
           deployer: juju
           orchestrator: kubernetes
-      - k8s_juju:
+      - os_juju:
           environment_os: ubuntu18
           deployer: juju
           orchestrator: openstack
