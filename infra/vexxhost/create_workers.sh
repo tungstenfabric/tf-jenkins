@@ -33,10 +33,11 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
 fi
 
 OBJECT_NAME=$BUILD_TAG
+PIPELINE_NAME=$(echo ${PIPELINE_BUILD_TAG%-*} | sed 's/jenkins-//g')
 nova boot --flavor ${INSTANCE_TYPE} \
           --security-groups ${OS_SG} \
           --key-name=worker \
-          --tags "x${PIPELINE_BUILD_TAG}x" \
+          --tags "x${PIPELINE_BUILD_TAG}x,x${PIPELINE_NAME}x" \
           --nic net-name=${OS_NETWORK} \
           --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=120,bootindex=0 \
           --poll \
