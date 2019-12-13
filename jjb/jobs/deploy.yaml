@@ -129,7 +129,7 @@
     project:
       - k8s_manifests:
           environment_os: centos7
-          deployer: k8s_manifests
+          deployer: manifests
           orchestrator: kubernetes
       - k8s_helm:
           environment_os: centos7
