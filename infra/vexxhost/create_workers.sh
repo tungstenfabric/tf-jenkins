@@ -33,7 +33,6 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
 fi
 
 OBJECT_NAME=$BUILD_TAG
-PIPELINE_NAME=$(echo ${PIPELINE_BUILD_TAG%-*} | sed 's/jenkins-//g')
 nova boot --flavor ${INSTANCE_TYPE} \
           --security-groups ${OS_SG} \
           --key-name=worker \

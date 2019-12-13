@@ -59,7 +59,8 @@ pipeline {
             }
 
             sh """
-              echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
+              echo "export PIPELINE_NAME=${JOB_NAME}" > global.env
+              echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
               echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
               echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
               echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
