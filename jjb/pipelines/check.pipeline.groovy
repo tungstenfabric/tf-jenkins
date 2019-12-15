@@ -61,13 +61,17 @@ pipeline {
             sh """
               echo "export PIPELINE_NAME=${JOB_NAME}" > global.env
               echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
-              echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
-              echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
               echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
-              echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
-              echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
               echo "export LOGS_PATH=${LOGS_PATH}" >> global.env
             """
+            if (params.DO_BUILD || params.DO_RUN_UT_LINT) {
+              sh """
+                echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
+                echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
+                echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
+                echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
+              """
+            }
             if (env.GERRIT_CHANGE_ID) {
               sh """
                 echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
