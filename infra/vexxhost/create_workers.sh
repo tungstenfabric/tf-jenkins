@@ -36,7 +36,7 @@ OBJECT_NAME=$BUILD_TAG
 nova boot --flavor ${INSTANCE_TYPE} \
           --security-groups ${OS_SG} \
           --key-name=worker \
-          --tags "PipelineBuildTag=${PIPELINE_BUILD_TAG},PipelineName=${PIPELINE_NAME}" \
+          --tags "x${PIPELINE_BUILD_TAG}x,x${PIPELINE_NAME}x" \
           --nic net-name=${OS_NETWORK} \
           --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=120,bootindex=0 \
           --poll \
