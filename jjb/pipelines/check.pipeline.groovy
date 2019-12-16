@@ -9,6 +9,7 @@ pipeline {
     REGISTRY_PORT = "5001"
     LOGS_HOST = "pnexus.sytes.net"
     LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
+    LOGS_BASE_URL = "http://pnexus.sytes.net:8082/jenkins_logs"
   }
   parameters {
     choice(name: 'SLAVE', choices: ['vexxhost', 'aws'],
@@ -53,9 +54,11 @@ pipeline {
               CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
               hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
               LOGS_PATH="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
+              LOGS_URL="${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
             } else {
               CONTRAIL_CONTAINER_TAG = 'master-nightly'
               LOGS_PATH="${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
+              LOGS_URL="${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
             }
 
             sh """
@@ -63,6 +66,7 @@ pipeline {
               echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
               echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
               echo "export LOGS_PATH=${LOGS_PATH}" >> global.env
+              echo "export LOGS_URL=${LOGS_URL}" >> global.env
             """
             if (params.DO_BUILD || params.DO_RUN_UT_LINT) {
               sh """
@@ -230,6 +234,7 @@ pipeline {
                         set -x
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
                         export LOGS_PATH="${LOGS_PATH}"
+                        export LOGS_URL="${LOGS_URL}"
                         export JOB_LOGS_PATH="${name}-${top_job_number}"
                         "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${deployer}/collect_logs.sh" || /bin/true
                         if [[ ${top_job_results[name]['status-tf']} == 'SUCCESS' ]]; then
