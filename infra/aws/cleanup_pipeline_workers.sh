@@ -16,7 +16,7 @@ source "$WORKSPACE/global.env"
 PIPELINE_AWS_INSTANCES=$(aws ec2 describe-instances \
                             --region $AWS_REGION \
                             --query 'Reservations[].Instances[].InstanceId' \
-                            --filters "Name=tag:PipelineBuildTag,Values=${PIPELINE_BUILD_TAG},{Key=PipelineName,Value=$PIPELINE_NAME}" \
+                            --filters "Name=tag:PipelineBuildTag,Values=${PIPELINE_BUILD_TAG}" \
                             --output text)
 if [[ -n "$PIPELINE_AWS_INSTANCES" ]]; then
   aws ec2 terminate-instances --region $AWS_REGION --instance-ids $PIPELINE_AWS_INSTANCES

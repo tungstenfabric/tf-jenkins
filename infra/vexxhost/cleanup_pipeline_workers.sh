@@ -12,7 +12,7 @@ source "$my_dir/definitions"
 source "$WORKSPACE/global.env"
 
 # TODO: check if it's locked and do not fail job
-TERMINATION_LIST=$(nova list --tags "x${PIPELINE_BUILD_TAG}x" --minimal | awk '{print $2}' | grep -v ID | grep -v "^$")
+TERMINATION_LIST=$(nova list --tags "PipelineBuildTag=${PIPELINE_BUILD_TAG}" --minimal | awk '{print $2}' | grep -v ID | grep -v "^$")
 if [[ -n "$TERMINATION_LIST" ]]; then
   openstack server delete --wait "$TERMINATION_LIST"
 fi
