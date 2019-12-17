@@ -14,10 +14,10 @@ source "$WORKSPACE/global.env"
 # TODO: check if it's locked and do not fail job
 
 PIPELINE_AWS_INSTANCES=$(aws ec2 describe-instances \
-                            --region $AWS_REGION \
+                            --region "$AWS_REGION" \
                             --query 'Reservations[].Instances[].InstanceId' \
-                            --filters "Name=tag:PipelineBuildTag,Values=${PIPELINE_BUILD_TAG} \
+                            --filters "Name=tag:PipelineBuildTag,Values=${PIPELINE_BUILD_TAG}" \
                             --output text)
 if [[ -n "$PIPELINE_AWS_INSTANCES" ]]; then
-  aws ec2 terminate-instances --region $AWS_REGION --instance-ids $PIPELINE_AWS_INSTANCES
+  aws ec2 terminate-instances --region "$AWS_REGION" --instance-ids "$PIPELINE_AWS_INSTANCES"
 fi
