@@ -50,6 +50,7 @@ tar -czvf \$WORKSPACE/logs.tgz $WORKSPACE/contrail/logs/ || /bin/true
 #TODO Remove after debug
 echo "INFO: Check logs availability 1 "
 ls -la
+ls -la \$WORKSPACE
 ls -la $WORKSPACE
 ls -ls $HOME
 EOF
