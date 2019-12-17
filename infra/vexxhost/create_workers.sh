@@ -36,7 +36,7 @@ OBJECT_NAME=$BUILD_TAG
 nova boot --flavor ${INSTANCE_TYPE} \
           --security-groups ${OS_SG} \
           --key-name=worker \
-          --tags "x${PIPELINE_BUILD_TAG}x,x${PIPELINE_NAME}x" \
+          --tags "x${PIPELINE_BUILD_TAG}x,SLAVE=vexx" \
           --nic net-name=${OS_NETWORK} \
           --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=120,bootindex=0 \
           --poll \
