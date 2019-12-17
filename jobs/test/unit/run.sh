@@ -53,8 +53,8 @@ result=$?
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/
 ls -la $WORKSPACE
-mkdir -p $WORKSPACE/logs/
-tar -zxvf  $WORKSPACE/logs.tgz -C $WORKSPACE/logs/
+tar -zxvf  $WORKSPACE/logs.tgz 
+ls -la $WORKSPACE
 rsync -a -e "ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $LOGS_HOST_USERNAME@$LOGS_HOST:$FULL_LOGS_FILE_PATH || /bin/true
 
 if [[ $result != 0 ]] ; then
