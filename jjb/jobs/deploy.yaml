@@ -72,7 +72,7 @@
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_platform.sh || res=1
           # TODO After debug enable condition bach
           # if [[ $res == 1 ]]; then
-            export JOB_LOGS_PATH={project}-${BUILD_ID}
+            export JOB_LOGS_PATH={project}-$BUILD_ID
             ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/collect_logs.sh || /bin/true
           #fi
           exit $res

@@ -231,7 +231,6 @@ pipeline {
                       // TODO: remove this hack that obtains deployer from job name
                       deployer = name.split('_')[1]
                       sh """
-                        set -x
                         export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
                         export LOGS_PATH="${LOGS_PATH}"
                         export LOGS_URL="${LOGS_URL}"
