@@ -20,11 +20,6 @@ echo INFO: Sanity logs path content
 ls -la /home/centos/src/tungstenfabric/tf-test/contrail-sanity/contrail-test-runs/ || /bin/true
 cd src/tungstenfabric/tf-devstack/k8s_manifests
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh logs
-echo INFO: ls current dir
-ls -la
-echo INFO: ls workspace
-ls -la \$WORKSPACE
-
 EOF
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
