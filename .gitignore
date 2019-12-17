@@ -3,3 +3,4 @@
 *.retry
 .env
 .venv
+jjb/generated_xml
