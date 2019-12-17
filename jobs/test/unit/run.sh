@@ -46,7 +46,7 @@ export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-dev-env
-tar -czvf \$WORKSPACE/logs.tgz $WORKSPACE/contrail/logs/ || /bin/true
+tar -czvf \$WORKSPACE/logs.tgz \$WORKSPACE/contrail/logs/ || /bin/true
 #TODO Remove after debug
 echo "INFO: Check logs availability 1 "
 ls -la
