@@ -37,8 +37,8 @@ export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 
 cd src/tungstenfabric/tf-dev-env
-./run.sh test
-tar -czvf \$WORKSPACE/logs.tgz $WORKSPACE/contrail/logs/
+./run.sh test || /bin/true
+tar -czvf \$WORKSPACE/logs.tgz $WORKSPACE/contrail/logs/ || /bin/true
 #TODO Remove after debug
 echo "INFO: Check logs availability 1 "
 ls -la
