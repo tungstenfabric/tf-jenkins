@@ -37,7 +37,9 @@ export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 
 cd src/tungstenfabric/tf-dev-env
+echo "INFO: Just before run.sh"
 ./run.sh test || /bin/true
+echo "INFO: Just after run.sh"
 tar -czvf \$WORKSPACE/logs.tgz $WORKSPACE/contrail/logs/ || /bin/true
 #TODO Remove after debug
 echo "INFO: Check logs availability 1 "
@@ -49,6 +51,7 @@ EOF
 result=$?
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/
+ls -la $WORKSPACE
 mkdir -p $WORKSPACE/logs/
 tar -zxvf  $WORKSPACE/logs.tgz -C $WORKSPACE/logs/
 rsync -a -e "ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $LOGS_HOST_USERNAME@$LOGS_HOST:$FULL_LOGS_FILE_PATH || /bin/true
