@@ -27,6 +27,11 @@
               access-key: AWS_ACCESS_KEY_ID
               secret-key: AWS_SECRET_ACCESS_KEY
       - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: logs_host
+              key-file-variable: LOGS_HOST_SSH_KEY
+              username-variable: LOGS_HOST_USERNAME
+      - credentials-binding:
           - text:
               credential-id: VEXX_OS_USERNAME
               variable: OS_USERNAME
