@@ -15,7 +15,7 @@ pipeline{
                             secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
                 sh """
                     export DEBUG=true
-                    $WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/cleanup_trash.sh
+                    $WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/cleanup_stalled_workers.sh
                 """
                 }
             }
