@@ -52,10 +52,9 @@ EOF
 result=$?
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/
-ls -la $WORKSPACE
 tar -zxvf  $WORKSPACE/logs.tgz 
 FULL_LOGS_PATH="${LOGS_PATH}/test-unit-${ENV_BUILD_ID}"
-ls -la $WORKSPACE
+ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${FULL_LOGS_PATH}"
 rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/logs ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
 
 if [[ $result != 0 ]] ; then
