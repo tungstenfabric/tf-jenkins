@@ -33,5 +33,11 @@ if [[ -n "$TERMINATION_LIST_TAGS" ]]; then
                 "Name=instance-state-code,Values=16" \
       --query 'Reservations[*].Instances[*].[InstanceId]' \
       --output text )
-  aws ec2 terminate-instances --region "$AWS_REGION" --instance-ids "$TERMINATION_LIST"
+  for i in $(echo "$TERMINATION_LIST"); do
+    TERMINATION_PROTECTION=$(aws ec2 --region "$AWS_REGION" describe-instance-attribute \
+        --attribute disableApiTermination \
+        --instance-id i-0df203b04115a40d4 | \
+        jq -r '.DisableApiTermination.Value')
+    if [[ "$TERMINATION_PROTECTION" == "false"; then
+      aws ec2 terminate-instances --region "$AWS_REGION" --instance-ids "$i"
 fi
