@@ -49,6 +49,7 @@ pipeline {
             if (params.DO_CHECK_K8S_JUJU) test_configurations += 'k8s_juju'
             if (params.DO_CHECK_OS_JUJU) test_configurations += 'os_juju'
             if (params.DO_CHECK_OS_ANSIBLE) test_configurations += 'os_ansible'
+            if (params.DO_CHECK_K8S_ANSIBLE) test_configurations += 'k8s_ansible'
             if (params.DO_CHECK_K8S_HELM) test_configurations += 'k8s_helm'
             if (params.DO_CHECK_OS_HELM) test_configurations += 'os_helm'
             println 'Test configurations: ' + test_configurations
