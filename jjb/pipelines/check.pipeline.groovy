@@ -26,6 +26,8 @@ pipeline {
       description: 'Run checks for OpenStack with juju.')
     booleanParam(name: 'DO_CHECK_OS_ANSIBLE', defaultValue: true,
       description: 'Run checks for OpenStack with ansible-deployer.')
+    booleanParam(name: 'DO_CHECK_K8S_ANSIBLE', defaultValue: true,
+      description: 'Run checks for Kubernetes with ansible-deployer.')
     booleanParam(name: 'DO_CHECK_K8S_HELM', defaultValue: false,
       description: 'Run checks for k8s with helm-deployer.')
     booleanParam(name: 'DO_CHECK_OS_HELM', defaultValue: false,

@@ -32,6 +32,9 @@
           name: DO_CHECK_OS_ANSIBLE
           default: true
       - bool:
+          name: DO_CHECK_K8S_ANSIBLE
+          default: true
+      - bool:
           name: DO_CHECK_K8S_HELM
           default: false
       - bool:
