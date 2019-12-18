@@ -8,7 +8,7 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-nova list --tags "SLAVE=$SLAVE" --fields tags >> result_"$SLAVE" 
+nova list --tags "SLAVE=$SLAVE" --fields tags > result_"$SLAVE" 
 
 if ! cat result_"$SLAVE" | sed "s/'/\n/g" | grep "PipelineBuildTag" | awk -F "=" '{print $2}' | sort | uniq > existing_tags.txt; then
   echo "No running instances"
