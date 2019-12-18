@@ -1,0 +1,14 @@
+---
+
+- job:
+    name: cleanup-stalled-workers
+    description: cleanup-stalled-workers
+    project-type: pipeline
+    concurrent: false
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: jjb/pipelines/cleanup_stalled_workers.pipeline.groovy
+      lightweight-checkout: true
+    triggers:
+      - timed: '*/10 * * * *'
