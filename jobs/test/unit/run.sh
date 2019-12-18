@@ -56,7 +56,7 @@ ls -la $WORKSPACE
 tar -zxvf  $WORKSPACE/logs.tgz 
 FULL_LOGS_PATH="${LOGS_PATH}/test-unit-${ENV_BUILD_ID}"
 ls -la $WORKSPACE
-rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/logs ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_FILE_PATH} || /bin/true
+rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/logs ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
 
 if [[ $result != 0 ]] ; then
   echo "ERROR: UT failed"
