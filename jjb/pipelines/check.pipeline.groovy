@@ -59,7 +59,7 @@ pipeline {
               LOGS_PATH="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
               LOGS_URL="${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
             } else {
-              CONTRAIL_CONTAINER_TAG = 'master-nightly'
+              CONTRAIL_CONTAINER_TAG = 'dev'
               LOGS_PATH="${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
               LOGS_URL="${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
             }
