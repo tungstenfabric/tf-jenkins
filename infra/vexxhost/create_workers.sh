@@ -33,7 +33,7 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
 fi
 
 while true; do
-  [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') - 1))" -lt $MAX_COUNT ]] && break
+  [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') - 1))" -lt "$MAX_COUNT" ]] && break
   sleep 60
 done
 

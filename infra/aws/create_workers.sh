@@ -32,6 +32,18 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
     exit 1
 fi
 
+while true; do
+  INSTANCES_CONT=$(aws ec2 describe-instances \
+      --region "$AWS_REGION" \
+      --filters  "Name=instance-state-code,Values=16" \
+                 "Name=tag:SLAVE,Values=${SLAVE}" \
+      --query 'Reservations[*].Instances[*].[InstanceId]'\
+      --output text | wc -l)
+  [[ "$INSTANCES_CONT" -lt "$MAX_COUNT" ]] && break
+  sleep 60
+done
+
+
 # Spin VM
 iname=$BUILD_TAG
 bdm='{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":120,"DeleteOnTermination":true}}'
