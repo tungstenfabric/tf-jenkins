@@ -43,6 +43,11 @@
           - text:
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: logs_host
+              key-file-variable: LOGS_HOST_SSH_KEY
+              username-variable: LOGS_HOST_USERNAME
     builders:
       - copyartifact:
           project: check-pipeline
