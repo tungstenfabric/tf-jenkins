@@ -32,11 +32,16 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
     exit 1
 fi
 
+while true; do
+  [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') - 1))" -lt "$MAX_COUNT" ]] && break
+  sleep 60
+done
+
 OBJECT_NAME=$BUILD_TAG
 nova boot --flavor ${INSTANCE_TYPE} \
           --security-groups ${OS_SG} \
           --key-name=worker \
-          --tags "x${PIPELINE_BUILD_TAG}x,SLAVE=vexx" \
+          --tags "PipelineBuildTag=${PIPELINE_BUILD_TAG},SLAVE=vexxhost" \
           --nic net-name=${OS_NETWORK} \
           --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=120,bootindex=0 \
           --poll \

@@ -26,6 +26,8 @@ pipeline {
       description: 'Run checks for OpenStack with juju.')
     booleanParam(name: 'DO_CHECK_OS_ANSIBLE', defaultValue: true,
       description: 'Run checks for OpenStack with ansible-deployer.')
+    booleanParam(name: 'DO_CHECK_K8S_ANSIBLE', defaultValue: true,
+      description: 'Run checks for Kubernetes with ansible-deployer.')
     booleanParam(name: 'DO_CHECK_K8S_HELM', defaultValue: false,
       description: 'Run checks for k8s with helm-deployer.')
     booleanParam(name: 'DO_CHECK_OS_HELM', defaultValue: false,
@@ -47,6 +49,7 @@ pipeline {
             if (params.DO_CHECK_K8S_JUJU) test_configurations += 'k8s_juju'
             if (params.DO_CHECK_OS_JUJU) test_configurations += 'os_juju'
             if (params.DO_CHECK_OS_ANSIBLE) test_configurations += 'os_ansible'
+            if (params.DO_CHECK_K8S_ANSIBLE) test_configurations += 'k8s_ansible'
             if (params.DO_CHECK_K8S_HELM) test_configurations += 'k8s_helm'
             if (params.DO_CHECK_OS_HELM) test_configurations += 'os_helm'
             println 'Test configurations: ' + test_configurations
@@ -56,7 +59,7 @@ pipeline {
               LOGS_PATH="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
               LOGS_URL="${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
             } else {
-              CONTRAIL_CONTAINER_TAG = 'master-nightly'
+              CONTRAIL_CONTAINER_TAG = 'dev'
               LOGS_PATH="${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
               LOGS_URL="${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
             }

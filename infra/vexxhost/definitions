@@ -20,3 +20,5 @@ declare -A OS_IMAGES=( ['CENTOS7']='template-centos-7' \
 declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' ['RHEL7']='cloud-user' ['UBUNTU16']='ubuntu' ['UBUNTU18']='ubuntu' )
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+MAX_COUNT='20'

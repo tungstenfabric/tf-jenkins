@@ -23,3 +23,5 @@ IMAGE_UBUNTU18='ami-0a5d8bc3b2b741f1b'
 IMAGE_UBUNTU18_SSH_USER='ubuntu'
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+MAX_COUNT='20'
