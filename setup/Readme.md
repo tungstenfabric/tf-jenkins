@@ -11,7 +11,7 @@
      --private-key=/home/master/.ssh/plab # Deployment key
    ```
    *Note: The keypairs for the connection of master and slaves will be created in the directory playbook_dir*
-1. Run:
+3. Run:
 
    ```
    ansible-playbook -i hosts.yml jenkins-master.yml  -e "jenkins_new_deploy=true" -e 'jenkins_defaut_user_password=<StrongPassword>'
@@ -24,3 +24,16 @@
      -e  "apt_upgrade_all=true"           # Upgrade all packages 
      --private-key=/home/master/.ssh/plab # Deployment key
    ```
+
+
+**Upgrade**
+
+Run:
+   ```
+   ansible-playbook -i hosts.yml jenkins-master.yml
+   ```
+
+**Recover**
+
+1. Complete all the steps in the "New deployment" section.
+#TBC
