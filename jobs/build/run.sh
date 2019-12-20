@@ -79,6 +79,8 @@ tar -zxvf  ${WORKSPACE}/container-builder.tgz
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" ${IMAGE_SSH_USER}@${instance_ip}:deployer-builder.tgz ${WORKSPACE}/
 tar -zxvf  ${WORKSPACE}/deployer-builder.tgz
 
+ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS} ${IMAGE_SSH_USER}@${instance_ip} rm -rf deployer-builder.tgz container-builder.tgz
+
 ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${FULL_LOGS_PATH}"
 rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/container-builder ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
 rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/deployer-builder ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
