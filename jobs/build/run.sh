@@ -39,6 +39,7 @@ export CONTRAIL_DIR=""
 
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
+export CONTRAIL_KEEP_LOG_FILES=true
 
 cd src/tungstenfabric/tf-dev-env
 ./run.sh build
