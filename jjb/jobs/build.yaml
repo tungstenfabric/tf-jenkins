@@ -63,7 +63,10 @@
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/build/run.sh
+          export FULL_LOGS_PATH="${LOGS_PATH}/build-${ENV_BUILD_ID}"
+          ./src/progmaticlab/tf-jenkins/jobs/build/run.sh | tee ${WORKSPACE}/output.log
+          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
+
     publishers:
       - postbuildscript:
           builders:

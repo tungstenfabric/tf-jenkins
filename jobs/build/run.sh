@@ -62,12 +62,12 @@ export PATH=\$PATH:/usr/sbin
 
 sudo docker cp tf-developer-sandbox:/root/contrail/contrail-container-builder/containers .
 sudo find ./containers/ -not -name '*.log' -delete &>/dev/null || /bin/true
-tar -czf logs.tgz containers
+tar -czf containers.tgz containers
 sudo rm -rf ./containers
 EOF
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/
-tar -zxvf  $WORKSPACE/logs.tgz 
-FULL_LOGS_PATH="${LOGS_PATH}/build-${ENV_BUILD_ID}"
+rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" ${IMAGE_SSH_USER}@${instance_ip}:containers.tgz ${WORKSPACE}/
+tar -zxvf  ${WORKSPACE}/containers.tgz
+
 ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${FULL_LOGS_PATH}"
 rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/containers ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
