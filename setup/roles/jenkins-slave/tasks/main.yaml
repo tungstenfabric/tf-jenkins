@@ -8,7 +8,7 @@
   pip:
     name: awscli
     executable: pip3
-  when: cloud == 'aws'
+  when: "'aws' in group_names"
 
 - name: Install pip packages for vexx
   pip:
@@ -16,7 +16,7 @@
       - python-openstackclient
       - python-novaclient
     executable: pip3
-  when: cloud == 'vexxhost'
+  when: "'vexxhost' in group_names"
 
 - name: Add user jenkins
   user:
@@ -29,6 +29,19 @@
     group: "{{ jenkins_user }}"
     mode: "0700"
     state: directory
+
+- name: Creating a keypair for connecting slaves
+  openssh_keypair:
+    path: "{{ playbook_dir }}/jenkins_id_ssh_rsa"
+  register: keypair
+  when: jenkins_new_deploy
+  delegate_to: localhost
+  become: no
+
+- name: Append string to list
+  set_fact:
+    jenkins_ssh_pubkeys: "{{ [keypair.public_key] + jenkins_ssh_pubkeys }}"
+  when: jenkins_new_deploy
 
 - name: Add trusted ssh pubkeys to jenkins authorized_keys file
   blockinfile:

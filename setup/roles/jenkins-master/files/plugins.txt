@@ -1,5 +1,4 @@
 configuration-as-code
-{% if jenkins_install_plugins is sameas true %}
 aws-credentials
 build-timeout
 copyartifact
@@ -19,4 +18,3 @@ rebuild
 ssh-slaves
 timestamper
 ws-cleanup
-{% endif %}

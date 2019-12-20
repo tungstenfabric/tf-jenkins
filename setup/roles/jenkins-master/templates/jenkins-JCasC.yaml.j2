@@ -1,77 +1,33 @@
----
 credentials:
   system:
     domainCredentials:
-      - credentials:
-        - string:
-            description: "VEXX_OS_USERNAME"
-            id: "VEXX_OS_USERNAME"
-            scope: GLOBAL
-            secret: ""
-        - string:
-            description: "VEXX_OS_PROJECT_NAME"
-            id: "VEXX_OS_PROJECT_NAME"
-            scope: GLOBAL
-            secret: ""
-        - string:
-            description: "VEXX_OS_PASSWORD"
-            id: "VEXX_OS_PASSWORD"
-            scope: GLOBAL
-            secret: ""
-        - string:
-            description: "VEXX_OS_DOMAIN_NAME"
-            id: "VEXX_OS_DOMAIN_NAME"
-            scope: GLOBAL
-            secret: ""
-        - string:
-            description: "VEXX_OS_AUTH_URL"
-            id: "VEXX_OS_AUTH_URL"
-            scope: GLOBAL
-            secret: ""
-        - basicSSHUserPrivateKey:
-            description: "Gerrit key"
-            id: "zuul-tf-gerrit"
-            privateKeySource:
-              directEntry:
-                privateKey: "{xxxx==}"
-            scope: GLOBAL
-            username: "zuul-tf"
-        - basicSSHUserPrivateKey:
-            description: "Slave key"
-            id: "jenkins-ssh-key"
-            privateKeySource:
-              directEntry:
-                privateKey: "{xxxx==}"
-            scope: GLOBAL
-            username: "jenkins"
-        - usernamePassword:
-            description: "jjb login"
-            id: "self-jenkins"
-            password: ""
-            scope: GLOBAL
-            username: "self-jenkins"
-        - usernamePassword:
-            description: "Nexus login"
-            id: "docker"
-            password: ""
-            scope: GLOBAL
-            username: "docker"
-        - aws:
-            accessKey: "AKXXXXXXXXXXXXXXX"
-            id: "aws-creds"
-            scope: GLOBAL
-            secretKey: ""
+    - credentials:
+      - basicSSHUserPrivateKey:
+          description: "jenkins slaves"
+          id: "jenkins-ssh-key"
+          privateKeySource:
+            directEntry:
+              privateKey: |
+                  {{ jenkins_id_ssh_rsa | indent (18) }}
+          scope: SYSTEM
+          username: "jenkins"
+      - usernamePassword:
+          description: "jjb login"
+          id: "{{ jenkins_default_user }}"
+          password: "{{ jenkins_defaut_user_password }}"
+          scope: GLOBAL
+          username: "self-jenkins"
 jenkins:
   systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
-  numExecutors: 5
+  numExecutors: 2
   scmCheckoutRetryCount: 2
   mode: NORMAL
   securityRealm:
     local:
       allowsSignup: false
       users:
-        - id: "self-jenkins"
-          password: "passw0rd"
+        - id: "{{ jenkins_default_user }}"
+          password: "{{ jenkins_defaut_user_password }}"
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false

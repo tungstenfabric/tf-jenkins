@@ -57,16 +57,18 @@
   when: jenkins_custom_docker_image
 
 - name: Copy plug-in list to build directory
-  template:
-    src: "plugins.txt.j2"
+  copy:
+    src: "plugins.txt"
     dest: "{{ docker_build_dir.path }}/plugins.txt"
-  when: jenkins_custom_docker_image
+  when: jenkins_custom_docker_image and jenkins_new_deploy
 
 - name: Copy JCasC config to build directory
   template:
     src: "jenkins-JCasC.yaml.j2"
     dest: "{{ docker_build_dir.path }}/jenkins.yaml"
-  when: jenkins_custom_docker_image and jenkins_deploy_configuration
+  when: jenkins_custom_docker_image and jenkins_new_deploy
+  vars:
+    jenkins_id_ssh_rsa: "{{lookup('file', 'jenkins_id_ssh_rsa')}}"
 
 - name: Build jenkins image
   docker_image:
@@ -80,6 +82,11 @@
     force_source: yes
   when: jenkins_custom_docker_image
   register: jenkins_image
+
+- name: Delete temporary directory
+  file:
+    state: absent
+    path: "{{ docker_build_dir.path }}"
 
 - name: Create nginx-proxy container
   docker_container:
@@ -96,6 +103,7 @@
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
     network_mode: bridge
+    restart_policy: unless-stopped
 
 - name: Create letsencrypt container
   docker_container:
@@ -109,11 +117,12 @@
       - certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
     network_mode: bridge
+    restart_policy: unless-stopped
 
 - name: Create jenkins container
   docker_container:
-    name: nginx-master
-    image: "{{ (jenkins_image.image.RepoTags | join('\n')) | default('jenkins/jenkins:lts') }}"
+    name: jenkins-master
+    image: "{{ jenkins_image.image.RepoTags | join('\n') }}"
     ports:
       - "8080:8080"
     env:
@@ -124,13 +133,26 @@
     volumes:
       - jenkins_home:/var/jenkins_home
     network_mode: bridge
+    restart_policy: unless-stopped
 
 - name: Get infos on volume
   docker_volume_info:
     name: jenkins_home
   register: volume_jenkins
 
+- name: Pause play until a URL is reachable from this host
+  uri:
+    url: "https://{{ jenkins_fqdn }}/login"
+    follow_redirects: none
+    method: GET
+  register: _result
+  until: _result.status == 200
+  retries: 100
+  delay: 5
+  when: jenkins_new_deploy
+
 - name: Clean JCasC config file after jenkins deploy
   file:
     state: absent
     path: "{{ volume_jenkins.volume.Mountpoint }}/jenkins.yaml"
+  when: jenkins_new_deploy
