@@ -156,3 +156,11 @@
     state: absent
     path: "{{ volume_jenkins.volume.Mountpoint }}/jenkins.yaml"
   when: jenkins_new_deploy
+
+- name: Create daily backup script
+  template:
+    src: "jenkins_backup.j2"
+    dest: "/etc/cron.daily/jenkins_backup"
+    owner: root
+    group: root
+    mode: '0755'
