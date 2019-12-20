@@ -48,8 +48,6 @@
     triggers:
       - gerrit:
           server-name: review.opencontrail.org
-          dynamic-trigger-enabled: true
-          dynamic-trigger-url: file:///var/jenkins_home/gerrit_test_trigger.txt
           skip-vote:
             successful: true
             failed: true
@@ -65,3 +63,9 @@
             - comment-added-contains-event:
                 comment-contains-value: "check tf-jenkins"
           trigger-for-unreviewed-patches: true
+          projects:
+            - project-compare-type: 'PLAIN'
+              project-pattern: 'Juniper/contrail-container-builder'
+              branches:
+                - branch-compare-type: 'REG_EXP'
+                  branch-pattern: '^master'
