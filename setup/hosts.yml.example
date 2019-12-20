@@ -1,0 +1,17 @@
+---
+all:
+  children:
+    jenkins_master:
+      hosts:
+        192.168.30.205:
+    jenkins_slave:
+      children:
+        aws:
+          hosts:
+            192.168.30.206:
+            192.168.30.207:
+        vexxhost:
+          hosts:
+            192.168.30.208:
+  vars:
+    ansible_user: ubuntu

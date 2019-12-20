@@ -10,8 +10,8 @@ required_pkgs:
     - python3-setuptools
     - python3-venv
 
-jenkins_fqdn: "fp.progmaticlab.com"
+jenkins_fqdn: "tf-jenkins.progmaticlab.com"
 jenkins_admin_email: "null@progmaticlab.com"
 jenkins_custom_docker_image: true
-jenkins_install_plugins: true
-jenkins_deploy_configuration: true
+jenkins_default_user: "self-jenkins"
+jenkins_new_deploy: false
