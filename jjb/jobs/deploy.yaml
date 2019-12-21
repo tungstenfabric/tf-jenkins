@@ -64,6 +64,11 @@
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/create_workers.sh
+          # add more information about current deployment
+          ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
+          echo "export ORCHESTRATOR=$ORCHESTRATOR" >> "$ENV_FILE"
+          echo "export DEPLOYER={deployer}" >> "$ENV_FILE"
+          echo "export JOB_LOGS_PATH={project}-$BUILD_ID" >> "$ENV_FILE"
       - shell: |
           export DEBUG=true
           export ORCHESTRATOR={orchestrator}
@@ -72,7 +77,7 @@
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_platform.sh || res=1
           if [[ $res == 1 ]]; then
             export DEBUG=false
-            export JOB_LOGS_PATH={project}-$BUILD_ID
+            souce "$WORKSPACE/stackrc.$JOB_NAME.env"
             ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/collect_logs.sh || /bin/true
           fi
           exit $res
@@ -97,9 +102,9 @@
       - label:
           name: SLAVE
       - string:
-          name: DEPLOY_PLATFORM_JOB_NUMBER
-      - string:
           name: PIPELINE_BUILD_NUMBER
+      - string:
+          name: DEPLOY_PLATFORM_JOB_NUMBER
     properties:
       - build-discarder:
           num-to-keep: 10
@@ -116,15 +121,15 @@
       - tf-devstack
     builders:
       - copyartifact:
-          project: deploy-platform-{project}
-          filter: "*.env"
-          which-build: specific-build
-          build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
-      - copyartifact:
           project: check-pipeline
           filter: "global.env"
           which-build: specific-build
           build-number: ${{PIPELINE_BUILD_NUMBER}}
+      - copyartifact:
+          project: deploy-platform-{project}
+          filter: "*.env"
+          which-build: specific-build
+          build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
@@ -134,34 +139,114 @@
       - archive:
           artifacts: '*.env'
 
+- job:
+    name: collect-logs-and-cleanup
+    description: "collect all logs for {project}"
+    defaults: global
+    parameters:
+      - label:
+          name: SLAVE
+      - string:
+          name: PIPELINE_BUILD_NUMBER
+      - string:
+          name: DEPLOY_PLATFORM_JOB_NAME
+      - string:
+          name: DEPLOY_PLATFORM_JOB_NUMBER
+      - bool:
+          name: COLLECT_SANITY_LOGS
+    properties:
+      - build-discarder:
+          num-to-keep: 10
+    wrappers:
+      - timestamps
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - amazon-web-services:
+              credential-id: aws-creds
+              access-key: AWS_ACCESS_KEY_ID
+              secret-key: AWS_SECRET_ACCESS_KEY
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: logs_host
+              key-file-variable: LOGS_HOST_SSH_KEY
+              username-variable: LOGS_HOST_USERNAME
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
+    scm:
+      - tf-jenkins
+      - tf-devstack
+    builders:
+      - copyartifact:
+          project: check-pipeline
+          filter: "global.env"
+          which-build: specific-build
+          build-number: ${PIPELINE_BUILD_NUMBER}
+      - copyartifact:
+          project: ${DEPLOY_PLATFORM_JOB_NAME}
+          filter: "*.env"
+          which-build: specific-build
+          build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
+      - shell: |
+          set +e
+          set -o allexport
+          source "$WORKSPACE/global.env"
+          source "$WORKSPACE/stackrc.deploy-platform-${DEPLOY_PLATFORM_JOB_NAME}.env"
+          "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh"
+          if [[ "${COLLECT_SANITY_LOGS,,}" == 'true' ]]; then
+            "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh"
+          fi
+          "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
+
 - project:
     name: deploy
     project:
       - k8s_manifests:
           environment_os: centos7
-          deployer: manifests
+          deployer: k8s_manifests
           orchestrator: kubernetes
-      - k8s_helm:
+      - helm_k8s:
           environment_os: centos7
           deployer: helm
           orchestrator: kubernetes
-      - os_helm:
+      - helm_os:
           environment_os: centos7
           deployer: helm
           orchestrator: openstack
-      - k8s_juju:
+      - juju_k8s:
           environment_os: ubuntu18
           deployer: juju
           orchestrator: kubernetes
-      - os_juju:
+      - juju_os:
           environment_os: ubuntu18
           deployer: juju
           orchestrator: openstack
-      - k8s_ansible:
+      - ansible_k8s:
           environment_os: centos7
           deployer: ansible
           orchestrator: kubernetes
-      - os_ansible:
+      - ansible_os:
           environment_os: centos7
           deployer: ansible
           orchestrator: openstack

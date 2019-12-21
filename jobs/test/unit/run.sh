@@ -46,8 +46,6 @@ export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
 tar -czvf logs.tgz  -C \$WORKSPACE/contrail/ logs || /bin/true
-#TODO Remove after debug
-ls -la
 EOF
 result=$?
 

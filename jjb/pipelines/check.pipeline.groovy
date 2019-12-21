@@ -1,7 +1,8 @@
-def test_configurations = []
-def top_jobs = [:]
+def top_jobs_to_run = []
+def top_jobs_code = [:]
 def top_job_results = [:]
-def inner_jobs = [:]
+def test_configuration_names = []
+def inner_jobs_code = [:]
 
 pipeline {
   environment {
@@ -20,17 +21,17 @@ pipeline {
       description: 'Run UT and Lint jobs.')
     booleanParam(name: 'DO_CHECK_K8S_MANIFESTS', defaultValue: true,
       description: 'Run checks for k8s with manifests.')
-    booleanParam(name: 'DO_CHECK_K8S_JUJU', defaultValue: false,
+    booleanParam(name: 'DO_CHECK_JUJU_K8S', defaultValue: false,
       description: 'Run checks for k8s with juju.')
-    booleanParam(name: 'DO_CHECK_OS_JUJU', defaultValue: false,
+    booleanParam(name: 'DO_CHECK_JUJU_OS', defaultValue: false,
       description: 'Run checks for OpenStack with juju.')
-    booleanParam(name: 'DO_CHECK_OS_ANSIBLE', defaultValue: true,
+    booleanParam(name: 'DO_CHECK_ANSIBLE_OS', defaultValue: true,
       description: 'Run checks for OpenStack with ansible-deployer.')
-    booleanParam(name: 'DO_CHECK_K8S_ANSIBLE', defaultValue: true,
+    booleanParam(name: 'DO_CHECK_ANSIBLE_K8S', defaultValue: true,
       description: 'Run checks for Kubernetes with ansible-deployer.')
-    booleanParam(name: 'DO_CHECK_K8S_HELM', defaultValue: false,
+    booleanParam(name: 'DO_CHECK_HELM_K8S', defaultValue: false,
       description: 'Run checks for k8s with helm-deployer.')
-    booleanParam(name: 'DO_CHECK_OS_HELM', defaultValue: false,
+    booleanParam(name: 'DO_CHECK_HELM_OS', defaultValue: false,
       description: 'Run checks for OpenStack with helm-deployer.')
   }
   options {
@@ -45,40 +46,29 @@ pipeline {
       steps {
         script {
           try {
-            if (params.DO_CHECK_K8S_MANIFESTS) test_configurations += 'k8s_manifests'
-            if (params.DO_CHECK_K8S_JUJU) test_configurations += 'k8s_juju'
-            if (params.DO_CHECK_OS_JUJU) test_configurations += 'os_juju'
-            if (params.DO_CHECK_OS_ANSIBLE) test_configurations += 'os_ansible'
-            if (params.DO_CHECK_K8S_ANSIBLE) test_configurations += 'k8s_ansible'
-            if (params.DO_CHECK_K8S_HELM) test_configurations += 'k8s_helm'
-            if (params.DO_CHECK_OS_HELM) test_configurations += 'os_helm'
-            println 'Test configurations: ' + test_configurations
-            if (env.GERRIT_CHANGE_NUMBER && env.GERRIT_PATCHSET_NUMBER) {
-              CONTRAIL_CONTAINER_TAG = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
-              hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
-              LOGS_PATH="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
-              LOGS_URL="${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
-            } else {
-              CONTRAIL_CONTAINER_TAG = 'dev'
-              LOGS_PATH="${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
-              LOGS_URL="${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
-            }
-
             sh """
               echo "export PIPELINE_NAME=${JOB_NAME}" > global.env
               echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
-              echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
-              echo "export LOGS_PATH=${LOGS_PATH}" >> global.env
-              echo "export LOGS_URL=${LOGS_URL}" >> global.env
             """
-            if (params.DO_BUILD || params.DO_RUN_UT_LINT) {
-              sh """
-                echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
-                echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
-                echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
-                echo "export CONTRAIL_CONTAINER_TAG=${CONTRAIL_CONTAINER_TAG}" >> global.env
-              """
+
+            // evvaluate logs params
+            if (env.GERRIT_CHANGE_ID) {
+              contrail_container_tag = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
+              hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
+              logs_path="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
+              logs_url="${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
+            } else {
+              contrail_container_tag = 'dev'
+              logs_path="${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
+              logs_url="${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
             }
+            sh """
+              echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
+              echo "export LOGS_PATH=${logs_path}" >> global.env
+              echo "export LOGS_URL=${logs_url}" >> global.env
+            """
+
+            // store gerrit input if present. evaluate jobs 
             if (env.GERRIT_CHANGE_ID) {
               sh """
                 echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
@@ -87,6 +77,35 @@ pipeline {
                 echo "export GERRIT_PROJECT=${env.GERRIT_PROJECT}" >> global.env
                 echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
                 echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
+              """
+            } else {
+              if (params.DO_BUILD || params.DO_RUN_UT_LINT) {
+                top_jobs_to_run += 'fetch-sources'
+              }
+              if (params.DO_RUN_UT_LINT) {
+                top_jobs_to_run += 'test-unit'
+                top_jobs_to_run += 'test-lint'
+              }
+              if (params.DO_BUILD) {
+                top_jobs_to_run += 'build'
+              }
+              if (params.DO_CHECK_K8S_MANIFESTS) test_configuration_names += 'k8s_manifests'
+              if (params.DO_CHECK_JUJU_K8S) test_configuration_names += 'juju_k8s'
+              if (params.DO_CHECK_JUJU_OS) test_configuration_names += 'juju_os'
+              if (params.DO_CHECK_ANSIBLE_OS) test_configuration_names += 'ansible_os'
+              if (params.DO_CHECK_ANSIBLE_K8S) test_configuration_names += 'ansible_k8s'
+              if (params.DO_CHECK_HELM_K8S) test_configuration_names += 'helm_k8s'
+              if (params.DO_CHECK_HELM_OS) test_configuration_names += 'helm_os'
+            }
+            println 'Test configurations: ' + test_configuration_names
+
+            // evaluate registry params
+            if ('build' in top_jobs_to_run || 'test-lint' in top_jobs_to_run || 'test-unit' in top_jobs_to_run) {
+              sh """
+                echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
+                echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
+                echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
+                echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
               """
             }
           } catch (err) {
@@ -100,14 +119,12 @@ pipeline {
     stage('Fetch') {
       steps {
         script {
-          if (params.DO_BUILD || params.DO_RUN_UT_LINT) {
+          if ('fetch-sources' in top_jobs_to_run) {
             build job: 'fetch-sources',
               parameters: [
                 string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                 [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
               ]
-          } else {
-            println "Build and UT&Lint jobs are switched off. Skipping fetch job."
           }
         }
       }
@@ -115,29 +132,22 @@ pipeline {
     stage('Check') {
       steps {
         script {
-          if (params.DO_RUN_UT_LINT) {
-            top_jobs['test-unit'] = {
-              stage('test-unit') {
-                build job: 'test-unit',
-                  parameters: [
-                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                  ]
-              }
-            }
-            top_jobs['test-lint'] = {
-              stage('test-lint') {
-                build job: 'test-lint',
-                  parameters: [
-                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                  ]
+          ['test-unit', 'test-lint'].each {
+            name -> if (name in top_jobs_to_run) {
+              top_jobs_code[name] = {
+                stage(name) {
+                  build job: name,
+                    parameters: [
+                      string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                      [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                    ]
+                }
               }
             }
           }
 
-          test_configurations.each {
-            name -> top_jobs["Deploy platform for ${name}"] = {
+          test_configuration_names.each {
+            name -> top_jobs_code["Deploy platform for ${name}"] = {
               stage("Deploy platform for ${name}") {
                 println "Started deploy platform for ${name}"
                 top_job_results[name] = [:]
@@ -160,8 +170,8 @@ pipeline {
               }
             }
           }
-          test_configurations.each {
-            name -> inner_jobs["Deploy TF for ${name}"] = {
+          test_configuration_names.each {
+            name -> inner_jobs_code["Deploy TF for ${name}"] = {
               stage("Deploy TF for ${name}") {
                 println "Started deploy TF and test for ${name}"
                 // just wait for deploy-platform job - build job just is a previous step
@@ -213,37 +223,16 @@ pipeline {
                   top_job_number = top_job_results[name]['build_number']
                   println "Trying to collect logs and cleanup workers for ${name} job ${top_job_number}"
                   try {
-                    copyArtifacts filter: "stackrc.deploy-platform-${name}.env",
-                      fingerprintArtifacts: true,
-                      projectName: "deploy-platform-${name}",
-                      selector: specific("${top_job_number}")
-                    withCredentials(
-                      bindings:
-                        [[$class: 'AmazonWebServicesCredentialsBinding',
-                          credentialsId: 'aws-creds',
-                          accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
-                        sshUserPrivateKey(credentialsId: "logs_host", keyFileVariable: 'LOGS_HOST_SSH_KEY',usernameVariable: 'LOGS_HOST_USERNAME'),
-                        sshUserPrivateKey(credentialsId: "worker", keyFileVariable: "WORKER_SSH_KEY"),
-                        string(credentialsId: 'VEXX_OS_USERNAME', variable: 'OS_USERNAME'),
-                        string(credentialsId: 'VEXX_OS_PROJECT_NAME', variable: 'OS_PROJECT_NAME'),
-                        string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'OS_PASSWORD'),
-                        string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_USER_DOMAIN_NAME'),
-                        string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_PROJECT_DOMAIN_NAME'),
-                        string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
-                      // TODO: remove this hack that obtains deployer from job name
-                      deployer = name.split('_')[1]
-                      sh """
-                        export ENV_FILE="$WORKSPACE/stackrc.deploy-platform-${name}.env"
-                        export LOGS_PATH="${LOGS_PATH}"
-                        export LOGS_URL="${LOGS_URL}"
-                        export JOB_LOGS_PATH="${name}-${top_job_number}"
-                        "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${deployer}/collect_logs.sh" || /bin/true
-                        if [[ ${top_job_results[name]['status-tf']} == 'SUCCESS' ]]; then
-                          DEBUG=true "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh" || /bin/true
-                        fi
-                        "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh"
-                      """
+                    stage('Collect logs and cleanup') {
+                      build job: "collect-logs-and-cleanup",
+                        parameters: [
+                          string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                          string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
+                          string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
+                          booleanParam(name: 'COLLECT_SANITY_LOGS', value: top_job_results[name]['status-tf'] == 'SUCCESS'),
+                          [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                        ]
+                      }
                     }
                   } catch(err) {
                     println "Failed to cleanup workers for ${name}"
@@ -254,24 +243,24 @@ pipeline {
             }
           }
 
-          if (params.DO_BUILD) {
-            top_jobs['build-and-test'] = {
+          if ('build' in top_jobs_to_run) {
+            top_jobs_code['Build images for testing'] = {
               stage('build') {
                 build job: 'build',
                   parameters: [
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]
-                parallel inner_jobs
               }
+              parallel inner_jobs_code
             }
           } else {
-            top_jobs['just-test'] = {
-              parallel inner_jobs
+            top_jobs_code['Test with nightly images'] = {
+              parallel inner_jobs_code
             }
           }
 
-          parallel top_jobs
+          parallel top_jobs_code
         }
       }
     }

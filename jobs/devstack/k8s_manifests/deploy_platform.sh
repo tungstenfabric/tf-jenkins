@@ -9,7 +9,6 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-echo "export ORCHESTRATOR=$ORCHESTRATOR" >> "$ENV_FILE"
 source $ENV_FILE
 
 echo 'INFO: Deploy platform for $JOB_NAME'
