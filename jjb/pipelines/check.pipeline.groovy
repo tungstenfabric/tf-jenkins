@@ -266,7 +266,6 @@ pipeline {
   }
   post {
     always {
-      sh "env|sort"
       sh "echo 'Destroy VMs'"
       withCredentials(
         bindings:
@@ -281,7 +280,6 @@ pipeline {
           string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_PROJECT_DOMAIN_NAME'),
           string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
         sh """
-          export DEBUG=true
           $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/cleanup_pipeline_workers.sh
         """
       }

@@ -212,7 +212,8 @@
           set +e
           set -o allexport
           source "$WORKSPACE/global.env"
-          source "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
+          export ENV_FILE="$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
+          source "$ENV_FILE"
           "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh"
           if [[ "${COLLECT_SANITY_LOGS,,}" == 'true' ]]; then
             "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh"
