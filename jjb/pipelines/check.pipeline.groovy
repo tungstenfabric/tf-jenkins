@@ -232,7 +232,6 @@ pipeline {
                           booleanParam(name: 'COLLECT_SANITY_LOGS', value: top_job_results[name]['status-tf'] == 'SUCCESS'),
                           [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                         ]
-                      }
                     }
                   } catch(err) {
                     println "Failed to cleanup workers for ${name}"

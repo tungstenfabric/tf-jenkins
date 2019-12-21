@@ -1,0 +1,47 @@
+---
+
+- default:
+  check:
+    jobs:
+      - noop
+  gate:
+    jobs:
+      - noop
+
+- project-template:
+  name: unittests
+  check:
+    jobs:
+      - test-unit
+
+- project-template:
+  name: unittests-webui
+  check:
+    jobs:
+      - test-unit:
+        parameters:
+          target: webui
+
+- project-template:
+  name: systests
+  check:
+    jobs:
+      - build
+      - k8s_manifests
+      - ansible_k8s
+      - ansible_os
+
+- project:
+  name: Juniper/contrail-container-builder
+  templates:
+    - systests
+
+- project:
+  name: Juniper/contrail-helm-deployer
+  templates:
+    - unittests
+    - systests
+  check:
+    jobs:
+      - helm_os:
+        voting: false
