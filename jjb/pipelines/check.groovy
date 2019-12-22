@@ -16,18 +16,14 @@ inner_jobs_code = [:]
 timestamps {
   try {
     timeout(time: 4, unit: 'HOURS') {
-      node('master') {
-        sh "pwd ; hostname; ls -la"
-        stash(includes: 'src/progmaticlab/tf-jenkins/config/projects.yaml', name: 'projects')
-      }
       node("${SLAVE}") {
         stage('Pre-build') {
-          unstash(name: 'projects')
           evaluate_env()
           archiveArtifacts artifacts: 'global.env'
         }
         println "Logs URL: ${logs_url}"
-  
+        println 'Test configurations: ' + test_configuration_names
+
         if ('fetch-sources' in top_jobs_to_run) {
           stage('Fetch') {
             build job: 'fetch-sources',
@@ -270,7 +266,6 @@ def evaluate_env() {
     if (do_fetch) {
       top_jobs_to_run += 'fetch-sources'
     }
-    println 'Test configurations: ' + test_configuration_names
 
     // evaluate registry params
     if ('build' in top_jobs_to_run || 'test-lint' in top_jobs_to_run || 'test-unit' in top_jobs_to_run) {
@@ -288,8 +283,20 @@ def evaluate_env() {
 }
 
 def get_jobs(project) {
+  checkout([
+    $class: 'GitSCM',
+    branches: [[name: "*/master"]],
+    doGenerateSubmoduleConfigurations: false,
+    submoduleCfg: [],
+    userRemoteConfigs: [[url: 'https://github.com/progmaticlab/tf-jenkins.git']],
+    extensions: [
+      [$class: 'CleanBeforeCheckout'],
+      [$class: 'CloneOption', depth: 1],
+      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
+    ]
+  ])
   jobs = [:]
-  def data = readYaml file: "${WORKSPACE}/src/progmaticlab/tf-jenkins/config/projects.yaml"
+  def data = readYaml file: "${WORKSPACE}/tf-jenkins/config/projects.yaml"
   println data
   def templates = [:]
   for (item in data) {
