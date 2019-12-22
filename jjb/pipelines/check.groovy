@@ -311,14 +311,14 @@ def get_jobs(project) {
     project = item.get('project')
     if (project.containsKey('templates')) {
       for (template in project.templates) {
-        if (templates[template].getKey('check') && templates[template].check.getKey('jobs')) {
+        if (templates[template].get('check') && templates[template].check.get('jobs')) {
           for (job_item in templates[template].check.jobs) {
             add_job(jobs, job_item)
           }
         }
       }
     }
-    if (project.getKey('check') && project.check.getKey('jobs')) {
+    if (project.get('check') && project.check.get('jobs')) {
       for (job_item in project.check.jobs) {
         add_job(jobs, job_item)
       }
