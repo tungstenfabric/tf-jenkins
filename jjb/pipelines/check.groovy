@@ -16,6 +16,7 @@ inner_jobs_code = [:]
 timestamps {
   try {
     timeout(time: 4, unit: 'HOURS') {
+      sh "pwd ; hostname; ls -la"
       stash(includes: 'src/progmaticlab/tf-jenkins/config/projects.yaml', name: 'projects')
       node("${SLAVE}") {
         stage('Pre-build') {
@@ -186,6 +187,7 @@ timestamps {
     println "Logs URL: ${logs_url}"
     // add gerrit voting +1
   } catch(err) {
+    println "General pipeline error: ${err.getMessage()}"
     // add gerrit voting -1
     throw(err)
   } finally {
