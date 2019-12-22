@@ -34,8 +34,8 @@ timestamps {
         }
 
         // build independent jobs
-        ['test-unit', 'test-lint'].each {
-          name -> if (name in top_jobs_to_run) {
+        ['test-unit', 'test-lint'].each { name ->
+          if (name in top_jobs_to_run) {
             top_jobs_code[name] = {
               stage(name) {
                 build job: name,
@@ -49,8 +49,8 @@ timestamps {
         }
 
         // declaration of deploy platform parts
-        test_configuration_names.each {
-          name -> top_jobs_code["Deploy platform for ${name}"] = {
+        test_configuration_names.each { name ->
+          top_jobs_code["Deploy platform for ${name}"] = {
             stage("Deploy platform for ${name}") {
               println "Started deploy platform for ${name}"
               top_job_results[name] = [:]
@@ -75,8 +75,8 @@ timestamps {
         }
 
         // declaration of deploy TF parts and functional tests run after
-        test_configuration_names.each {
-          name -> inner_jobs_code["Deploy TF for ${name}"] = {
+        test_configuration_names.each { name ->
+          inner_jobs_code["Deploy TF for ${name}"] = {
             stage("Deploy TF for ${name}") {
               println "Started deploy TF and test for ${name}"
               // just wait for deploy-platform job - build job just is a previous step
@@ -110,8 +110,8 @@ timestamps {
                   throw(err)
                 }
                 test_jobs = [:]
-                ['test-sanity', 'test-smoke'].each {
-                  test_name -> test_jobs["${test_name} for deploy-tf-${name}"] = {
+                ['test-sanity', 'test-smoke'].each { test_name ->
+                  test_jobs["${test_name} for deploy-tf-${name}"] = {
                     stage(test_name) {
                       try {
                         // next variable must be taken again due to closure limitations for free variables
@@ -221,7 +221,8 @@ def evaluate_env() {
       echo "export LOGS_URL=${logs_url}" >> global.env
     """
 
-    // store gerrit input if present. evaluate jobs 
+    // store gerrit input if present. evaluate jobs
+    do_fetch = false
     if (env.GERRIT_CHANGE_ID) {
       sh """#!/bin/bash -e
         echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
@@ -231,24 +232,37 @@ def evaluate_env() {
         echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
         echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
       """
-    } else {
-      if (params.DO_BUILD || params.DO_RUN_UT_LINT) {
-        top_jobs_to_run += 'fetch-sources'
+      jobs = get_jobs()
+      println "Evaluated jobs to run: ${jobs}"
+      possible_top_jobs = ['test-lint', 'test-unit', 'build']
+      for (item in jobs) {
+        if (item.getKey() in possible_top_jobs) {
+          top_jobs_to_run += item.getKey()
+          do_fetch = true
+        } else {
+          test_configuration_names += item.getKey()
+        }
       }
+    } else {
       if (params.DO_RUN_UT_LINT) {
         top_jobs_to_run += 'test-unit'
         top_jobs_to_run += 'test-lint'
+        do_fetch = true
       }
       if (params.DO_BUILD) {
         top_jobs_to_run += 'build'
+        do_fetch = true
       }
       if (params.DO_CHECK_K8S_MANIFESTS) test_configuration_names += 'k8s_manifests'
       if (params.DO_CHECK_JUJU_K8S) test_configuration_names += 'juju_k8s'
       if (params.DO_CHECK_JUJU_OS) test_configuration_names += 'juju_os'
-      if (params.DO_CHECK_ANSIBLE_OS) test_configuration_names += 'ansible_os'
       if (params.DO_CHECK_ANSIBLE_K8S) test_configuration_names += 'ansible_k8s'
+      if (params.DO_CHECK_ANSIBLE_OS) test_configuration_names += 'ansible_os'
       if (params.DO_CHECK_HELM_K8S) test_configuration_names += 'helm_k8s'
       if (params.DO_CHECK_HELM_OS) test_configuration_names += 'helm_os'
+    }
+    if (do_fetch) {
+      top_jobs_to_run += 'fetch-sources'
     }
     println 'Test configurations: ' + test_configuration_names
 
@@ -264,5 +278,42 @@ def evaluate_env() {
   } catch (err) {
     println "Failed set environment ${err.getMessage()}"
     throw(err)
+  }
+}
+
+def get_jobs() {
+  jobs = [:]
+  def data = readYaml file: "${WORKSPACE}/src/progmaticlab/tf-jenkins/config/projects.yaml"
+  def templates = [:]
+  for (item in data) {
+    if (item.containsKey('project-template')) {
+      template = item.get('project-template')
+      templates[template.name] = template
+    }
+  }
+  for (item in data) {
+    if (!item.containsKey('project') || item.get('project').name != env.GERRIT_PROJECT)
+      continue
+    project = item.get('project')
+    if (project.containsKey('templates')) {
+      for (template in project.templates) {
+        for (job_item in templates[template].check.jobs) {
+          add_job(jobs, job_item)
+        }
+      }
+    }
+    for (job_item in project.check.jobs) {
+      add_job(jobs, job_item)
+    }
+  }
+  return jobs
+}
+
+def add_job(jobs, job_item) {
+  if (job_item instanceof String) {
+    jobs[job_item] = [:]
+  } else {
+    job = job_item.entrySet().iterator().next()
+    jobs[job.getKey()] = job.getValue()
   }
 }
