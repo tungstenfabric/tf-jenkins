@@ -6,6 +6,7 @@ LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
 LOGS_BASE_URL = "http://pnexus.sytes.net:8082/jenkins_logs"
 
 // pipeline flow variables
+logs_url = ""
 top_jobs_to_run = []
 top_jobs_code = [:]
 top_job_results = [:]
@@ -20,6 +21,7 @@ timestamps {
           evaluate_env()
           archiveArtifacts artifacts: 'global.env'
         }
+        println "Logs URL: ${logs_url}"
   
         if ('fetch-sources' in top_jobs_to_run) {
           stage('Fetch') {
@@ -89,7 +91,6 @@ timestamps {
 
               try {
                 top_job_number = top_job_results[name]['build_number']
-                println "top_job_number = ${top_job_number}"
                 try {
                   build job: "deploy-tf-${name}",
                     parameters: [
@@ -98,26 +99,35 @@ timestamps {
                       [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                     ]
                   top_job_results[name]['status-tf'] = 'SUCCESS'
+                  println "Finished deploy TF for ${name} with SUCCESS"
                 } catch (err) {
                   top_job_results[name]['status-tf'] = 'FAILURE'
-                  println "Failed to run deploy TF deploy platform for ${name}"
-                  println err.getMessage()
+                  println "Failed deploy TF for ${name}"
+                  msg = err.getMessage()
+                  if (err != null) {
+                    println err.getMessage()
+                  }
                   throw(err)
                 }
                 test_jobs = [:]
                 ['test-sanity', 'test-smoke'].each {
                   test_name -> test_jobs["${test_name} for deploy-tf-${name}"] = {
                     stage(test_name) {
-                      // next variable must be taken again due to closure limitations for free variables
-                      top_job_number = top_job_results[name]['build_number']
-                      println "top_job_number(inner) = ${top_job_number}"
-                      build job: test_name,
-                        parameters: [
-                          string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                          string(name: 'DEPLOY_PLATFORM_PROJECT', value: "deploy-platform-${name}"),
-                          string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                          [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                        ]
+                      try {
+                        // next variable must be taken again due to closure limitations for free variables
+                        top_job_number = top_job_results[name]['build_number']
+                        build job: test_name,
+                          parameters: [
+                            string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                            string(name: 'DEPLOY_PLATFORM_PROJECT', value: "deploy-platform-${name}"),
+                            string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
+                            [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                          ]
+                        println "${test_name} passed for ${name}"
+                      } catch(err) {
+                        println "${test_name} failed for ${name}"
+                        throw(err)
+                      }
                     }
                   }
                 }
@@ -138,7 +148,10 @@ timestamps {
                   }
                 } catch(err) {
                   println "Failed to cleanup workers for ${name}"
-                  println err.getMessage()
+                  msg = err.getMessage()
+                  if (err != null) {
+                    println err.getMessage()
+                  }
                 }
               }
             }
@@ -168,6 +181,7 @@ timestamps {
       }
     }
 
+    println "Logs URL: ${logs_url}"
     // add gerrit voting +1
   } catch(err) {
     // add gerrit voting -1
@@ -176,6 +190,7 @@ timestamps {
     println "Destroy VMs"
     build job: 'cleanup-pipeline-workers',
       parameters: [
+        string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
         [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
       ]
   }
@@ -193,12 +208,12 @@ def evaluate_env() {
     if (env.GERRIT_CHANGE_ID) {
       contrail_container_tag = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
       hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
-      logs_path="${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
-      logs_url="${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
+      logs_path = "${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
+      logs_url = "${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/pipeline_${BUILD_NUMBER}"
     } else {
       contrail_container_tag = 'dev'
-      logs_path="${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
-      logs_url="${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
+      logs_path = "${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
+      logs_url = "${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
     }
     sh """
       echo "export LOGS_HOST=${LOGS_HOST}" >> global.env

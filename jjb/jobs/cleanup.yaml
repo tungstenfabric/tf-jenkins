@@ -7,6 +7,8 @@
     parameters:
       - label:
           name: SLAVE
+      - string:
+          name: PIPELINE_BUILD_NUMBER
     wrappers:
       - workspace-cleanup
       - timestamps
@@ -35,6 +37,11 @@
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL
     builders:
+      - copyartifact:
+          project: check-pipeline
+          filter: "global.env"
+          which-build: specific-build
+          build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
           export DEBUG=true
           $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/cleanup_pipeline_workers.sh
