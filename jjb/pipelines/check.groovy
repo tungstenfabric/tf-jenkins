@@ -199,7 +199,7 @@ timestamps {
 
 def evaluate_env() {
   try {
-    sh """
+    sh """#!/bin/bash -e
       echo "export PIPELINE_NAME=${JOB_NAME}" > global.env
       echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
     """
@@ -215,7 +215,7 @@ def evaluate_env() {
       logs_path = "${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
       logs_url = "${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
     }
-    sh """
+    sh """#!/bin/bash -e
       echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
       echo "export LOGS_PATH=${logs_path}" >> global.env
       echo "export LOGS_URL=${logs_url}" >> global.env
@@ -223,7 +223,7 @@ def evaluate_env() {
 
     // store gerrit input if present. evaluate jobs 
     if (env.GERRIT_CHANGE_ID) {
-      sh """
+      sh """#!/bin/bash -e
         echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
         echo "export GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}" >> global.env
         echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
@@ -254,7 +254,7 @@ def evaluate_env() {
 
     // evaluate registry params
     if ('build' in top_jobs_to_run || 'test-lint' in top_jobs_to_run || 'test-unit' in top_jobs_to_run) {
-      sh """
+      sh """#!/bin/bash -e
         echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
         echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
         echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
