@@ -64,7 +64,7 @@
                 comment-contains-value: "check tf-jenkins"
           trigger-for-unreviewed-patches: true
           projects:
-            - project-compare-type: 'PATH'
+            - project-compare-type: 'ANT'
               project-pattern: '**'
               branches:
                 - branch-compare-type: 'REG_EXP'
