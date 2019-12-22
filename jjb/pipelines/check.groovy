@@ -232,7 +232,7 @@ def evaluate_env() {
         echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
         echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
       """
-      jobs = get_jobs()
+      jobs = get_jobs(env.GERRIT_PROJECT)
       println "Evaluated jobs to run: ${jobs}"
       possible_top_jobs = ['test-lint', 'test-unit', 'build']
       for (item in jobs) {
@@ -281,30 +281,35 @@ def evaluate_env() {
   }
 }
 
-def get_jobs() {
+def get_jobs(project) {
   jobs = [:]
-  def data = readYaml file: "${WORKSPACE}/src/progmaticlab/tf-jenkins/config/projects.yaml"
-  def templates = [:]
-  for (item in data) {
-    if (item.containsKey('project-template')) {
-      template = item.get('project-template')
-      templates[template.name] = template
-    }
-  }
-  for (item in data) {
-    if (!item.containsKey('project') || item.get('project').name != env.GERRIT_PROJECT)
-      continue
-    project = item.get('project')
-    if (project.containsKey('templates')) {
-      for (template in project.templates) {
-        for (job_item in templates[template].check.jobs) {
-          add_job(jobs, job_item)
-        }
+  try {
+    def data = readYaml file: "${WORKSPACE}/src/progmaticlab/tf-jenkins/config/projects.yaml"
+    def templates = [:]
+    for (item in data) {
+      if (item.containsKey('project-template')) {
+        template = item.get('project-template')
+        templates[template.name] = template
       }
     }
-    for (job_item in project.check.jobs) {
-      add_job(jobs, job_item)
+    for (item in data) {
+      if (!item.containsKey('project') || item.get('project').name != project)
+        continue
+      project = item.get('project')
+      if (project.containsKey('templates')) {
+        for (template in project.templates) {
+          for (job_item in templates[template].check.jobs) {
+            add_job(jobs, job_item)
+          }
+        }
+      }
+      for (job_item in project.check.jobs) {
+        add_job(jobs, job_item)
+      }
     }
+  } catch(err) {
+    println "Error in get_jobs: ${err.getMessage()}"
+    throw(err)
   }
   return jobs
 }
