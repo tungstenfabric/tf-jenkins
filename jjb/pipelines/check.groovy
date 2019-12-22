@@ -43,6 +43,8 @@ timestamps {
                   ]
               }
             }
+          }
+        }
 
         // declaration of deploy platform parts
         test_configuration_names.each {
