@@ -16,8 +16,10 @@ inner_jobs_code = [:]
 timestamps {
   try {
     timeout(time: 4, unit: 'HOURS') {
-      sh "pwd ; hostname; ls -la"
-      stash(includes: 'src/progmaticlab/tf-jenkins/config/projects.yaml', name: 'projects')
+      node('master') {
+        sh "pwd ; hostname; ls -la"
+        stash(includes: 'src/progmaticlab/tf-jenkins/config/projects.yaml', name: 'projects')
+      }
       node("${SLAVE}") {
         stage('Pre-build') {
           unstash(name: 'projects')
