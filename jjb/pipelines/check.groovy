@@ -22,6 +22,7 @@ timestamps {
           archiveArtifacts artifacts: 'global.env'
         }
         println "Logs URL: ${logs_url}"
+        println 'Top jobs to run: ' + top_jobs_to_run
         println 'Test configurations: ' + test_configuration_names
 
         if ('fetch-sources' in top_jobs_to_run) {
@@ -297,7 +298,6 @@ def get_jobs(project) {
   ])
   jobs = [:]
   def data = readYaml file: "${WORKSPACE}/tf-jenkins/config/projects.yaml"
-  println data
   def templates = [:]
   for (item in data) {
     if (item.containsKey('project-template')) {
