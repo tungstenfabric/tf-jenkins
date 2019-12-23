@@ -3,7 +3,7 @@
 1. Populate hosts.yml as shown in the example hosts.yml.example
 2. Run:
    ```
-    ansible-playbook -i hosts.yml jenkins-slave.yml`
+    ansible-playbook -i hosts.yml jenkins-slave.yml
     ```
     Optional:
    ```
