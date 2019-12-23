@@ -21,6 +21,7 @@
 - name: Add user jenkins
   user:
     name: "{{ jenkins_user }}"
+    shell: "/bin/bash"
 
 - name: Make ~/.ssh directory
   file:
