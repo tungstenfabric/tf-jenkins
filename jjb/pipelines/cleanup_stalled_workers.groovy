@@ -1,7 +1,7 @@
 pipeline{
   agent any
   triggers{
-    cron('*/10 * * * *')
+    cron('*/20 * * * *')
   }
   stages{
     stage('Parallel stage') {
