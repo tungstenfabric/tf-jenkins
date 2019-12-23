@@ -27,6 +27,11 @@
     name: Juniper/contrail-container-builder
     templates:
       - systests
+    experimental:
+      jobs:
+        - build
+            vars:
+              CONTRAIL_BUILD_FROM_SOURCE: true
 
 - project:
     name: Juniper/contrail-controller
