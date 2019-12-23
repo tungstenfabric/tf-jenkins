@@ -15,6 +15,6 @@ DEFAULT_ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 ENV_FILE=${ENV_FILE:-$DEFAULT_ENV_FILE}
 source $ENV_FILE
 
-# TODO: check if it's locked and do not fail job
-
-openstack server delete --wait $instance_id
+if [[ $(openstack server show -c locked --format value $instance_id) == "False" ]]; then
+  openstack server delete --wait $instance_id
+fi
