@@ -37,6 +37,7 @@
     name: Juniper/contrail-controller
     templates:
       - unittests
+      - systests
 
 - project:
     name: Juniper/contrail-helm-deployer
