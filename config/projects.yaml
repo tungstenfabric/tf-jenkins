@@ -29,7 +29,7 @@
       - systests
     experimental:
       jobs:
-        - build
+        - build:
             vars:
               CONTRAIL_BUILD_FROM_SOURCE: true
 
