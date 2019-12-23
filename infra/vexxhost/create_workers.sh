@@ -14,8 +14,7 @@ source "$WORKSPACE/global.env"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
-echo "export ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
-echo "export OS_REGION_NAME=${OS_REGION_NAME}" >> "$ENV_FILE"
+echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$ENV_FILE"
 
 IMAGE_TEMPLATE_NAME="${OS_IMAGES["${ENVIRONMENT_OS^^}"]}"
 IMAGE_NAME=$(openstack image list -c Name -f value | grep "${IMAGE_TEMPLATE_NAME}" | sort -nr | head -n 1)

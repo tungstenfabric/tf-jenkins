@@ -106,8 +106,8 @@ timestamps {
                   top_job_results[name]['status-tf'] = 'FAILURE'
                   println "Failed deploy TF for ${name}"
                   msg = err.getMessage()
-                  if (err != null) {
-                    println err.getMessage()
+                  if (msg != null) {
+                    println msg
                   }
                   throw(err)
                 }
@@ -151,8 +151,8 @@ timestamps {
                 } catch(err) {
                   println "Failed to cleanup workers for ${name}"
                   msg = err.getMessage()
-                  if (err != null) {
-                    println err.getMessage()
+                  if (msg != null) {
+                    println msg
                   }
                 }
               }
@@ -186,7 +186,10 @@ timestamps {
     println "Logs URL: ${logs_url}"
     // add gerrit voting +1
   } catch(err) {
-    println "General pipeline error: ${err.getMessage()}"
+    msg = err.getMessage()
+    if (err != null) {
+      println "General pipeline error: ${msg}"
+    }
     // add gerrit voting -1
     throw(err)
   } finally {
@@ -278,7 +281,10 @@ def evaluate_env() {
       """
     }
   } catch (err) {
-    println "Failed set environment ${err.getMessage()}"
+    msg = err.getMessage()
+    if (err != null) {
+      println "Failed set environment ${msg}"
+    }
     throw(err)
   }
 }

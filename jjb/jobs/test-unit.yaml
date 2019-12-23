@@ -64,6 +64,7 @@
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
+          export FULL_LOGS_PATH="${LOGS_PATH}/test-unit-${BUILD_ID}"
           ./src/progmaticlab/tf-jenkins/jobs/test/unit/run.sh
     publishers:
       - postbuildscript:

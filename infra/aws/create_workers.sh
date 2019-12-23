@@ -14,8 +14,7 @@ source "$WORKSPACE/global.env"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
-echo "export ENV_BUILD_ID=${BUILD_ID}" > "$ENV_FILE"
-echo "export AWS_REGION=${AWS_REGION}" >> "$ENV_FILE"
+echo "export AWS_REGION=${AWS_REGION}" > "$ENV_FILE"
 
 IMAGE_VAR_NAME="IMAGE_${ENVIRONMENT_OS^^}"
 IMAGE=${!IMAGE_VAR_NAME}
