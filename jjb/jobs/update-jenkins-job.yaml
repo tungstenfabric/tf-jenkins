@@ -2,7 +2,7 @@
     name: 'update-jenkins-jobs'
     description: "Updates jenkins jobs"
     defaults: global
-    node: aws
+    node: master
     wrappers:
         - credentials-binding:
           - username-password-separated:

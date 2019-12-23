@@ -4,6 +4,6 @@
 .env
 .venv
 jjb/generated_xml
-setup/hosts.yml
+/setup/hosts.yml
 setup/jenkins_id_ssh_rsa
 setup/jenkins_id_ssh_rsa.pub
