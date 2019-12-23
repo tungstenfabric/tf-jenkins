@@ -238,7 +238,8 @@ def evaluate_env() {
         echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
         echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
       """
-      jobs = get_jobs(env.GERRIT_PROJECT)
+      gerrit_pipeline = 'check'
+      jobs = get_jobs(env.GERRIT_PROJECT, gerrit_pipeline)
       println "Evaluated jobs to run: ${jobs}"
       possible_top_jobs = ['test-lint', 'test-unit', 'build']
       for (item in jobs) {
@@ -289,7 +290,7 @@ def evaluate_env() {
   }
 }
 
-def get_jobs(project) {
+def get_jobs(project, gerrit_pipeline) {
   checkout([
     $class: 'GitSCM',
     branches: [[name: "*/master"]],
@@ -317,15 +318,15 @@ def get_jobs(project) {
     project = item.get('project')
     if (project.containsKey('templates')) {
       for (template in project.templates) {
-        if (templates[template].get('check') && templates[template].check.get('jobs')) {
-          for (job_item in templates[template].check.jobs) {
+        if (templates[template].get(gerrit_pipeline) && templates[template].get(gerrit_pipeline).get('jobs')) {
+          for (job_item in templates[template].get(gerrit_pipeline).jobs) {
             add_job(jobs, job_item)
           }
         }
       }
     }
-    if (project.get('check') && project.check.get('jobs')) {
-      for (job_item in project.check.jobs) {
+    if (project.get(gerrit_pipeline) && project.get(gerrit_pipeline).get('jobs')) {
+      for (job_item in project.get(gerrit_pipeline).jobs) {
         add_job(jobs, job_item)
       }
     }
