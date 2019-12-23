@@ -15,6 +15,6 @@ DEFAULT_ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 ENV_FILE=${ENV_FILE:-$DEFAULT_ENV_FILE}
 source $ENV_FILE
 
-if nova show "$instance_id" | grep locked | grep 'False'; then
+if nova show "$instance_id" | grep 'locked' | grep 'False'; then
   nova delete "$instance_id"
 fi

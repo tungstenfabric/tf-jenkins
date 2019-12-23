@@ -1,17 +1,16 @@
 ---
-all:
-  children:
-    jenkins_master:
-      hosts:
-        192.168.30.205:
-    jenkins_slave:
-      children:
-        aws:
-          hosts:
-            192.168.30.206:
-            192.168.30.207:
-        vexxhost:
-          hosts:
-            192.168.30.208:
-  vars:
-    ansible_user: ubuntu
+  all:
+    children:
+      jenkins_master:
+        hosts:
+          tf-jenkins.progmaticlab.com:
+      jenkins_slave:
+        children:
+          aws:
+            hosts:
+              aws01.tf-jenkins.progmaticlab.com:
+          vexxhost:
+            hosts:
+              vexx01.tf-jenkins.progmaticlab.com:
+    vars:
+      ansible_user: ubuntu
