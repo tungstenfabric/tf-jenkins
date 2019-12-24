@@ -399,7 +399,7 @@ def gerrit_build_started(){
 
 def gerrit_vote(){
   try {
-    if (currentBuild.resultIsBetterOrEqualTo('SUCCESS') {
+    if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {
       verified = 1
       msg = "Build Succeeded\n${logs_url}"
     } else {
