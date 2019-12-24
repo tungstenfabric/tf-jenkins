@@ -404,12 +404,13 @@ def gerrit_build_started(){
 
 def gerrit_vote(){
   try {
-    if (currentBuild.currentResult == 'SUCCESS') {
+    rc = currentBuild.result
+    if (rc == 'SUCCESS') {
       verified = 1
-      msg = "Build Succeeded\n${logs_url}"
+      msg = "Build Succeeded (${rc})\n${logs_url}"
     } else {
       verified = -1
-      msg = "Build Failed: ${currentBuild.currentResult}\n${logs_url}"
+      msg = "Build Failed (${rc})\n${logs_url}"
     }
     notify_gerrit(msg, verified)
   } catch (err) {
