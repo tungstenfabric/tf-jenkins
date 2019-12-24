@@ -24,6 +24,10 @@ class GerritRequestError(Exception):
     pass
 
 
+class InvalidLabelError(Exception):
+    pass
+
+
 class Session(object):
     def __init__(self, url, user, password):
         if user is not None and password is not None:
@@ -100,17 +104,36 @@ class Gerrit(object):
             raise GerritRequestError(msg)
         return Change(res[0])
 
-
-    def push_message(self, change, message):
+    def push_message(self, change, message, labels={}):
         data = {
             "drafts": "PUBLISH_ALL_REVISIONS",
-            "labels": {},
+            "labels": labels,
             "message": message,
             "reviewers": []
         }
         url = "/changes/%s/revisions/%s/review" % \
             (change.id, change.revision_number)
         self._session.post(url, data=data)
+
+    def submit(self, change):
+        data = {
+            "wait_for_merge": True
+        }
+        url = "/changes/%s/revisions/%s/submit" % \
+            (change.id, change.revision_number)
+        self._session.post(url, data=data)
+
+
+def parse_labels(labels):
+    result = dict()
+    if not labels:
+        return result
+    for l in labels:
+        kv = l.split('=')
+        if len(kv) != 2:
+            raise InvalidLabelError("Label format is invalid %s" % l)
+        result[kv[0].strip()] = kv[1].strip()
+    return result
 
 
 def main():
@@ -126,14 +149,21 @@ def main():
     parser.add_argument("--password", help="Gerrit API password",
         dest="password", type=str)
     parser.add_argument("--message", help="Message", dest="message", type=str)
-
+    parser.add_argument("--labels", help="Labels in format k1=v1 k2=v2",
+        metavar="KEY=VALUE", nargs='+')
+    parser.add_argument("--submit", help="Submit review to merge",
+        action="store_true", default=False)
     args = parser.parse_args()
+
     log_level = logging.DEBUG if args.debug else logging.INFO
     logging.basicConfig(level=log_level)
     try:
         gerrit = Gerrit(args.gerrit, args.user, args.password)
         change = gerrit.get_current_change(args.review, branch=args.branch)
-        gerrit.push_message(change, args.message)
+        labels = parse_labels(args.labels)
+        gerrit.push_message(change, args.message, labels=labels)
+        if args.submit:
+            gerrit.submit(change)
     except Exception as e:
         print(traceback.format_exc())
         err("ERROR: failed to push message: %s" % e)
