@@ -249,6 +249,7 @@ def evaluate_env() {
         break
         }
       }
+      println "Pipeline to run: ${gerrit_pipeline}"
       jobs = get_jobs(env.GERRIT_PROJECT, gerrit_pipeline)
       println "Evaluated jobs to run: ${jobs}"
       possible_top_jobs = ['test-lint', 'test-unit', 'build']
