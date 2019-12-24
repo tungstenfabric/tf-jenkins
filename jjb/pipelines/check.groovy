@@ -375,7 +375,7 @@ def notify_gerrit(msg, verified, submit=false) {
         submit_opts += " --submit"
       }
       sh """#!/bin/bash -ex
-        ./src/progmaticlab/tf-jenkins/infra/gerrit/notify.py \
+        ${WORKSPACE}/tf-jenkins/infra/gerrit/notify.py \
           --debug \
           --gerrit https://${GERRIT_HOST} \
           --user ${GERRIT_API_USER} \
@@ -404,7 +404,7 @@ def gerrit_build_started(){
 
 def gerrit_vote(){
   try {
-    if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {
+    if (currentBuild.currentResult == 'SUCCESS') {
       verified = 1
       msg = "Build Succeeded\n${logs_url}"
     } else {
