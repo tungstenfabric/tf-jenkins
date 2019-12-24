@@ -245,10 +245,10 @@ def evaluate_env() {
         for (line in env.GERRIT_EVENT_COMMENT_TEXT.split('\n'))
         if (line =~ /^(check|recheck)/) {
           line_items = line.split()
-        if (line_items.length > 1) {
-          gerrit_pipeline = line_items[1]
-        }
-        break
+          if (line_items.length > 1) {
+            gerrit_pipeline = line_items[1]
+          }
+          break
         }
       }
       println "Pipeline to run: ${gerrit_pipeline}"

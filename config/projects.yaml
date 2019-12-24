@@ -11,8 +11,8 @@
     check:
       jobs:
         - test-unit:
-            parameters:
-              target: webui
+            vars:
+              TARGET: webui
 
 - project-template:
     name: systests
@@ -48,3 +48,18 @@
       jobs:
         - helm_os:
             voting: false
+
+- project:
+    name: Juniper/contrail-web-core
+    templates:
+      - unittests-webui
+
+- project:
+    name: Juniper/contrail-web-controller
+    templates:
+      - unittests-webui
+
+- project:
+    name: Juniper/contrail-webui-third-party
+    templates:
+      - unittests-webui
