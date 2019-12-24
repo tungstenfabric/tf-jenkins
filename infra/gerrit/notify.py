@@ -51,9 +51,9 @@ class Session(object):
 
     def post(self, request, data=None):
         url = self._make_url(request)
-        res = requests.post(url, data, auth=self._auth)
+        res = requests.post(url, json=data, auth=self._auth)
         if not res.ok:
-            msg = "Failed request %s with code %s" % (res.url, res.status_code)
+            msg = "Failed request %s with code %s: %s" % (res.url, res.status_code, res.content)
             raise GerritRequestError(msg)
         response = res.text.strip(')]}\'')
 
@@ -106,11 +106,10 @@ class Gerrit(object):
 
     def push_message(self, change, message, labels={}):
         data = {
-            "drafts": "PUBLISH_ALL_REVISIONS",
             "labels": labels,
             "message": message,
-            "reviewers": []
         }
+        dbg("push message data: %s" % data)
         url = "/changes/%s/revisions/%s/review" % \
             (change.id, change.revision_number)
         self._session.post(url, data=data)

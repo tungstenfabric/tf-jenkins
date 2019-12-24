@@ -370,7 +370,7 @@ def notify_gerrit(msg, verified=0, submit=false) {
           usernameVariable: 'GERRIT_API_USER')
       ]){
       opts = ""
-      if (verified != 0) {
+      if (verified != null) {
         opts += " --labels VerifiedTF=${verified}"
       }
       if (submit) {
