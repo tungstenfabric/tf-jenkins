@@ -12,6 +12,7 @@ top_jobs_code = [:]
 top_job_results = [:]
 test_configuration_names = []
 inner_jobs_code = [:]
+jobs_from_config = [:]
 
 timestamps {
   try {
@@ -250,10 +251,10 @@ def evaluate_env() {
         }
       }
       println "Pipeline to run: ${gerrit_pipeline}"
-      jobs = get_jobs(env.GERRIT_PROJECT, gerrit_pipeline)
-      println "Evaluated jobs to run: ${jobs}"
+      get_jobs(env.GERRIT_PROJECT, gerrit_pipeline)
+      println "Evaluated jobs to run: ${jobs_from_config}"
       possible_top_jobs = ['test-lint', 'test-unit', 'build']
-      for (item in jobs) {
+      for (item in jobs_from_config) {
         if (item.getKey() in possible_top_jobs) {
           top_jobs_to_run += item.getKey()
           do_fetch = true
@@ -331,25 +332,24 @@ def get_jobs(project, gerrit_pipeline) {
       for (template in project.templates) {
         if (templates[template].get(gerrit_pipeline) && templates[template].get(gerrit_pipeline).get('jobs')) {
           for (job_item in templates[template].get(gerrit_pipeline).jobs) {
-            add_job(jobs, job_item)
+            add_job(job_item)
           }
         }
       }
     }
     if (project.get(gerrit_pipeline) && project.get(gerrit_pipeline).get('jobs')) {
       for (job_item in project.get(gerrit_pipeline).jobs) {
-        add_job(jobs, job_item)
+        add_job(job_item)
       }
     }
   }
-  return jobs
 }
 
-def add_job(jobs, job_item) {
+def add_job(job_item) {
   if (job_item instanceof String) {
-    jobs[job_item] = [:]
+    jobs_from_config[job_item] = [:]
   } else {
     job = job_item.entrySet().iterator().next()
-    jobs[job.getKey()] = job.getValue()
+    jobs_from_config[job.getKey()] = job.getValue()
   }
 }
