@@ -368,7 +368,7 @@ def notify_gerrit(msg, verified, submit=false) {
         ]){
         opts=" --labels "
         submit_opts = ""
-        if submit {
+        if (submit) {
           submit_opts += " --submit"
         }
         sh """#!/bin/bash -ex
