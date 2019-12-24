@@ -16,6 +16,7 @@ jobs_from_config = [:]
 
 timestamps {
   try {
+    gerrit_build_started()
     timeout(time: 4, unit: 'HOURS') {
       node("${SLAVE}") {
         stage('Pre-build') {
@@ -186,17 +187,15 @@ timestamps {
     }
 
     println "Logs URL: ${logs_url}"
-    // add gerrit voting +1
-    notify_gerrit("Build Succeeded", 1)
   } catch(err) {
     msg = err.getMessage()
     if (msg != null) {
       println "General pipeline error: ${msg}"
     }
-    // add gerrit voting -1
-    notify_gerrit("Build Failed", -1)
     throw(err)
   } finally {
+    // add gerrit voting +1/-1
+    gerrit_vote()
     println "Destroy VMs"
     build job: 'cleanup-pipeline-workers',
       parameters: [
@@ -358,37 +357,60 @@ def add_job(job_item) {
 }
 
 def notify_gerrit(msg, verified, submit=false) {
-  println "Notify gerrit result=${result}, submit=${submit}"
+  println "Notify gerrit result=${result}, msg=${msg}, submit=${submit}"
+  withCredentials(
+    bindings: [
+        usernamePassword(credentialsId: 'gerrit-api',
+          passwordVariable: 'GERRIT_API_PASSWORD',
+          usernameVariable: 'GERRIT_API_USER')
+      ]){
+      opts=" --labels "
+      submit_opts = ""
+      if (submit) {
+        submit_opts += " --submit"
+      }
+      sh """#!/bin/bash -ex
+        ./src/progmaticlab/tf-jenkins/infra/gerrit/notify.py \
+          --debug \
+          --gerrit https://${GERRIT_HOST} \
+          --user ${GERRIT_API_USER} \
+          --password ${GERRIT_API_PASSWORD} \
+          --review ${GERRIT_CHANGE_ID} \
+          --branch ${GERRIT_BRANCH} \
+          --labels "VerifiedTF=${verified}" \
+          --message "${msg}" \
+          ${submit_opts}
+      """
+  }
+}
+
+def gerrit_build_started(){
   try {
-    withCredentials(
-      bindings: [
-          usernamePassword(credentialsId: 'gerrit-api',
-            passwordVariable: 'GERRIT_API_PASSWORD',
-            usernameVariable: 'GERRIT_API_USER')
-        ]){
-        opts=" --labels "
-        submit_opts = ""
-        if (submit) {
-          submit_opts += " --submit"
-        }
-        sh """#!/bin/bash -ex
-          ./src/progmaticlab/tf-jenkins/infra/gerrit/notify.py \
-            --debug \
-            --gerrit https://${GERRIT_HOST} \
-            --user ${GERRIT_API_USER} \
-            --password ${GERRIT_API_PASSWORD} \
-            --review ${GERRIT_CHANGE_ID} \
-            --branch ${GERRIT_BRANCH} \
-            --labels "VerifiedTF=${verified}" \
-            --message "${msg}" \
-            ${submit_opts}
-        """
-    }
+    verified = 0
+    msg = "Build Started\n${logs_url}"
+    notify_gerrit(msg, verified)
   } catch (err) {
     msg = err.getMessage()
     if (msg != null) {
-      println "Failed to notify gerrit ${msg}"
+      println "Failed to provide vote to gerrit ${msg}"
     }
-    // throw(err)
+  }
+}
+
+def gerrit_vote(){
+  try {
+    if (currentBuild.resultIsBetterOrEqualTo('SUCCESS') {
+      verified = 1
+      msg = "Build Succeeded\n${logs_url}"
+    } else {
+      verified = -1
+      msg = "Build Failed: ${currentBuild.currentResult}\n${logs_url}"
+    }
+    notify_gerrit(msg, verified)
+  } catch (err) {
+    msg = err.getMessage()
+    if (msg != null) {
+      println "Failed to provide vote to gerrit ${msg}"
+    }
   }
 }
