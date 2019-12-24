@@ -357,7 +357,7 @@ def add_job(job_item) {
 }
 
 def notify_gerrit(msg, verified, submit=false) {
-  println "Notify gerrit result=${result}, msg=${msg}, submit=${submit}"
+  println "Notify gerrit verified=${verified}, msg=${msg}, submit=${submit}"
   withCredentials(
     bindings: [
         usernamePassword(credentialsId: 'gerrit-api',
