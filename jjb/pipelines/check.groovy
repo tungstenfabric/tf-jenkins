@@ -378,7 +378,6 @@ def notify_gerrit(msg, verified=0, submit=false) {
       }
       sh """#!/bin/bash -ex
         ${WORKSPACE}/tf-jenkins/infra/gerrit/notify.py \
-          --debug \
           --gerrit https://${GERRIT_HOST} \
           --user ${GERRIT_API_USER} \
           --password ${GERRIT_API_PASSWORD} \
