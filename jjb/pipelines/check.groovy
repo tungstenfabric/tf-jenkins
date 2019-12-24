@@ -361,7 +361,7 @@ def add_job(job_item) {
   }
 }
 
-def notify_gerrit(msg, verified, submit=false) {
+def notify_gerrit(msg, verified=0, submit=false) {
   println "Notify gerrit verified=${verified}, msg=${msg}, submit=${submit}"
   withCredentials(
     bindings: [
@@ -369,10 +369,12 @@ def notify_gerrit(msg, verified, submit=false) {
           passwordVariable: 'GERRIT_API_PASSWORD',
           usernameVariable: 'GERRIT_API_USER')
       ]){
-      opts=" --labels "
-      submit_opts = ""
+      opts = ""
+      if (verified != 0) {
+        opts += " --labels VerifiedTF=${verified}"
+      }
       if (submit) {
-        submit_opts += " --submit"
+        opts += " --submit"
       }
       sh """#!/bin/bash -ex
         ${WORKSPACE}/tf-jenkins/infra/gerrit/notify.py \
@@ -382,18 +384,17 @@ def notify_gerrit(msg, verified, submit=false) {
           --password ${GERRIT_API_PASSWORD} \
           --review ${GERRIT_CHANGE_ID} \
           --branch ${GERRIT_BRANCH} \
-          --labels "VerifiedTF=${verified}" \
           --message "${msg}" \
-          ${submit_opts}
+          ${opts}
       """
   }
 }
 
 def gerrit_build_started(){
   try {
-    verified = 0
-    msg = "Build Started\n${logs_url}"
-    notify_gerrit(msg, verified)
+    def msg = """Build Started
+${BUILD_URL}"""
+    notify_gerrit(msg)
   } catch (err) {
     msg = err.getMessage()
     if (msg != null) {
@@ -407,11 +408,13 @@ def gerrit_vote(){
     rc = currentBuild.result
     if (rc == 'SUCCESS') {
       verified = 1
-      msg = "Build Succeeded (${rc})\n${logs_url}"
+      msg = "Build Succeeded"
     } else {
       verified = -1
-      msg = "Build Failed (${rc})\n${logs_url}"
+      msg = "Build Failed"
     }
+    msg = """${msg}
+  ${logs_url}"""
     notify_gerrit(msg, verified)
   } catch (err) {
     msg = err.getMessage()
