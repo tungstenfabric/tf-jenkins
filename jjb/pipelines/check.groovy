@@ -377,7 +377,7 @@ def notify_gerrit(msg, verified, submit=false) {
             --gerrit https://${GERRIT_HOST} \
             --user ${GERRIT_API_USER} \
             --password ${GERRIT_API_PASSWORD} \
-            --review ${GERRIT_CHANGE_ID} \ 
+            --review ${GERRIT_CHANGE_ID} \
             --branch ${GERRIT_BRANCH} \
             --labels "VerifiedTF=${verified}" \
             --message "${msg}" \
