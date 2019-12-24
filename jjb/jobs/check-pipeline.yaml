@@ -70,7 +70,7 @@
                 exclude-private: true
                 exclude-wip: true
             - comment-added-contains-event:
-                comment-contains-value: "check tf-jenkins"
+                comment-contains-value: '^(check|recheck)\s?(experimental|gate)?$'
           trigger-for-unreviewed-patches: true
           projects:
             - project-compare-type: 'ANT'

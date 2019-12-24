@@ -10,7 +10,7 @@
     scm:
       - git:
           choosing-strategy: gerrit
-          credentials-id: zuul-tf-gerrit
+          credentials-id: zuul-tf
           url: ssh://zuul-tf@review.opencontrail.org:29418/$GERRIT_PROJECT
           refspec: $GERRIT_REFSPEC
           # branches:
@@ -38,11 +38,11 @@
                 exclude-private: true
                 exclude-wip: true
             - comment-added-contains-event:
-                comment-contains-value: "check tf-jenkins"
+                comment-contains-value: '^(check|recheck)\s?(experimental|gate)?$'
           trigger-for-unreviewed-patches: true
           projects:
-            - project-compare-type: 'ANT'
-              project-pattern: '**'
+            - project-compare-type: 'PLAIN'
+              project-pattern: Juniper/contrail-container-builder
               branches:
                 - branch-compare-type: 'REG_EXP'
                   branch-pattern: '^master'
