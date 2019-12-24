@@ -25,7 +25,6 @@ timestamps {
         println "Logs URL: ${logs_url}"
         println 'Top jobs to run: ' + top_jobs_to_run
         println 'Test configurations: ' + test_configuration_names
-        println 'Jobs from config: ' + jobs_from_config
 
         if ('fetch-sources' in top_jobs_to_run) {
           stage('Fetch') {
@@ -96,6 +95,7 @@ timestamps {
               try {
                 top_job_number = top_job_results[name]['build_number']
                 try {
+                  println 'VARS for build jub: ' + jobs_from_config['build']['vars']
                   build job: "deploy-tf-${name}",
                     parameters: [
                       string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
