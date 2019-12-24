@@ -239,6 +239,16 @@ def evaluate_env() {
         echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
       """
       gerrit_pipeline = 'check'
+      if (env.GERRIT_EVENT_COMMENT_TEXT) {
+        for (line in env.GERRIT_EVENT_COMMENT_TEXT.split('\n'))
+        if (line =~ /^(check|recheck)/) {
+          line_items = line.split()
+        if (line_items.length > 1) {
+          gerrit_pipeline = line_items[1]
+        }
+        break
+        }
+      }
       jobs = get_jobs(env.GERRIT_PROJECT, gerrit_pipeline)
       println "Evaluated jobs to run: ${jobs}"
       possible_top_jobs = ['test-lint', 'test-unit', 'build']
