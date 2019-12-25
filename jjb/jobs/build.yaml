@@ -10,6 +10,8 @@
           name: SLAVE
       - string:
           name: PIPELINE_BUILD_NUMBER
+      - text:
+          name: CONFIG_ENV_PARAMS
     wrappers:
       - workspace-cleanup
       - timestamps
@@ -63,6 +65,7 @@
       - shell: |
           set -o pipefail
           export DEBUG=true
+          export CONFIG_ENV_PARAMS=${CONFIG_ENV_PARAMS}
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
