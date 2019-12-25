@@ -398,8 +398,7 @@ def notify_gerrit(msg, verified=0, submit=false) {
 
 def gerrit_build_started(){
   try {
-    def msg = """Build Started
-${BUILD_URL}"""
+    def msg = """Build Started  ${BUILD_URL}"""
     notify_gerrit(msg)
   } catch (err) {
     msg = err.getMessage()
@@ -419,9 +418,7 @@ def gerrit_vote(){
       verified = -1
       msg = "Build Failed"
     }
-    msg = """${msg}
-${logs_url}
-"""
+    msg = """${msg}  ${logs_url}"""
     top_jobs_to_run.each { name ->
       status = 'NOT RUN'
       if (name in top_job_results && 'status' in top_job_results[name]) {
@@ -429,8 +426,7 @@ ${logs_url}
       }
       job_logs = "${logs_url}/${name}"
       msg += """
-${name}: ${status}: ${job_logs}
-"""
+${name}: ${status}: ${job_logs}"""
     }
     notify_gerrit(msg, verified)
   } catch (err) {
