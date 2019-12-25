@@ -170,11 +170,17 @@ timestamps {
             top_jobs_code['Build images for testing'] = {
               stage('build') {
                 println 'VARS for build jub: ' + jobs_from_config['build']['vars']
+                env_var_string = ""
+                for ( e in jobs_from_config['build']['vars'] ) {
+                      println "key = ${e.key}, value = ${e.value}"
+                      env_var_string += "export ${e.key}=${e.value};"
+                }
+
                 build job: 'build',
                   parameters: [
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
-                    text(name: 'CONFIG_ENV_PARAMS', value: "${jobs_from_config['build']['vars']}")
+                    text(name: 'EXPORTS_ENV_PARAMS', value: env_var_string)
                   ]
               }
               parallel inner_jobs_code
