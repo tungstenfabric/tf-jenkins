@@ -173,7 +173,7 @@ timestamps {
                 build job: 'build',
                   parameters: [
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
                     text(name: 'CONFIG_ENV_PARAMS', value: jobs_from_config['build']['vars'])
                   ]
               }
