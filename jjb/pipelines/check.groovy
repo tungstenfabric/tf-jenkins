@@ -175,12 +175,13 @@ timestamps {
                       println "key = ${e.key}, value = ${e.value}"
                       env_var_string += "export ${e.key}=${e.value};"
                 }
+                println "env_var_string = " + env_var_string
 
                 build job: 'build',
                   parameters: [
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
-                    text(name: 'EXPORTS_ENV_PARAMS', value: env_var_string)
+                    text(name: 'EXPORTS_ENV_PARAMS', value: "${env_var_string}")
                   ]
               }
               parallel inner_jobs_code
