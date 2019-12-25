@@ -174,7 +174,7 @@ timestamps {
                 if(jobs_from_config['build']['vars'] ){
                   for ( e in jobs_from_config['build']['vars'] ) {
                       println "key = ${e.key}, value = ${e.value}"
-                      env_var_string += "export ${e.key}=${e.value}\n"
+                      env_var_string += "export ${e.key}='${e.value}';"
                   }
                 }
                 println "env_var_string = " + env_var_string
