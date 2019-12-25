@@ -423,7 +423,10 @@ def gerrit_vote(){
 ${logs_url}
 """
     top_jobs_to_run.each { name ->
-      status = top_job_results.get(name, {}).get('status', 'NOT RUN')
+      status = 'NOT RUN'
+      if (name in top_job_results && 'status' in top_job_results[name]) {
+        status = top_job_results[name]['status']
+      }
       job_logs = "${logs_url}/${name}"
       msg += """
 ${name}: ${status}: ${job_logs}
