@@ -420,7 +420,16 @@ def gerrit_vote(){
       msg = "Build Failed"
     }
     msg = """${msg}
-  ${logs_url}"""
+${logs_url}
+"""
+    top_jobs_to_run.each { name ->
+      status = top_job_results.get(name, {}).get('status', 'NOT RUN')
+      job_logs = "${logs_url}/${name}"
+      msg += """
+${name}: ${status}: ${job_logs}
+"""
+      }
+    }
     notify_gerrit(msg, verified)
   } catch (err) {
     msg = err.getMessage()
