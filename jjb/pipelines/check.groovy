@@ -99,7 +99,6 @@ timestamps {
                 try {
                   top_job_number = top_job_results[name]['build_number']
                   try {
-                    println 'VARS for build jub: ' + jobs_from_config['build']['vars']
                     build job: "deploy-tf-${name}",
                       parameters: [
                         string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
@@ -170,6 +169,7 @@ timestamps {
           if ('build' in top_jobs_to_run) {
             top_jobs_code['Build images for testing'] = {
               stage('build') {
+                println 'VARS for build jub: ' + jobs_from_config['build']['vars']
                 build job: 'build',
                   parameters: [
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
