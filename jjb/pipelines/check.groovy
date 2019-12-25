@@ -438,9 +438,12 @@ def job_params_to_file(job_name) {
 
   env_file = "${job_name}.env"
   println "Vars for ${job_name} job: ${jobs_from_config[job_name]['vars']}"
-  for (var in jobs_from_config[job_name]['vars']) {
+  for (jvar in jobs_from_config[job_name]['vars']) {
+    println jvar
+    println jvar.getKey()
+    println jvar.getValue()
     sh """#!/bin/bash -e
-      echo "export ${var.getKey()}=${var.getValue()}" >> ${env_file}
+      echo "export ${jvar.getKey()}=${jvar.getValue()}" >> ${env_file}
     """
   }
   sh """#!/bin/bash -e
