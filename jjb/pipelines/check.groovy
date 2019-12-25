@@ -17,11 +17,8 @@ jobs_from_config = [:]
 timestamps {
   try {
     timeout(time: 4, unit: 'HOURS') {
-      node('master') {
-        sh "ls -lRa src/progmaticlab/tf-jenkins/"
-        stash(includes: 'src/progmaticlab/tf-jenkins/config/projects.yaml', name: 'projects.yaml')
-        stash(includes: 'src/progmaticlab/tf-jenkins/infra/gerrit/notify.py', name: 'notify.py')
-      }
+      stash(includes: 'src/progmaticlab/tf-jenkins/config/projects.yaml', name: 'projects.yaml')
+      stash(includes: 'src/progmaticlab/tf-jenkins/infra/gerrit/notify.py', name: 'notify.py')
       node("${SLAVE}") {
         // gerrit vote block
         try {
