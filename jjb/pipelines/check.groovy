@@ -7,6 +7,7 @@ LOGS_BASE_URL = "http://pnexus.sytes.net:8082/jenkins_logs"
 
 // pipeline flow variables
 logs_url = ""
+gerrit_pipeline = ""
 top_jobs_to_run = []
 top_jobs_code = [:]
 top_job_results = [:]
@@ -367,10 +368,10 @@ def add_job(job_item) {
 def notify_gerrit(msg, verified=0, submit=false) {
   println "Notify gerrit verified=${verified}, msg=${msg}, submit=${submit}"
   withCredentials(
-    bindings: [
-      usernamePassword(credentialsId: 'gerrit-api',
-      passwordVariable: 'GERRIT_API_PASSWORD',
-      usernameVariable: 'GERRIT_API_USER')]) {
+      bindings: [
+        usernamePassword(credentialsId: 'gerrit-api',
+        passwordVariable: 'GERRIT_API_PASSWORD',
+        usernameVariable: 'GERRIT_API_USER')]) {
     opts = ""
     if (verified != null) {
       opts += " --labels VerifiedTF=${verified}"
@@ -393,12 +394,13 @@ def notify_gerrit(msg, verified=0, submit=false) {
 
 def gerrit_build_started(){
   try {
-    def msg = """Build Started  ${BUILD_URL}"""
+    def msg = """Build Started ${BUILD_URL}"""
     notify_gerrit(msg)
   } catch (err) {
+    print "Failed to provide vote to gerrit "
     msg = err.getMessage()
     if (msg != null) {
-      println "Failed to provide vote to gerrit ${msg}"
+      print msg
     }
   }
 }
@@ -406,28 +408,29 @@ def gerrit_build_started(){
 def gerrit_vote(){
   try {
     rc = currentBuild.result
+    //TODO: evaluate all jobs statutes, exclude non-voting jobs and decide about final status 
     if (rc == 'SUCCESS') {
       verified = 1
-      msg = "Build Succeeded"
+      msg = "Build Succeeded (${gerrit_pipeline})\n\n"
     } else {
       verified = -1
-      msg = "Build Failed"
+      msg = "Build Failed (${gerrit_pipeline})\n\n"
     }
-    msg = """${msg}  ${logs_url}"""
     top_jobs_to_run.each { name ->
       status = 'NOT RUN'
       if (name in top_job_results && 'status' in top_job_results[name]) {
         status = top_job_results[name]['status']
       }
+      //TODO: check for non-voting job
       job_logs = "${logs_url}/${name}"
-      msg += """
-${name}: ${status}: ${job_logs}"""
+      msg += "- ${name} ${job_logs} : ${status}\n"
     }
     notify_gerrit(msg, verified)
   } catch (err) {
+    print "Failed to provide vote to gerrit "
     msg = err.getMessage()
     if (msg != null) {
-      println "Failed to provide vote to gerrit ${msg}"
+      print msg
     }
   }
 }
