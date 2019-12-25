@@ -433,12 +433,12 @@ ${name}: ${status}: ${job_logs}"""
 }
 
 def job_params_to_file(job_name){
-  if (!jobs_from_config['${job_name}'].containsKey('vars'))
+  if (!jobs_from_config.containsKey(job_name) || !jobs_from_config[job_name].containsKey('vars'))
     return
 
   env_file = "${job_name}.env"
-  println "Vars for ${job_name} job: ${jobs_from_config['${job_name}']['vars']}"
-  for (var in jobs_from_config['build']['vars']) {
+  println "Vars for ${job_name} job: ${jobs_from_config[job_name]['vars']}"
+  for (var in jobs_from_config[job_name]['vars']) {
     sh """#!/bin/bash -e
       echo "export ${var.key}=${var.value}" >> ${env_file}
     """
