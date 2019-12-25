@@ -169,21 +169,11 @@ timestamps {
           if ('build' in top_jobs_to_run) {
             top_jobs_code['Build images for testing'] = {
               stage('build') {
-                println 'VARS for build jub: ' + jobs_from_config['build']['vars']
-                env_var_string = ""
-                if(jobs_from_config['build']['vars'] ){
-                  for ( e in jobs_from_config['build']['vars'] ) {
-                      println "key = ${e.key}, value = ${e.value}"
-                      env_var_string += "export ${e.key}='${e.value}';"
-                  }
-                }
-                println "env_var_string = " + env_var_string
-
+                job_params_to_file('build')
                 build job: 'build',
                   parameters: [
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
-                    string(name: 'EXPORTS_ENV_PARAMS', value: "${env_var_string}")
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]
               }
               parallel inner_jobs_code
@@ -438,4 +428,21 @@ ${name}: ${status}: ${job_logs}"""
       println "Failed to provide vote to gerrit ${msg}"
     }
   }
+}
+
+def job_params_to_file(job_name){
+  println 'VARS for build jub: ' + jobs_from_config['${job_name}']['vars']
+    env_var_string = ""
+      if(jobs_from_config['${job_name}']['vars'] ){
+        for ( e in jobs_from_config['build']['vars'] ) {
+          env_var_string += "export ${e.key}='${e.value}';"
+          sh """#!/bin/bash -e
+            echo "export${e.key}=${e.value}" >> ${job_name}.env
+          """
+        }
+        sh """#!/bin/bash -e
+          echo "DDDD Env in file is:"
+          cat ${job_name}.env
+        """
+      }
 }
