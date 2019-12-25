@@ -20,16 +20,15 @@ timestamps {
       node("${SLAVE}") {
         // gerrit vote block
         try {
-          clone_self()
           stage('Pre-build') {
+            clone_self()
             evaluate_env()
             archiveArtifacts artifacts: 'global.env'
+            println "Logs URL: ${logs_url}"
+            println 'Top jobs to run: ' + top_jobs_to_run
+            println 'Test configurations: ' + test_configuration_names
+            gerrit_build_started()
           }
-          println "Logs URL: ${logs_url}"
-          println 'Top jobs to run: ' + top_jobs_to_run
-          println 'Test configurations: ' + test_configuration_names
-
-          gerrit_build_started()
 
           if ('fetch-sources' in top_jobs_to_run) {
             stage('Fetch') {
@@ -46,6 +45,7 @@ timestamps {
             if (name in top_jobs_to_run) {
               top_jobs_code[name] = {
                 stage(name) {
+                  job_params_to_file(name)
                   build job: name,
                     parameters: [
                       string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
@@ -327,7 +327,6 @@ def clone_self() {
 
 def get_jobs(project, gerrit_pipeline) {
   def data = readYaml file: "${WORKSPACE}/tf-jenkins/config/projects.yaml"
-  println data
   def templates = [:]
   for (item in data) {
     if (item.containsKey('project-template')) {
@@ -436,15 +435,17 @@ ${name}: ${status}: ${job_logs}"""
 def job_params_to_file(job_name){
   if (!jobs_from_config['${job_name}'].containsKey('vars'))
     return
-    
+
+  env_file = "${job_name}.env"
   println "Vars for ${job_name} job: ${jobs_from_config['${job_name}']['vars']}"
   for (var in jobs_from_config['build']['vars']) {
     sh """#!/bin/bash -e
-      echo "export ${var.key}=${var.value}" >> ${job_name}.env
+      echo "export ${var.key}=${var.value}" >> ${env_file}
     """
   }
   sh """#!/bin/bash -e
     echo "DDDD Env in file is:"
-    cat ${job_name}.env
+    cat ${env_file}
   """
+  archiveArtifacts artifacts: "${env_file}"
 }

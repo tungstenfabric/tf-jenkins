@@ -56,6 +56,12 @@
           filter: "global.env"
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
+      - copyartifact:
+          project: check-pipeline
+          filter: "test-unit.env"
+          optional: true
+          which-build: specific-build
+          build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
           export DEBUG=true
           export ENVIRONMENT_OS=centos7

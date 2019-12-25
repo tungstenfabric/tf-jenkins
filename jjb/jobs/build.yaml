@@ -54,6 +54,12 @@
           filter: "global.env"
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
+      - copyartifact:
+          project: check-pipeline
+          filter: "build.env"
+          optional: true
+          which-build: specific-build
+          build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
           # TODO: set OS to rhel for rhel builds
           export DEBUG=true

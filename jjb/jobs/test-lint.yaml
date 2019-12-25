@@ -16,6 +16,12 @@
           filter: "global.env"
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
+      - copyartifact:
+          project: check-pipeline
+          filter: "test-lint.env"
+          optional: true
+          which-build: specific-build
+          build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
           source "$WORKSPACE/global.env"
           echo "TODO: ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh"
