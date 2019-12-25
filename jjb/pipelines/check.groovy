@@ -428,7 +428,6 @@ ${logs_url}
       msg += """
 ${name}: ${status}: ${job_logs}
 """
-      }
     }
     notify_gerrit(msg, verified)
   } catch (err) {
