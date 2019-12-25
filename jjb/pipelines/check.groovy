@@ -406,15 +406,16 @@ def gerrit_build_started(){
 }
 
 def gerrit_vote(){
-  try {
+  try {    
     rc = currentBuild.result
+    //TODO: include only items from config/projects.yaml (exclude fetch-sources, join deploy/sanity jobs)
     //TODO: evaluate all jobs statutes, exclude non-voting jobs and decide about final status 
     if (rc == 'SUCCESS') {
       verified = 1
-      msg = "Build Succeeded (${gerrit_pipeline})\n\n"
+      msg = "Build Succeeded (${gerrit_pipeline})\n"
     } else {
       verified = -1
-      msg = "Build Failed (${gerrit_pipeline})\n\n"
+      msg = "Build Failed (${gerrit_pipeline})\n"
     }
     top_jobs_to_run.each { name ->
       status = 'NOT RUN'
@@ -423,7 +424,7 @@ def gerrit_vote(){
       }
       //TODO: check for non-voting job
       job_logs = "${logs_url}/${name}"
-      msg += "- ${name} ${job_logs} : ${status}\n"
+      msg += "\n- ${name} ${job_logs} : ${status}"
     }
     notify_gerrit(msg, verified)
   } catch (err) {
