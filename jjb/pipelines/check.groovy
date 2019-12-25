@@ -171,9 +171,11 @@ timestamps {
               stage('build') {
                 println 'VARS for build jub: ' + jobs_from_config['build']['vars']
                 env_var_string = ""
-                for ( e in jobs_from_config['build']['vars'] ) {
+                if(jobs_from_config['build']['vars'] ){
+                  for ( e in jobs_from_config['build']['vars'] ) {
                       println "key = ${e.key}, value = ${e.value}"
-                      env_var_string += "export ${e.key}=${e.value};"
+                      env_var_string += "export ${e.key}=${e.value}\n"
+                  }
                 }
                 println "env_var_string = " + env_var_string
 
