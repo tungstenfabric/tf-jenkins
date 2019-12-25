@@ -10,7 +10,7 @@
           name: SLAVE
       - string:
           name: PIPELINE_BUILD_NUMBER
-      - text:
+      - string:
           name: EXPORTS_ENV_PARAMS
     wrappers:
       - workspace-cleanup

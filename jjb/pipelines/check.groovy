@@ -183,7 +183,7 @@ timestamps {
                   parameters: [
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
-                    text(name: 'EXPORTS_ENV_PARAMS', value: "${env_var_string}")
+                    string(name: 'EXPORTS_ENV_PARAMS', value: "${env_var_string}")
                   ]
               }
               parallel inner_jobs_code
