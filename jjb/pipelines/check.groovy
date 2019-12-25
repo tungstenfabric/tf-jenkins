@@ -17,6 +17,10 @@ jobs_from_config = [:]
 timestamps {
   try {
     timeout(time: 4, unit: 'HOURS') {
+      node('master') {
+        stash(includes: 'src/progmaticlab/tf-jenkins/config/projects.yaml', name: 'projects.yaml')
+        stash(includes: 'src/progmaticlab/tf-jenkins/infra/gerrit/notify.py', name: 'notify.py')
+      }
       node("${SLAVE}") {
         // gerrit vote block
         try {
@@ -310,20 +314,11 @@ def evaluate_env() {
 }
 
 def get_jobs(project, gerrit_pipeline) {
-  checkout([
-    $class: 'GitSCM',
-    branches: [[name: "*/master"]],
-    doGenerateSubmoduleConfigurations: false,
-    submoduleCfg: [],
-    userRemoteConfigs: [[url: 'https://github.com/progmaticlab/tf-jenkins.git']],
-    extensions: [
-      [$class: 'CleanBeforeCheckout'],
-      [$class: 'CloneOption', depth: 1],
-      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
-    ]
-  ])
   jobs = [:]
-  def data = readYaml file: "${WORKSPACE}/tf-jenkins/config/projects.yaml"
+  unstash(name: 'projects.yaml')
+  sh "ls -la ${WORKSPACE}"
+  def data = readYaml file: "${WORKSPACE}/projects.yaml"
+  println data
   def templates = [:]
   for (item in data) {
     if (item.containsKey('project-template')) {
@@ -365,27 +360,28 @@ def notify_gerrit(msg, verified=0, submit=false) {
   println "Notify gerrit verified=${verified}, msg=${msg}, submit=${submit}"
   withCredentials(
     bindings: [
-        usernamePassword(credentialsId: 'gerrit-api',
-          passwordVariable: 'GERRIT_API_PASSWORD',
-          usernameVariable: 'GERRIT_API_USER')
-      ]){
-      opts = ""
-      if (verified != null) {
-        opts += " --labels VerifiedTF=${verified}"
-      }
-      if (submit) {
-        opts += " --submit"
-      }
-      sh """#!/bin/bash -ex
-        ${WORKSPACE}/tf-jenkins/infra/gerrit/notify.py \
-          --gerrit https://${GERRIT_HOST} \
-          --user ${GERRIT_API_USER} \
-          --password ${GERRIT_API_PASSWORD} \
-          --review ${GERRIT_CHANGE_ID} \
-          --branch ${GERRIT_BRANCH} \
-          --message "${msg}" \
-          ${opts}
-      """
+      usernamePassword(credentialsId: 'gerrit-api',
+      passwordVariable: 'GERRIT_API_PASSWORD',
+      usernameVariable: 'GERRIT_API_USER')]) {
+    opts = ""
+    if (verified != null) {
+      opts += " --labels VerifiedTF=${verified}"
+    }
+    if (submit) {
+      opts += " --submit"
+    }
+    unstash(name: 'notify.py')
+    sh """#!/bin/bash -ex
+      ls -la ${WORKSPACE}
+      ${WORKSPACE}/notify.py \
+        --gerrit https://${GERRIT_HOST} \
+        --user ${GERRIT_API_USER} \
+        --password ${GERRIT_API_PASSWORD} \
+        --review ${GERRIT_CHANGE_ID} \
+        --branch ${GERRIT_BRANCH} \
+        --message "${msg}" \
+        ${opts}
+    """
   }
 }
 
