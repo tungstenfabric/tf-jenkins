@@ -12,7 +12,7 @@
       jobs:
         - test-unit:
             vars:
-              TARGET: webui
+              TARGET: ui
 
 - project-template:
     name: systests
