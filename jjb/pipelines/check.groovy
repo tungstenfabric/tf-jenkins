@@ -17,11 +17,10 @@ jobs_from_config = [:]
 timestamps {
   try {
     timeout(time: 4, unit: 'HOURS') {
-      stash(includes: 'src/progmaticlab/tf-jenkins/config/projects.yaml', name: 'projects.yaml')
-      stash(includes: 'src/progmaticlab/tf-jenkins/infra/gerrit/notify.py', name: 'notify.py')
       node("${SLAVE}") {
         // gerrit vote block
         try {
+          clone_self()
           stage('Pre-build') {
             evaluate_env()
             archiveArtifacts artifacts: 'global.env'
@@ -29,7 +28,7 @@ timestamps {
           println "Logs URL: ${logs_url}"
           println 'Top jobs to run: ' + top_jobs_to_run
           println 'Test configurations: ' + test_configuration_names
-      
+
           gerrit_build_started()
 
           if ('fetch-sources' in top_jobs_to_run) {
@@ -311,11 +310,23 @@ def evaluate_env() {
   }
 }
 
+def clone_self() {
+  checkout([
+    $class: 'GitSCM',
+    branches: [[name: "*/master"]],
+    doGenerateSubmoduleConfigurations: false,
+    submoduleCfg: [],
+    userRemoteConfigs: [[url: 'https://github.com/progmaticlab/tf-jenkins.git']],
+    extensions: [
+      [$class: 'CleanBeforeCheckout'],
+      [$class: 'CloneOption', depth: 1],
+      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
+    ]
+  ])  
+}
+
 def get_jobs(project, gerrit_pipeline) {
-  jobs = [:]
-  unstash(name: 'projects.yaml')
-  sh "ls -la ${WORKSPACE}"
-  def data = readYaml file: "${WORKSPACE}/projects.yaml"
+  def data = readYaml file: "${WORKSPACE}/tf-jenkins/config/projects.yaml"
   println data
   def templates = [:]
   for (item in data) {
@@ -368,10 +379,8 @@ def notify_gerrit(msg, verified=0, submit=false) {
     if (submit) {
       opts += " --submit"
     }
-    unstash(name: 'notify.py')
     sh """#!/bin/bash -ex
-      ls -la ${WORKSPACE}
-      ${WORKSPACE}/notify.py \
+      ${WORKSPACE}/tf-jenkins/infra/gerrit/notify.py \
         --gerrit https://${GERRIT_HOST} \
         --user ${GERRIT_API_USER} \
         --password ${GERRIT_API_PASSWORD} \
@@ -425,18 +434,17 @@ ${name}: ${status}: ${job_logs}"""
 }
 
 def job_params_to_file(job_name){
-  println 'VARS for build jub: ' + jobs_from_config['${job_name}']['vars']
-    env_var_string = ""
-      if(jobs_from_config['${job_name}']['vars'] ){
-        for ( e in jobs_from_config['build']['vars'] ) {
-          env_var_string += "export ${e.key}='${e.value}';"
-          sh """#!/bin/bash -e
-            echo "export${e.key}=${e.value}" >> ${job_name}.env
-          """
-        }
-        sh """#!/bin/bash -e
-          echo "DDDD Env in file is:"
-          cat ${job_name}.env
-        """
-      }
+  if (!jobs_from_config['${job_name}'].containsKey('vars'))
+    return
+    
+  println "Vars for ${job_name} job: ${jobs_from_config['${job_name}']['vars']}"
+  for (var in jobs_from_config['build']['vars']) {
+    sh """#!/bin/bash -e
+      echo "export ${var.key}=${var.value}" >> ${job_name}.env
+    """
+  }
+  sh """#!/bin/bash -e
+    echo "DDDD Env in file is:"
+    cat ${job_name}.env
+  """
 }
