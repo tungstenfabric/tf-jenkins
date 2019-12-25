@@ -69,7 +69,7 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
-          export FULL_LOGS_PATH="${LOGS_PATH}/build-${BUILD_ID}"
+          export FULL_LOGS_PATH="${LOGS_PATH}/build"
           ./src/progmaticlab/tf-jenkins/jobs/build/run.sh | tee ${WORKSPACE}/output.log || res=1
           rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
           exit $res

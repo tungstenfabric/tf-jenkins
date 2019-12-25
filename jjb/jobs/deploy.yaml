@@ -68,7 +68,7 @@
           ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
           echo "export ORCHESTRATOR=$ORCHESTRATOR" >> "$ENV_FILE"
           echo "export DEPLOYER={deployer}" >> "$ENV_FILE"
-          echo "export JOB_LOGS_PATH={project}-$BUILD_ID" >> "$ENV_FILE"
+          echo "export JOB_LOGS_PATH={project}" >> "$ENV_FILE"
       - shell: |
           export DEBUG=true
           export ORCHESTRATOR={orchestrator}
