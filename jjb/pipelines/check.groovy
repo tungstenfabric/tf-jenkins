@@ -441,7 +441,6 @@ def job_params_to_file(job_name) {
     return
 
   env_file = "${job_name}.env"
-  println "Vars for ${job_name} job: ${jobs_from_config[job_name]['vars']}"
   env_text = ""
   for (jvar in jobs_from_config[job_name]['vars']) {
     env_text += "export ${jvar.getKey()}='${jvar.getValue()}'\n"
