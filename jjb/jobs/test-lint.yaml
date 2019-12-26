@@ -23,9 +23,8 @@
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
-          source "$WORKSPACE/global.env"
-          echo "TODO: ./src/progmaticlab/tf-jenkins/jobs/test/lint/run.sh"
-          # inside will do "docker pull tf-dev-env; tf-dev-env/run.sh test //Detect target tests"
+          # TODO: copy or commonize code with test-unit
+          echo "Run lint"
     publishers:
       - postbuildscript:
           builders:
