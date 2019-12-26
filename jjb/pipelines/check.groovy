@@ -362,7 +362,7 @@ def notify_gerrit(msg, verified=0, submit=false) {
   }
 }
 
-def gerrit_build_started(){
+def gerrit_build_started() {
   try {
     def msg = """Build Started (${gerrit_pipeline}) ${BUILD_URL}"""
     notify_gerrit(msg)

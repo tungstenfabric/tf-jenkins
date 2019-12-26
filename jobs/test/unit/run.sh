@@ -9,7 +9,9 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 source "$WORKSPACE/stackrc.$JOB_NAME.env"
-source "$WORKSPACE/test-unit.env"
+if [ -f "$WORKSPACE/test-unit.env" ]; then
+  source "$WORKSPACE/test-unit.env"
+fi
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
