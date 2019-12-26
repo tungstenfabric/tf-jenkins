@@ -364,10 +364,10 @@ def notify_gerrit(msg, verified=0, submit=false) {
 
 def gerrit_build_started(){
   try {
-    def msg = """Build Started ${BUILD_URL}"""
+    def msg = """Build Started (${gerrit_pipeline}) ${BUILD_URL}"""
     notify_gerrit(msg)
   } catch (err) {
-    print "Failed to provide vote to gerrit "
+    print "Failed to provide comment to gerrit "
     msg = err.getMessage()
     if (msg != null) {
       print msg
@@ -378,6 +378,8 @@ def gerrit_build_started(){
 def gerrit_vote() {
   try {    
     rc = currentBuild.result
+    println rc
+    println currentBuild
     //TODO: include only items from config/projects.yaml (exclude fetch-sources, join deploy/sanity jobs)
     //TODO: evaluate all jobs statutes, exclude non-voting jobs and decide about final status 
     if (rc == 'SUCCESS') {
