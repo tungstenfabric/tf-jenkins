@@ -75,6 +75,7 @@
           export FULL_LOGS_PATH="${LOGS_PATH}/build"
           ./src/progmaticlab/tf-jenkins/jobs/build/run.sh | tee ${WORKSPACE}/output.log || res=1
           rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
+          ./src/progmaticlab/tf-jenkins/jobs/build/collect_logs.sh || /bin/true
           exit $res
     publishers:
       - postbuildscript:

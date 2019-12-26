@@ -1,4 +1,4 @@
-#!/bin/bash -eE
+#!/bin/bash
 set -o pipefail
 
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -11,7 +11,7 @@ source $ENV_FILE
 
 source "$my_dir/definitions"
 
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
@@ -30,3 +30,5 @@ rsync -a -e "ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $LOGS_HOST_
 rm -rf $WORKSPACE/logs
 echo "INFO: Logs collected at ${LOGS_URL}/${JOB_LOGS_PATH}"
 popd
+
+exit $res

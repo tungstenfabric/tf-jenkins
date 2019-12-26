@@ -56,9 +56,14 @@
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/fetch/create_workers.sh
       - shell: |
+          set -o pipefail
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh || res=1
+          source "$WORKSPACE/stackrc.$JOB_NAME.env"
+          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
+          export FULL_LOGS_PATH="${LOGS_PATH}/build"
+          ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh | tee ${WORKSPACE}/output.log || res=1
+          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
           ./src/progmaticlab/tf-jenkins/jobs/fetch/collect_logs.sh || /bin/true
           exit $res
     publishers:

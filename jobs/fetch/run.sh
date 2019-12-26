@@ -19,7 +19,8 @@ export BUILD_DEV_ENV=${BUILD_DEV_ENV:-0}
 function run_dev_env() {
   local stage=$1
   local devenv=$2
-  cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+  local result=0
+  cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || result=1
 export WORKSPACE=\$HOME
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
@@ -58,18 +59,18 @@ export DEVENVTAG=$devenv
 cd src/tungstenfabric/tf-dev-env
 ./run.sh $stage
 EOF
-return $?
+return $result
 }
 
 function push_dev_env() {
   local tag=$1
   local commit_name="tf-developer-sandbox-$tag"
   local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
+  local result=0
   echo "INFO: Save tf-sandbox started: $target_tag"
 
-  cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+  cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || result=1
 export WORKSPACE=\$HOME
-6
 [ "${DEBUG,,}" == "true" ] && set -x
 
 echo "INFO: commit tf-developer-sandbox container"
@@ -90,6 +91,7 @@ if ! sudo docker push $target_tag ; then
   exit 1
 fi
 EOF
+  return $result
 }
 
 echo "INFO: Build dev env"

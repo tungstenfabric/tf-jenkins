@@ -15,7 +15,7 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER
 
 echo "INFO: UT started"
 
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
@@ -40,24 +40,8 @@ cd src/tungstenfabric/tf-dev-env
 ./run.sh test $TARGET
 EOF
 
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
-[ "${DEBUG,,}" == "true" ] && set -x
-export WORKSPACE=\$HOME
-export DEBUG=$DEBUG
-export PATH=\$PATH:/usr/sbin
-tar -czvf logs.tgz  -C \$WORKSPACE/contrail/ logs || /bin/true
-EOF
-result=$?
-
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/
-tar -zxvf  $WORKSPACE/logs.tgz 
-ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${FULL_LOGS_PATH}"
-rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/logs ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
-
-echo "INFO: Logs collected at ${FULL_LOGS_PATH}"
-
-if [[ $result != 0 ]] ; then
+if [[ $res != 0 ]] ; then
   echo "ERROR: UT failed"
-  exit $result
+  exit $res
 fi
 echo "INFO: UT finished successfully"

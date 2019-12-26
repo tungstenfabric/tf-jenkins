@@ -15,7 +15,7 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER
 
 echo "INFO: Test smoke started"
 
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
@@ -33,3 +33,4 @@ printf '%*s\n' 120 | tr ' ' '*'
 EOF
 
 echo "INFO: Test smoke finished"
+exit $res

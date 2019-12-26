@@ -68,10 +68,16 @@
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/test/unit/create_workers.sh
       - shell: |
+          set -o pipefail
           export DEBUG=true
           source "$WORKSPACE/global.env"
+          source "$WORKSPACE/stackrc.$JOB_NAME.env"
+          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           export FULL_LOGS_PATH="${LOGS_PATH}/test-unit"
-          ./src/progmaticlab/tf-jenkins/jobs/test/unit/run.sh
+          ./src/progmaticlab/tf-jenkins/jobs/test/unit/run.sh | tee ${WORKSPACE}/output.log || res=1
+          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH} || /bin/true
+          ./src/progmaticlab/tf-jenkins/jobs/test/unit/collect_logs.sh || /bin/true
+          exit $res
     publishers:
       - postbuildscript:
           builders:

@@ -15,7 +15,7 @@ echo 'INFO: Deploy platform for $JOB_NAME'
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
@@ -27,3 +27,4 @@ ORCHESTRATOR=$ORCHESTRATOR ./run.sh platform
 EOF
 
 echo "INFO: Deploy platform finished"
+exit $res
