@@ -23,6 +23,11 @@
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
+          desc="Pipeline: ${PIPELINE_BUILD_NUMBER}"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
           # TODO: copy or commonize code with test-unit
           echo "Run lint"
     publishers:

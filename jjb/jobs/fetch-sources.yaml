@@ -50,6 +50,11 @@
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
+          desc="Pipeline: ${PIPELINE_BUILD_NUMBER}"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
           # TODO: set OS to rhel for rhel builds
           export DEBUG=true
           export ENVIRONMENT_OS=centos7

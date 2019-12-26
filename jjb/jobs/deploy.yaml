@@ -59,6 +59,11 @@
           which-build: specific-build
           build-number: ${{PIPELINE_BUILD_NUMBER}}
       - shell: |
+          desc="Pipeline: $PIPELINE_BUILD_NUMBER"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
           export DEBUG=true
           export ENVIRONMENT_OS={environment_os}
           export ORCHESTRATOR={orchestrator}
@@ -130,6 +135,11 @@
           filter: "*.env"
           which-build: specific-build
           build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
+      - shell: |
+          desc="Pipeline: $PIPELINE_BUILD_NUMBER"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
@@ -208,6 +218,11 @@
           filter: "*.env"
           which-build: specific-build
           build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
+      - shell: |
+          desc="Pipeline: $PIPELINE_BUILD_NUMBER"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
       - shell: |
           set +e
           set -o allexport
