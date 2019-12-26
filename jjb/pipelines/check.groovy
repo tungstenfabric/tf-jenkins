@@ -391,7 +391,7 @@ def gerrit_vote(){
       name = result.getKey()
       value = result.getValue()
       status = 'NOT RUN'
-      if (value.containsKey('status'))
+      if (value.containsKey('status')) {
         status = value['status']
       }
       //TODO: check for non-voting job
