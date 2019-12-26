@@ -31,11 +31,13 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
     exit 1
 fi
 
+# wait for free resource
 while true; do
   [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') - 1))" -lt "$MAX_COUNT" ]] && break
   sleep 60
 done
 
+# run machine
 OBJECT_NAME=$BUILD_TAG
 nova boot --flavor ${INSTANCE_TYPE} \
           --security-groups ${OS_SG} \

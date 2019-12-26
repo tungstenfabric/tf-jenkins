@@ -31,6 +31,7 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
     exit 1
 fi
 
+# wait for resource
 while true; do
   INSTANCES_CONT=$(aws ec2 describe-instances \
       --region "$AWS_REGION" \
@@ -41,7 +42,6 @@ while true; do
   [[ "$INSTANCES_CONT" -lt "$MAX_COUNT" ]] && break
   sleep 60
 done
-
 
 # Spin VM
 iname=$BUILD_TAG

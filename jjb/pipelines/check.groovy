@@ -376,12 +376,13 @@ def gerrit_build_started(){
 }
 
 def gerrit_vote() {
-  try {    
+  excluded_jobs = ['fetch-sources', 'cleanup-pipeline-workers']
+  try {
     rc = currentBuild.result
     println rc
     println currentBuild
     //TODO: include only items from config/projects.yaml (exclude fetch-sources, join deploy/sanity jobs)
-    //TODO: evaluate all jobs statutes, exclude non-voting jobs and decide about final status 
+    //TODO: evaluate all jobs statutes, exclude non-voting jobs and decide about final status
     if (rc == 'SUCCESS') {
       verified = 1
       msg = "Build Succeeded (${gerrit_pipeline})\n"
@@ -391,6 +392,9 @@ def gerrit_vote() {
     }
     for (result in job_results) {
       name = result.getKey()
+      if (name in excluded_jobs) {
+        continue
+      }
       value = result.getValue()
       status = 'NOT RUN'
       if (value.containsKey('status')) {
