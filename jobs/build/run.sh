@@ -23,8 +23,8 @@ export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
 
 echo "INFO: Source params from pipeline"
-if [[ -f ${WORKSPACE}/build.env ]]; then
-  source ${WORKSPACE}/build.env
+if [[ -f \${WORKSPACE}/build.env ]]; then
+  source \${WORKSPACE}/build.env
 fi
 
 # dont setup own registry
