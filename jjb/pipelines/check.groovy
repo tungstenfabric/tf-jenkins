@@ -10,205 +10,175 @@ logs_url = ""
 gerrit_pipeline = ""
 top_jobs_to_run = []
 top_jobs_code = [:]
-top_job_results = [:]
 test_configuration_names = []
 inner_jobs_code = [:]
 jobs_from_config = [:]
+job_results = [:]
 
 timestamps {
-  try {
-    timeout(time: 4, unit: 'HOURS') {
-      node("${SLAVE}") {
-        // gerrit vote block
-        try {
-          stage('Pre-build') {
-            clone_self()
-            evaluate_env()
-            archiveArtifacts artifacts: 'global.env'
-            println "Logs URL: ${logs_url}"
-            println 'Top jobs to run: ' + top_jobs_to_run
-            println 'Test configurations: ' + test_configuration_names
-            gerrit_build_started()
-          }
+  timeout(time: 4, unit: 'HOURS') {
+    node("${SLAVE}") {
+      try {
+        stage('Pre-build') {
+          clone_self()
+          evaluate_env()
+          archiveArtifacts artifacts: 'global.env'
+          println "Logs URL: ${logs_url}"
+          println 'Top jobs to run: ' + top_jobs_to_run
+          println 'Test configurations: ' + test_configuration_names
+          gerrit_build_started()
+        }
 
-          if ('fetch-sources' in top_jobs_to_run) {
-            stage('Fetch') {
-              build job: 'fetch-sources',
+        if ('fetch-sources' in top_jobs_to_run) {
+          stage('Fetch') {
+            run_build(
+              'fetch-sources',
+              [job: 'fetch-sources',
                 parameters: [
-                  string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
-                ]
-            }
+                string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+              ]])
           }
+        }
 
-          // build independent jobs
-          ['test-unit', 'test-lint'].each { name ->
-            if (name in top_jobs_to_run) {
-              top_jobs_code[name] = {
-                stage(name) {
-                  job_params_to_file(name)
-                  build job: name,
-                    parameters: [
-                      string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                      [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                    ]
-                }
-              }
-            }
-          }
-
-          // declaration of deploy platform parts
-          test_configuration_names.each { name ->
-            top_jobs_code["Deploy platform for ${name}"] = {
-              stage("Deploy platform for ${name}") {
-                println "Started deploy platform for ${name}"
-                top_job_results[name] = [:]
-                try {
-                  timeout(time: 60, unit: 'MINUTES') {
-                    job = build job: "deploy-platform-${name}",
-                      parameters: [
-                        string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                      ]
-                  }
-                  top_job_results[name]['build_number'] = job.getNumber()
-                  top_job_results[name]['status'] = job.getResult()
-                  println "Finished deploy platform for ${name} with ${top_job_results[name]}"
-                } catch (err) {
-                  println "Failed deploy platform for ${name}"
-                  top_job_results[name]['status'] = 'FAILURE'
-                  throw(err)
-                }
-              }
-            }
-          }
-
-          // declaration of deploy TF parts and functional tests run after
-          test_configuration_names.each { name ->
-            inner_jobs_code["Deploy TF for ${name}"] = {
-              stage("Deploy TF for ${name}") {
-                println "Started deploy TF and test for ${name}"
-                // just wait for deploy-platform job - build job just is a previous step
-                waitUntil {
-                  sleep 15
-                  return 'status' in top_job_results[name]
-                }
-                if (top_job_results[name]['status'] != 'SUCCESS') {
-                  unstable("Deploy platform failed - skip deploy TF and tests for ${name}")
-                  return
-                }
-
-                try {
-                  top_job_number = top_job_results[name]['build_number']
-                  try {
-                    build job: "deploy-tf-${name}",
-                      parameters: [
-                        string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                        string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                      ]
-                    top_job_results[name]['status-tf'] = 'SUCCESS'
-                    println "Finished deploy TF for ${name} with SUCCESS"
-                  } catch (err) {
-                    top_job_results[name]['status-tf'] = 'FAILURE'
-                    println "Failed deploy TF for ${name}"
-                    msg = err.getMessage()
-                    if (msg != null) {
-                      println msg
-                    }
-                    throw(err)
-                  }
-                  test_jobs = [:]
-                  ['test-sanity', 'test-smoke'].each { test_name ->
-                    test_jobs["${test_name} for deploy-tf-${name}"] = {
-                      stage(test_name) {
-                        try {
-                          // next variable must be taken again due to closure limitations for free variables
-                          top_job_number = top_job_results[name]['build_number']
-                          build job: test_name,
-                            parameters: [
-                              string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                              string(name: 'DEPLOY_PLATFORM_PROJECT', value: "deploy-platform-${name}"),
-                              string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                              [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                            ]
-                          println "${test_name} passed for ${name}"
-                        } catch(err) {
-                          println "${test_name} failed for ${name}"
-                          throw(err)
-                        }
-                      }
-                    }
-                  }
-                  parallel test_jobs
-                } finally {
-                  top_job_number = top_job_results[name]['build_number']
-                  println "Trying to collect logs and cleanup workers for ${name} job ${top_job_number}"
-                  try {
-                    stage('Collect logs and cleanup') {
-                      build job: "collect-logs-and-cleanup",
-                        parameters: [
-                          string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-                          string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
-                          string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                          booleanParam(name: 'COLLECT_SANITY_LOGS', value: top_job_results[name]['status-tf'] == 'SUCCESS'),
-                          [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                        ]
-                    }
-                  } catch(err) {
-                    println "Failed to cleanup workers for ${name}"
-                    msg = err.getMessage()
-                    if (msg != null) {
-                      println msg
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          // check if build is enabled
-          if ('build' in top_jobs_to_run) {
-            top_jobs_code['Build images for testing'] = {
-              stage('build') {
-                job_params_to_file('build')
-                build job: 'build',
-                  parameters: [
+        // build independent jobs
+        ['test-unit', 'test-lint'].each { name ->
+          if (name in top_jobs_to_run) {
+            top_jobs_code[name] = {
+              stage(name) {
+                run_build(
+                  name,
+                  [job: name,
+                   parameters: [
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                  ]
+                  ]])
               }
-              parallel inner_jobs_code
-            }
-          } else {
-            top_jobs_code['Test with nightly images'] = {
-              parallel inner_jobs_code
             }
           }
-
-          // run jobs in parallel
-          parallel top_jobs_code
-        } finally {
-          // add gerrit voting +1/-1
-          gerrit_vote()
         }
+
+        // declaration of deploy platform parts
+        test_configuration_names.each { name ->
+          top_jobs_code["Deploy platform for ${name}"] = {
+            stage("Deploy platform for ${name}") {
+              println "Started deploy platform for ${name}"
+              timeout(time: 60, unit: 'MINUTES') {
+                run_build(
+                  "deploy-platform-${name}"
+                  [job: "deploy-platform-${name}",
+                   parameters: [
+                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                  ]])
+              }
+            }
+          }
+        }
+
+        // declaration of deploy TF parts and functional tests run after
+        test_configuration_names.each { name ->
+          inner_jobs_code["Deploy TF for ${name}"] = {
+            stage("Deploy TF for ${name}") {
+              println "Started deploy TF and test for ${name}"
+              // just wait for deploy-platform job - build job just is a previous step
+              waitUntil {
+                sleep 15
+                return 'status' in job_results[name]
+              }
+              if (job_results[name]['status'] != 'SUCCESS') {
+                unstable("Deploy platform failed - skip deploy TF and tests for ${name}")
+                return
+              }
+
+              try {
+                top_job_number = job_results[name]['job'].getNumber()
+                run_build(
+                  "deploy-tf-${name}",
+                  [job: "deploy-tf-${name}",
+                   parameters: [
+                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                    string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                  ]])
+                test_jobs = [:]
+                ['test-sanity', 'test-smoke'].each { test_name ->
+                  test_jobs["${test_name} for deploy-tf-${name}"] = {
+                    stage(test_name) {
+                      // next variable must be taken again due to closure limitations for free variables
+                      top_job_number = job_results[name]['job'].getNumber()
+                      run_build(
+                        "test_name-${name}",
+                        [job: test_name,
+                         parameters: [
+                          string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                          string(name: 'DEPLOY_PLATFORM_PROJECT', value: "deploy-platform-${name}"),
+                          string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
+                          [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                        ]])
+                    }
+                  }
+                }
+                parallel test_jobs
+              } finally {
+                stage('Collect logs and cleanup') {
+                  top_job_number = job_results[name]['job'].getNumber()
+                  println "Trying to collect logs and cleanup workers for ${name} job ${top_job_number}"
+                  run_build(
+                    "collect-logs-and-cleanup",
+                    [job: "collect-logs-and-cleanup",
+                     parameters: [
+                      string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                      string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
+                      string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
+                      booleanParam(name: 'COLLECT_SANITY_LOGS', value: job_results["deploy-tf-${name}"]['status'] == 'SUCCESS'),
+                      [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                    ]])
+                }
+              }
+            }
+          }
+        }
+
+        // check if build is enabled
+        if ('build' in top_jobs_to_run) {
+          top_jobs_code['Build images for testing'] = {
+            stage('build') {
+              run_build(
+                'build',
+                [job: 'build',
+                 parameters: [
+                  string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                ]])
+            }
+            parallel inner_jobs_code
+          }
+        } else {
+          top_jobs_code['Test with nightly images'] = {
+            parallel inner_jobs_code
+          }
+        }
+
+        // run jobs in parallel
+        parallel top_jobs_code
+      } finally {
+        println "Logs URL: ${logs_url}"
+        println "Destroy VMs"
+        try {
+          run_build('cleanup-pipeline-workers',
+            [job: 'cleanup-pipeline-workers',
+             parameters: [
+              string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
+              [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
+            ]])
+        } catch(err){
+        }
+
+        // add gerrit voting +1/-1
+        gerrit_vote()
       }
     }
-
-    println "Logs URL: ${logs_url}"
-  } catch(err) {
-    msg = err.getMessage()
-    if (msg != null) {
-      println "General pipeline error: ${msg}"
-    }
-    throw(err)
-  } finally {
-    println "Destroy VMs"
-    build job: 'cleanup-pipeline-workers',
-      parameters: [
-        string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
-        [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
-      ]
   }
 }
 
@@ -417,13 +387,15 @@ def gerrit_vote(){
       verified = -1
       msg = "Build Failed (${gerrit_pipeline})\n"
     }
-    top_jobs_to_run.each { name ->
+    for (result in job_results) {
+      name = result.getKey()
+      value = result.getValue()
       status = 'NOT RUN'
-      if (name in top_job_results && 'status' in top_job_results[name]) {
-        status = top_job_results[name]['status']
+      if (value.containsKey('status'))
+        status = value['status']
       }
       //TODO: check for non-voting job
-      job_logs = "${logs_url}/${name}"
+      job_logs = "${logs_url}/${value['logs_dir']}"
       msg += "\n- ${name} ${job_logs} : ${status}"
     }
     notify_gerrit(msg, verified)
@@ -447,4 +419,23 @@ def job_params_to_file(job_name) {
   }
   writeFile(file: env_file, text: env_text)
   archiveArtifacts artifacts: "${env_file}"
+}
+
+def run_build(name, params) {
+  job_results[name] = ['logs_dir': params['job']]
+  try {
+    job_params_to_file(name)
+    job = build(params)
+    job_results[name]['job'] = job
+    job_results[name]['status'] = job.getResult()
+    println "Finished ${name} with SUCCSESS"
+  } catch (err) {
+    println "Failed ${name}"
+    msg = err.getMessage()
+    if (msg != null) {
+      println msg
+    }
+    job_results[name]['status'] = 'FAILURE'
+    throw(err)
+  }
 }
