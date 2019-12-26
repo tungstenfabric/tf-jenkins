@@ -84,15 +84,15 @@ timestamps {
               // just wait for deploy-platform job - build job just is a previous step
               waitUntil {
                 sleep 15
-                return 'status' in job_results[name]
+                return job_results["deploy-platform-${name}"].containsKey('status')
               }
-              if (job_results[name]['status'] != 'SUCCESS') {
+              if (job_results["deploy-platform-${name}"]['status'] != 'SUCCESS') {
                 unstable("Deploy platform failed - skip deploy TF and tests for ${name}")
                 return
               }
 
               try {
-                top_job_number = job_results[name]['job'].getNumber()
+                top_job_number = job_results["deploy-platform-${name}"]['job'].getNumber()
                 run_build(
                   "deploy-tf-${name}",
                   [job: "deploy-tf-${name}",
@@ -106,7 +106,7 @@ timestamps {
                   test_jobs["${test_name} for deploy-tf-${name}"] = {
                     stage(test_name) {
                       // next variable must be taken again due to closure limitations for free variables
-                      top_job_number = job_results[name]['job'].getNumber()
+                      top_job_number = job_results["deploy-platform-${name}"]['job'].getNumber()
                       run_build(
                         "test_name-${name}",
                         [job: test_name,
@@ -122,7 +122,7 @@ timestamps {
                 parallel test_jobs
               } finally {
                 stage('Collect logs and cleanup') {
-                  top_job_number = job_results[name]['job'].getNumber()
+                  top_job_number = job_results["deploy-platform-${name}"]['job'].getNumber()
                   println "Trying to collect logs and cleanup workers for ${name} job ${top_job_number}"
                   run_build(
                     "collect-logs-and-cleanup",
@@ -434,7 +434,7 @@ def run_build(name, params) {
     job = build(params)
     job_results[name]['job'] = job
     job_results[name]['status'] = job.getResult()
-    println "Finished ${name} with SUCCSESS"
+    println "Finished ${name} with SUCCESS"
   } catch (err) {
     println "Failed ${name}"
     msg = err.getMessage()
