@@ -12,6 +12,7 @@ ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 source $ENV_FILE
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/build.env $IMAGE_SSH_USER@$instance_ip:./ || /bin/true
 
 echo "INFO: Build started"
 
@@ -20,6 +21,11 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
+
+echo "INFO: Source params from pipeline"
+if [[ -f ${WORKSPACE}/build.env ]]; then
+  source ${WORKSPACE}/build.env
+fi
 
 # dont setup own registry
 export CONTRAIL_DEPLOY_REGISTRY=0
