@@ -65,7 +65,7 @@ timestamps {
               println "Started deploy platform for ${name}"
               timeout(time: 60, unit: 'MINUTES') {
                 run_build(
-                  "deploy-platform-${name}"
+                  "deploy-platform-${name}",
                   [job: "deploy-platform-${name}",
                    parameters: [
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
@@ -375,7 +375,7 @@ def gerrit_build_started(){
   }
 }
 
-def gerrit_vote(){
+def gerrit_vote() {
   try {    
     rc = currentBuild.result
     //TODO: include only items from config/projects.yaml (exclude fetch-sources, join deploy/sanity jobs)
