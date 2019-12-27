@@ -108,7 +108,7 @@ timestamps {
                       // next variable must be taken again due to closure limitations for free variables
                       top_job_number = job_results["deploy-platform-${name}"]['job'].getNumber()
                       run_build(
-                        "test_name-${name}",
+                        "${test_name}-${name}",
                         [job: test_name,
                          parameters: [
                           string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
@@ -376,7 +376,7 @@ def gerrit_build_started() {
 }
 
 def gerrit_vote() {
-  excluded_jobs = ['fetch-sources', 'cleanup-pipeline-workers']
+  excluded_jobs = ['fetch-sources', 'cleanup-pipeline-workers', 'collect-logs-and-cleanup']
   try {
     rc = currentBuild.result
     println rc
