@@ -71,6 +71,7 @@
                 exclude-wip: true
             - comment-added-contains-event:
                 comment-contains-value: '^(check|recheck)\s?(experimental|gate)?$'
+            - change-restored-event
           trigger-for-unreviewed-patches: true
           projects:
             - project-compare-type: 'ANT'
