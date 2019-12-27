@@ -84,15 +84,15 @@ timestamps {
               // just wait for deploy-platform job - build job just is a previous step
               waitUntil {
                 sleep 15
-                return job_results["deploy-platform-${name}"].containsKey('status')
+                return job_results["deploy-platform-${name}"].containsKey('result')
               }
-              if (job_results["deploy-platform-${name}"]['status'] != 'SUCCESS') {
+              if (job_results["deploy-platform-${name}"]['result'] != 'SUCCESS') {
                 unstable("Deploy platform failed - skip deploy TF and tests for ${name}")
                 return
               }
 
               try {
-                top_job_number = job_results["deploy-platform-${name}"]['job'].getNumber()
+                top_job_number = job_results["deploy-platform-${name}"]['number']
                 run_build(
                   "deploy-tf-${name}",
                   [job: "deploy-tf-${name}",
@@ -106,7 +106,7 @@ timestamps {
                   test_jobs["${test_name} for deploy-tf-${name}"] = {
                     stage(test_name) {
                       // next variable must be taken again due to closure limitations for free variables
-                      top_job_number = job_results["deploy-platform-${name}"]['job'].getNumber()
+                      top_job_number = job_results["deploy-platform-${name}"]['number']
                       run_build(
                         "${test_name}-${name}",
                         [job: test_name,
@@ -122,7 +122,7 @@ timestamps {
                 parallel test_jobs
               } finally {
                 stage('Collect logs and cleanup') {
-                  top_job_number = job_results["deploy-platform-${name}"]['job'].getNumber()
+                  top_job_number = job_results["deploy-platform-${name}"]['number']
                   println "Trying to collect logs and cleanup workers for ${name} job ${top_job_number}"
                   run_build(
                     "collect-logs-and-cleanup",
@@ -131,7 +131,7 @@ timestamps {
                       string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                       string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
                       string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                      booleanParam(name: 'COLLECT_SANITY_LOGS', value: job_results["deploy-tf-${name}"]['status'] == 'SUCCESS'),
+                      booleanParam(name: 'COLLECT_SANITY_LOGS', value: job_results["deploy-tf-${name}"]['result'] == 'SUCCESS'),
                       [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                     ]])
                 }
@@ -397,12 +397,17 @@ def gerrit_vote() {
       }
       value = result.getValue()
       status = 'NOT RUN'
-      if (value.containsKey('status')) {
-        status = value['status']
+      if (value.containsKey('result')) {
+        status = value['result']
       }
       //TODO: check for non-voting job
       job_logs = "${logs_url}/${value['logs_dir']}"
-      msg += "\n- ${name} ${job_logs} : ${status}"
+      duration = ''
+      if (value.containsKey('duration')) {
+        d = int(value['duration']/1000)
+        duration = String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
+      }
+      msg += "\n- ${name} ${job_logs} : ${status} ${duration}"
     }
     notify_gerrit(msg, verified)
   } catch (err) {
@@ -431,17 +436,33 @@ def run_build(name, params) {
   job_results[name] = ['logs_dir': params['job']]
   try {
     job_params_to_file(name)
-    job = build(params)
-    job_results[name]['job'] = job
-    job_results[name]['status'] = job.getResult()
+    def job = build(params)
+    job_results[name]['result'] = job.getResult()
+    job_results[name]['number'] = job.getNumber()
+    job_results[name]['duration'] = job.getDuration()
     println "Finished ${name} with SUCCESS"
   } catch (err) {
     println "Failed ${name}"
+    job_results[name]['result'] = 'FAILURE'
     msg = err.getMessage()
     if (msg != null) {
       println msg
     }
-    job_results[name]['status'] = 'FAILURE'
+    // get build num from exception and find job to get duration and result
+    try {
+      cause_msg = err.getCauses()[0].getShortDescription()
+      def build_num_matcher = cause_msg =~ /#\d+/
+      if (build_num_matcher.find()) {
+        def build_num = ((build_num_matcher[0] =~ /\d+/)[0]).toInteger()
+        def job = Jenkins.getInstanceOrNull().getItemByFullName(name).getBuildByNumber(build_num)
+        job_results[name]['result'] = job.getResult()
+        job_results[name]['number'] = job.getNumber()
+        job_results[name]['duration'] = job.getDuration()
+      }
+    } catch(e) {
+      println("Error in obtaining failed job result ${err.getMessage()}")
+    }
+    // re-throw error
     throw(err)
   }
 }
