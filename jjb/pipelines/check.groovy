@@ -404,7 +404,7 @@ def gerrit_vote() {
       job_logs = "${logs_url}/${value['logs_dir']}"
       duration = ''
       if (value.containsKey('duration')) {
-        d = int(value['duration']/1000)
+        d = (int)(value['duration']/1000)
         duration = String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
       }
       msg += "\n- ${name} ${job_logs} : ${status} ${duration}"
