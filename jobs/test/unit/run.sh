@@ -17,6 +17,7 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER
 
 echo "INFO: UT started"
 
+res=0
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
@@ -42,7 +43,7 @@ cd src/tungstenfabric/tf-dev-env
 ./run.sh test $TARGET
 EOF
 
-if [[ $res != 0 ]] ; then
+if [[ "$res" != '0' ]] ; then
   echo "ERROR: UT failed"
   exit $res
 fi

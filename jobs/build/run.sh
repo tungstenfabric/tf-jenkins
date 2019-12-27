@@ -16,6 +16,7 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/build.env $IMAGE_SS
 
 echo "INFO: Build started"
 
+res=0
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
