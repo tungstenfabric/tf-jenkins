@@ -99,7 +99,7 @@ timestamps {
               }
 
               try {
-                def top_job_number = job_results["deploy-platform-${name}"]['number']
+                top_job_number = job_results["deploy-platform-${name}"]['number']
                 run_build(
                   "deploy-tf-${name}",
                   [job: "deploy-tf-${name}",
@@ -113,7 +113,7 @@ timestamps {
                   test_jobs["${test_name} for deploy-tf-${name}"] = {
                     stage(test_name) {
                       // next variable must be taken again due to closure limitations for free variables
-                      def top_job_number = job_results["deploy-platform-${name}"]['number']
+                      top_job_number = job_results["deploy-platform-${name}"]['number']
                       run_build(
                         "${test_name}-${name}",
                         [job: test_name,
