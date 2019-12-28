@@ -343,7 +343,7 @@ def add_job(job_item) {
 }
 
 def notify_gerrit(msg, verified=0, submit=false) {
-  println "Notify gerrit verified=${verified}, msg=${msg}, submit=${submit}"
+  println "Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}"
   withCredentials(
       bindings: [
         usernamePassword(credentialsId: 'gerrit-api',
@@ -356,7 +356,7 @@ def notify_gerrit(msg, verified=0, submit=false) {
     if (submit) {
       opts += " --submit"
     }
-    sh """#!/bin/bash -ex
+    sh """
       ${WORKSPACE}/tf-jenkins/infra/gerrit/notify.py \
         --gerrit https://${GERRIT_HOST} \
         --user ${GERRIT_API_USER} \
