@@ -1,5 +1,11 @@
 ---
 
+# jobs are divided into two parts:
+# - jobs that are run as is: build, test-unit, test-lint. These jobs depend only on fetch-sources
+# job that is automatically added into pipeline is any of these jobs present.
+# - jobs that are treated as test configurations and translated into several jobs:
+# deploy platform, deploy TF, run sanity/smoke, ... sanity is enabed by default and smoke is disabled
+
 - project-template:
     name: unittests
     check:
@@ -19,7 +25,8 @@
     check:
       jobs:
         - build
-        - k8s_manifests
+        - k8s_manifests:
+            smoke: true
         - ansible_k8s
         - ansible_os
 

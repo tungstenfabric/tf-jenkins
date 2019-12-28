@@ -6,13 +6,20 @@ LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
 LOGS_BASE_URL = "http://pnexus.sytes.net:8082/jenkins_logs"
 
 // pipeline flow variables
-logs_url = ""
+// input pipeline - check, experimental, ... TODO: add nightly
 gerrit_pipeline = ""
-top_jobs_to_run = []
-top_jobs_code = [:]
-test_configuration_names = []
-inner_jobs_code = [:]
+// base url for all jobs
+logs_url = ""
+// list of pure info about jobs from config with additional parameters
 jobs_from_config = [:]
+// list of top jobs from config: fetch, build, unit, lint
+top_jobs_to_run = []
+// list of test configurations in format ${deployer}_${orchestrator}
+test_configuration_names = []
+// set of jobs code for both above
+top_jobs_code = [:]
+inner_jobs_code = [:]
+// set of result of each job 
 job_results = [:]
 
 timestamps {
@@ -92,7 +99,7 @@ timestamps {
               }
 
               try {
-                top_job_number = job_results["deploy-platform-${name}"]['number']
+                def top_job_number = job_results["deploy-platform-${name}"]['number']
                 run_build(
                   "deploy-tf-${name}",
                   [job: "deploy-tf-${name}",
@@ -101,12 +108,12 @@ timestamps {
                     string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]])
-                test_jobs = [:]
-                ['test-sanity', 'test-smoke'].each { test_name ->
+                def test_jobs = [:]
+                add_test_job_name(name).each { test_name ->
                   test_jobs["${test_name} for deploy-tf-${name}"] = {
                     stage(test_name) {
                       // next variable must be taken again due to closure limitations for free variables
-                      top_job_number = job_results["deploy-platform-${name}"]['number']
+                      def top_job_number = job_results["deploy-platform-${name}"]['number']
                       run_build(
                         "${test_name}-${name}",
                         [job: test_name,
@@ -232,7 +239,7 @@ def evaluate_env() {
       println "Pipeline to run: ${gerrit_pipeline}"
       get_jobs(env.GERRIT_PROJECT, gerrit_pipeline)
       println "Evaluated jobs to run: ${jobs_from_config}"
-      possible_top_jobs = ['test-lint', 'test-unit', 'build']
+      def possible_top_jobs = ['test-lint', 'test-unit', 'build']
       for (item in jobs_from_config) {
         if (item.getKey() in possible_top_jobs) {
           top_jobs_to_run += item.getKey()
@@ -368,7 +375,7 @@ def gerrit_build_started() {
     notify_gerrit(msg)
   } catch (err) {
     print "Failed to provide comment to gerrit "
-    msg = err.getMessage()
+    def msg = err.getMessage()
     if (msg != null) {
       print msg
     }
@@ -376,38 +383,63 @@ def gerrit_build_started() {
 }
 
 def gerrit_vote() {
-  excluded_jobs = ['fetch-sources', 'cleanup-pipeline-workers', 'collect-logs-and-cleanup']
   try {
-    rc = currentBuild.result
-    println rc
-    println currentBuild
-    //TODO: include only items from config/projects.yaml (exclude fetch-sources, join deploy/sanity jobs)
-    //TODO: evaluate all jobs statutes, exclude non-voting jobs and decide about final status
-    if (rc == 'SUCCESS') {
-      verified = 1
-      msg = "Build Succeeded (${gerrit_pipeline})\n"
-    } else {
-      verified = -1
-      msg = "Build Failed (${gerrit_pipeline})\n"
+    def passed = true
+    def results = [:]
+    def msg = ''
+    for (name in top_jobs_to_run) {
+      def status = ''
+      def job_result = job_results[name]
+      if (!job_result) {
+        status = 'NOT_BUILT'
+        msg += "\n- ${name} : NOT_BUILT"
+      } else {
+        status = job_result['result']
+        msg += "\n- " + get_gerrit_msg_for_job(name, status, job_result.get('duration'))
+      }
+      def voting = jobs_from_config[name].get('voting', true)
+      if (voting && status != 'SUCCESS') {
+        passed = false
+      }
     }
-    for (result in job_results) {
-      name = result.getKey()
-      if (name in excluded_jobs) {
-        continue
+    for (name in test_configuration_names) {
+      def job_names = ["deploy-platform-${name}", "deploy-tf-${name}"] + add_test_job_name(name)
+      def jobs_found = false
+      def status = 'SUCCESS'
+      def duration = 0
+      for (job_name in job_names) {
+        def job_result = job_results[job_name]
+        if (!job_result) {
+          status = 'FAILURE'
+        } else {
+          jobs_found = true
+          if (status == 'SUCCESS' && job_result['result'] != 'SUCCESS') {
+            // we can't provide exact job's status due to parallel test jobs
+            status = 'FAILURE'
+          }
+          // TODO: calculate duration correctly
+          // duration = max(0, {deploy-platform} - {build}) + {deploy-tf} + max({test-sanity}, {test-smoke})
+          duration += job_result.get('duration', 0)
+        }
       }
-      value = result.getValue()
-      status = 'NOT RUN'
-      if (value.containsKey('result')) {
-        status = value['result']
+      if (!jobs_found) {
+        status = 'NOT_BUILT'
+        msg += "\n- ${name} : NOT_BUILT"
+      } else {
+        msg += "\n- " + get_gerrit_msg_for_job(name, status, duration)
       }
-      //TODO: check for non-voting job
-      job_logs = "${logs_url}/${value['logs_dir']}"
-      duration = ''
-      if (value.containsKey('duration')) {
-        d = (int)(value['duration']/1000)
-        duration = String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
+      def voting = jobs_from_config[name].get('voting', true)
+      if (voting && status != 'SUCCESS') {
+        passed = false
       }
-      msg += "\n- ${name} ${job_logs} : ${status} ${duration}"
+    }
+
+    def verified = 1
+    if (passed) {
+      msg = "Build Succeeded (${gerrit_pipeline})\n" + msg
+    } else {
+      msg = "Build Failed (${gerrit_pipeline})\n" + msg
+      verified = -1
     }
     notify_gerrit(msg, verified)
   } catch (err) {
@@ -417,6 +449,26 @@ def gerrit_vote() {
       print msg
     }
   }
+}
+
+def get_gerrit_msg_for_job(name, status, duration) {
+  def duration_string = ''
+  if (duration != null) {
+    d = (int)(duration/1000)
+    duration_string = String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
+  }
+  return "${name} ${logs_url}/${name} : ${status} ${duration_string}"
+}
+
+def add_test_job_name(test_config_name) {
+  def job_names = []
+  if (jobs_from_config[test_config_name].get('sanity', true)) {
+    job_names += 'test-sanity'
+  }
+  if (jobs_from_config[test_config_name].get('smoke', false)) {
+    job_names += 'test-sanity'
+  }
+  return job_names
 }
 
 def job_params_to_file(job_name) {
@@ -434,7 +486,7 @@ def job_params_to_file(job_name) {
 
 def run_build(name, params) {
   def job_name = params['job']
-  job_results[name] = ['logs_dir': job_name]
+  job_results[name] = [:]
   try {
     job_params_to_file(name)
     def job = build(params)
