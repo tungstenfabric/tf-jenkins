@@ -433,7 +433,8 @@ def job_params_to_file(job_name) {
 }
 
 def run_build(name, params) {
-  job_results[name] = ['logs_dir': params['job']]
+  def job_name = params['job']
+  job_results[name] = ['logs_dir': job_name]
   try {
     job_params_to_file(name)
     def job = build(params)
@@ -450,11 +451,11 @@ def run_build(name, params) {
     }
     // get build num from exception and find job to get duration and result
     try {
-      cause_msg = err.getCauses()[0].getShortDescription()
+      def cause_msg = err.getCauses()[0].getShortDescription()
       def build_num_matcher = cause_msg =~ /#\d+/
       if (build_num_matcher.find()) {
         def build_num = ((build_num_matcher[0] =~ /\d+/)[0]).toInteger()
-        def job = Jenkins.getInstanceOrNull().getItemByFullName(name).getBuildByNumber(build_num)
+        def job = Jenkins.getInstanceOrNull().getItemByFullName(job_name).getBuildByNumber(build_num)
         job_results[name]['result'] = job.getResult()
         job_results[name]['number'] = job.getNumber()
         job_results[name]['duration'] = job.getDuration()
