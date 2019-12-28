@@ -109,9 +109,9 @@ timestamps {
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]])
                 def test_jobs = [:]
-                add_test_job_name(name).each { test_name ->
+                get_test_job_names(name).each { test_name ->
                   test_jobs["${test_name} for deploy-tf-${name}"] = {
-                    stage(test_name) {
+                    stage("${test_name}-${name}") {
                       // next variable must be taken again due to closure limitations for free variables
                       top_job_number = job_results["deploy-platform-${name}"]['number']
                       run_build(
@@ -397,13 +397,14 @@ def gerrit_vote() {
         status = job_result['result']
         msg += "\n- " + get_gerrit_msg_for_job(name, status, job_result.get('duration'))
       }
-      def voting = jobs_from_config[name].get('voting', true)
+      def voting = jobs_from_config.get(name, [:]).get('voting', true)
       if (voting && status != 'SUCCESS') {
         passed = false
       }
     }
     for (name in test_configuration_names) {
-      def job_names = ["deploy-platform-${name}", "deploy-tf-${name}"] + add_test_job_name(name)
+      def job_names = ["deploy-platform-${name}", "deploy-tf-${name}"]
+      get_test_job_names(name).each{test_name -> job_names += "${test_name}-${name}"}
       def jobs_found = false
       def status = 'SUCCESS'
       def duration = 0
@@ -460,12 +461,16 @@ def get_gerrit_msg_for_job(name, status, duration) {
   return "${name} ${logs_url}/${name} : ${status} ${duration_string}"
 }
 
-def add_test_job_name(test_config_name) {
+def get_test_job_names(test_config_name) {
+  def config = jobs_from_config.get(test_config_name)
+  if (!config) {
+    return ['test-sanity']
+  }
   def job_names = []
-  if (jobs_from_config[test_config_name].get('sanity', true)) {
+  if (config.get('sanity', true)) {
     job_names += 'test-sanity'
   }
-  if (jobs_from_config[test_config_name].get('smoke', false)) {
+  if (config.get('smoke', false)) {
     job_names += 'test-sanity'
   }
   return job_names
