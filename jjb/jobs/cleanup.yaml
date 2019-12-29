@@ -42,7 +42,8 @@
           filter: "global.env"
           which-build: upstream-build
       - shell: |
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_BUILD_NUMBER}"
+          number=$(curl -s $BUILD_URL/api/json | jq -r .actions[0].causes[0].upstreamBuild)
+          desc="Pipeline: ${PIPELINE_NAME}-$number"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
