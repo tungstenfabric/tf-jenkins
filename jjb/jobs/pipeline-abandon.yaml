@@ -1,9 +1,11 @@
 ---
 
+# must be a ordinary job
+
 - job:
-    name: check-abandon
+    name: pipeline-abandon
     node: master
-    description: check-abandon
+    description: catches 'abandon' comment from gerrit for particular review
     project-type: pipeline
     concurrent: true
     triggers:
@@ -23,13 +25,13 @@
                 - branch-compare-type: 'REG_EXP'
                   branch-pattern: '^master'
     dsl: |
-        instance = Jenkins.getInstanceOrNull()
-        runningBuilds = instance.getView('All').getBuilds().findAll() { it.getResult().equals(null) }
+        def instance = Jenkins.getInstanceOrNull()
+        def runningBuilds = instance.getView('All').getBuilds().findAll() { it.getResult().equals(null) }
         runningBuilds.removeAll { it.grep( ~/check-abandon.*/ ) }
         for (rb in runningBuilds) {
-          if ( rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER") != null ) {
+          if (rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER") != null ) {
             change_num = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER").value.toInteger()
-            if (GERRIT_CHANGE_NUMBER.toInteger() == change_num ){
+            if (GERRIT_CHANGE_NUMBER.toInteger() == change_num) {
               rb.doStop()
               println "Build $rb has been aborted when the change $GERRIT_CHANGE_NUMBER abandoned."
             }

@@ -6,8 +6,6 @@ LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
 LOGS_BASE_URL = "http://pnexus.sytes.net:8082/jenkins_logs"
 
 // pipeline flow variables
-// input pipeline - check, experimental, ... TODO: add nightly
-gerrit_pipeline = ""
 // base url for all jobs
 logs_url = ""
 // list of pure info about jobs from config with additional parameters
@@ -43,7 +41,6 @@ timestamps {
               [job: 'fetch-sources',
                 parameters: [
                 string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                 [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
               ]])
           }
@@ -59,7 +56,6 @@ timestamps {
                   [job: name,
                    parameters: [
                     string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]])
               }
@@ -78,7 +74,6 @@ timestamps {
                   [job: "deploy-platform-${name}",
                    parameters: [
                     string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]])
               }
@@ -108,7 +103,6 @@ timestamps {
                   [job: "deploy-tf-${name}",
                    parameters: [
                     string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                    string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]])
@@ -123,7 +117,6 @@ timestamps {
                         [job: test_name,
                          parameters: [
                           string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                          string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                           string(name: 'DEPLOY_PLATFORM_PROJECT', value: "deploy-platform-${name}"),
                           string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                           [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
@@ -141,7 +134,6 @@ timestamps {
                     [job: "collect-logs-and-cleanup",
                      parameters: [
                       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                      string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                       string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
                       string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                       booleanParam(name: 'COLLECT_SANITY_LOGS', value: job_results["deploy-tf-${name}"]['result'] == 'SUCCESS'),
@@ -162,7 +154,6 @@ timestamps {
                 [job: 'build',
                  parameters: [
                   string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                  string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                   [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                 ]])
             }
@@ -184,7 +175,6 @@ timestamps {
             [job: 'cleanup-pipeline-workers',
              parameters: [
               string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-              string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
               [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
             ]])
         } catch(err){
@@ -232,19 +222,8 @@ def evaluate_env() {
         echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
         echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
       """
-      gerrit_pipeline = 'check'
-      if (env.GERRIT_EVENT_COMMENT_TEXT) {
-        for (line in env.GERRIT_EVENT_COMMENT_TEXT.split('\n'))
-        if (line =~ /^(check|recheck)/) {
-          line_items = line.split()
-          if (line_items.length > 1) {
-            gerrit_pipeline = line_items[1]
-          }
-          break
-        }
-      }
-      println "Pipeline to run: ${gerrit_pipeline}"
-      get_jobs(env.GERRIT_PROJECT, gerrit_pipeline)
+      println "Pipeline to run: ${env.GERRIT_PIPELINE}"
+      get_jobs(env.GERRIT_PROJECT, env.GERRIT_PIPELINE)
       println "Evaluated jobs to run: ${jobs_from_config}"
       def possible_top_jobs = ['test-lint', 'test-unit', 'build']
       for (item in jobs_from_config) {
@@ -378,7 +357,7 @@ def notify_gerrit(msg, verified=0, submit=false) {
 
 def gerrit_build_started() {
   try {
-    def msg = """Build Started (${gerrit_pipeline}) ${BUILD_URL}"""
+    def msg = """Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
     notify_gerrit(msg)
   } catch (err) {
     print "Failed to provide comment to gerrit "
@@ -450,9 +429,9 @@ def gerrit_vote() {
 
     def verified = 1
     if (passed) {
-      msg = "Build Succeeded (${gerrit_pipeline})\n" + msg
+      msg = "Build Succeeded (${env.GERRIT_PIPELINE})\n" + msg
     } else {
-      msg = "Build Failed (${gerrit_pipeline})\n" + msg
+      msg = "Build Failed (${env.GERRIT_PIPELINE})\n" + msg
       verified = -1
     }
     notify_gerrit(msg, verified)

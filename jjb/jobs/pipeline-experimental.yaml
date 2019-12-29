@@ -1,0 +1,48 @@
+---
+
+- job:
+    name: pipeline-experimental
+    node: aws
+    description: pipeline-experimental
+    project-type: pipeline
+    concurrent: true
+    parameters:
+      - choice:
+          name: SLAVE
+          choices:
+            - vexxhost
+            - aws
+          description: "Slave where all jobs will be run: vexxhost, aws"
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: experimental
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: jjb/pipelines/main.groovy
+      lightweight-checkout: true
+    triggers:
+      - gerrit:
+          server-name: review.opencontrail.org
+          skip-vote:
+            successful: true
+            failed: true
+            unstable: true
+            notbuilt: true
+          trigger-on:
+            - patchset-created-event:
+                exclude-drafts: true
+                exclude-trivial-rebase: true
+                exclude-no-code-change: true
+                exclude-private: true
+                exclude-wip: true
+            - comment-added-contains-event:
+                comment-contains-value: '^(check|recheck)\s?experimental$'
+            - change-restored-event
+          trigger-for-unreviewed-patches: true
+          projects:
+            - project-compare-type: 'ANT'
+              project-pattern: '**'
+              branches:
+                - branch-compare-type: 'REG_EXP'
+                  branch-pattern: '^master'

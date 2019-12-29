@@ -6,8 +6,6 @@
       - label:
           name: SLAVE
       - string:
-          name: PIPELINE_BUILD_NUMBER
-      - string:
           name: PIPELINE_NAME
     wrappers:
       - workspace-cleanup
@@ -15,15 +13,9 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "global.env"
-          which-build: specific-build
-          build-number: ${PIPELINE_BUILD_NUMBER}
-      - copyartifact:
-          project: ${PIPELINE_NAME}
-          filter: "test-lint.env"
+          filter: "global.env,test-lint.env"
+          which-build: upstream-build
           optional: true
-          which-build: specific-build
-          build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_BUILD_NUMBER}"
           echo "DESCRIPTION $desc"

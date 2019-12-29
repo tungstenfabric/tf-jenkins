@@ -1,9 +1,9 @@
 ---
 
 - job:
-    name: check-pipeline
+    name: pipeline-check
     node: aws
-    description: check-pipeline
+    description: pipeline-check
     project-type: pipeline
     concurrent: true
     parameters:
@@ -13,6 +13,9 @@
             - vexxhost
             - aws
           description: "Slave where all jobs will be run: vexxhost, aws"
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: check
       - bool:
           name: DO_BUILD
           default: true
@@ -52,7 +55,7 @@
     pipeline-scm:
       scm:
         - tf-jenkins
-      script-path: jjb/pipelines/check.groovy
+      script-path: jjb/pipelines/main.groovy
       lightweight-checkout: true
     triggers:
       - gerrit:
@@ -70,7 +73,7 @@
                 exclude-private: true
                 exclude-wip: true
             - comment-added-contains-event:
-                comment-contains-value: '^(check|recheck)\s?(experimental|gate)?$'
+                comment-contains-value: '^(check|recheck)$'
             - change-restored-event
           trigger-for-unreviewed-patches: true
           projects:
