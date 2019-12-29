@@ -29,6 +29,8 @@ if [[ -n "$TERMINATION_LIST_TAGS" ]]; then
   for t in $(echo "$TERMINATION_LIST_TAGS"); do
     TAGS+=(PipelineBuildTag=${t})
   done
-  TERMINATION_LIST=$(nova list --tags-any $(IFS=","; echo "${TAGS[*]}") --field locked | awk '{print $2}' | grep -v ID | grep -v True | grep -v "^$")
-  nova delete $(echo "$TERMINATION_LIST")
+  TERMINATION_LIST=$(nova list --tags-any $(IFS=","; echo "${TAGS[*]}") --status ACTIVE --field locked | grep -v 'True' | awk '{print $2}' | grep -v 'ID'  | grep -v "^$" || true)
+  if [[ -n "$TERMINATION_LIST" ]]; then
+    nova delete $(echo "$TERMINATION_LIST")
+  fi
 fi
