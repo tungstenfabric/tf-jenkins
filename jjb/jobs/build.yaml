@@ -52,12 +52,12 @@
               username-variable: LOGS_HOST_USERNAME
     builders:
       - copyartifact:
-          project: check-pipeline
+          project: ${PIPELINE_NAME}
           filter: "global.env"
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - copyartifact:
-          project: check-pipeline
+          project: ${PIPELINE_NAME}
           filter: "build.env"
           optional: true
           which-build: specific-build

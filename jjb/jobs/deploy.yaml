@@ -56,7 +56,7 @@
       - tf-devstack
     builders:
       - copyartifact:
-          project: check-pipeline
+          project: ${{PIPELINE_NAME}}
           filter: "global.env"
           which-build: specific-build
           build-number: ${{PIPELINE_BUILD_NUMBER}}
@@ -130,7 +130,7 @@
       - tf-devstack
     builders:
       - copyartifact:
-          project: check-pipeline
+          project: ${{PIPELINE_NAME}}
           filter: "global.env"
           which-build: specific-build
           build-number: ${{PIPELINE_BUILD_NUMBER}}
@@ -215,7 +215,7 @@
       - tf-devstack
     builders:
       - copyartifact:
-          project: check-pipeline
+          project: ${PIPELINE_NAME}
           filter: "global.env"
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}

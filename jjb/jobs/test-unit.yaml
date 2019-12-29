@@ -54,12 +54,12 @@
               variable: OS_AUTH_URL
     builders:
       - copyartifact:
-          project: check-pipeline
+          project: ${PIPELINE_NAME}
           filter: "global.env"
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - copyartifact:
-          project: check-pipeline
+          project: ${PIPELINE_NAME}
           filter: "test-unit.env"
           optional: true
           which-build: specific-build
