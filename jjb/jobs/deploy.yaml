@@ -9,6 +9,8 @@
           name: SLAVE
       - string:
           name: PIPELINE_BUILD_NUMBER
+      - string:
+          name: PIPELINE_NAME
     properties:
       - build-discarder:
           num-to-keep: 10
@@ -109,6 +111,8 @@
       - string:
           name: PIPELINE_BUILD_NUMBER
       - string:
+          name: PIPELINE_NAME
+      - string:
           name: DEPLOY_PLATFORM_JOB_NUMBER
     properties:
       - build-discarder:
@@ -158,6 +162,8 @@
           name: SLAVE
       - string:
           name: PIPELINE_BUILD_NUMBER
+      - string:
+          name: PIPELINE_NAME
       - string:
           name: DEPLOY_PLATFORM_JOB_NAME
       - string:

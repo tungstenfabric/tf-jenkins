@@ -42,6 +42,7 @@ timestamps {
               'fetch-sources',
               [job: 'fetch-sources',
                 parameters: [
+                string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
                 string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                 [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
               ]])
@@ -57,6 +58,7 @@ timestamps {
                   name,
                   [job: name,
                    parameters: [
+                    string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]])
@@ -75,6 +77,7 @@ timestamps {
                   "deploy-platform-${name}",
                   [job: "deploy-platform-${name}",
                    parameters: [
+                    string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]])
@@ -104,6 +107,7 @@ timestamps {
                   "deploy-tf-${name}",
                   [job: "deploy-tf-${name}",
                    parameters: [
+                    string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
                     string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                     string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                     [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
@@ -118,6 +122,7 @@ timestamps {
                         "${test_name}-${name}",
                         [job: test_name,
                          parameters: [
+                          string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
                           string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                           string(name: 'DEPLOY_PLATFORM_PROJECT', value: "deploy-platform-${name}"),
                           string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
@@ -135,6 +140,7 @@ timestamps {
                     "collect-logs-and-cleanup",
                     [job: "collect-logs-and-cleanup",
                      parameters: [
+                      string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
                       string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                       string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
                       string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
@@ -155,6 +161,7 @@ timestamps {
                 'build',
                 [job: 'build',
                  parameters: [
+                  string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
                   string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
                   [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                 ]])
@@ -176,6 +183,7 @@ timestamps {
           run_build('cleanup-pipeline-workers',
             [job: 'cleanup-pipeline-workers',
              parameters: [
+              string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
               string(name: 'PIPELINE_BUILD_NUMBER', value: "${BUILD_NUMBER}"),
               [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
             ]])
@@ -193,8 +201,7 @@ timestamps {
 def evaluate_env() {
   try {
     sh """#!/bin/bash -e
-      echo "export PIPELINE_NAME=${JOB_NAME}" > global.env
-      echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
+      echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
     """
 
     // evvaluate logs params

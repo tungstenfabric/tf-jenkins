@@ -13,6 +13,8 @@
           name: DEPLOY_PLATFORM_JOB_NUMBER
       - string:
           name: PIPELINE_BUILD_NUMBER
+      - string:
+          name: PIPELINE_NAME
     properties:
       - build-discarder:
           num-to-keep: 10
