@@ -26,6 +26,7 @@
       jobs:
         - build
         - k8s_manifests:
+            voting: false
             smoke: true
         - ansible_k8s
         - ansible_os
