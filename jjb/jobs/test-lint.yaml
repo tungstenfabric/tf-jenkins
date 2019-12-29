@@ -25,7 +25,7 @@
           which-build: specific-build
           build-number: ${PIPELINE_BUILD_NUMBER}
       - shell: |
-          desc="Pipeline: ${PIPELINE_BUILD_NUMBER}"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_BUILD_NUMBER}"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
