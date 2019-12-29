@@ -398,6 +398,9 @@ def gerrit_vote() {
         msg += "\n- " + get_gerrit_msg_for_job(name, status, job_result.get('duration'))
       }
       def voting = jobs_from_config.get(name, [:]).get('voting', true)
+      if (!voting) {
+        msg += ' (non-voting)'
+      }
       if (voting && status != 'SUCCESS') {
         passed = false
       }
@@ -430,6 +433,9 @@ def gerrit_vote() {
         msg += "\n- " + get_gerrit_msg_for_job(name, status, duration)
       }
       def voting = jobs_from_config[name].get('voting', true)
+      if (!voting) {
+        msg += ' (non-voting)'
+      }
       if (voting && status != 'SUCCESS') {
         passed = false
       }
