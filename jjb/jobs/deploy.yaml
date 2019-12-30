@@ -75,14 +75,16 @@
           echo "export DEPLOYER={deployer}" >> "$ENV_FILE"
           echo "export JOB_LOGS_PATH={project}" >> "$ENV_FILE"
       - shell: |
+          set +e
+          set -o pipefail
           export DEBUG=true
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
           FULL_LOGS_PATH="${LOGS_PATH}/{project}"
           res=0
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_platform.sh || tee ${WORKSPACE}/output-deploy_{deployer}_platform.log  || res=1
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_platform.sh || tee ${WORKSPACE}/output-deploy-platform.log  || res=1
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
-          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output-deploy_platform.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
+          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output-deploy-platform.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
           if [[ $res == 1 ]]; then
             export DEBUG=false
             source "$WORKSPACE/stackrc.$JOB_NAME.env"
@@ -144,6 +146,8 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
+          set +e
+          set -o pipefail
           export DEBUG=true
           source "$WORKSPACE/global.env"
           export FULL_LOGS_PATH="${LOGS_PATH}/{project}"
@@ -235,7 +239,6 @@
           source "$WORKSPACE/global.env"
           export ENV_FILE="$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
           source "$ENV_FILE"
-          FULL_LOGS_PATH="${LOGS_PATH}/{project}"
           "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh"
           if [[ "${COLLECT_SANITY_LOGS,,}" == 'true' ]]; then
             "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh"

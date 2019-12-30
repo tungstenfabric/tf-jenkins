@@ -49,10 +49,4 @@
               build-steps:
                 - shell: |
                     source "$WORKSPACE/global.env"
-                    ## Commented out prior to lint implementation
-                    # export FULL_LOGS_PATH="${LOGS_PATH}/lint"
-                    # Here must be run.sh | tee ${WORKSPACE}/output-lint.log || res=1
-                    # ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
-                    # rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output-lint.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
-          
-                    # ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
+                    # TODO: copy or commonize code with test-unit

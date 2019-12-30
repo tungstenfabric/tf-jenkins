@@ -49,6 +49,8 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
+          set +e
+          set -o pipefail
           export DEBUG=true
           source "$WORKSPACE/global.env"
           export FULL_LOGS_PATH="${LOGS_PATH}/sanity"
