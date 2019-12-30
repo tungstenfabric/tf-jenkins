@@ -49,11 +49,6 @@
           - text:
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL
-      - credentials-binding:
-          - ssh-user-private-key:
-              credential-id: logs_host
-              key-file-variable: LOGS_HOST_SSH_KEY
-              username-variable: LOGS_HOST_USERNAME
     scm:
       - tf-jenkins
       - tf-devstack
@@ -73,6 +68,7 @@
           export ENVIRONMENT_OS={environment_os}
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
+          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/create_workers.sh
           # add more information about current deployment
           ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
@@ -160,6 +156,7 @@
           set -o pipefail
           export DEBUG=true
           source "$WORKSPACE/global.env"
+          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           export FULL_LOGS_PATH="$LOGS_PATH/{project}"
           source "$WORKSPACE/stackrc.deploy-platform-{project}.env"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_tf.sh | tee $WORKSPACE/output-deploy-tf.log || res=1

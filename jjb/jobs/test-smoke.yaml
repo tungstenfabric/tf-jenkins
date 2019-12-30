@@ -52,6 +52,7 @@
           set -o pipefail
           export DEBUG=true
           source "$WORKSPACE/global.env"
+          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           export FULL_LOGS_PATH="${LOGS_PATH}/test-smoke"
           ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh | tee ${WORKSPACE}/output-test-smoke.log || res=1
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
