@@ -393,10 +393,8 @@ def gerrit_vote() {
       }
     }
     for (name in test_configuration_names) {
-      println("INFO: Test configuration names ${test_configuration_names}")
       def job_names = ["deploy-platform-${name}", "deploy-tf-${name}"]
-      get_test_job_names(name).each{test_name -> job_names += "${test_name}-${name}"}
-      println("INFO: test job names ${job_names}")
+      get_test_job_names(name).each {test_name -> job_names += "${test_name}-${name}"}
       def jobs_found = false
       def status = 'SUCCESS'
       for (job_name in job_names) {
@@ -411,24 +409,19 @@ def gerrit_vote() {
           }
         }
       }
-
-      // Calculate durations of Pipeline = {deploy-platform} + {deploy-tf} + {max([test-unit, test-sanity])}
+      // Calculate duration of test configuration = {deploy-platform} + {deploy-tf} + {max([test-unit, test-sanity])}
       def duration = 0
-      def deploy_jobs = ["deploy-platform-${name}", "deploy-tf-${name}"]
-      for(job_name in deploy_jobs){
+      for (job_name in ["deploy-platform-${name}", "deploy-tf-${name}"]) {
         job_result = job_results[job_name]
-        if(job_result){
+        if (job_result) {
           duration += job_result.get('duration', 0)
         }
-        
       }
-      def test_jobs = []
       def max_test_duration = 0
-      get_test_job_names(name).each{test_name -> test_jobs += "${test_name}-${name}"}
-      for(job_name in test_jobs){
+      for (job_name in get_test_job_names(name)) {
         job_result = job_results[job_name]
-        if(job_result && job_result.get('duration', 0) > max_test_duration){
-          max_test_duration = job_result.get('duration', 0)
+        if (job_result && job_result.get('duration', 0) > max_test_duration) {
+          max_test_duration = job_result['duration']
         }
       }
       duration += max_test_duration
@@ -450,9 +443,9 @@ def gerrit_vote() {
 
     def verified = 1
     if (passed) {
-      msg = "Build Succeeded (${env.GERRIT_PIPELINE})\n" + msg
+      msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE})\n" + msg
     } else {
-      msg = "Build Failed (${env.GERRIT_PIPELINE})\n" + msg
+      msg = "Jenkins Build Failed (${env.GERRIT_PIPELINE})\n" + msg
       verified = -1
     }
     notify_gerrit(msg, verified)
