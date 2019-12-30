@@ -29,8 +29,11 @@ sudo mv containers deployers-containers
 tar -czf deployers-containers.tgz deployers-containers
 sudo rm -rf ./deployers-containers
 
-sudo docker cp tf-developer-sandbox:/root/contrail/third_party/contrail-test .
-sudo find ./contrail-test/ -not -name '*.log' -delete &>/dev/null || /bin/true
+mkdir -p contrail-test
+for file in $(sudo docker exec tf-developer-sandbox ls /root/contrail/third_party/contrail-test/ | grep log$)
+do
+  sudo docker cp tf-developer-sandbox:/root/contrail/third_party/contrail-test/${file} ./contrail-test
+done
 tar -czf contrail-test.tgz contrail-test
 sudo rm -rf ./contrail-test
 EOF
