@@ -33,6 +33,7 @@ timestamps {
           println 'Top jobs to run: ' + top_jobs_to_run
           println 'Test configurations: ' + test_configuration_names
           gerrit_build_started()
+          currentBuild.description = "<a href='${logs_url}'>${logs_url}</a>"
         }
 
         if ('fetch-sources' in top_jobs_to_run) {
