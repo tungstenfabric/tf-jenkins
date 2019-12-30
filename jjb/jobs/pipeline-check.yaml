@@ -69,7 +69,7 @@
             - patchset-created-event:
                 exclude-drafts: true
                 exclude-trivial-rebase: true
-                exclude-no-code-change: true
+                exclude-no-code-change: false
                 exclude-private: true
                 exclude-wip: true
             - comment-added-contains-event:
