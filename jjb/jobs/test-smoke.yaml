@@ -24,6 +24,11 @@
               key-file-variable: WORKER_SSH_KEY
               username-variable: WORKER_USER_NAME
               passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: logs_host
+              key-file-variable: LOGS_HOST_SSH_KEY
+              username-variable: LOGS_HOST_USERNAME
     scm:
       - tf-jenkins
     builders:
@@ -45,4 +50,7 @@
       - shell: |
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh
+          export FULL_LOGS_PATH="${LOGS_PATH}/test-smoke"
+          ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh | tee ${WORKSPACE}/output-test-smoke.log || res=1
+          ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
+          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output-test-smoke.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
