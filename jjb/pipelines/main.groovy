@@ -416,11 +416,9 @@ def gerrit_vote() {
       def duration = 0
       def deploy_jobs = ["deploy-platform-${name}", "deploy-tf-${name}"]
       for(job_name in deploy_jobs){
-        println("INFO: First Loop. job_name = ${job_name}")
         job_result = job_results[job_name]
         if(job_result){
           duration += job_result.get('duration', 0)
-          println("INFO: Duration = ${duration}")
         }
         
       }
@@ -428,15 +426,12 @@ def gerrit_vote() {
       def max_test_duration = 0
       get_test_job_names(name).each{test_name -> test_jobs += "${test_name}-${name}"}
       for(job_name in test_jobs){
-        println("INFO: Second Loop. job_name = ${job_name}")
         job_result = job_results[job_name]
         if(job_result && job_result.get('duration', 0) > max_test_duration){
           max_test_duration = job_result.get('duration', 0)
-          println("INFO: max_test_duration = ${max_test_duration}")
         }
       }
       duration += max_test_duration
-      println("INFO: Final duration = ${duration}")
 
       if (!jobs_found) {
         status = 'NOT_BUILT'
