@@ -393,11 +393,12 @@ def gerrit_vote() {
       }
     }
     for (name in test_configuration_names) {
+      println("INFO: Test configuration names ${test_configuration_names}")
       def job_names = ["deploy-platform-${name}", "deploy-tf-${name}"]
       get_test_job_names(name).each{test_name -> job_names += "${test_name}-${name}"}
+      println("INFO: test job names ${job_names}")
       def jobs_found = false
       def status = 'SUCCESS'
-      def duration = 0
       for (job_name in job_names) {
         def job_result = job_results[job_name]
         if (!job_result) {
@@ -408,11 +409,35 @@ def gerrit_vote() {
             // we can't provide exact job's status due to parallel test jobs
             status = 'FAILURE'
           }
-          // TODO: calculate duration correctly
-          // duration = max(0, {deploy-platform} - {build}) + {deploy-tf} + max({test-sanity}, {test-smoke})
-          duration += job_result.get('duration', 0)
         }
       }
+
+      // Calculate durations of Pipeline = {deploy-platform} + {deploy-tf} + {max([test-unit, test-sanity])}
+      def duration = 0
+      def deploy_jobs = ["deploy-platform-${name}", "deploy-tf-${name}"]
+      for(job_name in deploy_jobs){
+        println("INFO: First Loop. job_name = ${job_name}")
+        job_result = job_results[job_name]
+        if(job_result){
+          duration += job_result.get('duration', 0)
+          println("INFO: Duration = ${duration}")
+        }
+        
+      }
+      def test_jobs = []
+      def max_test_duration = 0
+      get_test_job_names(name).each{test_name -> test_jobs += "${test_name}-${name}"}
+      for(job_name in test_jobs){
+        println("INFO: Second Loop. job_name = ${job_name}")
+        job_result = job_results[job_name]
+        if(job_result && job_result.get('duration', 0) > max_test_duration){
+          max_test_duration = job_result.get('duration', 0)
+          println("INFO: max_test_duration = ${max_test_duration}")
+        }
+      }
+      duration += max_test_duration
+      println("INFO: Final duration = ${duration}")
+
       if (!jobs_found) {
         status = 'NOT_BUILT'
         msg += "\n- ${name} : NOT_BUILT"
