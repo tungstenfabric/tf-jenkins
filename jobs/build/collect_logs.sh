@@ -30,9 +30,9 @@ tar -czf deployers-containers.tgz deployers-containers
 sudo rm -rf ./deployers-containers
 
 mkdir -p contrail-test
-for file in $(sudo docker exec tf-developer-sandbox ls /root/contrail/third_party/contrail-test/ | grep log$)
+for file in \$(sudo docker exec tf-developer-sandbox ls /root/contrail/third_party/contrail-test/ | grep log$)
 do
-  sudo docker cp tf-developer-sandbox:/root/contrail/third_party/contrail-test/${file} ./contrail-test
+  sudo docker cp tf-developer-sandbox:/root/contrail/third_party/contrail-test/\${file} ./contrail-test
 done
 tar -czf contrail-test.tgz contrail-test
 sudo rm -rf ./contrail-test
