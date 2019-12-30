@@ -49,6 +49,11 @@
           - text:
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: logs_host
+              key-file-variable: LOGS_HOST_SSH_KEY
+              username-variable: LOGS_HOST_USERNAME
     scm:
       - tf-jenkins
       - tf-devstack
@@ -126,6 +131,11 @@
               key-file-variable: WORKER_SSH_KEY
               username-variable: WORKER_USER_NAME
               passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: logs_host
+              key-file-variable: LOGS_HOST_SSH_KEY
+              username-variable: LOGS_HOST_USERNAME
     scm:
       - tf-jenkins
       - tf-devstack
