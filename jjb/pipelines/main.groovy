@@ -199,8 +199,8 @@ def evaluate_env() {
     if (env.GERRIT_CHANGE_ID) {
       contrail_container_tag = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
       hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
-      logs_path = "${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${JOB_NAME}_${BUILD_NUMBER}"
-      logs_url = "${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${JOB_NAME}_${BUILD_NUMBER}"
+      logs_path = "${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
+      logs_url = "${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
     } else {
       contrail_container_tag = 'dev'
       logs_path = "${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
