@@ -17,7 +17,8 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER
 
 echo "INFO: UT started"
 
-res=0
+function run_over_ssh() {
+  res=0
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
@@ -40,11 +41,18 @@ export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 
 cd src/tungstenfabric/tf-dev-env
-./run.sh test $TARGET
+./run.sh $@
 EOF
+return $res
+}
 
-if [[ "$res" != '0' ]] ; then
+if ! run_over_ssh ; then
   echo "ERROR: UT failed"
-  exit $res
+  exit 1
 fi
+if ! run_over_ssh test $TARGET ; then
+  echo "ERROR: UT failed"
+  exit 1
+fi
+
 echo "INFO: UT finished successfully"
