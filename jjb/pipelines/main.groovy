@@ -25,6 +25,7 @@ timestamps {
     node("${SLAVE}") {
       try {
         stage('Pre-build') {
+          terminate_obsolete_jobs()
           clone_self()
           evaluate_env()
           archiveArtifacts artifacts: 'global.env'
@@ -514,5 +515,21 @@ def run_build(name, params) {
     }
     // re-throw error
     throw(err)
+  }
+}
+
+def terminate_obsolete_jobs() {
+  if (env.GERRIT_CHANGE_ID) {
+    def runningBuilds = Jenkins.getInstanceOrNull().getView('All').getBuilds().findAll() { it.getResult().equals(null) }
+    for (rb in runningBuilds) {
+      if (rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER") != null ) {
+        change_num = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER").value.toInteger()
+        patchset_num = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger()
+        if (GERRIT_CHANGE_NUMBER.toInteger() == change_num && GERRIT_PATCHSET_NUMBER.toInteger() > patchset_num) {
+          rb.doStop()
+          println "Build $rb has been aborted when a new patchset is created"
+        }
+      }
+    }
   }
 }
