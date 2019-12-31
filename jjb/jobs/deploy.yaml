@@ -83,7 +83,7 @@
           source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
           export FULL_LOGS_PATH="$LOGS_PATH/{project}"
           res=0
-          ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_platform.sh || tee $WORKSPACE/output-deploy-platform.log  || res=1
+          ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_platform.sh | tee $WORKSPACE/output-deploy-platform.log  || res=1
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
           rsync -a -e "ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS" $WORKSPACE/output-deploy-platform.log $LOGS_HOST_USERNAME@$LOGS_HOST:$FULL_LOGS_PATH
           if [[ $res == 1 ]]; then
