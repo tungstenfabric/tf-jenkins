@@ -11,7 +11,7 @@ source "$my_dir/definitions"
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 source $ENV_FILE
 
-echo 'INFO: Deploy platform for $JOB_NAME'
+echo "INFO: Deploy platform for $JOB_NAME"
 
 # target 'platform' tries to fetch_deployer and use code from that container.
 # but for gerrit's check this container will be created in hour in build job.
