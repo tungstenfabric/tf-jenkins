@@ -359,7 +359,7 @@ def notify_gerrit(msg, verified=0, submit=false) {
 
 def gerrit_build_started() {
   try {
-    def msg = """Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
+    def msg = """Jenkins Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
     notify_gerrit(msg)
   } catch (err) {
     print "Failed to provide comment to gerrit "
