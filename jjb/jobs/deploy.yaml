@@ -68,7 +68,6 @@
           export ENVIRONMENT_OS={environment_os}
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
-          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/create_workers.sh
           # add more information about current deployment
           ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
@@ -81,7 +80,8 @@
           export DEBUG=true
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
-          FULL_LOGS_PATH="$LOGS_PATH/{project}"
+          source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
+          export FULL_LOGS_PATH="$LOGS_PATH/{project}"
           res=0
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_platform.sh || tee $WORKSPACE/output-deploy-platform.log  || res=1
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
@@ -156,7 +156,7 @@
           set -o pipefail
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
+          source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
           export FULL_LOGS_PATH="$LOGS_PATH/{project}"
           source "$WORKSPACE/stackrc.deploy-platform-{project}.env"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_tf.sh | tee $WORKSPACE/output-deploy-tf.log || res=1
