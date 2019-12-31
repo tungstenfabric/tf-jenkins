@@ -10,7 +10,7 @@
       - string:
           name: PIPELINE_NAME
       - string:
-          name: DEPLOY_PLATFORM_PROJECT
+          name: DEPLOY_PLATFORM_JOB_NAME
       - string:
           name: DEPLOY_PLATFORM_JOB_NUMBER
     properties:
@@ -38,13 +38,13 @@
           filter: "global.env"
           which-build: upstream-build
       - copyartifact:
-          project: ${DEPLOY_PLATFORM_PROJECT}
+          project: ${DEPLOY_PLATFORM_JOB_NAME}
           filter: "*.env"
           which-build: specific-build
           build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
       - shell: |
           number=$(curl -s $BUILD_URL/api/json | jq -r .actions[0].causes[0].upstreamBuild)
-          desc="Pipeline: ${PIPELINE_NAME}-$number, Launched by: ${DEPLOY_PLATFORM_PROJECT}-${DEPLOY_PLATFORM_JOB_NUMBER}"
+          desc="Pipeline: ${PIPELINE_NAME}-$number, Launched by: ${DEPLOY_PLATFORM_JOB_NAME}-${DEPLOY_PLATFORM_JOB_NUMBER}"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -53,9 +53,9 @@
           set -o pipefail
           export DEBUG=true
           source "$WORKSPACE/global.env"
+          export "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
-          export FULL_LOGS_PATH="${LOGS_PATH}/sanity"
+          export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
           ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh | tee ${WORKSPACE}/output-sanity.log || res=1
-          ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
           rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output-sanity.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
           exit $res

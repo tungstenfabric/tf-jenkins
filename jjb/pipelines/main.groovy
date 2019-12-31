@@ -119,7 +119,7 @@ timestamps {
                         [job: test_name,
                          parameters: [
                           string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                          string(name: 'DEPLOY_PLATFORM_PROJECT', value: "deploy-platform-${name}"),
+                          string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
                           string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                           [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                         ]])
@@ -414,18 +414,24 @@ def gerrit_vote() {
       def duration = 0
       for (job_name in ["deploy-platform-${name}", "deploy-tf-${name}"]) {
         job_result = job_results[job_name]
+        println job_result
         if (job_result) {
+          println "GGG: ${job_name}  ${job_result.get('duration', 0)}"
           duration += job_result.get('duration', 0)
         }
       }
       def max_test_duration = 0
+      println get_test_job_names(name)
       for (job_name in get_test_job_names(name)) {
         job_result = job_results[job_name]
+        println job_result
         if (job_result && job_result.get('duration', 0) > max_test_duration) {
           max_test_duration = job_result['duration']
+          println "new max: ${max_test_duration}"
         }
       }
       duration += max_test_duration
+      println "whole duration: ${duration}"
 
       if (!jobs_found) {
         status = 'NOT_BUILT'
