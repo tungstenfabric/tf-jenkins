@@ -53,7 +53,7 @@
           set -o pipefail
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          export "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
+          source "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
           ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh | tee ${WORKSPACE}/output-sanity.log || res=1

@@ -25,7 +25,7 @@ timestamps {
     node("${SLAVE}") {
       try {
         stage('Pre-build') {
-          terminate_obsolete_jobs()
+          terminate_previous_jobs()
           clone_self()
           evaluate_env()
           archiveArtifacts artifacts: 'global.env'
@@ -421,9 +421,9 @@ def gerrit_vote() {
         }
       }
       def max_test_duration = 0
-      println get_test_job_names(name)
-      for (job_name in get_test_job_names(name)) {
-        job_result = job_results[job_name]
+      println "test names: " + get_test_job_names(name)
+      for (test_name in get_test_job_names(name)) {
+        job_result = job_results["${test_name}-${name}"]
         println job_result
         if (job_result && job_result.get('duration', 0) > max_test_duration) {
           max_test_duration = job_result['duration']
@@ -484,7 +484,7 @@ def get_test_job_names(test_config_name) {
     job_names += 'test-sanity'
   }
   if (config.get('smoke', false)) {
-    job_names += 'test-sanity'
+    job_names += 'test-smoke'
   }
   return job_names
 }
@@ -538,7 +538,7 @@ def run_build(name, params) {
   }
 }
 
-def terminate_obsolete_jobs() {
+def terminate_previous_jobs() {
   if (!env.GERRIT_CHANGE_ID) {
     continue
   }
