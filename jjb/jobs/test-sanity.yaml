@@ -56,6 +56,6 @@
           source "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
-          ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh | tee ${WORKSPACE}/output-test-sanity.log || res=1
+          ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh |& tee ${WORKSPACE}/output-test-sanity.log || res=1
           rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output-test-sanity.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
           exit $res
