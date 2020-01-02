@@ -1,0 +1,14 @@
+---
+
+- job:
+    name: pipeline-report
+    description: report
+    project-type: pipeline
+    concurrent: false
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: jjb/pipelines/report.groovy
+      lightweight-checkout: true
+    triggers:
+      - timed: '15 4 * * *'
