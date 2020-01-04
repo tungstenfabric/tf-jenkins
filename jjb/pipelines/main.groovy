@@ -20,10 +20,12 @@ inner_jobs_code = [:]
 // set of result of each job 
 job_results = [:]
 
+
 timestamps {
   timeout(time: 4, unit: 'HOURS') {
     node("${SLAVE}") {
       try {
+        time_start = (new Date()).getTime()
         stage('Pre-build') {
           terminate_previous_jobs()
           clone_self()
@@ -183,7 +185,7 @@ timestamps {
         }
 
         // add gerrit voting +1/-1
-        gerrit_vote()
+        gerrit_vote((new Date()).getTime() - time_start)
       }
     }
   }
@@ -370,7 +372,7 @@ def gerrit_build_started() {
   }
 }
 
-def gerrit_vote() {
+def gerrit_vote(duration) {
   try {
     def passed = true
     def results = [:]
@@ -442,11 +444,12 @@ def gerrit_vote() {
       }
     }
 
+    def duration_string = get_duration_string()
     def verified = 1
     if (passed) {
-      msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE})\n" + msg
+      msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
     } else {
-      msg = "Jenkins Build Failed (${env.GERRIT_PIPELINE})\n" + msg
+      msg = "Jenkins Build Failed (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
       verified = -1
     }
     notify_gerrit(msg, verified)
@@ -460,12 +463,16 @@ def gerrit_vote() {
 }
 
 def get_gerrit_msg_for_job(name, status, duration) {
-  def duration_string = ''
-  if (duration != null) {
-    d = (int)(duration/1000)
-    duration_string = String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
-  }
+  def duration_string = get_duration_string()
   return "${name} ${logs_url}/${name} : ${status} ${duration_string}"
+}
+
+def get_duration_string(duration) {
+  if (duration == null) {
+    return ""
+  }
+  d = (int)(duration/1000)
+  return String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
 }
 
 def get_test_job_names(test_config_name) {
