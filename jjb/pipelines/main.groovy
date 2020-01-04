@@ -372,7 +372,7 @@ def gerrit_build_started() {
   }
 }
 
-def gerrit_vote(duration) {
+def gerrit_vote(full_duration) {
   try {
     def passed = true
     def results = [:]
@@ -444,7 +444,7 @@ def gerrit_vote(duration) {
       }
     }
 
-    def duration_string = get_duration_string()
+    def duration_string = get_duration_string(full_duration)
     def verified = 1
     if (passed) {
       msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
