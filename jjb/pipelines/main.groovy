@@ -463,7 +463,7 @@ def gerrit_vote(full_duration) {
 }
 
 def get_gerrit_msg_for_job(name, status, duration) {
-  def duration_string = get_duration_string()
+  def duration_string = get_duration_string(duration)
   return "${name} ${logs_url}/${name} : ${status} ${duration_string}"
 }
 
