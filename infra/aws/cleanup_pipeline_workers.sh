@@ -17,6 +17,7 @@ PIPELINE_AWS_INSTANCES=$(aws ec2 describe-instances \
                             --region "$AWS_REGION" \
                             --query 'Reservations[].Instances[].InstanceId' \
                             --filters "Name=tag:PipelineBuildTag,Values=${PIPELINE_BUILD_TAG}" \
+                                      "Name=instance-state-code,Values=16" \
                             --output text)
 if [[ -n "$PIPELINE_AWS_INSTANCES" ]]; then
   echo "INFO: Instances to terminate: $PIPELINE_AWS_INSTANCES"
