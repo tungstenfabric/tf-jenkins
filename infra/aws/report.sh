@@ -20,7 +20,7 @@ for i in $(echo "$PIPELINE_INSTANSES"); do
     --attribute disableApiTermination \
     --instance-id $i | \
     jq -r '.DisableApiTermination.Value')
-  if [[ "$TERMINATION_PROTECTION" == "false" ]]; then
+  if [[ "$TERMINATION_PROTECTION" == "true" ]]; then
     LOCKED_INSTANCES+=("$i")
   fi
 done
@@ -43,5 +43,5 @@ for h in "${EXCEED[@]}"; do
           --query 'Reservations[*].Instances[*].[Tags[?Key==`Name`].Value | [0]]' \
           --instance-ids "$h" \
           --output text )
-  echo "${h};${i})" > aws.report.txt
+  echo "${h} ${i}" >> aws.report.txt
 done

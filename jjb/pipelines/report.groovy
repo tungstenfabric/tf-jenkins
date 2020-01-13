@@ -3,19 +3,23 @@ pipeline{
   triggers{
     cron('15 6 * * *')
   }
+  environment {
+    INSTANCES_LIST = ""
+  }
   stages{
     stage('Parallel stage') {
       parallel {
         stage('Build aws usage report') {
           agent { label 'aws'}
           steps {
-          checkout([$class: 'GitSCM', branches: [[name: '*/master']],
-            doGenerateSubmoduleConfigurations: false,
-            extensions: [],
-            submoduleCfg: [],
-            extensions: [[$class: 'RelativeTargetDirectory', 
-              relativeTargetDir: 'src/progmaticlab/tf-jenkins']],
-            userRemoteConfigs: [[url: 'https://github.com/progmaticlab/tf-jenkins.git']]])
+            cleanWs()
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']],
+              doGenerateSubmoduleConfigurations: false,
+              extensions: [],
+              submoduleCfg: [],
+              extensions: [[$class: 'RelativeTargetDirectory', 
+                relativeTargetDir: 'src/progmaticlab/tf-jenkins']],
+              userRemoteConfigs: [[url: 'https://github.com/progmaticlab/tf-jenkins.git']]])
             withCredentials(
               bindings:
                 [[$class: 'AmazonWebServicesCredentialsBinding',
@@ -34,6 +38,7 @@ pipeline{
         stage('Build Vexxhost usage report') {
           agent { label 'vexxhost'}
           steps {
+            cleanWs()
             checkout([$class: 'GitSCM', branches: [[name: '*/master']],
               doGenerateSubmoduleConfigurations: false,
               extensions: [],
@@ -60,13 +65,28 @@ pipeline{
         }
       }
     }
-  }
-  post {
-    // ToDo: send report if exist
-    always {
-      unstash "aws"
-      unstash "vexxhost"
-      emailext body: 'test', subject: '[TF-JENKINS] Daily report', to: '$DEFAULT_RECIPIENTS'
+    stage('Build common usage report') {
+      steps {
+        cleanWs()
+        unstash "aws"
+        unstash "vexxhost"
+        sh '''
+        if [[ -f "$WORKSPACE/vexxhost.report.txt" ]]; then
+          echo "VEXX instances alive more than 3 days:" >> report.txt
+          cat $WORKSPACE/vexxhost.report.txt >> report.txt
+        fi
+        if [[ -f "$WORKSPACE/aws.report.txt" ]]; then
+          echo "AWS instances alive more than 3 days:" >> report.txt
+          cat $WORKSPACE/aws.report.txt >> report.txt
+        fi
+        '''
+        script {
+          if (fileExists('report.txt')) {
+            def report = readFile 'report.txt'
+            emailext body: report, subject: '[TF-JENKINS] Resource report', to: '$DEFAULT_RECIPIENTS'
+          }
+        }
+      }
     }
   }
 }

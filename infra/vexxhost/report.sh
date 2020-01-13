@@ -25,5 +25,5 @@ done
 [[ "${#EXCEED[*]}" -eq "0" ]] && exit
 
 for h in "${EXCEED[@]}"; do
-  echo "${h};$(openstack server show ${h} -f json | jq -r '.name')" > vexxhost.report.txt
+  echo "${h} $(openstack server show ${h} -f json | jq -r '.name')" >> vexxhost.report.txt
 done
