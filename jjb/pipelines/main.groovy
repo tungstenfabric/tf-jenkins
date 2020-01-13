@@ -198,7 +198,7 @@ def evaluate_env() {
       echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
     """
 
-    // evvaluate logs params
+    // evaluate logs params
     if (env.GERRIT_CHANGE_ID) {
       contrail_container_tag = GERRIT_CHANGE_NUMBER + '-' + GERRIT_PATCHSET_NUMBER
       hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()

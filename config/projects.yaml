@@ -59,6 +59,12 @@
             voting: false
 
 - project:
+    name: Juniper/contrail-third-party-packages
+    templates:
+      - unittests
+      - systests
+
+- project:
     name: Juniper/contrail-web-core
     templates:
       - unittests-webui
