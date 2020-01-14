@@ -540,21 +540,19 @@ def run_build(name, params) {
 }
 
 def terminate_previous_jobs() {
-  if (!env.GERRIT_CHANGE_ID) {
-    continue
-  }
-
-  def runningBuilds = Jenkins.getInstanceOrNull().getView('All').getBuilds().findAll() { it.getResult().equals(null) }
-  for (rb in runningBuilds) {
-    gerrit_change_number = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER")
-    if (!gerrit_change_number) {
-      continue
-    }
-    change_num = gerrit_change_number.value.toInteger()
-    patchset_num = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger()
-    if (GERRIT_CHANGE_NUMBER.toInteger() == change_num && GERRIT_PATCHSET_NUMBER.toInteger() > patchset_num) {
-      rb.doStop()
-      println "Build $rb has been aborted when a new patchset is created"
+  if (env.GERRIT_CHANGE_ID) {
+    def runningBuilds = Jenkins.getInstanceOrNull().getView('All').getBuilds().findAll() { it.getResult().equals(null) }
+    for (rb in runningBuilds) {
+      gerrit_change_number = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER")
+      if (!gerrit_change_number) {
+        continue
+      }
+      change_num = gerrit_change_number.value.toInteger()
+      patchset_num = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger()
+      if (GERRIT_CHANGE_NUMBER.toInteger() == change_num && GERRIT_PATCHSET_NUMBER.toInteger() > patchset_num) {
+        rb.doStop()
+        println "Build $rb has been aborted when a new patchset is created"
+      }
     }
   }
 }
