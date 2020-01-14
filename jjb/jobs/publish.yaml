@@ -2,6 +2,7 @@
     name: "publish"
     description: "publish TF artifacts"
     defaults: global
+    concurrent: false
     scm:
       - tf-jenkins
       - tf-dev-env
