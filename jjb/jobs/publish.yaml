@@ -1,0 +1,80 @@
+- job:
+    name: "publish"
+    description: "publish TF artifacts"
+    defaults: global
+    scm:
+      - tf-jenkins
+      - tf-dev-env
+    parameters:
+      - label:
+          name: SLAVE
+      - string:
+          name: PIPELINE_NAME
+      - bool:
+          name: STABLE
+          default: false
+          description: "Publish containers as stable."
+    wrappers:
+      - timestamps
+      - workspace-cleanup
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - username-password-separated:
+              credential-id: dockerhub
+              username: DOCKERHUB_USERNAME
+              password: DOCKERHUB_PASSWORD
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: logs_host
+              key-file-variable: LOGS_HOST_SSH_KEY
+              username-variable: LOGS_HOST_USERNAME
+    builders:
+      - copyartifact:
+          project: ${PIPELINE_NAME}
+          filter: "global.env"
+          which-build: upstream-build
+      - shell: |
+          number=$(curl -s $BUILD_URL/api/json | jq -r .actions[0].causes[0].upstreamBuild)
+          desc="Pipeline: ${PIPELINE_NAME}-$number"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
+          export DEBUG=true
+          export ENVIRONMENT_OS=centos7
+          source "$WORKSPACE/global.env"
+          ./src/progmaticlab/tf-jenkins/jobs/publish/create_workers.sh
+      - shell: |
+          set +e
+          set -o pipefail
+          export DEBUG=true
+          source "$WORKSPACE/global.env"
+          source "$WORKSPACE/stackrc.$JOB_NAME.env"
+          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
+          export FULL_LOGS_PATH="${LOGS_PATH}/publish"
+          # main run
+          ./src/progmaticlab/tf-jenkins/jobs/publish/run.sh |& tee ${WORKSPACE}/output.log || res=1
+          # collect logs
+          ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
+          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
+          ./src/progmaticlab/tf-jenkins/jobs/publish/collect_logs.sh
+          exit $res
+    publishers:
+      - postbuildscript:
+          builders:
+            - role: SLAVE
+              build-on:
+                - SUCCESS
+                - FAILURE
+                - ABORTED
+                - NOT_BUILT
+                - UNSTABLE
+              build-steps:
+                - shell: |
+                    source "$WORKSPACE/global.env"
+                    ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
