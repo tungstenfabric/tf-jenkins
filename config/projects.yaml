@@ -41,6 +41,9 @@
             vars:
               CONTRAIL_BUILD_FROM_SOURCE: true
               SECOND_TEST_PARAM: "This is string"
+        - k8s_manifests:
+            voting: false
+            smoke: true
 
 - project:
     name: Juniper/contrail-controller
