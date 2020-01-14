@@ -24,6 +24,7 @@ job_results = [:]
 timestamps {
   timeout(time: 4, unit: 'HOURS') {
     node("${SLAVE}") {
+      pre_build_done = false
       try {
         time_start = (new Date()).getTime()
         stage('Pre-build') {
@@ -36,6 +37,7 @@ timestamps {
           println 'Test configurations: ' + test_configuration_names
           gerrit_build_started()
           currentBuild.description = "<a href='${logs_url}'>${logs_url}</a>"
+          pre_build_done = true
         }
 
         if ('fetch-sources' in top_jobs_to_run) {
@@ -185,7 +187,7 @@ timestamps {
         }
 
         // add gerrit voting +1/-1
-        gerrit_vote((new Date()).getTime() - time_start)
+        gerrit_vote(pre_build_done, (new Date()).getTime() - time_start)
       }
     }
   }
@@ -372,9 +374,9 @@ def gerrit_build_started() {
   }
 }
 
-def gerrit_vote(full_duration) {
+def gerrit_vote(pre_build_done, full_duration) {
   try {
-    def passed = true
+    def passed = pre_build_done
     def results = [:]
     def msg = ''
     for (name in top_jobs_to_run) {
@@ -540,19 +542,23 @@ def run_build(name, params) {
 }
 
 def terminate_previous_jobs() {
-  if (env.GERRIT_CHANGE_ID) {
-    def runningBuilds = Jenkins.getInstanceOrNull().getView('All').getBuilds().findAll() { it.getResult().equals(null) }
-    for (rb in runningBuilds) {
-      gerrit_change_number = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER")
-      if (!gerrit_change_number) {
-        continue
-      }
-      change_num = gerrit_change_number.value.toInteger()
-      patchset_num = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger()
-      if (GERRIT_CHANGE_NUMBER.toInteger() == change_num && GERRIT_PATCHSET_NUMBER.toInteger() > patchset_num) {
-        rb.doStop()
-        println "Build $rb has been aborted when a new patchset is created"
-      }
+  if (!env.GERRIT_CHANGE_ID)
+    return
+
+  def runningBuilds = Jenkins.getInstanceOrNull().getView('All').getBuilds().findAll() { it.getResult().equals(null) }
+  for (rb in runningBuilds) {
+    def action = rb.allActions.find {it in hudson.model.ParametersAction}
+    if (!action)
+      continue
+    gerrit_change_number = action.getParameter("GERRIT_CHANGE_NUMBER")
+    if (!gerrit_change_number) {
+      continue
+    }
+    change_num = gerrit_change_number.value.toInteger()
+    patchset_num = action.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger()
+    if (GERRIT_CHANGE_NUMBER.toInteger() == change_num && GERRIT_PATCHSET_NUMBER.toInteger() > patchset_num) {
+      rb.doStop()
+      println "Build $rb has been aborted when a new patchset is created"
     }
   }
 }
