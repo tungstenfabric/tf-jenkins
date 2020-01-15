@@ -6,17 +6,13 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
+source "$my_dir/../../../infra/${SLAVE}/definitions"
 source "$my_dir/definitions"
 source "$WORKSPACE/global.env"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
 echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$ENV_FILE"
-
-IMAGE_TEMPLATE_NAME="${OS_IMAGES["${ENVIRONMENT_OS^^}"]}"
-IMAGE_NAME=$(openstack image list -c Name -f value | grep "${IMAGE_TEMPLATE_NAME}" | sort -nr | head -n 1)
-IMAGE=$(openstack image show -c id -f value "$IMAGE_NAME")
-echo "export IMAGE=$IMAGE" >> "$ENV_FILE"
 
 IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
 echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
