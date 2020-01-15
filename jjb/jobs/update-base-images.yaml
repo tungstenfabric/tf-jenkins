@@ -2,13 +2,11 @@
     name: "update-base-images"
     description: "update-base-images"
     defaults: global
+    node: vexxhost
     triggers:
       - timed: 'H H(2-5) 10 * *'
     scm:
       - tf-jenkins
-    parameters:
-      - label:
-          name: vexxhost
     wrappers:
       - workspace-cleanup
       - timestamps
