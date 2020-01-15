@@ -1,0 +1,42 @@
+- job:
+    name: "update-base-images"
+    description: "update-base-images"
+    defaults: global
+    triggers:
+      - timed: 'H H(2-5) 10 * *'
+    scm:
+      - tf-jenkins
+    parameters:
+      - label:
+          name: vexxhost
+    wrappers:
+      - workspace-cleanup
+      - timestamps
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
+    builders:
+      - shell: |
+          ./src/progmaticlab/tf-jenkins/infra/vexxhost/update_base_images.sh
