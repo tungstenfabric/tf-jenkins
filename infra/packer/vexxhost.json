@@ -28,7 +28,7 @@
     "provisioners":[
        {
           "type":"shell",
-          "script":"../packer/{{user `os_image`}}.sh"
+          "script":"src/progmaticlab/tf-jenkins/infra/packer/{{user `os_image`}}.sh"
        }
     ]
  }
