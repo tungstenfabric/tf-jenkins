@@ -49,6 +49,12 @@
           - text:
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL
+          - text:
+              credential-id: RHEL_USER
+              variable: RHEL_USER
+          - text:
+              credential-id: RHEL_PASSWORD
+              variable: RHEL_PASSWORD
     scm:
       - tf-jenkins
       - tf-devstack
@@ -285,6 +291,10 @@
       - ansible_os:
           environment_os: centos7
           deployer: ansible
+          orchestrator: openstack
+      - rhosp:
+          environment_os: rhel7
+          deployer: rhosp
           orchestrator: openstack
     jobs:
       - 'deploy-platform-{project}'
