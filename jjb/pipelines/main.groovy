@@ -163,6 +163,18 @@ timestamps {
                   [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                 ]])
             }
+            if (env.GERRIT_PIPELINE == 'nightly') {
+              stage('publish') {
+                run_build(
+                  'publish',
+                  [job: 'publish',
+                  parameters: [
+                    string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
+                    booleanParam(name: 'STABLE', value: false),
+                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                  ]])
+              }
+            }
             parallel inner_jobs_code
           }
         } else {
@@ -173,6 +185,20 @@ timestamps {
 
         // run jobs in parallel
         parallel top_jobs_code
+
+        if (env.GERRIT_PIPELINE == 'nightly') {
+          // publish stable
+          stage('publish') {
+            run_build(
+              'publish',
+              [job: 'publish',
+                parameters: [
+                string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
+                booleanParam(name: 'STABLE', value: true),
+                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+              ]])
+          }
+        }
       } finally {
         println "Logs URL: ${logs_url}"
         println "Destroy VMs"
