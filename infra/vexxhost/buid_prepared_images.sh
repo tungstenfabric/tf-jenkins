@@ -9,4 +9,8 @@ source "$my_dir/definitions"
 
 for i in "${!OS_IMAGE_USERS[@]}"; do
   packer build -machine-readable -var "OS_IMAGE=${i,,}" -var "SSH_USER=${OS_IMAGE_USERS[$i]}" ../packer/vexxhost.json
+  OLD_IMAGES=$(openstack image list --tag ${i,,} -c Name -f value | sort -nr | tail -n +4)
+  for o in $OLD_IMAGES; do
+    openstack image delete $o
+  done
 done

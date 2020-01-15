@@ -12,7 +12,7 @@
           "image_name":"prepared-{{user `os_image`}}-{{isotime \"200601021504\"}}",
           "source_image_filter":{
              "filters":{
-                "name":"base-ubuntu16-202001151126"
+                "tags":"{{user `os_image`}}"
              },
              "most_recent":true
           },
