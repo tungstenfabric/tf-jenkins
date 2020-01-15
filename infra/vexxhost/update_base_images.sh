@@ -24,9 +24,9 @@ curl -Ls "https://cloud-images.ubuntu.com/bionic/current/SHA256SUMS" -o ubuntu18
 sha256sum -c ubuntu18-SHA256SUMS --ignore-missing --status
 
 # Upload
-openstack image create --disk-format qcow2 --file CentOS-7-x86_64-GenericCloud.qcow2 base-centos7-$(date +%Y%m%d%H%M)
-openstack image create --disk-format qcow2 --file xenial-server-cloudimg-amd64-disk1.img base-ubuntu16-$(date +%Y%m%d%H%M)
-openstack image create --disk-format qcow2 --file bionic-server-cloudimg-amd64.img base-ubuntu18-$(date +%Y%m%d%H%M)
+openstack image create --disk-format qcow2 --tag centos7 --file CentOS-7-x86_64-GenericCloud.qcow2 base-centos7-$(date +%Y%m%d%H%M)
+openstack image create --disk-format qcow2 --tag ubuntu16 --file xenial-server-cloudimg-amd64-disk1.img base-ubuntu16-$(date +%Y%m%d%H%M)
+openstack image create --disk-format qcow2 --tag ubuntu18 --file bionic-server-cloudimg-amd64.img base-ubuntu18-$(date +%Y%m%d%H%M)
 
 # Remove previous images
 IMAGES_LIST=$(openstack image list -c Name -f value | grep "^base-")
