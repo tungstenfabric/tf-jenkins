@@ -1,5 +1,6 @@
 export OS_REGION_NAME="sjc1"
 export OS_NETWORK="management"
+export OS_NETWORK_ID="26d9d3ae-fd07-485b-be74-09756b1e6bd3"
 export OS_SG="default"
 
 #                CPU     Memory     AWS (Canada)   vm_type
