@@ -19,7 +19,7 @@
           "ssh_username":"{{user `ssh_user`}}",
           "use_blockstorage_volume":true,
           "volume_size":"10",
-          "networks":"{{user `sg_group`}}",
+          "networks":"{{user `net_id`}}",
           "security_groups":[
              "{{user `sg_group`}}"
           ]
