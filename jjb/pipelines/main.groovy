@@ -163,7 +163,6 @@ timestamps {
                   [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                 ]])
             }
-            }
             parallel inner_jobs_code
           }
         } else {
