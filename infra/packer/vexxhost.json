@@ -5,7 +5,8 @@
       "sg_group":"{{env `OS_SG`}}",
       "net_id":"{{env `OS_NETWORK_ID`}}",
       "rhel_user":"{{env `RHEL_USER`}}",
-      "rhel_pass":"{{env `RHEL_PASS`}}"
+      "rhel_pass":"{{env `RHEL_PASSWORD`}}",
+      "rhel_pool":"{{env `RHEL_POOL_ID`}}"
    },
    "builders":[
       {
@@ -32,7 +33,8 @@
          "type":"shell",
          "environment_vars":[
             "RHEL_USER={{user `rhel_user`}}",
-            "RHEL_PASS={{user `rhel_pass`}}"
+            "RHEL_PASSWORD={{user `rhel_pass`}}",
+            "RHEL_POOL_ID={{user `rhel_pool`}}"
          ],
          "script":"src/progmaticlab/tf-jenkins/infra/packer/{{user `os_image`}}.sh"
       }
