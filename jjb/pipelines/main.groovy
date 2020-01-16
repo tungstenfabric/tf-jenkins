@@ -163,23 +163,28 @@ timestamps {
                   [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                 ]])
             }
-            if (env.GERRIT_PIPELINE == 'nightly') {
-              stage('publish') {
-                run_build(
-                  'publish',
-                  [job: 'publish',
-                  parameters: [
-                    string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                    booleanParam(name: 'STABLE', value: false),
-                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                  ]])
-              }
             }
             parallel inner_jobs_code
           }
         } else {
           top_jobs_code['Test with nightly images'] = {
             parallel inner_jobs_code
+          }
+        }
+
+        // add publish job into inner_jobs_code to be run in parallel with deploy but after build
+        if (env.GERRIT_PIPELINE == 'nightly') {
+          inner_jobs_code["Publish TF containers to docker hub"] = {
+            stage('publish') {
+              run_build(
+                'publish',
+                [job: 'publish',
+                parameters: [
+                  string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
+                  booleanParam(name: 'STABLE', value: false),
+                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
+                ]])
+            }
           }
         }
 
