@@ -27,4 +27,4 @@ cd src/tungstenfabric/tf-devstack/rhosp
 ./providers/vexx/create_env.sh
 
 cat config/env_vexx.sh | grep '^export' >> "$ENV_FILE"
-echo export SSH_USER=\"$IMAGE_SSH_USER\" > ./config/env_vexx.sh
+echo export SSH_USER=\"$IMAGE_SSH_USER\" >> ./config/env_vexx.sh
