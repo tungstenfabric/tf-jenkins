@@ -1,34 +1,40 @@
 {
-    "variables":{
-       "os_image":"{{env `OS_IMAGE`}}",
-       "ssh_user":"{{env `SSH_USER`}}",
-       "sg_group":"{{env `OS_SG`}}",
-       "net_id":"{{env `OS_NETWORK_ID`}}"
-    },
-    "builders":[
-       {
-          "type":"openstack",
-          "flavor":"v2-highcpu-2",
-          "image_name":"prepared-{{user `os_image`}}-{{isotime \"200601021504\"}}",
-          "source_image_filter":{
-             "filters":{
-                "tags":"{{user `os_image`}}"
-             },
-             "most_recent":true
-          },
-          "ssh_username":"{{user `ssh_user`}}",
-          "use_blockstorage_volume":true,
-          "volume_size":"10",
-          "networks":"{{user `net_id`}}",
-          "security_groups":[
-             "{{user `sg_group`}}"
-          ]
-       }
-    ],
-    "provisioners":[
-       {
-          "type":"shell",
-          "script":"src/progmaticlab/tf-jenkins/infra/packer/{{user `os_image`}}.sh"
-       }
-    ]
- }
+   "variables":{
+      "os_image":"{{env `OS_IMAGE`}}",
+      "ssh_user":"{{env `SSH_USER`}}",
+      "sg_group":"{{env `OS_SG`}}",
+      "net_id":"{{env `OS_NETWORK_ID`}}",
+      "rhel_user":"{{env `RHEL_USER`}}",
+      "rhel_pass":"{{env `RHEL_PASS`}}"
+   },
+   "builders":[
+      {
+         "type":"openstack",
+         "flavor":"v2-highcpu-2",
+         "image_name":"prepared-{{user `os_image`}}-{{isotime \"200601021504\"}}",
+         "source_image_filter":{
+            "filters":{
+               "tags":"{{user `os_image`}}"
+            },
+            "most_recent":true
+         },
+         "ssh_username":"{{user `ssh_user`}}",
+         "use_blockstorage_volume":true,
+         "volume_size":"10",
+         "networks":"{{user `net_id`}}",
+         "security_groups":[
+            "{{user `sg_group`}}"
+         ]
+      }
+   ],
+   "provisioners":[
+      {
+         "type":"shell",
+         "environment_vars":[
+            "RHEL_USER={{user `rhel_user`}}",
+            "RHEL_PASS={{user `rhel_pass`}}"
+         ],
+         "script":"src/progmaticlab/tf-jenkins/infra/packer/{{user `os_image`}}.sh"
+      }
+   ]
+}

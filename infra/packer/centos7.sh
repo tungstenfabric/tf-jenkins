@@ -1,4 +1,4 @@
 #!/bin/bash -eE
 set -o pipefail
 
-yum upgrade -y
+sudo yum upgrade -y
