@@ -41,6 +41,16 @@ export DEBUG=$DEBUG
 export REGISTRY_IP=$REGISTRY_IP
 export REGISTRY_PORT=$REGISTRY_PORT
 ./src/tungstenfabric/tf-dev-env/common/setup_docker.sh
+
+# to get DISTRO env variable
+source ./src/tungstenfabric/tf-dev-env/common/common.sh
+# setup additional packages
+if [ x"\$DISTRO" == x"ubuntu" ]; then
+  export DEBIAN_FRONTEND=noninteractive
+  sudo -E apt-get install -y jq curl
+else
+  sudo yum install -y jq curl
+fi
 EOF
 
 echo "INFO: Publish started"
