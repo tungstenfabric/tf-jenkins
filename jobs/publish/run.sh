@@ -30,6 +30,18 @@ EOF
 
 scp -i $WORKER_SSH_KEY $SSH_OPTIONS $my_dir/publish.sh $IMAGE_SSH_USER@$instance_ip:./
 scp -i $WORKER_SSH_KEY $SSH_OPTIONS $publish_env_file $IMAGE_SSH_USER@$instance_ip:./publish.env
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
+
+echo "INFO: Prepare worker"
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+export WORKSPACE=\$HOME
+[ "${DEBUG,,}" == "true" ] && set -x
+export PATH=\$PATH:/usr/sbin
+export DEBUG=$DEBUG
+export REGISTRY_IP=$REGISTRY_IP
+export REGISTRY_PORT=$REGISTRY_PORT
+./src/tungstenfabric/tf-dev-env/common/setup_docker.sh
+EOF
 
 echo "INFO: Publish started"
 ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip ./publish.sh
