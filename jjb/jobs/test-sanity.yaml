@@ -47,8 +47,8 @@
       - shell: |
           source "$WORKSPACE/global.env
           source "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}, Launched by: ${DEPLOY_PLATFORM_JOB_NAME}-${DEPLOY_PLATFORM_JOB_NUMBER}<br>\
-                Job logs: <a href="${LOGS_URL}/$JOB_LOGS_PATH">${LOGS_URL}/$JOB_LOGS_PATH</a>"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}, Launched by: ${DEPLOY_PLATFORM_JOB_NAME}-${DEPLOY_PLATFORM_JOB_NUMBER}<br>"
+          desc+="Job logs: <a href=\"${LOGS_URL}/$JOB_LOGS_PATH\">${LOGS_URL}/$JOB_LOGS_PATH</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"

@@ -67,7 +67,7 @@
           which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
-          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER<br>Job logs: <a href="${{LOGS_URL}}/{project}">${{LOGS_URL}}/{project}</a>"
+          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER<br>Job logs: <a href=\"${{LOGS_URL}}/{project}\">${{LOGS_URL}}/{project}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -158,7 +158,7 @@
           build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
       - shell: |
           source "$WORKSPACE/global.env"
-          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER<br>Job logs: <a href="${{LOGS_URL}}/{project}">${{LOGS_URL}}/{project}</a>"
+          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER<br>Job logs: <a href=\"${{LOGS_URL}}/{project}\">${{LOGS_URL}}/{project}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -264,7 +264,7 @@
           if [[ "${COLLECT_SANITY_LOGS,,}" == 'true' ]]; then
             "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh"
           fi
-          "$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${DEPLOYER}/remove_workers.sh"
+          "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/remove_workers.sh"
 
 - project:
     name: deploy
