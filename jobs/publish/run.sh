@@ -47,9 +47,10 @@ source ./src/tungstenfabric/tf-dev-env/common/common.sh
 # setup additional packages
 if [ x"\$DISTRO" == x"ubuntu" ]; then
   export DEBIAN_FRONTEND=noninteractive
-  sudo -E apt-get install -y curl
+  sudo -E apt-get install -y jq curl
 else
-  sudo yum install -y curl
+  sudo yum -y install epel-release
+  sudo yum install -y jq curl
 fi
 curl https://bootstrap.pypa.io/get-pip.py | sudo python2
 sudo pip install jq
