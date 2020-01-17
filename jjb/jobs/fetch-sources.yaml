@@ -55,7 +55,8 @@
           which-build: upstream-build
       - shell: |
           number=$(curl -s $BUILD_URL/api/json | jq -r .actions[0].causes[0].upstreamBuild)
-          desc="Pipeline: ${PIPELINE_NAME}-$number"
+          source "$WORKSPACE/global.env"
+          desc="Pipeline: ${PIPELINE_NAME}-$number<br>Job logs: <a href="${LOGS_URL}/fetch-sources">${LOGS_URL}/fetch-sources</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"

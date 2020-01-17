@@ -43,7 +43,10 @@
           build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
       - shell: |
           number=$(curl -s $BUILD_URL/api/json | jq -r .actions[0].causes[0].upstreamBuild)
-          desc="Pipeline: ${PIPELINE_NAME}-$number, Launched by: ${DEPLOY_PLATFORM_JOB_NAME}-${DEPLOY_PLATFORM_JOB_NUMBER}"
+          source "$WORKSPACE/global.env
+          desc="Pipeline: ${PIPELINE_NAME}-$number<br> \
+                Launched by: ${DEPLOY_PLATFORM_JOB_NAME}-${DEPLOY_PLATFORM_JOB_NUMBER}<br> \
+                Job logs: <a href="${LOGS_URL}">${LOGS_URL}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
