@@ -12,7 +12,7 @@
           name: PIPELINE_NAME
       - string:
           name: PIPELINE_NUMBER
-      wrappers:
+    wrappers:
       - workspace-cleanup
       - timestamps
       - credentials-binding:
