@@ -9,6 +9,8 @@
           name: SLAVE
       - string:
           name: PIPELINE_NAME
+      - string:
+          name: PIPELINE_NUMBER
     wrappers:
       - workspace-cleanup
       - timestamps
@@ -42,8 +44,7 @@
           filter: "global.env"
           which-build: upstream-build
       - shell: |
-          number=$(curl -s $BUILD_URL/api/json | jq -r .actions[0].causes[0].upstreamBuild)
-          desc="Pipeline: ${PIPELINE_NAME}-$number"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"

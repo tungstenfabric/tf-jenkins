@@ -20,6 +20,8 @@ inner_jobs_code = [:]
 // set of result of each job 
 job_results = [:]
 
+// Please note: two similar jobs with similar parameters can be run as one job with two parents.
+//               right now there in no such cases but please be careful with addition new jobs
 
 timestamps {
   timeout(time: 4, unit: 'HOURS') {
@@ -42,13 +44,7 @@ timestamps {
 
         if ('fetch-sources' in top_jobs_to_run) {
           stage('Fetch') {
-            run_build(
-              'fetch-sources',
-              [job: 'fetch-sources',
-                parameters: [
-                string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
-              ]])
+            run_job('fetch-sources', [job: 'fetch-sources'])
           }
         }
 
@@ -57,13 +53,7 @@ timestamps {
           if (name in top_jobs_to_run) {
             top_jobs_code[name] = {
               stage(name) {
-                run_build(
-                  name,
-                  [job: name,
-                   parameters: [
-                    string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                  ]])
+                run_job(name, [job: name])
               }
             }
           }
@@ -75,13 +65,7 @@ timestamps {
             stage("Deploy platform for ${name}") {
               println "Started deploy platform for ${name}"
               timeout(time: 60, unit: 'MINUTES') {
-                run_build(
-                  "deploy-platform-${name}",
-                  [job: "deploy-platform-${name}",
-                   parameters: [
-                    string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                  ]])
+                run_job("deploy-platform-${name}", [job: "deploy-platform-${name}"])
               }
             }
           }
@@ -104,13 +88,11 @@ timestamps {
 
               try {
                 top_job_number = job_results["deploy-platform-${name}"]['number']
-                run_build(
+                run_job(
                   "deploy-tf-${name}",
                   [job: "deploy-tf-${name}",
                    parameters: [
-                    string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
                     string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                    [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                   ]])
                 def test_jobs = [:]
                 get_test_job_names(name).each { test_name ->
@@ -118,14 +100,12 @@ timestamps {
                     stage("${test_name}-${name}") {
                       // next variable must be taken again due to closure limitations for free variables
                       top_job_number = job_results["deploy-platform-${name}"]['number']
-                      run_build(
+                      run_job(
                         "${test_name}-${name}",
                         [job: test_name,
                          parameters: [
-                          string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
                           string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
                           string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                          [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                         ]])
                     }
                   }
@@ -135,15 +115,13 @@ timestamps {
                 stage('Collect logs and cleanup') {
                   top_job_number = job_results["deploy-platform-${name}"]['number']
                   println "Trying to collect logs and cleanup workers for ${name} job ${top_job_number}"
-                  run_build(
+                  run_job(
                     "collect-logs-and-cleanup",
                     [job: "collect-logs-and-cleanup",
                      parameters: [
-                      string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
                       string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
                       string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                       booleanParam(name: 'COLLECT_SANITY_LOGS', value: job_results["deploy-tf-${name}"]['result'] == 'SUCCESS'),
-                      [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
                     ]])
                 }
               }
@@ -155,13 +133,7 @@ timestamps {
         if ('build' in top_jobs_to_run) {
           top_jobs_code['Build images for testing'] = {
             stage('build') {
-              run_build(
-                'build',
-                [job: 'build',
-                 parameters: [
-                  string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                ]])
+              run_job('build', [job: 'build'])
             }
             parallel inner_jobs_code
           }
@@ -175,14 +147,10 @@ timestamps {
         if (env.GERRIT_PIPELINE == 'nightly') {
           inner_jobs_code["Publish TF containers to docker hub"] = {
             stage('publish') {
-              run_build(
+              run_job(
                 'publish',
                 [job: 'publish',
-                parameters: [
-                  string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                  booleanParam(name: 'STABLE', value: false),
-                  [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-                ]])
+                 parameters: [booleanParam(name: 'STABLE', value: false)]])
             }
           }
         }
@@ -193,26 +161,17 @@ timestamps {
         if (env.GERRIT_PIPELINE == 'nightly') {
           // publish stable
           stage('publish') {
-            run_build(
+            run_job(
               'publish',
-              [job: 'publish',
-                parameters: [
-                string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-                booleanParam(name: 'STABLE', value: true),
-                [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]
-              ]])
+              [job: 'publish', 
+               parameters: [booleanParam(name: 'STABLE', value: true)]])
           }
         }
       } finally {
         println "Logs URL: ${logs_url}"
         println "Destroy VMs"
         try {
-          run_build('cleanup-pipeline-workers',
-            [job: 'cleanup-pipeline-workers',
-             parameters: [
-              string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
-              [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"],
-            ]])
+          run_job('cleanup-pipeline-workers', [job: 'cleanup-pipeline-workers'])
         } catch(err){
         }
 
@@ -539,11 +498,15 @@ def job_params_to_file(job_name) {
   archiveArtifacts artifacts: "${env_file}"
 }
 
-def run_build(name, params) {
+def run_job(name, params) {
   def job_name = params['job']
   job_results[name] = [:]
   try {
     job_params_to_file(name)
+    params['parameters'] = params.get('parameters', []) + [
+      string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
+      string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
+      [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]]
     def job = build(params)
     job_results[name]['result'] = job.getResult()
     job_results[name]['number'] = job.getNumber()

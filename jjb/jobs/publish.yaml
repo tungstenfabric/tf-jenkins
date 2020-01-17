@@ -11,6 +11,8 @@
           name: SLAVE
       - string:
           name: PIPELINE_NAME
+      - string:
+          name: PIPELINE_NUMBER
       - bool:
           name: STABLE
           default: false
@@ -64,8 +66,8 @@
           filter: "global.env"
           which-build: upstream-build
       - shell: |
-          number=$(curl -s $BUILD_URL/api/json | jq -r .actions[0].causes[0].upstreamBuild)
-          desc="Pipeline: ${PIPELINE_NAME}-$number"
+          source "$WORKSPACE/global.env"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}<br>Job logs: <a href="${LOGS_URL}/publish">${LOGS_URL}/publish</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
