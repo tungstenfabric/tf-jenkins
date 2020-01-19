@@ -21,7 +21,7 @@ inner_jobs_code = [:]
 job_results = [:]
 
 // Please note: two similar jobs with similar parameters can be run as one job with two parents.
-//               right now there in no such cases but please be careful with addition new jobs
+//              right now there in no such cases but please be careful with addition new jobs
 
 timestamps {
   timeout(time: 4, unit: 'HOURS') {
@@ -63,6 +63,14 @@ timestamps {
         test_configuration_names.each { name ->
           top_jobs_code["Deploy platform for ${name}"] = {
             stage("Deploy platform for ${name}") {
+              // NOTE: temporary workaround - sleep 1h before starting deploy platfrom
+              // build works about 1h30m and most deploy-platfrom work less that 30m (2, 8, 11, then helm_os=39, then rhosp)
+              // therefore this job can be run with some timeout so as not to take up space
+              // and after 1h this job will spin up VM for deploy.
+              // This workaround should be re-worked or removed in the future
+              if ('build' in top_jobs_to_run)
+                sleep(3600)
+
               println "Started deploy platform for ${name}"
               timeout(time: 60, unit: 'MINUTES') {
                 run_job("deploy-platform-${name}", [job: "deploy-platform-${name}"])
@@ -78,7 +86,7 @@ timestamps {
               println "Started deploy TF and test for ${name}"
               // just wait for deploy-platform job - build job just is a previous step
               waitUntil {
-                sleep 15
+                sleep(15)
                 return job_results["deploy-platform-${name}"].containsKey('result')
               }
               if (job_results["deploy-platform-${name}"]['result'] != 'SUCCESS') {
