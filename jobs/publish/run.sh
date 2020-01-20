@@ -52,8 +52,7 @@ else
   sudo yum -y install epel-release
   sudo yum install -y jq curl
 fi
-curl https://bootstrap.pypa.io/get-pip.py | sudo python2
-sudo pip install jq
+
 EOF
 
 echo "INFO: Publish started"
