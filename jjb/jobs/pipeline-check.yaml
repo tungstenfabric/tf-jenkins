@@ -80,5 +80,5 @@
             - project-compare-type: 'ANT'
               project-pattern: '**'
               branches:
-                - branch-compare-type: 'REG_EXP'
-                  branch-pattern: '^master'
+                - branch-compare-type: 'ANT'
+                  branch-pattern: '**'

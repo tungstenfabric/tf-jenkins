@@ -23,7 +23,7 @@
               project-pattern: '**'
               branches:
                 - branch-compare-type: 'REG_EXP'
-                  branch-pattern: '^master'
+                  branch-pattern: '**'
     dsl: |
         def instance = Jenkins.getInstanceOrNull()
         def runningBuilds = instance.getView('All').getBuilds().findAll() { it.getResult().equals(null) }

@@ -75,4 +75,4 @@
               project-pattern: '**'
               branches:
                 - branch-compare-type: 'REG_EXP'
-                  branch-pattern: '^master'
+                  branch-pattern: '**'
