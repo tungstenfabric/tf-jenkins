@@ -106,7 +106,7 @@ fi
 
 
 echo "INFO: Sync started"
-if ! run_dev_env fetch stable ; then
+if ! run_dev_env "" stable ; then
   echo "ERROR: Sync failed"
   exit 1
 fi
