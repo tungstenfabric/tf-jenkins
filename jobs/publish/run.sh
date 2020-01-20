@@ -56,5 +56,9 @@ fi
 EOF
 
 echo "INFO: Publish started"
-ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip ./publish.sh
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+export WORKSPACE=\$HOME
+source ./publish.env
+sudo -E ./publish.sh
+EOF
 echo "INFO: Publish containers done"
