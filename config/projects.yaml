@@ -58,7 +58,7 @@
       - systests
     check:
       jobs:
-        - helm_os:
+        - helm_k8s:
             voting: false
 
 - project:
