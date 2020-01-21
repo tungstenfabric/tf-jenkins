@@ -17,7 +17,7 @@ function run_dev_env() {
   local devenv=$2
   local result=0
 
-  export CONTRAIL_SETUP_DOCKER=1
+  export CONTRAIL_SETUP_DOCKER=0
   export TF_CONFIG_DIR=$WORKSPACE
 
   # dont setup own registry
