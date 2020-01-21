@@ -62,7 +62,7 @@ function push_dev_env() {
   local result=0
   echo "INFO: Save tf-sandbox started: $target_tag"
   echo "INFO: commit tf-developer-sandbox container"
-  if ! sudo docker commit tf-developer-sandbox $commit_name ; then
+  if ! sudo docker commit $TF_DEVENV_CONTAINER_NAME $commit_name ; then
     echo "ERROR: failed to commit tf-developer-sandbox"
     exit 1
   fi
