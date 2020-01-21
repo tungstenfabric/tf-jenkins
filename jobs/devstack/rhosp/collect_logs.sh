@@ -16,7 +16,7 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip || res=
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
-cd src/tungstenfabric/tf-devstack/rhosp
+cd tf-devstack/rhosp
 ./run.sh logs
 EOF
 
