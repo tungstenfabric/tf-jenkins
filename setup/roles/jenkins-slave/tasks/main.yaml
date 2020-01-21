@@ -56,3 +56,32 @@
     owner: "{{ jenkins_user }}"
     group: "{{ jenkins_user }}"
     mode: "0600"
+
+- name: check if packer exists
+  stat: 
+    path: /usr/local/bin/packer
+    get_checksum: no
+  register: packer_state
+
+- name: check if rules file exists
+  command: "/usr/local/bin/packer --version" 
+  register: packer_version
+
+- name: Create temporary download directory
+  tempfile:
+    state: directory
+  register: download_dir
+  when: (packer_state.stat.exists == False) or (packer_version.stdout != packer_ver)
+
+- name: Download packer
+  get_url:
+    url: https://releases.hashicorp.com/packer/{{packer_ver}}/packer_{{packer_ver}}_linux_amd64.zip
+    dest: "{{download_dir.path}}/packer_{{packer_ver}}_linux_amd64.zip"
+  when: (packer_state.stat.exists == False) or (packer_version.stdout != packer_ver)
+
+- name: Unarchive a file that is already on the remote machine
+  unarchive:
+    src: "{{download_dir.path}}/packer_{{packer_ver}}_linux_amd64.zip"
+    dest: /usr/local/bin
+    remote_src: yes
+  when: (packer_state.stat.exists == False) or (packer_version.stdout != packer_ver)

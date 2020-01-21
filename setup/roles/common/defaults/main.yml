@@ -3,4 +3,9 @@ ssh_pubkeys:
     - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGGVlWsYpooIeEGv4vUbSMqco7UF4bF0gZD4T/Nx45Bsvl50MWY6tjaAWwG3LK5TFPMEI+BzmeGdPcXELkqMQ7g1Fb/5MDJ2xn+DOW255WkWV6TbkIpdI80gfwH/+BbTahpwSGdPw/jDQfXNiy5jAnruBjW65TjyxMhay3KSnxp68yLPClNUkKZxRg4x+FbyvsxHJV/19/4MAVbFh0koM33SX9Chr9TCsel5wUA3+q/PKAiiDTLI6rF6pXNgwvLPsIeshYrkWr+ez49JPaF2PryG29DU5yqUD5dSChLLle9SJNIKrrArL6ZElFtQ7RUDhKxlOXhid2M4e/bxhcXq+D"
 required_pkgs:
     - ntp
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg-agent
+    - software-properties-common
 apt_upgrade_all: false

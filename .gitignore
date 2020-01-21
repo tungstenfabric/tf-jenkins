@@ -4,3 +4,4 @@
 .env
 .venv
 jjb/generated_xml
+setup/hosts.yml

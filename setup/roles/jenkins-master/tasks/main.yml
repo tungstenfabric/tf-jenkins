@@ -4,38 +4,6 @@
     state: present
     update_cache: yes
 
-- name: Add Docker GPG apt Key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-
-- name: Add Docker Repository
-  apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu bionic stable
-    state: present
-
-- name: Make /etc/docker directory
-  file:
-    path: /etc/docker
-    owner: root
-    group: root
-    state: directory
-
-- name: Copy daemon.json template
-  template:
-    src: daemon.json.j2
-    dest: /etc/docker/daemon.json
-    owner: root
-    group: root
-
-- name: Update apt and install docker-ce
-  apt:
-    name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-    state: latest
-
 - name: Install pip packages
   pip:
     name:
