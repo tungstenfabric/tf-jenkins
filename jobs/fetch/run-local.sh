@@ -8,6 +8,8 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+
+export TF_DEVENV_CONTAINER_NAME=tf-developer-sandbox-${PIPELINE_BUILD_TAG}
 # set to force devenv rebuild each time
 export BUILD_DEV_ENV=${BUILD_DEV_ENV:-0}
 
