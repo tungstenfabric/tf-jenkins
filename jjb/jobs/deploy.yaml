@@ -112,7 +112,7 @@
               build-steps:
                   - shell: |
                       source "$WORKSPACE/global.env"
-                      ./src/progmaticlab/tf-jenkins/infra/{deployer}/remove_workers.sh
+                      ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/remove_workers.sh
 
 - job-template:
     name: deploy-tf-{project}
