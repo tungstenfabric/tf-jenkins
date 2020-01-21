@@ -26,11 +26,16 @@ fi
 TERMINATION_LIST_TAGS=$(comm -23 existing_tags.txt running_jobs.txt)
 
 if [[ -n "$TERMINATION_LIST_TAGS" ]]; then
-  for t in $(echo "$TERMINATION_LIST_TAGS"); do
+  for t in $TERMINATION_LIST_TAGS; do
     TAGS+=(PipelineBuildTag=${t})
   done
   TERMINATION_LIST=$(nova list --tags-any $(IFS=","; echo "${TAGS[*]}") --status ACTIVE --field locked | grep -v 'True' | awk '{print $2}' | grep -v 'ID'  | grep -v "^$" || true)
   if [[ -n "$TERMINATION_LIST" ]]; then
-    nova delete $(echo "$TERMINATION_LIST")
+    nova delete $TERMINATION_LIST
   fi
+fi
+
+TERMINATION_LIST=$(openstack server list --status ERROR -c ID -f value)
+if [[ -n "$TERMINATION_LIST" ]]; then
+  nova delete $TERMINATION_LIST
 fi
