@@ -16,7 +16,6 @@ function run_dev_env() {
   local stage=$1
   local devenv=$2
   local result=0
-  export PATH=$PATH:/usr/sbin
 
   export CONTRAIL_SETUP_DOCKER=1
   export TF_CONFIG_DIR=$WORKSPACE
@@ -50,7 +49,7 @@ function run_dev_env() {
   export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
   export DEVENVTAG=$devenv
 
-  cd src/tungstenfabric/tf-dev-env
+  cd $WORKSPACE/src/tungstenfabric/tf-dev-env
   ./run.sh $stage
 }
 
