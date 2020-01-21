@@ -59,4 +59,4 @@
                     - shell: |
                         source "$WORKSPACE/global.env"
                         sudo docker stop tf-developer-sandbox-${PIPELINE_BUILD_TAG}
-                        sudo docker rm tf-developer-sandbox-${PIPELINE_BUILD_TAG
+                        sudo docker rm tf-developer-sandbox-${PIPELINE_BUILD_TAG}
