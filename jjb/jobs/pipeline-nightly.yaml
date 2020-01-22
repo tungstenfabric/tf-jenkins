@@ -58,7 +58,7 @@
       script-path: jjb/pipelines/main.groovy
       lightweight-checkout: true
     triggers:
-      # - timed: "@midnight"
+      - timed: "@midnight"
       - gerrit:
           server-name: review.opencontrail.org
           skip-vote:

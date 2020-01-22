@@ -44,6 +44,7 @@ export CONTRAIL_KEEP_LOG_FILES=true
 if [[ -f \${WORKSPACE}/build.env ]]; then
   source \${WORKSPACE}/build.env
 fi
+export LINUX_DISTR=$ENVIRONMENT_OS
 
 cd src/tungstenfabric/tf-dev-env
 ./run.sh build
