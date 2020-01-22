@@ -15,7 +15,6 @@ export BUILD_DEV_ENV=${BUILD_DEV_ENV:-0}
 function run_dev_env() {
   local stage=$1
   local devenv=$2
-  local result=0
 
   export CONTRAIL_SETUP_DOCKER=0
   export TF_CONFIG_DIR=$WORKSPACE
@@ -57,7 +56,7 @@ function push_dev_env() {
   local tag=$1
   local commit_name="tf-developer-sandbox-$tag"
   local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
-  local result=0
+
   echo "INFO: Save tf-sandbox started: $target_tag"
   echo "INFO: commit tf-developer-sandbox container"
   if ! sudo docker commit $TF_DEVENV_CONTAINER_NAME $commit_name ; then
@@ -87,7 +86,6 @@ if ! push_dev_env stable ; then
   echo "ERROR: Save dev-env failed"
   exit 1
 fi
-
 
 echo "INFO: Sync started"
 if ! run_dev_env "" stable ; then
