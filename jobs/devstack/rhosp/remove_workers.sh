@@ -6,6 +6,6 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-cd src/tungstenfabric/tf-devstack/rhosp/
+cd src/tungstenfabric/tf-devstack/rhosp/providers/vexx
 ./cleanup.sh
 
