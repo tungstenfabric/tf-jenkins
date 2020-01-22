@@ -67,9 +67,11 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          # TODO: set OS to rhel for rhel builds
           export DEBUG=true
           source "$WORKSPACE/global.env"
+          if [[ -f ${WORKSPACE}/build.env ]]; then
+            source ${WORKSPACE}/build.env
+          fi
           ./src/progmaticlab/tf-jenkins/jobs/build/create_workers.sh
       - shell: |
           set +e
