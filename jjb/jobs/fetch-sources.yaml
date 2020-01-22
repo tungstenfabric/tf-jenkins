@@ -57,5 +57,9 @@
                 build-steps:
                     - shell: |
                         source "$WORKSPACE/global.env"
-                        sudo docker stop tf-developer-sandbox-${PIPELINE_BUILD_TAG}
-                        sudo docker rm tf-developer-sandbox-${PIPELINE_BUILD_TAG}
+                        CONTAINER="$(sudo docker ps --all --quiet --filter "status=running" --filter "name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}")"
+                        if [ -n "$CONTAINER" ]; then
+                          sudo docker stop $CONTAINER
+                          sudo docker rm $CONTAINER
+                        fi
+                        sudo docker system prune -a --volumes -f
