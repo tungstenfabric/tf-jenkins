@@ -40,6 +40,8 @@ export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 export CONTRAIL_KEEP_LOG_FILES=true
 
+export LINUX_DISTR=$ENVIRONMENT_OS
+
 # do it as a latest source to override all exports
 if [[ -f \${WORKSPACE}/build.env ]]; then
   source \${WORKSPACE}/build.env

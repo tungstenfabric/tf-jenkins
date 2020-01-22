@@ -12,6 +12,10 @@
           name: PIPELINE_NAME
       - string:
           name: PIPELINE_NUMBER
+      - string:
+          name: ENVIRONMENT_OS
+          default: centos7
+          description: Base distributive to build
     wrappers:
       - workspace-cleanup
       - timestamps
@@ -65,7 +69,6 @@
       - shell: |
           # TODO: set OS to rhel for rhel builds
           export DEBUG=true
-          export ENVIRONMENT_OS=centos7
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/build/create_workers.sh
       - shell: |
