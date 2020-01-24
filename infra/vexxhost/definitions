@@ -29,4 +29,5 @@ declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' \
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
-MAX_COUNT='20'
+MAX_COUNT_VM='20'
+MAX_COUNT_VCPU='184'
