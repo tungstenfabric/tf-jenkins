@@ -19,9 +19,15 @@ echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
 # wait for free resource
 while true; do
-  [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') - 1))" -lt "$MAX_COUNT" ]] && break
+  [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') - 1))" -lt "$MAX_COUNT_VM" ]] && break
   sleep 60
 done
+
+while true; do
+  [[ "$(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}')" -lt "$MAX_COUNT_VCPU" ]] && break
+  sleep 60
+done
+
 
 cd src/tungstenfabric/tf-devstack/rhosp
 ./providers/vexx/create_env.sh
