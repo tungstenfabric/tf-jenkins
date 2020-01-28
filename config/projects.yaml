@@ -72,8 +72,7 @@
       - systests
     check:
       jobs:
-        - helm_k8s:
-            voting: false
+        - helm_k8s
 
 - project:
     name: Juniper/contrail-third-party-packages
