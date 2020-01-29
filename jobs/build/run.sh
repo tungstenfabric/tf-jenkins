@@ -14,6 +14,9 @@ source $ENV_FILE
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/build.env $IMAGE_SSH_USER@$instance_ip:./ || /bin/true
 
+target_linux_vers=([centos7]='centos' [rhel7]='rhel7')
+export LINUX_DISTR=${target_linux_vers[$ENVIRONMENT_OS]}
+
 echo "INFO: Build started"
 
 res=0
@@ -44,7 +47,7 @@ export CONTRAIL_KEEP_LOG_FILES=true
 if [[ -f \${WORKSPACE}/build.env ]]; then
   source \${WORKSPACE}/build.env
 fi
-export LINUX_DISTR=$ENVIRONMENT_OS
+export LINUX_DISTR=$LINUX_DISTR
 
 cd src/tungstenfabric/tf-dev-env
 ./run.sh build
