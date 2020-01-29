@@ -47,15 +47,14 @@
     name: Juniper/openshift-ansible
     branches:
       - ^release-3\.[0-9]+-contrail$
-    templates:
-      - systests
-    experimental:
+    check:
       jobs:
         - build:
             vars:
               ENVIRONMENT_OS: rhel7
         - k8s_manifests:
             voting: false
+            sanity: false
             smoke: true
 
 - project:
