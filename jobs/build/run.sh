@@ -14,6 +14,7 @@ source $ENV_FILE
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/build.env $IMAGE_SSH_USER@$instance_ip:./ || /bin/true
 
+declare -A target_linux_vers
 target_linux_vers=([centos7]='centos' [rhel7]='rhel7')
 export LINUX_DISTR=${target_linux_vers[$ENVIRONMENT_OS]}
 
