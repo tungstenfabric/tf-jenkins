@@ -1,7 +1,7 @@
 ---
 
 - job:
-    name: pipeline-check
+    name: pipeline-check-opencontrail
     node: aws
     description: Please do not run this manually
     project-type: pipeline
@@ -46,6 +46,29 @@
               branches:
                 - branch-compare-type: 'ANT'
                   branch-pattern: '**'
+
+- job:
+    name: pipeline-check-tf
+    node: aws
+    description: Please do not run this manually
+    project-type: pipeline
+    concurrent: true
+    parameters:
+      - choice:
+          name: SLAVE
+          choices:
+            - vexxhost
+            - aws
+          description: "Slave where all jobs will be run: vexxhost, aws"
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: check
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: jjb/pipelines/main.groovy
+      lightweight-checkout: true
+    triggers:
       - gerrit:
           server-name: gerrit.tungsten.io
           skip-vote:
