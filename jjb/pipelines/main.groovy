@@ -331,12 +331,16 @@ def notify_gerrit(msg, verified=0, submit=false) {
   println "Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}"
   withCredentials(
       bindings: [
-        usernamePassword(credentialsId: 'gerrit-api',
+        usernamePassword(credentialsId: env.GERRIT_HOST,
         passwordVariable: 'GERRIT_API_PASSWORD',
         usernameVariable: 'GERRIT_API_USER')]) {
     opts = ""
+    // temporary hack to not vote somewhere
+    label_name = 'Verified'
+    if (env.GERRIT_HOST == 'review.opencontrail.org')
+      label_name = 'VerifiedTF'
     if (verified != null) {
-      opts += " --labels VerifiedTF=${verified}"
+      opts += " --labels ${label_name}=${verified}"
     }
     if (submit) {
       opts += " --submit"
