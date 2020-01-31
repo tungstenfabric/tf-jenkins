@@ -9,16 +9,11 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
+source "$my_dir/functions.sh"
 source "$WORKSPACE/global.env"
 
 DEFAULT_ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 ENV_FILE=${ENV_FILE:-$DEFAULT_ENV_FILE}
 source $ENV_FILE
 
-TERMINATION_PROTECTION=$(aws ec2 --region "$AWS_REGION" describe-instance-attribute \
-    --attribute disableApiTermination \
-    --instance-id $instance_id | \
-    jq -r '.DisableApiTermination.Value')
-if [[ "$TERMINATION_PROTECTION" == "false" ]]; then
-    aws ec2 terminate-instances --region "$AWS_REGION" --instance-ids "$instance_id"
-fi
+terminate_instances $instance_id
