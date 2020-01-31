@@ -97,3 +97,18 @@
     check:
       jobs:
         - rhosp
+
+- project:
+    name: tungstenfabric/tf-helm-deployer
+    templates:
+      - systests
+    check:
+      jobs:
+        - helm_os
+        - helm_k8s
+
+- project:
+    name: tungstenfabric/tf-devstack
+    templates:
+      - systests
+

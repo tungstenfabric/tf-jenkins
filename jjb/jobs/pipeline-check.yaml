@@ -82,3 +82,28 @@
               branches:
                 - branch-compare-type: 'ANT'
                   branch-pattern: '**'
+    triggers:
+      - gerrit:
+          server-name: gerrit.tungsten.io
+          skip-vote:
+            successful: true
+            failed: true
+            unstable: true
+            notbuilt: true
+          trigger-on:
+            - patchset-created-event:
+                exclude-drafts: true
+                exclude-trivial-rebase: false
+                exclude-no-code-change: false
+                exclude-private: true
+                exclude-wip: true
+            - comment-added-contains-event:
+                comment-contains-value: '^(check|recheck)$'
+            - change-restored-event
+          trigger-for-unreviewed-patches: true
+          projects:
+            - project-compare-type: 'ANT'
+              project-pattern: '**'
+              branches:
+                - branch-compare-type: 'ANT'
+                  branch-pattern: '**'
