@@ -6,8 +6,13 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-source "$my_dir/definitions"
 source "$WORKSPACE/global.env"
+if [ -e "$WORKSPACE/build.env" ] ; then 
+  source "$WORKSPACE/build.env"
+fi
+if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ] ; then
+  source "$WORKSPACE/stackrc.$JOB_NAME.env"
+fi
 
 instance_ip=$1
 
