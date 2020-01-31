@@ -7,6 +7,7 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
+source "$my_dir/functions.sh"
 
 nova list --tags "SLAVE=$SLAVE" --fields tags > result_"$SLAVE" 
 
@@ -31,6 +32,7 @@ if [[ -n "$TERMINATION_LIST_TAGS" ]]; then
   done
   TERMINATION_LIST=$(nova list --tags-any $(IFS=","; echo "${TAGS[*]}") --status ACTIVE --field locked | grep -v 'True' | awk '{print $2}' | grep -v 'ID'  | grep -v "^$" || true)
   if [[ -n "$TERMINATION_LIST" ]]; then
+    down_instances $TERMINATION_LIST || true
     nova delete $TERMINATION_LIST
   fi
 fi

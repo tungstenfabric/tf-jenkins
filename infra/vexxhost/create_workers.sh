@@ -10,6 +10,7 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
+source "$my_dir/functions.sh"
 source "$WORKSPACE/global.env"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
@@ -47,7 +48,7 @@ OBJECT_NAME=$BUILD_TAG
 nova boot --flavor ${INSTANCE_TYPE} \
           --security-groups ${OS_SG} \
           --key-name=worker \
-          --tags "PipelineBuildTag=${PIPELINE_BUILD_TAG},SLAVE=vexxhost" \
+          --tags "PipelineBuildTag=${PIPELINE_BUILD_TAG},SLAVE=vexxhost,DOWN=${OS_IMAGES_DOWN["${ENVIRONMENT_OS^^}"]}" \
           --nic net-name=${OS_NETWORK} \
           --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=120,bootindex=0 \
           --poll \
@@ -55,7 +56,7 @@ nova boot --flavor ${INSTANCE_TYPE} \
 
 instance_id=$(openstack server show $OBJECT_NAME -c id -f value | tr -d '\n')
 echo "export instance_id=$instance_id" >> "$ENV_FILE"
-instance_ip=$(openstack server show $OBJECT_NAME -c addresses -f value | cut -f 2 -d '=')
+instance_ip=$(get_instance_ip $OBJECT_NAME)
 echo "export instance_ip=$instance_ip" >> "$ENV_FILE"
 
 timeout 300 bash -c "\
@@ -63,3 +64,8 @@ while /bin/true ; do \
   ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
   sleep 10 ; \
 done"
+
+image_up_script=${OS_IMAGES_UP["${ENVIRONMENT_OS^^}"]}
+if [[ -n "$image_up_script" && -e ${my_dir}/../hooks/${image_up_script}/up.sh ]] ; then
+  ${my_dir}/../hooks/${image_up_script}/up.sh
+fi

@@ -10,6 +10,7 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
+source "$my_dir/functions.sh"
 source "$WORKSPACE/global.env"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
@@ -48,7 +49,7 @@ iname=$BUILD_TAG
 bdm='{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":120,"DeleteOnTermination":true}}'
 instance_id=$(aws ec2 run-instances \
     --region $AWS_REGION \
-    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$iname},{Key=PipelineBuildTag,Value=$PIPELINE_BUILD_TAG},{Key=SLAVE,Value=aws}]" \
+    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$iname},{Key=PipelineBuildTag,Value=$PIPELINE_BUILD_TAG},{Key=SLAVE,Value=aws},{Key=DOWN,Value=${OS_IMAGES_DOWN["${ENVIRONMENT_OS^^}"]}}]" \
     --block-device-mappings "[${bdm}]" \
     --image-id $IMAGE \
     --count 1 \
@@ -60,13 +61,7 @@ instance_id=$(aws ec2 run-instances \
 echo "export instance_id=$instance_id" >> "$ENV_FILE"
 aws ec2 wait instance-running --region $AWS_REGION \
     --instance-ids $instance_id
-instance_ip=$(aws ec2 describe-instances \
-    --region $AWS_REGION \
-    --filters \
-    "Name=instance-state-name,Values=running" \
-    "Name=instance-id,Values=$instance_id" \
-    --query 'Reservations[*].Instances[*].[PrivateIpAddress]' \
-    --output text)
+instance_ip=$(get_instance_ip $instance_id)
 echo "export instance_ip=$instance_ip" >> "$ENV_FILE"
 
 timeout 300 bash -c "\
@@ -74,3 +69,8 @@ while /bin/true ; do \
   ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
   sleep 5 ; \
 done"
+
+image_up_script=${OS_IMAGES_UP["${ENVIRONMENT_OS^^}"]}
+if [[ -n "$image_up_script" && -e ${my_dir}/../hooks/${image_up_script}/up.sh ]] ; then
+  ${my_dir}/../hooks/${image_up_script}/up.sh
+fi

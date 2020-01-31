@@ -20,12 +20,27 @@ declare -A OS_IMAGES=( ['CENTOS7']='prepared-centos7' \
                        ['RHEL8']='prepared-rhel8' \
                        ['UBUNTU16']='prepared-ubuntu16' \
                        ['UBUNTU18']='prepared-ubuntu18' )
+
 declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' \
                             ['CENTOS8']='centos' \
                             ['RHEL7']='cloud-user' \
                             ['RHEL8']='cloud-user' \
                             ['UBUNTU16']='ubuntu' \
                             ['UBUNTU18']='ubuntu' )
+
+declare -A OS_IMAGES_UP=( ['CENTOS7']='' \
+                          ['CENTOS8']='' \
+                          ['RHEL7']='rhel' \
+                          ['RHEL8']='rhel' \
+                          ['UBUNTU16']='' \
+                          ['UBUNTU18']='' )
+
+declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
+                            ['CENTOS8']='' \
+                            ['RHEL7']='rhel' \
+                            ['RHEL8']='rhel' \
+                            ['UBUNTU16']='' \
+                            ['UBUNTU18']='' )
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 

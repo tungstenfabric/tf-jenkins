@@ -25,3 +25,17 @@ IMAGE_UBUNTU18_SSH_USER='ubuntu'
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 MAX_COUNT='20'
+
+declare -A OS_IMAGES_UP=( ['CENTOS7']='' \
+                          ['CENTOS8']='' \
+                          ['RHEL7']='rhel' \
+                          ['RHEL8']='rhel' \
+                          ['UBUNTU16']='' \
+                          ['UBUNTU18']='' )
+
+declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
+                            ['CENTOS8']='' \
+                            ['RHEL7']='rhel' \
+                            ['RHEL8']='rhel' \
+                            ['UBUNTU16']='' \
+                            ['UBUNTU18']='' )
