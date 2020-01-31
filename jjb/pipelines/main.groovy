@@ -26,6 +26,10 @@ job_results = [:]
 timestamps {
   timeout(time: 4, unit: 'HOURS') {
     node("${SLAVE}") {
+      if (!env.GERRIT_CHANGE_ID) {
+        println("Manual run is forbidden")
+        return
+      }
       pre_build_done = false
       try {
         time_start = (new Date()).getTime()
@@ -233,23 +237,6 @@ def evaluate_env() {
           test_configuration_names += item.getKey()
         }
       }
-    } else {
-      if (params.DO_RUN_UT_LINT) {
-        top_jobs_to_run += 'test-unit'
-        top_jobs_to_run += 'test-lint'
-        do_fetch = true
-      }
-      if (params.DO_BUILD) {
-        top_jobs_to_run += 'build'
-        do_fetch = true
-      }
-      if (params.DO_CHECK_K8S_MANIFESTS) test_configuration_names += 'k8s_manifests'
-      if (params.DO_CHECK_JUJU_K8S) test_configuration_names += 'juju_k8s'
-      if (params.DO_CHECK_JUJU_OS) test_configuration_names += 'juju_os'
-      if (params.DO_CHECK_ANSIBLE_K8S) test_configuration_names += 'ansible_k8s'
-      if (params.DO_CHECK_ANSIBLE_OS) test_configuration_names += 'ansible_os'
-      if (params.DO_CHECK_HELM_K8S) test_configuration_names += 'helm_k8s'
-      if (params.DO_CHECK_HELM_OS) test_configuration_names += 'helm_os'
     }
     if (do_fetch) {
       top_jobs_to_run += 'fetch-sources'

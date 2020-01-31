@@ -3,7 +3,7 @@
 - job:
     name: pipeline-check
     node: aws
-    description: pipeline-check
+    description: Please do not run this manually
     project-type: pipeline
     concurrent: true
     parameters:
@@ -16,42 +16,6 @@
       - hidden:
           name: GERRIT_PIPELINE
           default: check
-      - bool:
-          name: DO_BUILD
-          default: true
-          description: "Run full build and use images later. Otherwise use nightly build."
-      - bool:
-          name: DO_RUN_UT_LINT
-          default: true
-          description: "Run UT and Lint jobs."
-      - bool:
-          name: DO_CHECK_K8S_MANIFESTS
-          default: true
-          description: "Run checks for k8s with manifests."
-      - bool:
-          name: DO_CHECK_JUJU_K8S
-          default: false
-          description: "Run checks for k8s with juju."
-      - bool:
-          name: DO_CHECK_JUJU_OS
-          default: false
-          description: "Run checks for Openstack with juju."
-      - bool:
-          name: DO_CHECK_ANSIBLE_K8S
-          default: true
-          description: "Run checks for k8s with ansible-deployer."
-      - bool:
-          name: DO_CHECK_ANSIBLE_OS
-          default: true
-          description: "Run checks for OpenStack with ansible-deployer."
-      - bool:
-          name: DO_CHECK_HELM_K8S
-          default: false
-          description: "Run checks for k8s with helm-deployer."
-      - bool:
-          name: DO_CHECK_HELM_OS
-          default: false
-          description: "Run checks for OpenStack with helm-deployer."
     pipeline-scm:
       scm:
         - tf-jenkins
@@ -82,7 +46,6 @@
               branches:
                 - branch-compare-type: 'ANT'
                   branch-pattern: '**'
-    triggers:
       - gerrit:
           server-name: gerrit.tungsten.io
           skip-vote:
