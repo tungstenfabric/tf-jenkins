@@ -347,7 +347,7 @@ def notify_gerrit(msg, verified=0, submit=false) {
 }
 
 def resolve_gerrit_url() {
-  url = env.GERRIT_HOST
+  url = "http://${env.GERRIT_HOST}/"
   while (true) {
     getr = new URL(url).openConnection()
     getr.setFollowRedirects(false)
