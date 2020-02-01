@@ -347,9 +347,9 @@ def notify_gerrit(msg, verified=0, submit=false) {
 }
 
 def resolve_gerrit_url() {
-  url = "http://${env.GERRIT_HOST}/"
+  def url = "http://${env.GERRIT_HOST}/"
   while (true) {
-    getr = new URL(url).openConnection()
+    def getr = new URL(url).openConnection()
     getr.setFollowRedirects(false)
     code = (int)(getr.getResponseCode() / 100)
     if (code != 3)
