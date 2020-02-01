@@ -322,7 +322,7 @@ def notify_gerrit(msg, verified=0, submit=false) {
         passwordVariable: 'GERRIT_API_PASSWORD',
         usernameVariable: 'GERRIT_API_USER')]) {
     opts = ""
-    // temporary hack to not vote somewhere
+    // temporary hack to not vote for review.opencontrail.org
     label_name = 'Verified'
     if (env.GERRIT_HOST == 'review.opencontrail.org')
       label_name = 'VerifiedTF'
@@ -332,9 +332,10 @@ def notify_gerrit(msg, verified=0, submit=false) {
     if (submit) {
       opts += " --submit"
     }
+    url = resolve_gerrit_url()
     sh """
       ${WORKSPACE}/tf-jenkins/infra/gerrit/notify.py \
-        --gerrit https://${GERRIT_HOST} \
+        --gerrit ${url} \
         --user ${GERRIT_API_USER} \
         --password ${GERRIT_API_PASSWORD} \
         --review ${GERRIT_CHANGE_ID} \
@@ -343,6 +344,20 @@ def notify_gerrit(msg, verified=0, submit=false) {
         ${opts}
     """
   }
+}
+
+def resolve_gerrit_url() {
+  url = env.GERRIT_HOST
+  while (true) {
+    getr = new URL(url).openConnection()
+    getr.setFollowRedirects(false)
+    code = (int)(getr.getResponseCode() / 100)
+    if (code != 3)
+      break
+    url = getr.getHeaderField("Location")
+  }
+  println("INFO: resolved gerrit URL is ${url}")
+  return url
 }
 
 def gerrit_build_started() {
