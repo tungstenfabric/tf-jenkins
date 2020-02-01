@@ -39,11 +39,8 @@ function run_dev_env() {
     export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG
 
     export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}
-    export GERRIT_CHANGE_URL=${GERRIT_CHANGE_URL}
+    export GERRIT_URL=${GERRIT_URL}
     export GERRIT_BRANCH=${GERRIT_BRANCH}
-    export GERRIT_PROJECT=${GERRIT_PROJECT}
-    export GERRIT_CHANGE_NUMBER=${GERRIT_CHANGE_NUMBER}
-    export GERRIT_PATCHSET_NUMBER=${GERRIT_PATCHSET_NUMBER}
   fi
 
   # to not to bind contrail sources to container

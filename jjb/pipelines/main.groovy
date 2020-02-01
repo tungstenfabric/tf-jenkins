@@ -217,13 +217,11 @@ def evaluate_env() {
     // store gerrit input if present. evaluate jobs
     do_fetch = false
     if (env.GERRIT_CHANGE_ID) {
+      url = resolve_gerrit_url()
       sh """#!/bin/bash -e
         echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
-        echo "export GERRIT_CHANGE_URL=${env.GERRIT_CHANGE_URL}" >> global.env
+        echo "export GERRIT_URL=${url}" >> global.env
         echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
-        echo "export GERRIT_PROJECT=${env.GERRIT_PROJECT}" >> global.env
-        echo "export GERRIT_CHANGE_NUMBER=${env.GERRIT_CHANGE_NUMBER}" >> global.env
-        echo "export GERRIT_PATCHSET_NUMBER=${env.GERRIT_PATCHSET_NUMBER}" >> global.env
       """
       println "Pipeline to run: ${env.GERRIT_PIPELINE}"
       get_jobs(env.GERRIT_PROJECT, env.GERRIT_PIPELINE)
@@ -322,10 +320,13 @@ def notify_gerrit(msg, verified=0, submit=false) {
         passwordVariable: 'GERRIT_API_PASSWORD',
         usernameVariable: 'GERRIT_API_USER')]) {
     opts = ""
+
     // temporary hack to not vote for review.opencontrail.org
-    label_name = 'Verified'
-    if (env.GERRIT_HOST == 'review.opencontrail.org')
-      label_name = 'VerifiedTF'
+    label_name = 'VerifiedTF'
+    //label_name = 'Verified'
+    //if (env.GERRIT_HOST == 'review.opencontrail.org')
+    //  label_name = 'VerifiedTF'
+
     if (verified != null) {
       opts += " --labels ${label_name}=${verified}"
     }
