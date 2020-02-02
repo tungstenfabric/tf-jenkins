@@ -9,7 +9,7 @@ function list_instances() {
   local not_tags=${2:-}
   local opts="--tags ${tags}"
   if [[ -n "$not_tags" ]] ; then
-    opts+="--not-tags $not_tags"
+    opts+=" --not-tags $not_tags"
   fi
   nova list $opts --minimal | awk '{print $2}' | grep -v ID | grep -v "^$"
 }
