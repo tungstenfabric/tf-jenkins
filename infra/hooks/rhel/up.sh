@@ -37,8 +37,11 @@ if [[ "${rhel_ver}" != 'rhel8' ]] ; then
   sudo subscription-manager repos --enable=rhel-7-server-rpms \
                                   --enable=rhel-7-server-extras-rpms \
                                   --enable=rhel-7-server-optional-rpms \
-                                  --enable=rhel-7-server-openstack-${rhel_os_repo_num}-rpms \
-                                  --enable=rhel-7-server-openstack-${rhel_os_repo_num}-devtools-rpms
+                                  --enable=rhel-7-server-openstack-${rhel_os_repo_num}-rpms
+
+# in unknown reason not available anymore but it contains openstack-utils
+#                                  --enable=rhel-7-server-openstack-${rhel_os_repo_num}-devtools-rpms
+
 else
   # TODO: enable openstack repos?
   sudo subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms \
