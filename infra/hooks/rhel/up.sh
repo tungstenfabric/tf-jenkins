@@ -6,8 +6,9 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
+source "$my_dir/definitions"
 source "$WORKSPACE/global.env"
-if [ -e "$WORKSPACE/build.env" ] ; then 
+if [ -e "$WORKSPACE/build.env" ] ; then
   source "$WORKSPACE/build.env"
 fi
 if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ] ; then
@@ -26,15 +27,7 @@ sudo subscription-manager attach --pool $RHEL_POOL_ID
 
 [ "${DEBUG,,}" == "true" ] && set -x
 
-declare -A os_repos_map=( ['newton']='10' \
-                          ['ocata']='11' \
-                          ['pike']='12' \
-                          ['queens']='13' \
-                          ['rocky']='14' \
-                          ['stein']='15' \
-                          ['train']='16' )
-
-rhel_os_repo_num=${os_repos_map["${OPENSTACK_VERSION,,}"]}
+rhel_os_repo_num=${RHEL_REPOS_MAP["${OPENSTACK_VERSION,,}"]}
 if [[ "${ENVIRONMENT_OS,,}" != 'rhel8' ]] ; then
   sudo subscription-manager repos --enable=rhel-7-server-rpms \
                                   --enable=rhel-7-server-extras-rpms \
