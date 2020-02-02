@@ -18,6 +18,12 @@ fi
 ENVIRONMENT_OS=${ENVIRONMENT_OS:-'rhel7'}
 OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
 
+rhel_ver=${ENVIRONMENT_OS,,}
+os_ver=${OPENSTACK_VERSION,,}
+echo "INFO: Supported rhel openstacks: ${RHEL_REPOS_MAP[@]}"
+rhel_os_repo_num=${RHEL_REPOS_MAP["${os_ver}"]}
+echo "INFO: Chosen for $rhel_ver and OS ${os_ver} repo number: ${rhel_os_repo_num}"
+
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 echo "INFO: register rhel system"
 sudo subscription-manager register --username "$RHEL_USER" --password "$RHEL_PASSWORD"
@@ -27,8 +33,7 @@ sudo subscription-manager attach --pool $RHEL_POOL_ID
 
 [ "${DEBUG,,}" == "true" ] && set -x
 
-rhel_os_repo_num=${RHEL_REPOS_MAP["${OPENSTACK_VERSION,,}"]}
-if [[ "${ENVIRONMENT_OS,,}" != 'rhel8' ]] ; then
+if [[ "${rhel_ver}" != 'rhel8' ]] ; then
   sudo subscription-manager repos --enable=rhel-7-server-rpms \
                                   --enable=rhel-7-server-extras-rpms \
                                   --enable=rhel-7-server-optional-rpms \
