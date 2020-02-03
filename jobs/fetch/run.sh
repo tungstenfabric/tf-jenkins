@@ -57,6 +57,8 @@ function run_dev_env() {
   export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
   export DEVENVTAG=$devenv
 
+  export LINUX_DISTR=${TARGET_LINUX_DISTR["$ENVIRONMENT_OS"]}
+
   cd $WORKSPACE/src/tungstenfabric/tf-dev-env
   ./run.sh $stage
 }

@@ -1,3 +1,8 @@
 export VM_TYPE=large
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+declare -A TARGET_LINUX_DISTR=( \
+  ['centos7']='centos' \
+  ['rhel7']='rhel7' \
+)
