@@ -78,6 +78,17 @@
       - systests
 
 - project:
+    name: tungstenfabric/tf-charms
+    check:
+      jobs:
+        - juju_k8s:
+            voting: false
+            smoke: true
+        - juju_os:
+            voting: false
+            smoke: true
+    
+- project:
     name: Juniper/contrail-web-core
     templates:
       - unittests-webui
