@@ -215,7 +215,6 @@ def evaluate_env() {
     """
 
     // store gerrit input if present. evaluate jobs
-    do_fetch = false
     if (env.GERRIT_CHANGE_ID) {
       url = resolve_gerrit_url()
       sh """#!/bin/bash -e
@@ -226,18 +225,14 @@ def evaluate_env() {
       println "Pipeline to run: ${env.GERRIT_PIPELINE}"
       get_jobs(env.GERRIT_PROJECT, env.GERRIT_PIPELINE)
       println "Evaluated jobs to run: ${jobs_from_config}"
-      def possible_top_jobs = ['test-lint', 'test-unit', 'build']
+      def possible_top_jobs = ['test-lint', 'test-unit', 'build', 'fetch-sources']
       for (item in jobs_from_config) {
         if (item.getKey() in possible_top_jobs) {
           top_jobs_to_run += item.getKey()
-          do_fetch = true
         } else {
           test_configuration_names += item.getKey()
         }
       }
-    }
-    if (do_fetch) {
-      top_jobs_to_run += 'fetch-sources'
     }
 
     // evaluate registry params

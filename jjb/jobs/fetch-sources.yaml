@@ -12,6 +12,10 @@
           name: PIPELINE_NAME
       - string:
           name: PIPELINE_NUMBER
+      - string:
+          name: ENVIRONMENT_OS
+          default: centos7
+          description: Base distributive to build
     wrappers:
       - timestamps
       - workspace-cleanup

@@ -10,12 +10,14 @@
     name: unittests
     check:
       jobs:
+        - fetch-sources
         - test-unit
 
 - project-template:
     name: unittests-webui
     check:
       jobs:
+        - fetch-sources
         - test-unit:
             vars:
               TARGET: ui
@@ -24,6 +26,7 @@
     name: systests
     check:
       jobs:
+        - fetch-sources
         - build
         - k8s_manifests:
             voting: false
@@ -37,6 +40,7 @@
       - systests
     experimental:
       jobs:
+        - fetch-sources
         - build:
             vars:
               CONTRAIL_BUILD_FROM_SOURCE: true
@@ -49,6 +53,9 @@
       - ^release-3\.[0-9]+-contrail$
     check:
       jobs:
+        - fetch-sources:
+            vars:
+              ENVIRONMENT_OS: rhel7
         - build:
             vars:
               ENVIRONMENT_OS: rhel7

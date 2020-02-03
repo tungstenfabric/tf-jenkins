@@ -11,8 +11,12 @@ source "$my_dir/definitions"
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 source $ENV_FILE
 
+# do it as a latest source to override all exports
+if [[ -f ${WORKSPACE}/build.env ]]; then
+  source ${WORKSPACE}/build.env
+fi
+
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/build.env $IMAGE_SSH_USER@$instance_ip:./ || /bin/true
 
 declare -A target_linux_vers
 target_linux_vers=([centos7]='centos' [rhel7]='rhel7')
@@ -44,10 +48,6 @@ export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 export CONTRAIL_KEEP_LOG_FILES=true
 
-# do it as a latest source to override all exports
-if [[ -f \${WORKSPACE}/build.env ]]; then
-  source \${WORKSPACE}/build.env
-fi
 export LINUX_DISTR=$LINUX_DISTR
 
 cd src/tungstenfabric/tf-dev-env
