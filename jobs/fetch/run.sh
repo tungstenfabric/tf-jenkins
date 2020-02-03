@@ -8,6 +8,13 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+# do it as a latest source to override all exports
+if [[ -f ${WORKSPACE}/fetch-sources.env ]]; then
+  source ${WORKSPACE}/fetch-sources.env
+fi
+
+stable_tag=${STABLE_TAGS["${ENVIRONMENT_OS^^}"]}
+
 export TF_DEVENV_CONTAINER_NAME=tf-developer-sandbox-${PIPELINE_BUILD_TAG}
 # set to force devenv rebuild each time
 export BUILD_DEV_ENV=${BUILD_DEV_ENV:-0}
@@ -80,17 +87,17 @@ function push_dev_env() {
 }
 
 echo "INFO: Build dev env"
-if ! run_dev_env none stable ; then
+if ! run_dev_env none $stable_tag ; then
   echo "ERROR: Build dev env failed"
   exit 1
 fi
-if ! push_dev_env stable ; then
+if ! push_dev_env $stable_tag ; then
   echo "ERROR: Save dev-env failed"
   exit 1
 fi
 
 echo "INFO: Sync started"
-if ! run_dev_env "" stable ; then
+if ! run_dev_env "" $stable_tag ; then
   echo "ERROR: Sync failed"
   exit 1
 fi
