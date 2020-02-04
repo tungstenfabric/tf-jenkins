@@ -16,8 +16,6 @@ fi
 stable_tag=${STABLE_TAGS["${ENVIRONMENT_OS^^}"]}
 
 export TF_DEVENV_CONTAINER_NAME=tf-developer-sandbox-${PIPELINE_BUILD_TAG}
-# set to force devenv rebuild each time
-export BUILD_DEV_ENV=${BUILD_DEV_ENV:-0}
 
 function run_dev_env() {
   local stage=$1
@@ -53,11 +51,10 @@ function run_dev_env() {
   # to not to bind contrail sources to container
   export CONTRAIL_DIR=""
 
-  export BUILD_DEV_ENV=$BUILD_DEV_ENV
+  # disable build dev-env
+  export BUILD_DEV_ENV=0
   export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
   export DEVENVTAG=$devenv
-
-  export LINUX_DISTR=${TARGET_LINUX_DISTR["$ENVIRONMENT_OS"]}
 
   cd $WORKSPACE/src/tungstenfabric/tf-dev-env
   ./run.sh $stage
@@ -88,17 +85,7 @@ function push_dev_env() {
   fi
 }
 
-echo "INFO: Build dev env"
-if ! run_dev_env none $stable_tag ; then
-  echo "ERROR: Build dev env failed"
-  exit 1
-fi
-if ! push_dev_env $stable_tag ; then
-  echo "ERROR: Save dev-env failed"
-  exit 1
-fi
-
-echo "INFO: Sync started"
+echo "INFO: Fetch started"
 if ! run_dev_env "" $stable_tag ; then
   echo "ERROR: Sync failed"
   exit 1
