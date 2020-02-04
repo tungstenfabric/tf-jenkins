@@ -316,11 +316,11 @@ def notify_gerrit(msg, verified=0, submit=false) {
         usernameVariable: 'GERRIT_API_USER')]) {
     opts = ""
 
+    //label_name = 'VerifiedTF'
     // temporary hack to not vote for review.opencontrail.org
-    label_name = 'VerifiedTF'
-    //label_name = 'Verified'
-    //if (env.GERRIT_HOST == 'review.opencontrail.org')
-    //  label_name = 'VerifiedTF'
+    label_name = 'Verified'
+    if (env.GERRIT_HOST == 'review.opencontrail.org')
+      label_name = 'VerifiedTF'
 
     if (verified != null) {
       opts += " --labels ${label_name}=${verified}"
