@@ -564,5 +564,16 @@ def terminate_previous_jobs() {
 }
 
 def save_output_to_nexus() {
+  println "BUILD_URL =  ${BUILD_URL}consoleText"
+
+  sh """#!/bin/bash -e
+    curl ${BUILD_URL}consoleText > pipelinelog.txt 
+    echo ${logs_url}  
+ #   ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
+ #   rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}   
+    rm -f pipelinelog.txt   
+  """
+  archiveArtifacts artifacts: "pipelinelog.txt"
+
   println "Here output will be saved at nexus"
 }
