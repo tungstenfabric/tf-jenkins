@@ -80,9 +80,11 @@ function push_dev_env() {
   fi
 }
 
-if ! sudo docker inspect "$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$stable_tag" ; then
+if ! sudo docker pull "$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$stable_tag" ; then
   echo "INFO: there is no $target_tag .. build it"
   ${my_dir}/build-dev-env.sh
+  echo "INFO: pull $target_tag"
+  sudo docker pull "$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$stable_tag"
 fi
 
 echo "INFO: Sync started"
