@@ -12,10 +12,6 @@
           name: PIPELINE_NAME
       - string:
           name: PIPELINE_NUMBER
-      - string:
-          name: ENVIRONMENT_OS
-          default: centos7
-          description: Base distributive to build
     wrappers:
       - timestamps
       - workspace-cleanup
@@ -61,7 +57,15 @@
                     - UNSTABLE
                 build-steps:
                     - shell: |
+                        export DEBUG=true
                         source "$WORKSPACE/global.env"
+                        if [[ -e $WORKSPACE/stackrc.$JOB_NAME.env ]] ; then
+                            # cleanup only if worker was created
+                            echo "INFO: cleanup workers"
+                            ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
+                        else
+                            echo "INFO: there is no file $WORKSPACE/stackrc.$JOB_NAME.env.. skip workers cleanup"
+                        fi
                         CONTAINER="$(sudo docker ps --all --quiet --filter "status=running" --filter "name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}")"
                         if [ -n "$CONTAINER" ]; then
                           sudo docker stop $CONTAINER

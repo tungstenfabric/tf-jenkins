@@ -6,3 +6,8 @@ declare -A STABLE_TAGS=(  ['CENTOS7']='stable' \
                           ['RHEL8']='cloud-rhel' \
                           ['UBUNTU16']='stable' \
                           ['UBUNTU18']='stable' )
+
+declare -A TARGET_LINUX_DISTR=( \
+  ['centos7']='centos' \
+  ['rhel7']='rhel7' \
+)

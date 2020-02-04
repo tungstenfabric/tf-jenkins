@@ -15,12 +15,6 @@ fi
 
 stable_tag=${STABLE_TAGS["${ENVIRONMENT_OS^^}"]}
 target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$stable_tag"
-
-if sudo docker inspect $target_tag ; then
-  echo "INFO: $target_tag is already built.. nothing to do"
-  exit
-fi
-
 linux_distr=${TARGET_LINUX_DISTR["$ENVIRONMENT_OS"]}
 tf_devenv_container_name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}
 commit_name="tf-developer-sandbox-$stable_tag"
