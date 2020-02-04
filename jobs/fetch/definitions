@@ -11,3 +11,5 @@ declare -A TARGET_LINUX_DISTR=( \
   ['centos7']='centos' \
   ['rhel7']='rhel7' \
 )
+
+ENVIRONMENT_OS=${ENVIRONMENT_OS:-centos7}
