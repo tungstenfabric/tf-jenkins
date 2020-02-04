@@ -17,10 +17,6 @@ stable_tag=${STABLE_TAGS["${ENVIRONMENT_OS^^}"]}
 
 export TF_DEVENV_CONTAINER_NAME=tf-developer-sandbox-${PIPELINE_BUILD_TAG}
 
-# set to disable devenv rebuild
-export BUILD_DEV_ENV=0
-
-
 function run_dev_env() {
   local stage=$1
   local devenv=$2
@@ -50,7 +46,8 @@ function run_dev_env() {
   # to not to bind contrail sources to container
   export CONTRAIL_DIR=""
 
-  export BUILD_DEV_ENV=$BUILD_DEV_ENV
+  # disable build dev-env
+  export BUILD_DEV_ENV=0
   export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
   export DEVENVTAG=$devenv
 
@@ -84,6 +81,7 @@ function push_dev_env() {
 }
 
 echo "INFO: Sync started"
+
 if ! run_dev_env "" $stable_tag ; then
   echo "ERROR: Sync failed"
   exit 1

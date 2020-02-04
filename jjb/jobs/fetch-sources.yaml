@@ -70,4 +70,3 @@
                         # ignore errors for prune because
                         # docker allows only one prune operationa at a time
                         sudo docker system prune -a --volumes -f || true
-
