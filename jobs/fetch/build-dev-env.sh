@@ -35,7 +35,6 @@ export WORKSPACE=\$HOME
 export TF_CONFIG_DIR=\$HOME
 
 # dont setup own registry & repo
-export CONTRAIL_SETUP_DOCKER=0
 export CONTRAIL_DEPLOY_REGISTRY=0
 export CONTRAIL_DEPLOY_RPM_REPO=0
 
