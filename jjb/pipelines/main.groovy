@@ -48,6 +48,8 @@ timestamps {
 
         if ('fetch-sources' in top_jobs_to_run) {
           stage('Fetch') {
+            // TODO: check if build of dev-env is really needed: by review in dev-env
+            run_job('build-dev-env', [job: 'build-dev-env'])
             run_job('fetch-sources', [job: 'fetch-sources'])
           }
         }

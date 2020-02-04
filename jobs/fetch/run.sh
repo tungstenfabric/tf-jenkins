@@ -16,8 +16,10 @@ fi
 stable_tag=${STABLE_TAGS["${ENVIRONMENT_OS^^}"]}
 
 export TF_DEVENV_CONTAINER_NAME=tf-developer-sandbox-${PIPELINE_BUILD_TAG}
-# set to force devenv rebuild each time
-export BUILD_DEV_ENV=${BUILD_DEV_ENV:-0}
+
+# set to disable devenv rebuild
+export BUILD_DEV_ENV=0
+
 
 function run_dev_env() {
   local stage=$1
@@ -36,19 +38,14 @@ function run_dev_env() {
   export REGISTRY_PORT=$REGISTRY_PORT
   export SITE_MIRROR=http://${REGISTRY_IP}/repository
 
-  # provide review-specific variable only for the none case
-  # the none case is to build empty container that should not be
-  # tied to the  concrete review.
-  if [[ "$stage" != 'none' ]] ; then
-    # TODO: enable later
-    # export CONTRAIL_BUILD_FROM_SOURCE=1
-    export OPENSTACK_VERSIONS=rocky
-    export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG
+  # TODO: enable later
+  # export CONTRAIL_BUILD_FROM_SOURCE=1
+  export OPENSTACK_VERSIONS=rocky
+  export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG
 
-    export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}
-    export GERRIT_URL=${GERRIT_URL}
-    export GERRIT_BRANCH=${GERRIT_BRANCH}
-  fi
+  export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}
+  export GERRIT_URL=${GERRIT_URL}
+  export GERRIT_BRANCH=${GERRIT_BRANCH}
 
   # to not to bind contrail sources to container
   export CONTRAIL_DIR=""
@@ -56,8 +53,6 @@ function run_dev_env() {
   export BUILD_DEV_ENV=$BUILD_DEV_ENV
   export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
   export DEVENVTAG=$devenv
-
-  export LINUX_DISTR=${TARGET_LINUX_DISTR["$ENVIRONMENT_OS"]}
 
   cd $WORKSPACE/src/tungstenfabric/tf-dev-env
   ./run.sh $stage
@@ -87,16 +82,6 @@ function push_dev_env() {
     exit 1
   fi
 }
-
-echo "INFO: Build dev env"
-if ! run_dev_env none $stable_tag ; then
-  echo "ERROR: Build dev env failed"
-  exit 1
-fi
-if ! push_dev_env $stable_tag ; then
-  echo "ERROR: Save dev-env failed"
-  exit 1
-fi
 
 echo "INFO: Sync started"
 if ! run_dev_env "" $stable_tag ; then

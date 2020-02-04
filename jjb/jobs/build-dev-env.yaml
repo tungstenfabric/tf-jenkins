@@ -1,0 +1,68 @@
+- job:
+    name: "build-dev-env"
+    description: "build dev env empty container"
+    defaults: global
+    scm:
+      - tf-jenkins
+      - tf-dev-env
+    parameters:
+      - label:
+          name: SLAVE
+      - string:
+          name: PIPELINE_NAME
+      - string:
+          name: PIPELINE_NUMBER
+      - string:
+          name: ENVIRONMENT_OS
+          default: centos7
+          description: Base distributive to build
+    wrappers:
+      - timestamps
+      - workspace-cleanup
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: logs_host
+              key-file-variable: LOGS_HOST_SSH_KEY
+              username-variable: LOGS_HOST_USERNAME
+    builders:
+      - copyartifact:
+          project: ${PIPELINE_NAME}
+          filter: "global.env,${JOB_NAME}.env"
+          which-build: upstream-build
+          optional: true
+      - shell: |
+          source "$WORKSPACE/global.env"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}<br>Job logs: <a href=\"${LOGS_URL}/${JOB_NAME}}\">${LOGS_URL}/${JOB_NAME}</a>"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"          
+      - shell: |
+          set +e
+          set -o pipefail
+          export DEBUG=true
+          source "$WORKSPACE/global.env"
+          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
+          if [[ -f ${WORKSPACE}/${JOB_NAME}.env ]]; then
+            source ${WORKSPACE}/${JOB_NAME}.env
+          fi
+          export FULL_LOGS_PATH="${LOGS_PATH}/${JOB_NAME}"
+          # main run
+          ./src/progmaticlab/tf-jenkins/jobs/${JOB_NAME}/run.sh |& tee ${WORKSPACE}/output.log || res=1
+          # collect logs
+          ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
+          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
+          exit $res
+    publishers:
+      - postbuildscript:
+          builders:
+            - role: SLAVE
+              build-on:
+                  - SUCCESS
+                  - FAILURE
+                  - ABORTED
+                  - NOT_BUILT
+                  - UNSTABLE
+              build-steps:
+                  - shell: |
+                      source "$WORKSPACE/global.env"
+                      ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
