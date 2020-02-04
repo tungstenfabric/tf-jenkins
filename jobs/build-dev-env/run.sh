@@ -7,8 +7,6 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
-ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-source $ENV_FILE
 
 # do it as a latest source to override all exports
 if [[ -f ${WORKSPACE}/${JOB_NAME}.env ]]; then
@@ -30,6 +28,8 @@ commit_name="tf-developer-sandbox-$stable_tag"
 #TODO: Rebuild be done only for review for dev-env,
 # re-tagging for stable will be done only after successful tests
 $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/create_workers.sh
+ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
+source $ENV_FILE
 
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
