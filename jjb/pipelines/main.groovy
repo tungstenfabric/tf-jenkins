@@ -48,6 +48,7 @@ timestamps {
 
         if ('fetch-sources' in top_jobs_to_run) {
           stage('Fetch') {
+            run_job('build-dev-env', [job: 'build-dev-env'])
             run_job('fetch-sources', [job: 'fetch-sources'])
           }
         }
