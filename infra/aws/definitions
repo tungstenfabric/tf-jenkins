@@ -26,6 +26,8 @@ SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 MAX_COUNT='20'
 
+ENVIRONMENT_OS=${ENVIRONMENT_OS:-'centos7'}
+
 declare -A OS_IMAGES_UP=( ['CENTOS7']='' \
                           ['CENTOS8']='' \
                           ['RHEL7']='rhel' \
