@@ -564,5 +564,17 @@ def terminate_previous_jobs() {
 }
 
 def save_output_to_nexus() {
+  println "BUILD_URL =  ${BUILD_URL}consoleText"
+            fd = new FileOutputStream("buildlog.txt");  
+            def logContent = Jenkins.getInstanceOrNull()
+                .getItemByFullName(env.JOB_NAME)
+                .getBuildByNumber(
+                    Integer.parseInt(env.BUILD_NUMBER))
+                .getLogText()
+                .writeWholeLogTo(fd)
+
+            // writeFile file: "buildlog.txt", text: logContent
+            archiveArtifacts artifacts: "buildlog.txt"
+
   println "Here output will be saved at nexus"
 }
