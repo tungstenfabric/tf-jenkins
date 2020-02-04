@@ -25,12 +25,14 @@ $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/create_workers.sh
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 source $ENV_FILE
 
+res=0
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./ || res=1
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
-
-echo "INFO: build tf-dev-env started..."
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+if [[ $res == 0 ]] ; then
+  echo "INFO: build tf-dev-env started..."
+  cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
+
 export WORKSPACE=\$HOME
 export TF_CONFIG_DIR=\$HOME
 
@@ -54,11 +56,13 @@ export DEVENVTAG=$stable_tag
 cd src/tungstenfabric/tf-dev-env
 ./run.sh none
 EOF
-echo "INFO: build tf-dev-env done"
+  echo "INFO: build tf-dev-env done: res=$res"
 
-echo "INFO: Save container $target_tag"
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+  if [[ $res == 0 ]] ; then
+    echo "INFO: Save container $target_tag"
+    cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
+set -eo pipefail
 
 echo "INFO: commit $tf_devenv_container_name container as $commit_name"
 sudo docker commit $tf_devenv_container_name $commit_name
@@ -69,4 +73,11 @@ sudo docker tag $commit_name $target_tag
 echo "INFO: push $target_tag container"
 sudo docker push $target_tag
 EOF
-echo "INFO: Save container $target_tag done"
+    echo "INFO: Save container $target_tag done"
+  fi
+fi
+
+# remove worker as soon as possible to free resources
+$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh || true
+
+exit $res
