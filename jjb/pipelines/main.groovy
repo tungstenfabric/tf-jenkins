@@ -172,6 +172,7 @@ timestamps {
           }
         }
       } finally {
+        save_output_to_nexus()        
         println "Logs URL: ${logs_url}"
         println "Destroy VMs"
         try {
@@ -560,4 +561,8 @@ def terminate_previous_jobs() {
       println "Build $rb has been aborted when a new patchset is created"
     }
   }
+}
+
+def save_output_to_nexus() {
+  println "Here output will be saved at nexus"
 }
