@@ -48,6 +48,7 @@ function run_dev_env() {
 
   # disable build dev-env
   export BUILD_DEV_ENV=0
+  export BUILD_DEV_ENV_ON_PULL_FAIL=0
   export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
   export DEVENVTAG=$devenv
 
