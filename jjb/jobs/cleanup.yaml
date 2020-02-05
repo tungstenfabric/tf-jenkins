@@ -6,6 +6,8 @@
       - tf-jenkins
     parameters:
       - label:
+          name: NODE_NAME
+      - string:
           name: SLAVE
       - string:
           name: PIPELINE_NAME

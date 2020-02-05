@@ -6,6 +6,8 @@
     defaults: global
     parameters:
       - label:
+          name: NODE_NAME
+      - string:
           name: SLAVE
       - string:
           name: PIPELINE_NAME
@@ -120,6 +122,8 @@
     defaults: global
     parameters:
       - label:
+          name: NODE_NAME
+      - string:
           name: SLAVE
       - string:
           name: PIPELINE_NAME
@@ -184,6 +188,8 @@
     defaults: global
     parameters:
       - label:
+          name: NODE_NAME
+      - string:
           name: SLAVE
       - string:
           name: PIPELINE_NAME
