@@ -66,6 +66,7 @@
 - name: check if rules file exists
   command: "/usr/local/bin/packer --version" 
   register: packer_version
+  ignore_errors: True
 
 - name: Create temporary download directory
   tempfile:
