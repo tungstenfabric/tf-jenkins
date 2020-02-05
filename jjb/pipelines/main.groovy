@@ -509,7 +509,7 @@ def run_job(name, params) {
     params['parameters'] = params.get('parameters', []) + [
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
-      [$class: 'LabelParameterValue', name: 'SLAVE', label: "${NODE_NAME}"]]
+      [$class: 'LabelParameterValue', name: 'SLAVE', label: "${SLAVE}"]]
     def job = build(params)
     job_results[name]['result'] = job.getResult()
     job_results[name]['number'] = job.getNumber()
