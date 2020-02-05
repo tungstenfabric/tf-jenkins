@@ -567,24 +567,19 @@ def terminate_previous_jobs() {
 def save_output_to_nexus() {
   println "BUILD_URL =  ${BUILD_URL}consoleText"
 
-  //withCredentials(
-  //  bindings: [
-  //    usernamePassword(credentialsId: env.GERRIT_HOST,
-  //    passwordVariable: 'GERRIT_API_PASSWORD',
-  //    usernameVariable: 'GERRIT_API_USER')]) {
-
-      sh """#!/bin/bash -e
-        curl ${BUILD_URL}consoleText > pipelinelog.txt 
-        echo ${logs_url}   
-      """
-
-      //    #   ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
-    // #   rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}   
- 
-  //}
+   withCredentials(
+      bindings:
+        [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]){
+            sh """#!/bin/bash -e
+              set -x
+              curl ${BUILD_URL}consoleText > pipelinelog.txt 
+              ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
+              rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path} 
+            """
+          }
   archiveArtifacts artifacts: "pipelinelog.txt"
   sh """#!/bin/bash -e
     rm -f pipelinelog.txt  
   """
-  println "Here output will be saved at nexus"
+  echo "Output logs saved at ${logs_url}/pipelinelog.txt"
 }
