@@ -1,8 +1,10 @@
 # OS variables are defined in the properties of the Jenkins node
-export OS_REGION_NAME="${OS_REGION_NAME:-sjc1}"
+export OS_REGION_NAME
 export OS_NETWORK="${OS_NETWORK:-management}"
-export OS_NETWORK_ID="${OS_NETWORK_ID:-26d9d3ae-fd07-485b-be74-09756b1e6bd3}"
+export OS_NETWORK_ID
 export OS_SG="${OS_SG:-default}"
+export MAX_COUNT_VM
+export MAX_COUNT_VCPU
 
 #                CPU     Memory     AWS (Canada)   vm_type
 # v2-standard-1   1       4 GB      t2.small       xsmall
@@ -46,6 +48,3 @@ declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['UBUNTU18']='' )
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-
-MAX_COUNT_VM='20'
-MAX_COUNT_VCPU='184'
