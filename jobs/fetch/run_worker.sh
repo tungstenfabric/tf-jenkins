@@ -14,7 +14,6 @@ if [[ -f ${WORKSPACE}/${JOB_NAME}.env ]]; then
 fi
 
 stable_tag=${STABLE_TAGS["${ENVIRONMENT_OS^^}"]}
-target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$stable_tag"
 linux_distr=${TARGET_LINUX_DISTR["$ENVIRONMENT_OS"]}
 tf_devenv_container_name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}
 commit_name="tf-developer-sandbox-$stable_tag"
@@ -28,8 +27,12 @@ source $ENV_FILE
 res=0
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./ || res=1
 
-if [[ $res == 0 ]] ; then
-  echo "INFO: build tf-dev-env started..."
+function run_dev_env() {
+  local stage=$1
+  local devenv=$2
+  local build_dev_env=$3
+  local res=0
+  echo "INFO: run tf-dev-env started..."
   cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 
@@ -47,22 +50,30 @@ export SITE_MIRROR=http://${REGISTRY_IP}/repository
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
-export BUILD_DEV_ENV=1
+export BUILD_DEV_ENV=$build_dev_env
 export LINUX_DISTR=$linux_distr
 export TF_DEVENV_CONTAINER_NAME=$tf_devenv_container_name
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
-export DEVENVTAG=$stable_tag
+export DEVENVTAG=$devenv
 
 cd src/tungstenfabric/tf-dev-env
-./run.sh none
+./run.sh $stage
 EOF
-  echo "INFO: build tf-dev-env done: res=$res"
+  echo "INFO: run tf-dev-env done: res=$res"
+  return $res
+}
 
-  if [[ $res == 0 ]] ; then
-    echo "INFO: Save container $target_tag"
-    cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
+function push_dev_env() {
+  local tag=$1
+  local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
+  local res=0
+  echo "INFO: Save container $target_tag"
+  cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 set -eo pipefail
+
+echo "INFO: stop $tf_devenv_container_name container
+sudo docker stop $tf_devenv_container_name || true
 
 echo "INFO: commit $tf_devenv_container_name container as $commit_name"
 sudo docker commit $tf_devenv_container_name $commit_name
@@ -73,7 +84,41 @@ sudo docker tag $commit_name $target_tag
 echo "INFO: push $target_tag container"
 sudo docker push $target_tag
 EOF
-    echo "INFO: Save container $target_tag done"
+  echo "INFO: Save container $target_tag done"
+  return $res
+}
+
+function pull_dev_env() {
+  local tag=$1
+  local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
+  local res=0
+  cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
+[ "${DEBUG,,}" == "true" ] && set -x
+set -eo pipefail
+sudo docker pull $target_tag
+EOF
+  return $res
+}
+
+# build stable
+if [[ $res == 0 ]] ; then
+  if ! pull_dev_env $stable_tag ; then
+    build_dev_env=1
+    if run_dev_env none $stable_tag $build_dev_env ; then
+      push_dev_env $stable_tag || res=1
+    else
+      res=1
+    fi
+  fi
+fi
+
+# sync & configure
+if [[ $res == 0 ]] ; then
+  build_dev_env=0
+  if run_dev_env "" $stable_tag $build_dev_env ; then
+    push_dev_env $CONTRAIL_CONTAINER_TAG || res=1
+  else
+    res=1
   fi
 fi
 

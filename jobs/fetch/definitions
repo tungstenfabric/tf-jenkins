@@ -12,4 +12,11 @@ declare -A TARGET_LINUX_DISTR=( \
   ['rhel7']='rhel7' \
 )
 
+declare -A BUILD_WORKER=( ['CENTOS7']='slave' \
+                          ['CENTOS8']='slave' \
+                          ['RHEL7']='worker' \
+                          ['RHEL8']='worker' \
+                          ['UBUNTU16']='slave' \
+                          ['UBUNTU18']='slave' )
+
 ENVIRONMENT_OS=${ENVIRONMENT_OS:-centos7}
