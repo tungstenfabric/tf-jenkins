@@ -71,6 +71,24 @@
       - systests
 
 - project:
+    name: Juniper/contrail-common
+    templates:
+      - unittests
+      - systests
+
+- project:
+    name: Juniper/contrail-api-client
+    templates:
+      - unittests
+      - systests
+
+- project:
+    name: tungstenfabric/tf-analytics
+    templates:
+      - unittests
+      - systests
+
+- project:
     name: Juniper/contrail-helm-deployer
     templates:
       - systests
@@ -94,7 +112,7 @@
         - juju_os:
             voting: false
             smoke: true
-    
+
 - project:
     name: Juniper/contrail-web-core
     templates:
@@ -129,4 +147,3 @@
     name: tungstenfabric/tf-devstack
     templates:
       - systests
-
