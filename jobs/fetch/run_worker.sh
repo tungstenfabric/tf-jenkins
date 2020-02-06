@@ -72,7 +72,7 @@ function push_dev_env() {
 [ "${DEBUG,,}" == "true" ] && set -x
 set -eo pipefail
 
-echo "INFO: stop $tf_devenv_container_name container
+echo "INFO: stop $tf_devenv_container_name container"
 sudo docker stop $tf_devenv_container_name || true
 
 echo "INFO: commit $tf_devenv_container_name container as $commit_name"
