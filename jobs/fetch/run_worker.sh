@@ -123,6 +123,8 @@ if [[ $res == 0 ]] ; then
 fi
 
 # remove worker as soon as possible to free resources
-$WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh || true
+if ! $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh ; then
+  echo "WARNING: failed to delete worker... it be cleanuped by GC tasks later"
+fi
 
 exit $res
