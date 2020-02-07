@@ -47,6 +47,7 @@ export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 export CONTRAIL_KEEP_LOG_FILES=true
 
 export LINUX_DISTR=$LINUX_DISTR
+export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}
 
 cd src/tungstenfabric/tf-dev-env
 ./run.sh build
