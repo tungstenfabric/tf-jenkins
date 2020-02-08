@@ -172,7 +172,6 @@ timestamps {
           }
         }
       } finally {
-        save_output_to_nexus()        
         println "Logs URL: ${logs_url}"
         println "Destroy VMs"
         try {
@@ -182,6 +181,7 @@ timestamps {
 
         // add gerrit voting +1/-1
         gerrit_vote(pre_build_done, (new Date()).getTime() - time_start)
+        save_output_to_nexus()
       }
     }
   }
