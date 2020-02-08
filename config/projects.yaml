@@ -95,6 +95,7 @@
     check:
       jobs:
         - helm_k8s
+        - helm_os
 
 - project:
     name: Juniper/contrail-third-party-packages
