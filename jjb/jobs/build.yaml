@@ -85,9 +85,6 @@
           set -o pipefail
           export DEBUG=true
           source "$WORKSPACE/global.env"
-          if [[ -f ${WORKSPACE}/build.env ]]; then
-            source ${WORKSPACE}/build.env
-          fi
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           export FULL_LOGS_PATH="${LOGS_PATH}/build"

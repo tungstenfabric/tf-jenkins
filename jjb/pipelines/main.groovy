@@ -219,8 +219,8 @@ def evaluate_env() {
     if (env.GERRIT_CHANGE_ID) {
       url = resolve_gerrit_url()
       sh """#!/bin/bash -e
-        echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
         echo "export GERRIT_URL=${url}" >> global.env
+        echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
         echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
       """
       println "Pipeline to run: ${env.GERRIT_PIPELINE}"
@@ -266,7 +266,7 @@ def clone_self() {
       [$class: 'CloneOption', depth: 1],
       [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
     ]
-  ])  
+  ])
 }
 
 def get_jobs(project, gerrit_pipeline) {
@@ -311,10 +311,10 @@ def add_job(job_item) {
 def notify_gerrit(msg, verified=0, submit=false) {
   println "Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}"
   withCredentials(
-      bindings: [
-        usernamePassword(credentialsId: env.GERRIT_HOST,
-        passwordVariable: 'GERRIT_API_PASSWORD',
-        usernameVariable: 'GERRIT_API_USER')]) {
+    bindings: [
+      usernamePassword(credentialsId: env.GERRIT_HOST,
+      passwordVariable: 'GERRIT_API_PASSWORD',
+      usernameVariable: 'GERRIT_API_USER')]) {
     opts = ""
 
     //label_name = 'VerifiedTF'
@@ -565,21 +565,17 @@ def terminate_previous_jobs() {
 }
 
 def save_output_to_nexus() {
-  println "BUILD_URL =  ${BUILD_URL}consoleText"
-
-   withCredentials(
-      bindings:
-        [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]){
-            sh """#!/bin/bash -e
-              set -x
-              curl ${BUILD_URL}consoleText > pipelinelog.txt 
-              ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
-              rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path} 
-            """
-          }
+  println "BUILD_URL = ${BUILD_URL}consoleText"
+  withCredentials(
+    bindings: [
+      sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
+    sh """#!/bin/bash -e
+      set -x
+      curl ${BUILD_URL}consoleText > pipelinelog.txt 
+      ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
+      rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path} 
+    """
+  }
   archiveArtifacts artifacts: "pipelinelog.txt"
-  sh """#!/bin/bash -e
-    rm -f pipelinelog.txt  
-  """
   echo "Output logs saved at ${logs_url}/pipelinelog.txt"
 }
