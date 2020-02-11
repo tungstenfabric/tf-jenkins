@@ -54,7 +54,7 @@ cd src/tungstenfabric/tf-dev-env
 # TODO: use in future generic mirror approach
 # Copy yum repos for rhel from host to containers to use local mirrors
 if [[ "$linux_distr" =~ 'rhel' ]] ; then
-  mkdir -d ./config/etc
+  mkdir -p ./config/etc
   cp -r /etc/yum.repos.d ./config/etc/
 fi
 
