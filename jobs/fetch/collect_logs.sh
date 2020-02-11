@@ -8,4 +8,6 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-source $ENV_FILE
+if [ -e "$ENV_FILE" ] ; then
+  source "$ENV_FILE"
+fi
