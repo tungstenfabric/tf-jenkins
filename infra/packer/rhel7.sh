@@ -1,7 +1,6 @@
 #!/bin/bash -eE
 set -o pipefail
 
-
 cat << EOF > local.repo
 [local-rhel-7-server-rpms]
 name = Red Hat Enterprise Linux 7 Server (RPMs) local

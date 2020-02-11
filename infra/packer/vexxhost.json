@@ -26,7 +26,8 @@
          "networks":"{{user `net_id`}}",
          "security_groups":[
             "{{user `sg_group`}}"
-         ]
+         ],
+         "image_tags": "prepared-{{user `os_image`}}"
       }
    ],
    "provisioners":[
