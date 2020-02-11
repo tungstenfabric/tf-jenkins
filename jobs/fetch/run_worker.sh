@@ -57,6 +57,14 @@ export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$devenv
 
 cd src/tungstenfabric/tf-dev-env
+
+# TODO: use in future generic mirror approach
+# Copy yum repos for rhel from host to containers to use local mirrors
+if [[ "$linux_distr" =~ 'rhel' ]] ; then
+  mkdir -d ./config/etc
+  cp -r /etc/yum.repos.d ./config/etc/
+fi
+
 ./run.sh $stage
 EOF
   echo "INFO: run tf-dev-env done: res=$res"

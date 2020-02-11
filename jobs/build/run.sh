@@ -18,7 +18,7 @@ fi
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-export LINUX_DISTR=${TARGET_LINUX_DISTR["${ENVIRONMENT_OS}"]}
+linux_distr=${TARGET_LINUX_DISTR["${ENVIRONMENT_OS}"]}
 
 echo "INFO: Build started"
 
@@ -46,10 +46,18 @@ export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 export CONTRAIL_KEEP_LOG_FILES=true
 
-export LINUX_DISTR=$LINUX_DISTR
+export LINUX_DISTR=$linux_distr
 export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}
 
 cd src/tungstenfabric/tf-dev-env
+
+# TODO: use in future generic mirror approach
+# Copy yum repos for rhel from host to containers to use local mirrors
+if [[ "$linux_distr" =~ 'rhel' ]] ; then
+  mkdir -d ./config/etc
+  cp -r /etc/yum.repos.d ./config/etc/
+fi
+
 ./run.sh build
 EOF
 
