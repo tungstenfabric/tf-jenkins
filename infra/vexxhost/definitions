@@ -35,15 +35,15 @@ declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' \
 
 declare -A OS_IMAGES_UP=( ['CENTOS7']='' \
                           ['CENTOS8']='' \
-                          ['RHEL7']='rhel' \
-                          ['RHEL8']='rhel' \
+                          ['RHEL7']='' \
+                          ['RHEL8']='' \
                           ['UBUNTU16']='' \
                           ['UBUNTU18']='' )
 
 declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['CENTOS8']='' \
-                            ['RHEL7']='rhel' \
-                            ['RHEL8']='rhel' \
+                            ['RHEL7']='' \
+                            ['RHEL8']='' \
                             ['UBUNTU16']='' \
                             ['UBUNTU18']='' )
 
