@@ -10,6 +10,8 @@ source "$my_dir/definitions"
 source "$my_dir/functions.sh"
 
 nova list --tags "SLAVE=$SLAVE" --fields tags > result_"$SLAVE" 
+openstack subnet list --tags "SLAVE=$SLAVE" --long -c Tags -f value >> result_"$SLAVE" 
+openstack network list --tags "SLAVE=$SLAVE" --long -c Tags -f value >> result_"$SLAVE" 
 
 if ! cat result_"$SLAVE" | sed "s/'/\n/g" | grep "PipelineBuildTag" | awk -F "=" '{print $2}' | sort | uniq > existing_tags.txt; then
   echo "No running instances"
@@ -37,11 +39,15 @@ if [[ -n "$TERMINATION_LIST_TAGS" ]]; then
   fi
   TERMINATION_LIST_SUBNET=$(openstack subnet list --any-tags $(IFS=","; echo "${TAGS[*]}") -c ID -f value)
   if [[ -n "$TERMINATION_LIST_SUBNET" ]]; then
-    openstack subnet delete $TERMINATION_LIST_SUBNET
+    for s in $TERMINATION_LIST_SUBNET; do
+      openstack subnet delete $s || true
+    done
   fi
   TERMINATION_LIST_NETWORK=$(openstack network list --any-tags $(IFS=","; echo "${TAGS[*]}") -c ID -f value)
   if [[ -n "$TERMINATION_LIST_NETWORK" ]]; then
-    openstack network delete $TERMINATION_LIST_NETWORK
+    for n in $TERMINATION_LIST_NETWORK; do
+      openstack network delete $n || true
+    done
   fi
 fi
 
