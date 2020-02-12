@@ -1,10 +1,27 @@
 ---
 
 # jobs are divided into two parts:
-# - jobs that are run as is: build, test-unit, test-lint. These jobs depend only on fetch-sources
-# job that is automatically added into pipeline is any of these jobs present.
-# - jobs that are treated as test configurations and translated into several jobs:
-# deploy platform, deploy TF, run sanity/smoke, ... sanity is enabed by default and smoke is disabled
+# jobs that are run as is: fetch-sources, build, test-unit, test-lint.
+# jobs that are treated as test configurations and translated into several jobs:
+#   deploy platform, deploy TF, run sanity/smoke, ... sanity is enabed by default and smoke is disabled
+
+# Example of jobs definition
+#jobs:
+#  - fetch-sources-centos:
+#      job-name: fetch-sources
+#  - build-centos:
+#      job-name: build
+#  - test-unit
+#  - test-unit-ui:
+#      job-name: test-unit
+#      vars:
+#        TARGET: ui
+#  - ansible_k8s
+#      wait-for-build-job: build-centos
+#      voting: true
+#      smoke: false
+#      sanity: true
+
 
 - project-template:
     name: unittests
@@ -33,6 +50,36 @@
             smoke: true
         - ansible_k8s
         - ansible_os
+
+- project:
+    name: tungstenfabric
+    nightly:
+      jobs:
+        - fetch-sources
+        - build
+        - test-unit
+        - ansible_k8s
+        - ansible_os
+        - helm_k8s
+        - helm_os
+        - k8s_manifests:
+            voting: false
+            smoke: true
+        - juju_k8s:
+            voting: false
+            smoke: true
+        - juju_os:
+            voting: false
+            smoke: true
+        # TODO: think how to choose image tag (centos/rhel) for sanity jobs 
+        #- fetch-sources-rhel:
+        #    job-name: fetch-sources
+        #    vars:
+        #      ENVIRONMENT_OS: rhel7
+        #- build-rhel:
+        #    job-name: build
+        #    vars:
+        #      ENVIRONMENT_OS: rhel7
 
 - project:
     name: Juniper/contrail-container-builder

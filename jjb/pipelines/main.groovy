@@ -20,13 +20,15 @@ inner_jobs_code = [:]
 // set of result of each job 
 job_results = [:]
 
+rnd = new Random()
+
 // Please note: two similar jobs with similar parameters can be run as one job with two parents.
 //              right now there in no such cases but please be careful with addition new jobs
 
 timestamps {
   timeout(time: 4, unit: 'HOURS') {
     node("${SLAVE}") {
-      if (!env.GERRIT_CHANGE_ID) {
+      if (!env.GERRIT_CHANGE_ID || env.GERRIT_PIPELINE != 'nightly') {
         println("Manual run is forbidden")
         return
       }
@@ -135,6 +137,17 @@ timestamps {
 
         // check if build is enabled
         if ('build' in top_jobs_to_run) {
+          // add publish job into inner_jobs_code to be run in parallel with deploy but after build
+          if (env.GERRIT_PIPELINE == 'nightly') {
+            inner_jobs_code["Publish TF containers to docker hub"] = {
+              stage('publish-latest') {
+                run_job(
+                  'publish',
+                  [job: 'publish',
+                   parameters: [booleanParam(name: 'STABLE', value: false)]])
+              }
+            }
+          }
           top_jobs_code['Build images for testing'] = {
             stage('build') {
               run_job('build', [job: 'build'])
@@ -147,24 +160,12 @@ timestamps {
           }
         }
 
-        // add publish job into inner_jobs_code to be run in parallel with deploy but after build
-        if (env.GERRIT_PIPELINE == 'nightly') {
-          inner_jobs_code["Publish TF containers to docker hub"] = {
-            stage('publish') {
-              run_job(
-                'publish',
-                [job: 'publish',
-                 parameters: [booleanParam(name: 'STABLE', value: false)]])
-            }
-          }
-        }
-
         // run jobs in parallel
         parallel top_jobs_code
 
-        if (env.GERRIT_PIPELINE == 'nightly') {
+        if (env.GERRIT_PIPELINE == 'nightly' && build_enabled) {
           // publish stable
-          stage('publish') {
+          stage('publish-latest-stable') {
             run_job(
               'publish',
               [job: 'publish', 
@@ -192,6 +193,7 @@ def evaluate_env() {
   try {
     sh """#!/bin/bash -e
       echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
+      echo "export SLAVE=${SLAVE}" >> global.env
     """
 
     // evaluate logs params
@@ -216,6 +218,7 @@ def evaluate_env() {
     """
 
     // store gerrit input if present. evaluate jobs
+    println "Pipeline to run: ${env.GERRIT_PIPELINE}"
     if (env.GERRIT_CHANGE_ID) {
       url = resolve_gerrit_url()
       sh """#!/bin/bash -e
@@ -223,21 +226,23 @@ def evaluate_env() {
         echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
         echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
       """
-      println "Pipeline to run: ${env.GERRIT_PIPELINE}"
       get_jobs(env.GERRIT_PROJECT, env.GERRIT_PIPELINE)
-      println "Evaluated jobs to run: ${jobs_from_config}"
-      def possible_top_jobs = ['test-lint', 'test-unit', 'build', 'fetch-sources']
-      for (item in jobs_from_config) {
-        if (item.getKey() in possible_top_jobs) {
-          top_jobs_to_run += item.getKey()
-        } else {
-          test_configuration_names += item.getKey()
-        }
+    } else if (env.GERRIT_PIPELINE == 'nightly') {
+      get_jobs("tungstenfabric", env.GERRIT_PIPELINE)
+    }
+    println "Evaluated jobs to run: ${jobs_from_config}"
+    def possible_top_jobs = ['test-lint', 'test-unit', 'build', 'fetch-sources']
+    for (item in jobs_from_config) {
+      if (item.getKey() in possible_top_jobs) {
+        top_jobs_to_run += item.getKey()
+      } else {
+        test_configuration_names += item.getKey()
       }
     }
 
     // evaluate registry params
-    if ('build' in top_jobs_to_run || 'test-lint' in top_jobs_to_run || 'test-unit' in top_jobs_to_run) {
+    // if we have fetch-sources then it means that we have build stage thus we have to use own registry for deploy
+    if ('fetch-sources' in top_jobs_to_run) {
       sh """#!/bin/bash -e
         echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
         echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
@@ -507,7 +512,7 @@ def run_job(name, params) {
   try {
     job_params_to_file(name)
     params['parameters'] = params.get('parameters', []) + [
-      string(name: 'SLAVE', value: "${SLAVE}"),
+      string(name: 'RANDOM', value: rnd.nextInt(99999)),
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]

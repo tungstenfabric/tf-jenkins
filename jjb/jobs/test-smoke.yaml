@@ -8,7 +8,7 @@
       - label:
           name: NODE_NAME
       - string:
-          name: SLAVE
+          name: RANDOM
       - string:
           name: PIPELINE_NAME
       - string:
