@@ -35,11 +35,11 @@ if [[ -n "$TERMINATION_LIST_TAGS" ]]; then
     down_instances $TERMINATION_LIST_INSTANCE || true
     nova delete $TERMINATION_LIST_INSTANCE
   fi
-  TERMINATION_LIST_SUBNET=$(openstack subnet list --tags-any $(IFS=","; echo "${TAGS[*]}") -c ID -f value)
+  TERMINATION_LIST_SUBNET=$(openstack subnet list --any-tags $(IFS=","; echo "${TAGS[*]}") -c ID -f value)
   if [[ -n "$TERMINATION_LIST_SUBNET" ]]; then
     openstack subnet delete $TERMINATION_LIST_SUBNET
   fi
-  TERMINATION_LIST_NETWORK=$(openstack network list --tags-any $(IFS=","; echo "${TAGS[*]}") -c ID -f value)
+  TERMINATION_LIST_NETWORK=$(openstack network list --any-tags $(IFS=","; echo "${TAGS[*]}") -c ID -f value)
   if [[ -n "$TERMINATION_LIST_NETWORK" ]]; then
     openstack network delete $TERMINATION_LIST_NETWORK
   fi
