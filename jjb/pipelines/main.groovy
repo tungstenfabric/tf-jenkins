@@ -314,6 +314,10 @@ def add_job(job_item) {
 }
 
 def notify_gerrit(msg, verified=0, submit=false) {
+  if (!env.GERRIT_HOST) {
+    // looks like it's a nightly pipeline
+    return
+  }
   println "Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}"
   withCredentials(
     bindings: [
@@ -512,7 +516,7 @@ def run_job(name, params) {
   try {
     job_params_to_file(name)
     params['parameters'] = params.get('parameters', []) + [
-      string(name: 'RANDOM', value: rnd.nextInt(99999)),
+      string(name: 'RANDOM', value: "${rnd.nextInt(99999)}"),
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]
