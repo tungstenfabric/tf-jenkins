@@ -50,7 +50,8 @@ export SITE_MIRROR=http://${REGISTRY_IP}/repository
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
-export BUILD_DEV_ENV=$build_dev_env
+export BUILD_DEV_ENV=0
+export BUILD_DEV_ENV_ON_PULL_FAIL=$build_dev_env
 export LINUX_DISTR=$linux_distr
 export TF_DEVENV_CONTAINER_NAME=$tf_devenv_container_name
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
@@ -99,27 +100,14 @@ EOF
   return $res
 }
 
-function pull_dev_env() {
-  local tag=$1
-  local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
-  local res=0
-  cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
-[ "${DEBUG,,}" == "true" ] && set -x
-set -eo pipefail
-sudo docker pull $target_tag
-EOF
-  return $res
-}
 
 # build stable
 if [[ $res == 0 ]] ; then
-  if ! pull_dev_env $stable_tag ; then
-    build_dev_env=1
-    if run_dev_env none $stable_tag $build_dev_env ; then
-      push_dev_env $stable_tag || res=1
-    else
-      res=1
-    fi
+  build_dev_env=1
+  if run_dev_env none $stable_tag $build_dev_env ; then
+    push_dev_env $stable_tag || res=1
+  else
+    res=1
   fi
 fi
 
