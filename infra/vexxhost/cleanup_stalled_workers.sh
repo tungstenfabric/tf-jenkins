@@ -30,14 +30,22 @@ if [[ -n "$TERMINATION_LIST_TAGS" ]]; then
   for t in $TERMINATION_LIST_TAGS; do
     TAGS+=(PipelineBuildTag=${t})
   done
-  TERMINATION_LIST=$(nova list --tags-any $(IFS=","; echo "${TAGS[*]}") --status ACTIVE --field locked | grep -v 'True' | awk '{print $2}' | grep -v 'ID'  | grep -v "^$" || true)
-  if [[ -n "$TERMINATION_LIST" ]]; then
-    down_instances $TERMINATION_LIST || true
-    nova delete $TERMINATION_LIST
+  TERMINATION_LIST_INSTANCE=$(nova list --tags-any $(IFS=","; echo "${TAGS[*]}") --status ACTIVE --field locked | grep -v 'True' | awk '{print $2}' | grep -v 'ID'  | grep -v "^$" || true)
+  if [[ -n "$TERMINATION_LIST_INSTANCE" ]]; then
+    down_instances $TERMINATION_LIST_INSTANCE || true
+    nova delete $TERMINATION_LIST_INSTANCE
+  fi
+  TERMINATION_LIST_SUBNET=$(openstack subnet list --tags-any $(IFS=","; echo "${TAGS[*]}") -c ID -f value)
+  if [[ -n "$TERMINATION_LIST_SUBNET" ]]; then
+    openstack subnet delete $TERMINATION_LIST_SUBNET
+  fi
+  TERMINATION_LIST_NETWORK=$(openstack network list --tags-any $(IFS=","; echo "${TAGS[*]}") -c ID -f value)
+  if [[ -n "$TERMINATION_LIST_NETWORK" ]]; then
+    openstack network delete $TERMINATION_LIST_NETWORK
   fi
 fi
 
-TERMINATION_LIST=$(openstack server list --status ERROR -c ID -f value)
-if [[ -n "$TERMINATION_LIST" ]]; then
-  nova delete $TERMINATION_LIST
+TERMINATION_LIST_INSTANCE=$(openstack server list --status ERROR -c ID -f value)
+if [[ -n "$TERMINATION_LIST_INSTANCE" ]]; then
+  nova delete $TERMINATION_LIST_INSTANCE
 fi
