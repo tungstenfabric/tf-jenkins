@@ -28,7 +28,7 @@ rnd = new Random()
 timestamps {
   timeout(time: 4, unit: 'HOURS') {
     node("${SLAVE}") {
-      if (!env.GERRIT_CHANGE_ID || env.GERRIT_PIPELINE != 'nightly') {
+      if (!env.GERRIT_CHANGE_ID && env.GERRIT_PIPELINE != 'nightly') {
         println("Manual run is forbidden")
         return
       }
