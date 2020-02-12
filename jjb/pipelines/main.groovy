@@ -162,16 +162,6 @@ timestamps {
 
         // run jobs in parallel
         parallel top_jobs_code
-
-        if (env.GERRIT_PIPELINE == 'nightly' && build_enabled) {
-          // publish stable
-          stage('publish-latest-stable') {
-            run_job(
-              'publish',
-              [job: 'publish', 
-               parameters: [booleanParam(name: 'STABLE', value: true)]])
-          }
-        }
       } finally {
         println "Logs URL: ${logs_url}"
         println "Destroy VMs"
@@ -181,7 +171,18 @@ timestamps {
         }
 
         // add gerrit voting +1/-1
-        gerrit_vote(pre_build_done, (new Date()).getTime() - time_start)
+        verified = gerrit_vote(pre_build_done, (new Date()).getTime() - time_start)
+
+        if (verified == 1 && env.GERRIT_PIPELINE == 'nightly' && 'build' in top_jobs_to_run) {
+          // publish stable
+          stage('publish-latest-stable') {
+            run_job(
+              'publish',
+              [job: 'publish', 
+               parameters: [booleanParam(name: 'STABLE', value: true)]])
+          }
+        }
+
         save_output_to_nexus()
       }
     }
@@ -460,6 +461,7 @@ def gerrit_vote(pre_build_done, full_duration) {
       verified = -1
     }
     notify_gerrit(msg, verified)
+    return verified
   } catch (err) {
     print "Failed to provide vote to gerrit "
     msg = err.getMessage()
@@ -467,6 +469,7 @@ def gerrit_vote(pre_build_done, full_duration) {
       print msg
     }
   }
+  return 0
 }
 
 def get_gerrit_msg_for_job(name, status, duration) {
