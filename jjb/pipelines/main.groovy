@@ -1,6 +1,8 @@
 // constansts
 REGISTRY_IP = "pnexus.sytes.net"
 REGISTRY_PORT = "5001"
+if (env.GERRIT_PIPELINE == 'nightly')
+  REGISTRY_PORT = "5002"
 LOGS_HOST = "pnexus.sytes.net"
 LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
 LOGS_BASE_URL = "http://pnexus.sytes.net:8082/jenkins_logs"
