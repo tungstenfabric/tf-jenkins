@@ -40,15 +40,16 @@ export CONTRAIL_DIR=""
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 
-# temporary hack for controller/src/agent:test
-echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
-
 cd src/tungstenfabric/tf-dev-env
 ./run.sh $@
 EOF
 return $res
 }
 
+if ! run_over_ssh ; then
+  echo "ERROR: UT failed"
+  exit 1
+fi
 if ! run_over_ssh test $TARGET ; then
   echo "ERROR: UT failed"
   exit 1
