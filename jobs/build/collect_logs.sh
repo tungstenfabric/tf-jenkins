@@ -39,13 +39,13 @@ sudo rm -rf ./contrail-test
 EOF
 
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" ${IMAGE_SSH_USER}@${instance_ip}:container-builder.tgz ${WORKSPACE}/
-tar -zxvf  ${WORKSPACE}/container-builder.tgz
+tar -zxf  ${WORKSPACE}/container-builder.tgz
 
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" ${IMAGE_SSH_USER}@${instance_ip}:deployers-containers.tgz ${WORKSPACE}/
-tar -zxvf  ${WORKSPACE}/deployers-containers.tgz
+tar -zxf  ${WORKSPACE}/deployers-containers.tgz
 
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" ${IMAGE_SSH_USER}@${instance_ip}:contrail-test.tgz ${WORKSPACE}/
-tar -zxvf  ${WORKSPACE}/contrail-test.tgz
+tar -zxf  ${WORKSPACE}/contrail-test.tgz
 
 ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS} ${IMAGE_SSH_USER}@${instance_ip} rm -rf deployers-containers.tgz container-builder.tgz contrail-test.tgz
 
