@@ -40,6 +40,12 @@ export CONTRAIL_DIR=""
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
 
+# Some tests (like test.test_flow.FlowQuerierTest.test_1_noarg_query) expect
+# PST timezone, and fail otherwise.
+timedatectl
+sudo timedatectl set-timezone America/Los_Angeles
+timedatectl
+
 cd src/tungstenfabric/tf-dev-env
 ./run.sh $@
 EOF
