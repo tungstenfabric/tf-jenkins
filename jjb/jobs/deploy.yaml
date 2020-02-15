@@ -113,7 +113,10 @@
                   - FAILURE
               build-steps:
                   - shell: |
+                      export ORCHESTRATOR={orchestrator}
                       source "$WORKSPACE/global.env"
+                      source "$WORKSPACE/stackrc.$JOB_NAME.env"
+                      source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
                       ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/remove_workers.sh
 
 - job-template:

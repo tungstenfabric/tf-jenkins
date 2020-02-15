@@ -1,11 +1,14 @@
 // constansts
+TIMEOUT_HOURS = 4
 REGISTRY_IP = "pnexus.sytes.net"
 REGISTRY_PORT = "5001"
-if (env.GERRIT_PIPELINE == 'nightly')
-  REGISTRY_PORT = "5002"
 LOGS_HOST = "pnexus.sytes.net"
 LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
 LOGS_BASE_URL = "http://pnexus.sytes.net:8082/jenkins_logs"
+if (env.GERRIT_PIPELINE == 'nightly') {
+  TIMEOUT_HOURS = 6
+  REGISTRY_PORT = "5002"
+}
 
 // pipeline flow variables
 // base url for all jobs
@@ -28,7 +31,7 @@ rnd = new Random()
 //              right now there in no such cases but please be careful with addition new jobs
 
 timestamps {
-  timeout(time: 4, unit: 'HOURS') {
+  timeout(time: TIMEOUT_HOURS, unit: 'HOURS') {
     node("${SLAVE}") {
       if (!env.GERRIT_CHANGE_ID && env.GERRIT_PIPELINE != 'nightly') {
         println("Manual run is forbidden")
