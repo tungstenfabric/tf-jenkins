@@ -37,8 +37,8 @@ declare -A OS_IMAGES_UP=( ['CENTOS7']='' \
                           ['CENTOS8']='' \
                           ['RHEL7']='' \
                           ['RHEL8']='' \
-                          ['UBUNTU16']='' \
-                          ['UBUNTU18']='' )
+                          ['UBUNTU16']='ubuntu' \
+                          ['UBUNTU18']='ubuntu' )
 
 declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['CENTOS8']='' \
