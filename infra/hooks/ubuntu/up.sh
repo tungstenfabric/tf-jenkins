@@ -20,5 +20,6 @@ OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 echo "INFO: Update ubuntu OS"
-echo "APT::Acquire::Retries \"5\";" | sudo tee /etc/apt/apt.conf.d/80-retries
+echo "APT::Acquire::Retries \"10\";" | sudo tee /etc/apt/apt.conf.d/80-retries
+sudo cp -f /usr/share/unattended-upgrades/20auto-upgrades-disabled /etc/apt/apt.conf.d/ || /bin/true
 EOF
