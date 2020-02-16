@@ -13,9 +13,6 @@
           name: PIPELINE_NAME
       - string:
           name: PIPELINE_NUMBER
-    properties:
-      - build-discarder:
-          num-to-keep: 10
     wrappers:
       - timestamps
       - credentials-binding:
@@ -134,9 +131,6 @@
           name: PIPELINE_NUMBER
       - string:
           name: DEPLOY_PLATFORM_JOB_NUMBER
-    properties:
-      - build-discarder:
-          num-to-keep: 10
     wrappers:
       - timestamps
       - credentials-binding:
@@ -204,9 +198,6 @@
           name: DEPLOY_PLATFORM_JOB_NUMBER
       - bool:
           name: COLLECT_SANITY_LOGS
-    properties:
-      - build-discarder:
-          num-to-keep: 50
     wrappers:
       - timestamps
       - credentials-binding:

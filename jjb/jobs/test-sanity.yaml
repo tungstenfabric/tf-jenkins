@@ -19,7 +19,7 @@
           name: DEPLOY_PLATFORM_JOB_NUMBER
     properties:
       - build-discarder:
-          num-to-keep: 10
+          num-to-keep: 50
     wrappers:
       - timestamps
       - credentials-binding:
