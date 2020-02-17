@@ -89,10 +89,9 @@
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           export FULL_LOGS_PATH="${LOGS_PATH}/build"
           # main run
-          ./src/progmaticlab/tf-jenkins/jobs/build/run.sh |& tee ${WORKSPACE}/output.log || res=1
+          ./src/progmaticlab/tf-jenkins/jobs/build/run.sh || res=1
           # collect logs
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
-          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
           ./src/progmaticlab/tf-jenkins/jobs/build/collect_logs.sh
           exit $res
     publishers:
@@ -108,4 +107,8 @@
               build-steps:
                   - shell: |
                       source "$WORKSPACE/global.env"
+                      source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
+                      export FULL_LOGS_PATH="${LOGS_PATH}/build"
+                      curl -L "${BUILD_URL}consoleText" -o "${WORKSPACE}/output.log"
+                      rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
                       ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
