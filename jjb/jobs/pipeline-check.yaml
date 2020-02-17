@@ -44,8 +44,8 @@
             - project-compare-type: 'ANT'
               project-pattern: '**'
               branches:
-                - branch-compare-type: 'ANT'
-                  branch-pattern: '**'
+                - branch-compare-type: 'REG_EXP'
+                  branch-pattern: '^((?!R3\.|R4\.|R5\.).*)'
 
 - job:
     name: pipeline-check-tf
