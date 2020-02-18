@@ -71,7 +71,6 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          export DEBUG=true
           export ENVIRONMENT_OS={environment_os}
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
@@ -84,7 +83,6 @@
       - shell: |
           set +e
           set -o pipefail
-          export DEBUG=true
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
@@ -166,7 +164,6 @@
       - shell: |
           set +e
           set -o pipefail
-          export DEBUG=true
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.deploy-platform-{project}.env"
           source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions

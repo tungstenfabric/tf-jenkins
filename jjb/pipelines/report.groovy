@@ -27,7 +27,6 @@ pipeline{
                 accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                 secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
               sh """
-                export DEBUG=true
                 export SLAVE="aws"
                 $WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/report.sh
               """
@@ -56,7 +55,6 @@ pipeline{
                 string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]){
               sh """
                 export SLAVE="vexxhost"
-                export DEBUG=true
                 $WORKSPACE/src/progmaticlab/tf-jenkins/infra/vexxhost/report.sh
               """
               stash allowEmpty: true, name: "vexxhost", excludes: "src/**"

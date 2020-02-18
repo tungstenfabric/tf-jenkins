@@ -76,7 +76,6 @@
       - shell: |
           set +e
           set -o pipefail
-          export DEBUG=true
           source "$WORKSPACE/global.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           export FULL_LOGS_PATH="${LOGS_PATH}/fetch-sources"
@@ -99,11 +98,10 @@
                     - UNSTABLE
                 build-steps:
                     - shell: |
-                        export DEBUG=true
                         source "$WORKSPACE/global.env"
                         # have cleanup here for case of 'cancel job'
                         if [[ -e $WORKSPACE/stackrc.$JOB_NAME.env ]] ; then
-                            # cleanup only if worker was created 
+                            # cleanup only if worker was created
                             echo "INFO: cleanup workers"
                             ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh || true
                         else
