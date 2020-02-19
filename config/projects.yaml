@@ -136,6 +136,11 @@
       - systests
 
 - project:
+    name: Juniper/contrail-test
+    templates:
+      - systests
+
+- project:
     name: tungstenfabric/tf-analytics
     templates:
       - unittests
