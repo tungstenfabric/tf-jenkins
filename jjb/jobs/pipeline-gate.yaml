@@ -1,0 +1,96 @@
+---
+
+- job:
+    name: pipeline-gate-opencontrail
+    node: aws
+    description: Please do not run this manually
+    project-type: pipeline
+    concurrent: true
+    parameters:
+      - choice:
+          name: SLAVE
+          choices:
+            - vexxhost
+            - aws
+          description: "Slave where all jobs will be run: vexxhost, aws"
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: gate
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: jjb/pipelines/main.groovy
+      lightweight-checkout: true
+    triggers:
+      - gerrit:
+          server-name: review.opencontrail.org
+          skip-vote:
+            successful: true
+            failed: true
+            unstable: true
+            notbuilt: true
+          trigger-on:
+          trigger-on:
+            - comment-added-event:
+                approval-category: 'CRVW'
+                approval-value: 2
+            - comment-added-event:
+                approval-category: 'APRV'
+                approval-value: 1
+            - comment-added-event:
+                approval-category: 'VRIF'
+                approval-value: 2
+          trigger-for-unreviewed-patches: false
+          projects:
+            - project-compare-type: 'ANT'
+              project-pattern: 'Juniper/contrail-tripleo-heat-templates'
+              branches:
+                - branch-compare-type: 'REG_EXP'
+                  branch-pattern: '^((?!R3\.|R4\.|R5\.).*)'
+
+- job:
+    name: pipeline-check-tf
+    node: aws
+    description: Please do not run this manually
+    project-type: pipeline
+    concurrent: true
+    parameters:
+      - choice:
+          name: SLAVE
+          choices:
+            - vexxhost
+            - aws
+          description: "Slave where all jobs will be run: vexxhost, aws"
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: gate
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: jjb/pipelines/main.groovy
+      lightweight-checkout: true
+    triggers:
+      - gerrit:
+          server-name: gerrit.tungsten.io
+          skip-vote:
+            successful: true
+            failed: true
+            unstable: true
+            notbuilt: true
+          trigger-on:
+            - comment-added-event:
+                approval-category: 'CRVW'
+                approval-value: 2
+            - comment-added-event:
+                approval-category: 'APRV'
+                approval-value: 1
+            - comment-added-event:
+                approval-category: 'VRIF'
+                approval-value: 2
+          trigger-for-unreviewed-patches: false
+          projects:
+            - project-compare-type: 'ANT'
+              project-pattern: 'Juniper/contrail-tripleo-heat-templates'
+              branches:
+                - branch-compare-type: 'ANT'
+                  branch-pattern: '**'

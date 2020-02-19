@@ -192,6 +192,9 @@
     check:
       jobs:
         - rhosp
+    gate:
+      jobs:
+        - fetch-sources
 
 - project:
     name: tungstenfabric/tf-helm-deployer
