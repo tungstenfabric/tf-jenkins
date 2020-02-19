@@ -30,7 +30,6 @@
             unstable: true
             notbuilt: true
           trigger-on:
-          trigger-on:
             - comment-added-event:
                 approval-category: 'CRVW'
                 approval-value: 2
@@ -39,7 +38,7 @@
                 approval-value: 1
             - comment-added-event:
                 approval-category: 'VRIF'
-                approval-value: 2
+                approval-value: 1
           trigger-for-unreviewed-patches: false
           projects:
             - project-compare-type: 'ANT'
@@ -86,7 +85,7 @@
                 approval-value: 1
             - comment-added-event:
                 approval-category: 'VRIF'
-                approval-value: 2
+                approval-value: 1
           trigger-for-unreviewed-patches: false
           projects:
             - project-compare-type: 'ANT'
