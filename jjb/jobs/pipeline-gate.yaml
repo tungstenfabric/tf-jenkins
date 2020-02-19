@@ -31,13 +31,13 @@
             notbuilt: true
           trigger-on:
             - comment-added-event:
-                approval-category: 'CRVW'
+                approval-category: 'Code-Review'
                 approval-value: 2
             - comment-added-event:
-                approval-category: 'APRV'
+                approval-category: 'Approved'
                 approval-value: 1
             - comment-added-event:
-                approval-category: 'VRIF'
+                approval-category: 'VerifiedTF'
                 approval-value: 1
           trigger-for-unreviewed-patches: false
           projects:
@@ -78,13 +78,13 @@
             notbuilt: true
           trigger-on:
             - comment-added-event:
-                approval-category: 'CRVW'
+                approval-category: 'Code-Review'
                 approval-value: 2
             - comment-added-event:
-                approval-category: 'APRV'
+                approval-category: 'Approved'
                 approval-value: 1
             - comment-added-event:
-                approval-category: 'VRIF'
+                approval-category: 'VerifiedTF'
                 approval-value: 1
           trigger-for-unreviewed-patches: false
           projects:
