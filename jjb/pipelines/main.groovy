@@ -37,17 +37,17 @@ timestamps {
         println("Manual run is forbidden")
         return
       }
+      clone_self()
+      // has_gate_approvals needs cloned repo for tools
+      if (env.GERRIT_PIPELINE == 'gate' && ! has_gate_approvals()) {
+        println("There os no gate approvals.. skip gate")
+        return
+      }
       pre_build_done = false
       try {
         time_start = (new Date()).getTime()
         stage('Pre-build') {
           terminate_previous_jobs()
-          clone_self()
-          // has_gate_approvals needs cloned repo for tools
-          if (env.GERRIT_PIPELINE == 'gate' && ! has_gate_approvals()) {
-            println("There os no gate approvals.. skip gate")
-            return
-          }
           evaluate_env()
           archiveArtifacts artifacts: 'global.env'
           println "Logs URL: ${logs_url}"
