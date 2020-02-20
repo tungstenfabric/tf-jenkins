@@ -39,6 +39,9 @@
             - comment-added-event:
                 approval-category: 'VerifiedTF'
                 approval-value: 1
+            - comment-added-event:
+                approval-category: 'Verified'
+                approval-value: 1
           trigger-for-unreviewed-patches: false
           projects:
             - project-compare-type: 'ANT'
@@ -85,6 +88,9 @@
                 approval-value: 1
             - comment-added-event:
                 approval-category: 'VerifiedTF'
+                approval-value: 1
+            - comment-added-event:
+                approval-category: 'Verified'
                 approval-value: 1
           trigger-for-unreviewed-patches: false
           projects:
