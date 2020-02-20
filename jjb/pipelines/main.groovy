@@ -56,7 +56,7 @@ timestamps {
       }
       if (env.GERRIT_PIPELINE == 'submit') {
         if (has_gate_submits()) {
-          notify_gerrit("Submit for merge", verified=null, submit=true)
+          notify_gerrit("Submit for merge", null, true)
         } else {
           println("There os no submit labels.. skip submit to merge")
         }
@@ -427,11 +427,11 @@ def has_approvals(approvals) {
 }
 
 def has_gate_approvals() {
-  return has_approvals('VerifiedTF:recommended:1,Code-Review:approved,Approved:approved')
+  return has_approvals('Verified:recommended:1,Code-Review:approved,Approved:approved')
 }
 
 def has_gate_submits() {
-  return has_approvals('VerifiedTF:approved,Code-Review:approved,Approved:approved')  
+  return has_approvals('Verified:approved,Code-Review:approved,Approved:approved')  
 }
 
 def resolve_gerrit_url() {
