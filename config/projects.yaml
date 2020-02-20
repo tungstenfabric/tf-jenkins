@@ -230,12 +230,12 @@
 
 - project:
     name: Juniper/contrail-tripleo-heat-templates
-    check:
-      jobs:
-        - rhosp
-    gate:
-      jobs:
-        - rhosp
+    # check:
+    #   jobs:
+    #     - rhosp
+    # gate:
+    #   jobs:
+    #     - rhosp
 
 - project:
     name: tungstenfabric/tf-helm-deployer
