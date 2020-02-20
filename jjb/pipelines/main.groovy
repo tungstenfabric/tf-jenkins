@@ -10,15 +10,15 @@ if (env.GERRIT_PIPELINE == 'nightly') {
   REGISTRY_PORT = "5002"
 }
 
-VERIFIED_SUCCESS_VALUES= {
+VERIFIED_SUCCESS_VALUES= [
   'check': 1,
   'gate': 2
-}
+]
 
-VERIFIED_FAIL_VALUES= {
+VERIFIED_FAIL_VALUES= [
   'check': -1,
   'gate': -2
-}
+]
 
 // pipeline flow variables
 // base url for all jobs
