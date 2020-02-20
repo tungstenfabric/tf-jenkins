@@ -37,16 +37,17 @@ timestamps {
         println("Manual run is forbidden")
         return
       }
-      if (env.GERRIT_PIPELINE == 'gate' && ! has_gate_approvals()) {
-        println("There os no gate approvals.. skip gate")
-        return
-      }
       pre_build_done = false
       try {
         time_start = (new Date()).getTime()
         stage('Pre-build') {
           terminate_previous_jobs()
           clone_self()
+          // has_gate_approvals needs cloned repo for tools
+          if (env.GERRIT_PIPELINE == 'gate' && ! has_gate_approvals()) {
+            println("There os no gate approvals.. skip gate")
+            return
+          }
           evaluate_env()
           archiveArtifacts artifacts: 'global.env'
           println "Logs URL: ${logs_url}"
@@ -381,14 +382,16 @@ def has_gate_approvals() {
 
     url = resolve_gerrit_url()
     try {
-      sh """
+      output = sh(returnStdout: true, script: """
         ${WORKSPACE}/tf-jenkins/infra/gerrit/check_approvals.py \
+          --debug \
           --gerrit ${url} \
           --user ${GERRIT_API_USER} \
           --password ${GERRIT_API_PASSWORD} \
           --review ${GERRIT_CHANGE_ID} \
           --branch ${GERRIT_BRANCH}
-      """
+      """).trim()
+      println(output)
     } catch (err) {
       print "Exeption in check_approvals.py"
       def msg = err.getMessage()
