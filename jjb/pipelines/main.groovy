@@ -372,7 +372,6 @@ def has_gate_approvals() {
       usernamePassword(credentialsId: env.GERRIT_HOST,
       passwordVariable: 'GERRIT_API_PASSWORD',
       usernameVariable: 'GERRIT_API_USER')]) {
-    opts = ""
 
     //label_name = 'VerifiedTF'
     // temporary hack to not vote for review.opencontrail.org
@@ -388,8 +387,7 @@ def has_gate_approvals() {
           --user ${GERRIT_API_USER} \
           --password ${GERRIT_API_PASSWORD} \
           --review ${GERRIT_CHANGE_ID} \
-          --branch ${GERRIT_BRANCH} \
-          ${opts}
+          --branch ${GERRIT_BRANCH}
       """
     } catch (err) {
       print "Exeption in check_approvals.py"
@@ -398,6 +396,7 @@ def has_gate_approvals() {
         print msg
       }
     }
+  }
 }
 
 def resolve_gerrit_url() {
