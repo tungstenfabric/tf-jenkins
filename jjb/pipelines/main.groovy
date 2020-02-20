@@ -10,6 +10,16 @@ if (env.GERRIT_PIPELINE == 'nightly') {
   REGISTRY_PORT = "5002"
 }
 
+VERIFIED_SUCCESS_VALUES= {
+  'check': 1,
+  'gate': 2
+}
+
+VERIFIED_FAIL_VALUES= {
+  'check': -1,
+  'gate': -2
+}
+
 // pipeline flow variables
 // base url for all jobs
 logs_url = ""
@@ -39,6 +49,7 @@ timestamps {
       }
       clone_self()
       // has_gate_approvals needs cloned repo for tools
+      println("Verified value to report on success: ${VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]}")
       if (env.GERRIT_PIPELINE == 'gate' && ! has_gate_approvals()) {
         println("There os no gate approvals.. skip gate")
         return
@@ -180,10 +191,9 @@ timestamps {
         } catch(err){
         }
 
-        // add gerrit voting +1/-1
+        // add gerrit voting +2 +1 / -1 -2
         verified = gerrit_vote(pre_build_done, (new Date()).getTime() - time_start)
-
-        if (verified == 1 && env.GERRIT_PIPELINE == 'nightly' && 'build' in top_jobs_to_run) {
+        if (verified > 0 && env.GERRIT_PIPELINE == 'nightly' && 'build' in top_jobs_to_run) {
           // publish stable
           stage('publish-latest-stable') {
             run_job(
@@ -506,12 +516,12 @@ def gerrit_vote(pre_build_done, full_duration) {
     }
 
     def duration_string = get_duration_string(full_duration)
-    def verified = 1
+    def verified = VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]
     if (passed) {
       msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
     } else {
       msg = "Jenkins Build Failed (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
-      verified = -1
+      verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
     notify_gerrit(msg, verified)
     return verified
