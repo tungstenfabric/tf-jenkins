@@ -39,8 +39,7 @@
           trigger-for-unreviewed-patches: false
           projects:
             - project-compare-type: 'ANT'
-              # project-pattern: '**'
-              project-pattern: 'Juniper/contrail-tripleo-heat-templates'
+              project-pattern: '**'
               branches:
                 - branch-compare-type: 'REG_EXP'
                   branch-pattern: '^((?!R3\.|R4\.|R5\.).*)'
@@ -84,8 +83,7 @@
           trigger-for-unreviewed-patches: false
           projects:
             - project-compare-type: 'ANT'
-              # project-pattern: '**'
-              project-pattern: 'Juniper/contrail-tripleo-heat-templates'
+              project-pattern: '**'
               branches:
                 - branch-compare-type: 'ANT'
                   branch-pattern: '**'
