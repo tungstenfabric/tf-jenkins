@@ -54,6 +54,15 @@ timestamps {
         println("There os no gate approvals.. skip gate")
         return
       }
+      if (env.GERRIT_PIPELINE == 'submit') {
+        if (has_gate_submits()) {
+          notify_gerrit("Submit for merge", verified=null, submit=true)
+        } else {
+          println("There os no submit labels.. skip submit to merge")
+        }
+        // nothing to do more .. return
+        return
+      }
       pre_build_done = false
       try {
         time_start = (new Date()).getTime()
@@ -373,7 +382,7 @@ def notify_gerrit(msg, verified=0, submit=false) {
   }
 }
 
-def has_gate_approvals() {
+def has_approvals(approvals) {
   if (!env.GERRIT_HOST) {
     // looks like it's a nightly pipeline
     return false
@@ -400,7 +409,8 @@ def has_gate_approvals() {
           --user ${GERRIT_API_USER} \
           --password ${GERRIT_API_PASSWORD} \
           --review ${GERRIT_CHANGE_ID} \
-          --branch ${GERRIT_BRANCH}
+          --branch ${GERRIT_BRANCH} \
+          --approvals '${approvals}' 
       """).trim()
       println(output)
       return true
@@ -414,6 +424,14 @@ def has_gate_approvals() {
       return false
     }
   }
+}
+
+def has_gate_approvals() {
+  return has_approvals('Verified:recommended:1,Code-Review:approved,Approved:approved')
+}
+
+def has_gate_submits() {
+  return has_approvals('Verified:approved,Code-Review:approved,Approved:approved')  
 }
 
 def resolve_gerrit_url() {
