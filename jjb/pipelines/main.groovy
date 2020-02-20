@@ -37,6 +37,10 @@ timestamps {
         println("Manual run is forbidden")
         return
       }
+      if (env.GERRIT_PIPELINE == 'gate' && ! has_gate_approvals()) {
+        println("There os no gate approvals.. skip gate")
+        return
+      }
       pre_build_done = false
       try {
         time_start = (new Date()).getTime()
@@ -356,6 +360,44 @@ def notify_gerrit(msg, verified=0, submit=false) {
         ${opts}
     """
   }
+}
+
+def has_gate_approvals() {
+  if (!env.GERRIT_HOST) {
+    // looks like it's a nightly pipeline
+    return
+  }
+  withCredentials(
+    bindings: [
+      usernamePassword(credentialsId: env.GERRIT_HOST,
+      passwordVariable: 'GERRIT_API_PASSWORD',
+      usernameVariable: 'GERRIT_API_USER')]) {
+    opts = ""
+
+    //label_name = 'VerifiedTF'
+    // temporary hack to not vote for review.opencontrail.org
+    // label_name = 'Verified'
+    // if (env.GERRIT_HOST == 'review.opencontrail.org')
+    //   label_name = 'VerifiedTF'
+
+    url = resolve_gerrit_url()
+    try {
+      sh """
+        ${WORKSPACE}/tf-jenkins/infra/gerrit/check_approvals.py \
+          --gerrit ${url} \
+          --user ${GERRIT_API_USER} \
+          --password ${GERRIT_API_PASSWORD} \
+          --review ${GERRIT_CHANGE_ID} \
+          --branch ${GERRIT_BRANCH} \
+          ${opts}
+      """
+    } catch (err) {
+      print "Exeption in check_approvals.py"
+      def msg = err.getMessage()
+      if (msg != null) {
+        print msg
+      }
+    }
 }
 
 def resolve_gerrit_url() {

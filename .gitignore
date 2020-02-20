@@ -5,3 +5,4 @@
 .venv
 jjb/generated_xml
 setup/hosts.yml
+__pycache__
