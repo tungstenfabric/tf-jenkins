@@ -29,10 +29,20 @@
       jobs:
         - fetch-sources
         - test-unit
+    gate:
+      jobs:
+        - fetch-sources
+        - test-unit
 
 - project-template:
     name: unittests-webui
     check:
+      jobs:
+        - fetch-sources
+        - test-unit:
+            vars:
+              TARGET: ui
+    gate:
       jobs:
         - fetch-sources
         - test-unit:
@@ -48,6 +58,12 @@
         - k8s_manifests:
             voting: false
             smoke: true
+        - ansible_k8s
+        - ansible_os
+    gate:
+      jobs:
+        - fetch-sources
+        - build
         - ansible_k8s
         - ansible_os
 
@@ -98,18 +114,31 @@
     name: Juniper/openshift-ansible
     branches:
       - ^release-3\.[0-9]+-contrail$
-    check:
-      jobs:
-        - fetch-sources:
-            vars:
-              ENVIRONMENT_OS: rhel7
-        - build:
-            vars:
-              ENVIRONMENT_OS: rhel7
-        - k8s_manifests:
-            voting: false
-            sanity: false
-            smoke: true
+    # TODO: implentation openshift deployment jobs
+    # check:
+    #   jobs:
+    #     - fetch-sources:
+    #         vars:
+    #           ENVIRONMENT_OS: rhel7
+    #     - build:
+    #         vars:
+    #           ENVIRONMENT_OS: rhel7
+    #     - openshift:
+    #         voting: false
+    #         sanity: false
+    #         smoke: true
+    # gate:
+    #   jobs:
+    #     - fetch-sources:
+    #         vars:
+    #           ENVIRONMENT_OS: rhel7
+    #     - build:
+    #         vars:
+    #           ENVIRONMENT_OS: rhel7
+    #     - openshift:
+    #         voting: false
+    #         sanity: false
+    #         smoke: true
 
 - project:
     name: Juniper/contrail-controller
@@ -154,6 +183,10 @@
       jobs:
         - helm_k8s
         - helm_os
+    gate:
+      jobs:
+        - helm_k8s
+        - helm_os
 
 - project:
     name: Juniper/contrail-third-party-packages
@@ -164,6 +197,14 @@
 - project:
     name: tungstenfabric/tf-charms
     check:
+      jobs:
+        - juju_k8s:
+            voting: false
+            smoke: true
+        - juju_os:
+            voting: false
+            smoke: true
+    gate:
       jobs:
         - juju_k8s:
             voting: false
@@ -194,13 +235,17 @@
         - rhosp
     gate:
       jobs:
-        - fetch-sources
+        - rhosp
 
 - project:
     name: tungstenfabric/tf-helm-deployer
     templates:
       - systests
     check:
+      jobs:
+        - helm_os
+        - helm_k8s
+    gate:
       jobs:
         - helm_os
         - helm_k8s
