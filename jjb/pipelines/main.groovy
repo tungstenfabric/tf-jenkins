@@ -366,7 +366,7 @@ def notify_gerrit(msg, verified=0, submit=false) {
 def has_gate_approvals() {
   if (!env.GERRIT_HOST) {
     // looks like it's a nightly pipeline
-    return
+    return false
   }
   withCredentials(
     bindings: [
@@ -381,6 +381,7 @@ def has_gate_approvals() {
     //   label_name = 'VerifiedTF'
 
     url = resolve_gerrit_url()
+    output = ""
     try {
       output = sh(returnStdout: true, script: """
         ${WORKSPACE}/tf-jenkins/infra/gerrit/check_approvals.py \
@@ -392,12 +393,15 @@ def has_gate_approvals() {
           --branch ${GERRIT_BRANCH}
       """).trim()
       println(output)
+      return true
     } catch (err) {
+      println(output)
       print "Exeption in check_approvals.py"
       def msg = err.getMessage()
       if (msg != null) {
         print msg
       }
+      return false
     }
   }
 }
