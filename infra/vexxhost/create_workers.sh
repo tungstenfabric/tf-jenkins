@@ -31,18 +31,22 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
     echo "ERROR: invalid VM_TYPE=$VM_TYPE"
     exit 1
 fi
+echo "INFO: VM_TYPE=$VM_TYPE"
 
 # wait for free resource
 while true; do
   [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') - 1))" -lt "$MAX_COUNT_VM" ]] && break
+  echo "INFO: waiting for free worker"
   sleep 60
 done
 #ToDo: Use the number of flavor vcpu
 while true; do
   [[ "$(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}')" -lt "$MAX_COUNT_VCPU" ]] && break
+  echo "INFO: waiting for CPU resources"
   sleep 60
 done
 
+echo "INFO: run nova boot..."
 # run machine
 OBJECT_NAME=$BUILD_TAG
 nova boot --flavor ${INSTANCE_TYPE} \
