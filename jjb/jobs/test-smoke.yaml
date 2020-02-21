@@ -35,6 +35,7 @@
               username-variable: LOGS_HOST_USERNAME
     scm:
       - tf-jenkins
+      - tf-test
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
