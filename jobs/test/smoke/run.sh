@@ -33,7 +33,7 @@ printf '%*s\n' 120 | tr ' ' '*'
 export WORKSPACE=\$HOME
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG"
-cd src/tungstenfabric/tf-test/contrail-smoke
+cd src/tungstenfabric/tf-test/smoke-test
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh
 
 EOF
