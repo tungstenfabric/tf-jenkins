@@ -6,21 +6,47 @@
 #   deploy platform, deploy TF, run sanity/smoke, ... sanity is enabed by default and smoke is disabled
 
 # Example of jobs definition
+#streams:
+#  - ansible-k8s:
+#      voting: true
 #jobs:
 #  - fetch-sources-centos:
 #      job-name: fetch-sources
 #  - build-centos:
 #      job-name: build
+#      depends-on:
+#          - fetch-sources-centos
 #  - test-unit
+#      depends-on:
+#          - fetch-sources-centos
 #  - test-unit-ui:
 #      job-name: test-unit
+#      depends-on:
+#          - fetch-sources-centos
 #      vars:
 #        TARGET: ui
-#  - ansible_k8s
-#      wait-for-build-job: build-centos
+#  - deploy-platform-ansible-k8s
+#      stream: ansible-k8s
+#      depends-on:
+#          - ???
+#  - deploy-tf-ansible-k8s
+#      depends-on:
+#          - build-centos
+#          - deploy-platform-ansible-k8s
 #      voting: true
-#      smoke: false
-#      sanity: true
+#  - test-sanity-k8s:
+#      job-name: test-sanity
+#      depends-on:
+#          - deploy-tf-ansible-k8s
+#  - test-smoke-k8s:
+#      job-name: test-sanity
+#      depends-on:
+#          - deploy-tf-ansible-k8s
+#  - collect-logs-and-cleanup-ansible-k8s 
+#      job-name: collect-logs-and-cleanup
+#      depends-on:
+#          - test-sanity-k8s
+#          - test-smoke-k8s
 
 
 - project-template:
@@ -109,6 +135,11 @@
               CONTRAIL_BUILD_FROM_SOURCE: true
         - ansible_os:
             smoke: true
+
+- project:
+    name: Juniper/contrail-ansible-deployer
+    templates:
+      - systests
 
 - project:
     name: Juniper/openshift-ansible
