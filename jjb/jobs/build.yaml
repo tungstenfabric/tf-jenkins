@@ -69,7 +69,7 @@
           optional: true
       - shell: |
           source "$WORKSPACE/global.env"
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}<br>Job logs: <a href=\"${LOGS_URL}/build\">${LOGS_URL}/build</a>"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}<br>Job logs: <a href=\"${LOGS_URL}/${JOB_NAME}\">${LOGS_URL}/${JOB_NAME}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -85,7 +85,7 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
-          export FULL_LOGS_PATH="${LOGS_PATH}/build"
+          export FULL_LOGS_PATH="${LOGS_PATH}/${JOB_NAME}"
           # main run
           ./src/progmaticlab/tf-jenkins/jobs/build/run.sh |& tee ${WORKSPACE}/output.log || res=1
           # collect logs
