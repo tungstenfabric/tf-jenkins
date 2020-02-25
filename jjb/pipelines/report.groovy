@@ -6,6 +6,9 @@ pipeline{
   environment {
     INSTANCES_LIST = ""
   }
+  options {
+    timeout(time: 10, unit: 'MINUTES') 
+  }
   stages{
     stage('Parallel stage') {
       parallel {

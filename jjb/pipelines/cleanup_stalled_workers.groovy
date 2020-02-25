@@ -3,6 +3,9 @@ pipeline{
   triggers{
     cron('*/20 * * * *')
   }
+  options {
+    timeout(time: 10, unit: 'MINUTES') 
+  }
   stages{
     stage('Parallel stage') {
       parallel {
