@@ -538,7 +538,7 @@ def gerrit_vote(pre_build_done, full_duration) {
     if (passed) {
       msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
     } else {
-      msg = "Jenkins Build status ${currentBuild.currentResult} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
+      msg = "Jenkins Build Failed (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
       verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
     notify_gerrit(msg, verified)
