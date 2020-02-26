@@ -255,6 +255,11 @@
       - unittests-webui
 
 - project:
+    name: tungstenfabric/tf-web-controller
+    templates:
+      - unittests-webui
+
+- project:
     name: Juniper/contrail-webui-third-party
     templates:
       - unittests-webui
