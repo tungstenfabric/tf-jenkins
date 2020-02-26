@@ -68,6 +68,10 @@
           which-build: upstream-build
           optional: true
       - shell: |
+          # ignore errors for prune because
+          # docker allows only one prune operationa at a time
+          sudo docker system prune -a --filter "until=1h" -f || true
+      - shell: |
           source "$WORKSPACE/global.env"
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}<br>Job logs: <a href=\"${LOGS_URL}/${JOB_NAME}\">${LOGS_URL}/${JOB_NAME}</a>"
           echo "DESCRIPTION $desc"
@@ -112,6 +116,3 @@
                           sudo docker stop $CONTAINER
                           sudo docker rm $CONTAINER
                         fi
-                        # ignore errors for prune because
-                        # docker allows only one prune operationa at a time
-                        sudo docker system prune -a --filter "until=1h" -f || true
