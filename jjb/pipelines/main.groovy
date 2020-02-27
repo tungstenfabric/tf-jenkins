@@ -489,17 +489,12 @@ def gerrit_vote(pre_build_done, full_duration) {
       get_test_job_names(name).each {test_name -> job_names += "${test_name}-${name}"}
       def jobs_found = false
       def status = 'SUCCESS'
-      def stopping_reason = 'Failed'
       for (job_name in job_names) {
         def job_result = job_results[job_name]
         if (!job_result) {
           status = 'FAILURE'
         } else {
           jobs_found = true
-          if (status == 'SUCCESS' && job_result['result'] == 'ABORTED') {
-            stopping_reason = 'ABORTED'
-            println stopping_reason
-          }
           if (status == 'SUCCESS' && job_result['result'] != 'SUCCESS') {
             // we can't provide exact job's status due to parallel test jobs
             status = 'FAILURE'
@@ -543,8 +538,7 @@ def gerrit_vote(pre_build_done, full_duration) {
     if (passed) {
       msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
     } else {
-      println stopping_reason
-      msg = "Jenkins Build ${stopping_reason} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
+      msg = "Jenkins Build Failed (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
       verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
     notify_gerrit(msg, verified)
