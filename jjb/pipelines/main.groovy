@@ -498,6 +498,7 @@ def gerrit_vote(pre_build_done, full_duration) {
           jobs_found = true
           if (status == 'SUCCESS' && job_result['result'] == 'ABORTED') {
             stopping_reason = 'ABORTED'
+            println stopping_reason
           }
           if (status == 'SUCCESS' && job_result['result'] != 'SUCCESS') {
             // we can't provide exact job's status due to parallel test jobs
@@ -542,6 +543,7 @@ def gerrit_vote(pre_build_done, full_duration) {
     if (passed) {
       msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
     } else {
+      println stopping_reason
       msg = "Jenkins Build ${stopping_reason} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
       verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
