@@ -473,6 +473,10 @@ def gerrit_vote(pre_build_done, full_duration) {
         status = 'NOT_BUILT'
         msg += "\n- ${name} : NOT_BUILT"
       } else {
+        if (job_result['result'] == 'ABORTED') {
+            currentBuild.currentResult = 'ABORTED'
+            println("Current build status: " + currentBuild.currentResult)
+          }
         status = job_result['result']
         msg += "\n- " + get_gerrit_msg_for_job(name, status, job_result.get('duration'))
       }
@@ -495,7 +499,6 @@ def gerrit_vote(pre_build_done, full_duration) {
           status = 'FAILURE'
         } else {
           jobs_found = true
-          println("Job status: " + job_result['result'] )
           if (job_result['result'] == 'ABORTED') {
             currentBuild.currentResult = 'ABORTED'
             println("Current build status: " + currentBuild.currentResult)
