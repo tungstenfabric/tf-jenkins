@@ -495,6 +495,9 @@ def gerrit_vote(pre_build_done, full_duration) {
           status = 'FAILURE'
         } else {
           jobs_found = true
+          if (status == 'SUCCESS' && job_result['result'] == 'ABORTED') {
+            currentBuild.currentResult = 'ABORTED'
+          }
           if (status == 'SUCCESS' && job_result['result'] != 'SUCCESS') {
             // we can't provide exact job's status due to parallel test jobs
             status = 'FAILURE'
