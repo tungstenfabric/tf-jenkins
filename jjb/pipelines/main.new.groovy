@@ -375,26 +375,25 @@ def get_jobs(project_name, gerrit_pipeline) {
   streams = []
   jobs = []  
   if (project[gerrit_pipeline].containsKey('templates')) {
-    for (template in project[gerrit_pipeline].templates) {
-      if (template.value.containsKey('streams'))
-        streams += template.value['streams']
-      jobs += template.value['jobs']
+    for (template_name in project[gerrit_pipeline].templates) {
+      if (!templates.containsKey(template_name))
+        throw new Exception("ERROR: template ${template_name} is absent in configuration")
+      if (templates[template_name].containsKey('streams'))
+        update_list(streams, templates[template_name]['streams'])
+      update_list(jobs, templates[template_name]['jobs'])
     }
   }
   // merge info from templates with project's jobs
-  for (stream in project[gerrit_pipeline].get('streams', []))
-    if (stream not in streams)
-      streams += streams
-  for (job in project[gerrit_pipeline].get('jobs', []))
-    jobs[job.key] 
+  update_list(streams, project[gerrit_pipeline].get('streams', []))
+  update_list(jobs, project[gerrit_pipeline].get('jobs', []))
 }
 
-def add_job(job_item) {
-  if (job_item instanceof String) {
-    jobs_from_config[job_item] = [:]
-  } else {
-    job = job_item.entrySet().iterator().next()
-    jobs_from_config[job.getKey()] = job.getValue()
+def update_list(items, new_items) {
+  for (item in new_items) {
+    if (!items.containsKey(item.key))
+      items[item.key] = item.value
+    else
+      items[item.key] += item.value
   }
 }
 

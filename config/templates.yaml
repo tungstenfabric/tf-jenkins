@@ -3,114 +3,112 @@
 - template:
     name: fetch-sources-centos
     jobs:
-      - fetch-sources-centos:
-          job-name: fetch-sources
+      fetch-sources-centos:
+        job-name: fetch-sources
 
 - template:
     name: build-centos
     parents:
       - fetch-sources-centos
     jobs:
-      - build-centos:
-          job-name: build
-          depends-on:
-            - fetch-sources-centos
+      build-centos:
+        job-name: build
+        depends-on:
+          - fetch-sources-centos
       
 - template:
     name: test-unit
     parents:
       - fetch-sources-centos
     jobs:
-      - test-unit:
-          depends-on:
-            - fetch-sources-centos
+      test-unit:
+        depends-on:
+          - fetch-sources-centos
 
 - template:
     name: test-unit-ui
     parents:
-        - fetch-sources-centos
+      - fetch-sources-centos
     jobs:
-      - test-unit-ui:
-          job-name: test-unit
-          depends-on:
-            - fetch-sources-centos
-          vars:
-            TARGET: ui
+      test-unit-ui:
+        job-name: test-unit
+        depends-on:
+          - fetch-sources-centos
+        vars:
+          TARGET: ui
 
 - template:
     name: k8s-manifests
     parents:
-        - build-centos
+      - build-centos
     streams:
-      - k8s-manifests:
-          voting: false
+      k8s-manifests:
+        voting: false
     jobs:
-      - deploy-platform-k8s-manifests:
-          stream: k8s-manifests
-      - deploy-tf-k8s-manifests:
-          depends-on:
-              - build-centos
-              - deploy-platform-k8s-manifests
-      - test-sanity-k8s:
-          job-name: test-sanity
-          depends-on:
-              - deploy-tf-k8s-manifests
-      - test-smoke-k8s:
-          job-name: test-smoke
-          depends-on:
-              - deploy-tf-k8s-manifests
-      - collect-logs-and-cleanup-k8s-manifests:
-          job-name: collect-logs-and-cleanup
-          depends-on:
-              - test-sanity-k8s
-              - test-smoke-k8s
+      deploy-platform-k8s-manifests:
+        stream: k8s-manifests
+      deploy-tf-k8s-manifests:
+        depends-on:
+          - build-centos
+          - deploy-platform-k8s-manifests
+      test-sanity-k8s:
+        job-name: test-sanity
+        depends-on:
+          - deploy-tf-k8s-manifests
+      test-smoke-k8s:
+        job-name: test-smoke
+        depends-on:
+          - deploy-tf-k8s-manifests
+      collect-logs-and-cleanup-k8s-manifests:
+        job-name: collect-logs-and-cleanup
+        depends-on:
+          - test-sanity-k8s
+          - test-smoke-k8s
 
 - template:
     name: ansible-k8s
     parents:
-        - build-centos
+      - build-centos
     streams:
-      - ansible-k8s:
-          voting: true
+      ansible-k8s:
     jobs:
-      - deploy-platform-ansible-k8s:
-          stream: ansible-k8s
-          depends-on:
-              # temporary solution while we don't have container with ansible-deployer before build
-              - build-centos
-      - deploy-tf-ansible-k8s:
-          depends-on:
-              - deploy-platform-ansible-k8s
-      - test-sanity-k8s:
-          job-name: test-sanity
-          depends-on:
-              - deploy-tf-ansible-k8s
-      - collect-logs-and-cleanup-ansible-k8s:
-          job-name: collect-logs-and-cleanup
-          depends-on:
-              - test-smoke-k8s
+      deploy-platform-ansible-k8s:
+        stream: ansible-k8s
+        depends-on:
+          # temporary solution while we don't have container with ansible-deployer before build
+          - build-centos
+      deploy-tf-ansible-k8s:
+        depends-on:
+          - deploy-platform-ansible-k8s
+      test-sanity-k8s:
+        job-name: test-sanity
+        depends-on:
+          - deploy-tf-ansible-k8s
+      collect-logs-and-cleanup-ansible-k8s:
+        job-name: collect-logs-and-cleanup
+        depends-on:
+          - test-smoke-k8s
 
 - template:
     name: ansible-os
     parents:
-        - build-centos
+      - build-centos
     streams:
-      - ansible-os:
-          voting: true
+      ansible-os:
     jobs:
-      - deploy-platform-ansible-os:
-          stream: ansible-os
-          depends-on:
-              # temporary solution while we don't have container with ansible-deployer before build
-              - build-centos
-      - deploy-tf-ansible-os:
-          depends-on:
-              - deploy-platform-ansible-os
-      - test-sanity-os:
-          job-name: test-sanity
-          depends-on:
-              - deploy-tf-ansible-os
-      - collect-logs-and-cleanup-ansible-os:
-          job-name: collect-logs-and-cleanup
-          depends-on:
-              - test-sanity-os
+      deploy-platform-ansible-os:
+        stream: ansible-os
+        depends-on:
+          # temporary solution while we don't have container with ansible-deployer before build
+          - build-centos
+      deploy-tf-ansible-os:
+        depends-on:
+          - deploy-platform-ansible-os
+      test-sanity-os:
+        job-name: test-sanity
+        depends-on:
+          - deploy-tf-ansible-os
+      collect-logs-and-cleanup-ansible-os:
+        job-name: collect-logs-and-cleanup
+        depends-on:
+          - test-sanity-os
