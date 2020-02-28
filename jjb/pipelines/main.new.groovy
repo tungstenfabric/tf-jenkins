@@ -69,7 +69,7 @@ timestamps {
         stage('Pre-build') {
           terminate_previous_jobs()
           evaluate_env()
-          archiveArtifacts(artifacts: 'global.env')
+          archiveArtifacts artifacts: 'global.env'
           println "Logs URL: ${logs_url}"
           println 'Top jobs to run: ' + top_jobs_to_run
           println 'Test configurations: ' + test_configuration_names
@@ -260,6 +260,9 @@ def evaluate_env() {
     } else if (env.GERRIT_PIPELINE == 'nightly') {
       get_jobs("tungstenfabric", env.GERRIT_PIPELINE)
     }
+
+    throw("not implemented")
+
     println "Evaluated jobs to run: ${jobs_from_config}"
     def possible_top_jobs = ['test-lint', 'test-unit', 'build', 'fetch-sources']
     for (item in jobs_from_config) {
@@ -305,14 +308,37 @@ def clone_self() {
 }
 
 def get_jobs(project, gerrit_pipeline) {
-  def data = readYaml file: "${WORKSPACE}/tf-jenkins/config/projects.yaml"
+  // read main file
+  def data = readYaml(file: "${WORKSPACE}/tf-jenkins/config/projects.yaml")
+  // read includes
+  def include_data = []
+  for (item in data) {
+    if (item.containsKey('include')) {
+      for (file in item['include']) {
+        include_data += readYaml(file: "${WORKSPACE}/tf-jenkins/config/${file}")
+      }
+    }
+  }
+  data += include_data
+
+  // get templates
   def templates = [:]
   for (item in data) {
-    if (item.containsKey('project-template')) {
-      template = item.get('project-template')
+    if (item.containsKey('template')) {
+      template = item.get('template')
       templates[template.name] = template
     }
   }
+  // apply parent templates
+  for (item in templates) {
+    if (item.containsKey('parents')) {
+      for (parent in item.get('parents')) {
+        
+      }
+    }
+  }
+
+
   for (item in data) {
     if (!item.containsKey('project') || item.get('project').name != project)
       continue
