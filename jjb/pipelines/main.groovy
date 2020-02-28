@@ -473,13 +473,7 @@ def gerrit_vote(pre_build_done, full_duration) {
         status = 'NOT_BUILT'
         msg += "\n- ${name} : NOT_BUILT"
       } else {
-        println("Current build status: " + currentBuild.currentResult)
         status = job_result['result']
-        println("Current job_result: " + status)
-        if ( status == 'ABORTED' ) {
-            currentBuild.currentResult = 'ABORTED'
-            println("Current build status: " + currentBuild.currentResult)
-        }
         msg += "\n- " + get_gerrit_msg_for_job(name, status, job_result.get('duration'))
       }
       def voting = jobs_from_config.get(name, [:]).get('voting', true)
@@ -501,10 +495,6 @@ def gerrit_vote(pre_build_done, full_duration) {
           status = 'FAILURE'
         } else {
           jobs_found = true
-          if (job_result['result'] == 'ABORTED') {
-            currentBuild.currentResult = 'ABORTED'
-            println("Build status after tests: " + currentBuild.currentResult)
-          }
           if (status == 'SUCCESS' && job_result['result'] != 'SUCCESS') {
             // we can't provide exact job's status due to parallel test jobs
             status = 'FAILURE'
