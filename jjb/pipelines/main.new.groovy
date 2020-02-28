@@ -248,7 +248,8 @@ def evaluate_env() {
     """
 
     // store gerrit input if present. evaluate jobs
-    println "Pipeline to run: ${env.GERRIT_PIPELINE}"
+    println("Pipeline to run: ${env.GERRIT_PIPELINE}")
+    project_name = env.GERRIT_PROJECT
     if (env.GERRIT_CHANGE_ID) {
       url = resolve_gerrit_url()
       sh """#!/bin/bash -e
@@ -256,12 +257,13 @@ def evaluate_env() {
         echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
         echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
       """
-      get_jobs(env.GERRIT_PROJECT, env.GERRIT_PIPELINE)
     } else if (env.GERRIT_PIPELINE == 'nightly') {
-      get_jobs("tungstenfabric", env.GERRIT_PIPELINE)
+      project_name = "tungstenfabric"
     }
+    (streams, jobs) = get_jobs(project_name, env.GERRIT_PIPELINE)
+    println("Streams from  config: ${streams}")
+    println("Jobs from config: ${jobs}")
 
-    throw("not implemented")
 
     println "Evaluated jobs to run: ${jobs_from_config}"
     def possible_top_jobs = ['test-lint', 'test-unit', 'build', 'fetch-sources']
@@ -309,7 +311,7 @@ def clone_self() {
 
 def get_jobs(project_name, gerrit_pipeline) {
   // read main file
-  def data = readYaml(file: "${WORKSPACE}/tf-jenkins/config/projects.yaml")
+  def data = readYaml(file: "${WORKSPACE}/tf-jenkins/config/projects.new.yaml")
   // read includes
   def include_data = []
   for (item in data) {
@@ -372,20 +374,21 @@ def get_jobs(project_name, gerrit_pipeline) {
     return
   }
   // fill jobs from project and templates
-  streams = []
-  jobs = []  
+  streams = [:]
+  jobs = [:]  
   if (project[gerrit_pipeline].containsKey('templates')) {
     for (template_name in project[gerrit_pipeline].templates) {
       if (!templates.containsKey(template_name))
         throw new Exception("ERROR: template ${template_name} is absent in configuration")
-      if (templates[template_name].containsKey('streams'))
-        update_list(streams, templates[template_name]['streams'])
-      update_list(jobs, templates[template_name]['jobs'])
+      template = templates[template_name]
+      update_list(streams, template.get('streams', []))
+      update_list(jobs, template.get('jobs', []))
     }
   }
   // merge info from templates with project's jobs
   update_list(streams, project[gerrit_pipeline].get('streams', []))
   update_list(jobs, project[gerrit_pipeline].get('jobs', []))
+  return [streams, jobs]
 }
 
 def update_list(items, new_items) {
