@@ -307,7 +307,7 @@ def clone_self() {
   ])
 }
 
-def get_jobs(project, gerrit_pipeline) {
+def get_jobs(project_name, gerrit_pipeline) {
   // read main file
   def data = readYaml(file: "${WORKSPACE}/tf-jenkins/config/projects.yaml")
   // read includes
@@ -325,39 +325,68 @@ def get_jobs(project, gerrit_pipeline) {
   def templates = [:]
   for (item in data) {
     if (item.containsKey('template')) {
-      template = item.get('template')
+      template = item['template']
       templates[template.name] = template
     }
   }
-  // apply parent templates
-  for (item in templates) {
-    if (item.containsKey('parents')) {
-      for (parent in item.get('parents')) {
-        
+  // resolve parent templates
+  while (true) {
+    parents_found = false
+    parents_resolved = false
+    for (item in templates) {
+      if (!item.value.containsKey('parents'))
+        continue
+      parents_found = true
+      new_parents = []
+      for (parent in item.value['parents']) {
+        if (templates[parent].containsKey('parents')) {
+          new_parents += parent
+          continue
+        }
+        parents_resolved = true
+        item.value['jobs'] += templates[parent]['jobs']
       }
+      if (new_parents.size() > 0)
+        item.value['parents'] = new_parents
+      else
+        item.value.remove('parents')
     }
+    if (!parents_found)
+      break
+    if (!parents_resolved)
+      throw new Exception("ERROR: Unresolvable template structure: " + templates)
   }
 
-
+  // find project and pipeline inside it
+  project = null
   for (item in data) {
-    if (!item.containsKey('project') || item.get('project').name != project)
+    if (!item.containsKey('project') || item.get('project').name != project_name)
       continue
     project = item.get('project')
-    if (project.containsKey('templates')) {
-      for (template in project.templates) {
-        if (templates[template].get(gerrit_pipeline) && templates[template].get(gerrit_pipeline).get('jobs')) {
-          for (job_item in templates[template].get(gerrit_pipeline).jobs) {
-            add_job(job_item)
-          }
-        }
-      }
-    }
-    if (project.get(gerrit_pipeline) && project.get(gerrit_pipeline).get('jobs')) {
-      for (job_item in project.get(gerrit_pipeline).jobs) {
-        add_job(job_item)
-      }
+    break
+  }
+  if (!project)
+    throw new Exception("ERROR: Unknown project: ${project_name}")
+  if (!project.containsKey(gerrit_pipeline)) {
+    print("WARNING: project ${project_name} doesn't define pipeline ${gerrit_pipeline}")
+    return
+  }
+  // fill jobs from project and templates
+  streams = []
+  jobs = []  
+  if (project[gerrit_pipeline].containsKey('templates')) {
+    for (template in project[gerrit_pipeline].templates) {
+      if (template.value.containsKey('streams'))
+        streams += template.value['streams']
+      jobs += template.value['jobs']
     }
   }
+  // merge info from templates with project's jobs
+  for (stream in project[gerrit_pipeline].get('streams', []))
+    if (stream not in streams)
+      streams += streams
+  for (job in project[gerrit_pipeline].get('jobs', []))
+    jobs[job.key] 
 }
 
 def add_job(job_item) {
