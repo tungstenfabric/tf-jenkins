@@ -8,7 +8,7 @@
     Optional:
    ```
      -e "apt_upgrade_all=true"           # Upgrade all packages 
-     --private-key=/home/master/.ssh/plab # Deployment key
+     --private-key=$HOME/.ssh/plab # Deployment key
    ```
    *Note: The keypairs for the connection of master and slaves will be created in the directory playbook_dir*
 3. Run:

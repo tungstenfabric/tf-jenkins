@@ -57,6 +57,26 @@
     group: "{{ jenkins_user }}"
     mode: "0600"
 
+- name: Ensure group "docker" exists
+  group:
+    name: docker
+    state: present
+  
+- name: adding existing user jenkins to group docker
+  user:
+    name: jenkins
+    groups: docker
+    append: yes
+
+- name: Add user "ansibleuser" to sudo
+  lineinfile:
+    path: /etc/sudoers.d/91-jenkins
+    line: 'jenkins ALL=(ALL) NOPASSWD: ALL'
+    state: present
+    mode: 0440
+    create: yes
+    validate: 'visudo -cf %s'
+
 - name: check if packer exists
   stat: 
     path: /usr/local/bin/packer

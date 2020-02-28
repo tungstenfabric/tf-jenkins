@@ -63,17 +63,6 @@
     owner: root
     group: root
 
-- name: Ensure group "docker" exists
-  group:
-    name: docker
-    state: present
-
-- name: adding existing user jenkins to group docker
-  user:
-    name: jenkins
-    groups: docker
-    append: yes
-
 - name: Install docker-ce
   apt:
     name:
