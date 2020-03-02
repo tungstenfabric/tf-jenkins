@@ -8,7 +8,7 @@
     pipeline-scm:
       scm:
         - tf-jenkins
-      script-path: jjb/pipelines/cleanup_stalled_workers.groovy
+      script-path: pipelines/cleanup_stalled_workers.groovy
       lightweight-checkout: true
     triggers:
       - timed: '*/20 * * * *'
