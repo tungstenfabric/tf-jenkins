@@ -19,7 +19,7 @@
     pipeline-scm:
       scm:
         - tf-jenkins
-      script-path: pipelines/main.groovy
+      script-path: pipelines/pipeline-submit.groovy
       lightweight-checkout: true
     triggers:
       - gerrit:
@@ -63,7 +63,7 @@
     pipeline-scm:
       scm:
         - tf-jenkins
-      script-path: pipelines/main.groovy
+      script-path: pipelines/pipeline-submit.groovy
       lightweight-checkout: true
     triggers:
       - gerrit:

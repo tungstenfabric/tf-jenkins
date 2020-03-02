@@ -205,6 +205,21 @@ timestamps {
 }
 
 
+def clone_self() {
+  checkout([
+    $class: 'GitSCM',
+    branches: [[name: "*/master"]],
+    doGenerateSubmoduleConfigurations: false,
+    submoduleCfg: [],
+    userRemoteConfigs: [[url: 'https://github.com/progmaticlab/tf-jenkins.git']],
+    extensions: [
+      [$class: 'CleanBeforeCheckout'],
+      [$class: 'CloneOption', depth: 1],
+      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
+    ]
+  ])
+}
+
 def evaluate_env() {
   try {
     sh """#!/bin/bash -e
@@ -251,6 +266,7 @@ def evaluate_env() {
     println("Jobs from config: ${jobs}")
 
 
+
     // evaluate registry params
     // if we have fetch-sources then it means that we have build stage thus we have to use own registry for deploy
     if ('fetch-sources' in top_jobs_to_run) {
@@ -267,29 +283,6 @@ def evaluate_env() {
       println "Failed set environment ${msg}"
     }
     throw(err)
-  }
-}
-
-def clone_self() {
-  checkout([
-    $class: 'GitSCM',
-    branches: [[name: "*/master"]],
-    doGenerateSubmoduleConfigurations: false,
-    submoduleCfg: [],
-    userRemoteConfigs: [[url: 'https://github.com/progmaticlab/tf-jenkins.git']],
-    extensions: [
-      [$class: 'CleanBeforeCheckout'],
-      [$class: 'CloneOption', depth: 1],
-      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
-    ]
-  ])
-}
-
-def load_local_lib(path, lib_name) {
-  // create new git repo inside jenkins subdirectory
-  dir(path) {
-    sh('git init && git add --all . && git commit -m init &> /dev/null')
-    library identifier: "${lib_name}@master", retriever: modernSCM([$class: 'GitSCMSource', remote: pwd()]), changelog: false
   }
 }
 
