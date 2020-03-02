@@ -2,7 +2,7 @@
 TIMEOUT_HOURS = 4
 
 // gerrit utils
-def gerrit = null
+gerrit = null
 
 timestamps {
   timeout(time: TIMEOUT_HOURS, unit: 'HOURS') {
