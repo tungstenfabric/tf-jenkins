@@ -14,14 +14,21 @@ if (env.GERRIT_PIPELINE == 'nightly') {
 // base url for all jobs
 logs_url = ""
 // list of pure info about jobs from config with additional parameters
-streams = [:]
-jobs = [:]
+jobs_from_config = [:]
+// list of top jobs from config: fetch, build, unit, lint
+top_jobs_to_run = []
+// list of test configurations in format ${deployer}_${orchestrator}
+test_configuration_names = []
 // set of jobs code for both above
-jobs_code = [:]
+top_jobs_code = [:]
+inner_jobs_code = [:]
 // set of result of each job 
 job_results = [:]
 
 rnd = new Random()
+
+// gerrit utils
+def gerrit = null
 
 timestamps {
   timeout(time: TIMEOUT_HOURS, unit: 'HOURS') {
@@ -31,22 +38,11 @@ timestamps {
         return
       }
       clone_self()
-      load_local_lib("${WORKSPACE}/tf-jenkins/pipelines/gerrit", 'gerrit')
-      gerrit = new gerrit.Gerrit(script: this, env: env)
-
+      gerrit = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
       // has_gate_approvals needs cloned repo for tools
-      println("Verified value to report on success: ${VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]}")
-      if (env.GERRIT_PIPELINE == 'gate' && ! has_gate_approvals()) {
-        println("There os no gate approvals.. skip gate")
-        return
-      }
-      if (env.GERRIT_PIPELINE == 'submit') {
-        if (has_gate_submits()) {
-          notify_gerrit("Submit for merge", null, true)
-        } else {
-          println("There os no submit labels.. skip submit to merge")
-        }
-        // nothing to do more .. return
+      println("Verified value to report on success: ${gerrit.VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]}")
+      if (env.GERRIT_PIPELINE == 'gate' && !gerrit.has_gate_approvals()) {
+        println("There is no gate approvals.. skip gate")
         return
       }
       pre_build_done = false
@@ -55,11 +51,11 @@ timestamps {
         stage('Pre-build') {
           terminate_previous_jobs()
           evaluate_env()
-          archiveArtifacts artifacts: 'global.env'
+          archiveArtifacts(artifacts: 'global.env')
           println "Logs URL: ${logs_url}"
           println 'Top jobs to run: ' + top_jobs_to_run
           println 'Test configurations: ' + test_configuration_names
-          gerrit_build_started()
+          gerrit.gerrit_build_started()
           currentBuild.description = "<a href='${logs_url}'>${logs_url}</a>"
           pre_build_done = true
         }
@@ -117,7 +113,7 @@ timestamps {
                     string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                   ]])
                 def test_jobs = [:]
-                get_test_job_names(name).each { test_name ->
+                gerrit.get_test_job_names(name).each { test_name ->
                   test_jobs["${test_name} for deploy-tf-${name}"] = {
                     stage("${test_name}-${name}") {
                       // next variable must be taken again due to closure limitations for free variables
@@ -187,7 +183,7 @@ timestamps {
         }
 
         // add gerrit voting +2 +1 / -1 -2
-        verified = gerrit_vote(pre_build_done, (new Date()).getTime() - time_start)
+        verified = gerrit.gerrit_vote(pre_build_done, (new Date()).getTime() - time_start)
         if (verified > 0 && env.GERRIT_PIPELINE == 'nightly' && 'build' in top_jobs_to_run) {
           // publish stable
           stage('publish-latest-stable') {
