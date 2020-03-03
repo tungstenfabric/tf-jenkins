@@ -341,7 +341,7 @@ def run_job(name) {
     job_results[name]['number'] = job_number
     job_results[name]['duration'] = job.getDuration()
     job_results[name]['result'] = job.getResult()
-    copyArtifacts(filter: '*.env', fingerprintArtifacts: true, projectName: '${job_name}', selector: specific('${job_number}')
+    copyArtifacts(filter: '*.env', fingerprintArtifacts: true, projectName: '${job_name}', selector: specific('${job_number}'))
   }
   // re-throw error
   if (err)
