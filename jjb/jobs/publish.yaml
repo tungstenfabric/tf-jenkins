@@ -65,7 +65,7 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "global.env"
+          filter: "*.env"
           which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"

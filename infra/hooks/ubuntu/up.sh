@@ -8,10 +8,10 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 source "$WORKSPACE/global.env"
-if [ -e "$WORKSPACE/build.env" ] ; then
-  source "$WORKSPACE/build.env"
+if [[ -e "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" ]]; then
+  source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env"
 fi
-if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ] ; then
+if [[ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ]] ; then
   source "$WORKSPACE/stackrc.$JOB_NAME.env"
 fi
 

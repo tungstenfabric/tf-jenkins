@@ -39,13 +39,8 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "global.env"
-          which-build: upstream-build
-      - copyartifact:
-          project: ${DEPLOY_PLATFORM_JOB_NAME}
           filter: "*.env"
-          which-build: specific-build
-          build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
+          which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"

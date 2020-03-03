@@ -64,7 +64,7 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "global.env,build.env"
+          filter: "*.env"
           which-build: upstream-build
           optional: true
       - shell: |
@@ -75,8 +75,8 @@
           regexp: "DESCRIPTION (.*)"
       - shell: |
           source "$WORKSPACE/global.env"
-          if [[ -f ${WORKSPACE}/build.env ]]; then
-            source ${WORKSPACE}/build.env
+          if [[ -e "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" ]]; then
+            source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env"
           fi
           ./src/progmaticlab/tf-jenkins/jobs/build/create_workers.sh
       - shell: |

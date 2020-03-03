@@ -62,7 +62,7 @@
     builders:
       - copyartifact:
           project: ${{PIPELINE_NAME}}
-          filter: "global.env"
+          filter: "*.env"
           which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
@@ -148,13 +148,8 @@
     builders:
       - copyartifact:
           project: ${{PIPELINE_NAME}}
-          filter: "global.env"
-          which-build: upstream-build
-      - copyartifact:
-          project: deploy-platform-{project}
           filter: "*.env"
-          which-build: specific-build
-          build-number: ${{DEPLOY_PLATFORM_JOB_NUMBER}}
+          which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
           desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER<br>Job logs: <a href=\"${{LOGS_URL}}/{project}\">${{LOGS_URL}}/{project}</a>"
@@ -193,8 +188,6 @@
           name: DEPLOY_PLATFORM_JOB_NAME
       - string:
           name: DEPLOY_PLATFORM_JOB_NUMBER
-      - bool:
-          name: COLLECT_SANITY_LOGS
     wrappers:
       - timestamps
       - credentials-binding:
@@ -238,13 +231,8 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "global.env"
-          which-build: upstream-build
-      - copyartifact:
-          project: ${DEPLOY_PLATFORM_JOB_NAME}
           filter: "*.env"
-          which-build: specific-build
-          build-number: ${DEPLOY_PLATFORM_JOB_NUMBER}
+          which-build: upstream-build
       - shell: |
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}, Launched by: ${DEPLOY_PLATFORM_JOB_NAME}-${DEPLOY_PLATFORM_JOB_NUMBER}"
           echo "DESCRIPTION $desc"
@@ -258,9 +246,7 @@
           source "$ENV_FILE"
           export FULL_LOGS_PATH="${LOGS_PATH}/${JOB_LOGS_PATH}"
           "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh"
-          if [[ "${COLLECT_SANITY_LOGS,,}" == 'true' ]]; then
-            "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh"
-          fi
+          "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh"
           "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/remove_workers.sh"
 
 - project:

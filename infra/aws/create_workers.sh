@@ -34,13 +34,13 @@ fi
 
 # wait for resource
 while true; do
-  INSTANCES_CONT=$(aws ec2 describe-instances \
+  INSTANCES_COUNT=$(aws ec2 describe-instances \
       --region "$AWS_REGION" \
       --filters  "Name=instance-state-code,Values=16" \
                  "Name=tag:SLAVE,Values=${SLAVE}" \
       --query 'Reservations[*].Instances[*].[InstanceId]'\
       --output text | wc -l)
-  [[ "$INSTANCES_CONT" -lt "$MAX_COUNT" ]] && break
+  [[ "$INSTANCES_COUNT" -lt "$MAX_COUNT" ]] && break
   sleep 60
 done
 

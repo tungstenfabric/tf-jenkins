@@ -64,7 +64,7 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "global.env,fetch-sources.env"
+          filter: "*.env"
           which-build: upstream-build
           optional: true
       - shell: |
@@ -109,7 +109,7 @@
                             echo "INFO: cleanup workers"
                             ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh || true
                         else
-                            echo "INFO: there is no file $WORKSPACE/stackrc.$JOB_NAME.env.. skip workers cleanup"
+                            echo "INFO: there is no env file. skipping workers cleanup"
                         fi
                         CONTAINER="$(sudo docker ps --all --quiet --filter "status=running" --filter "name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}")"
                         if [ -n "$CONTAINER" ]; then

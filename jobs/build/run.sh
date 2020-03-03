@@ -12,8 +12,8 @@ ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 source $ENV_FILE
 
 # do it as a latest source to override all exports
-if [[ -f ${WORKSPACE}/build.env ]]; then
-  source ${WORKSPACE}/build.env
+if [[ -e "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" ]]; then
+  source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env"
 fi
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./

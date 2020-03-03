@@ -28,7 +28,7 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "global.env,test-lint.env"
+          filter: "*.env"
           which-build: upstream-build
           optional: true
       - shell: |

@@ -28,7 +28,7 @@ def _notify_gerrit(msg, verified=0, submit=false) {
     // looks like it's a nightly pipeline
     return
   }
-  println "Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}"
+  println("Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}")
   withCredentials(
     bindings: [
       usernamePassword(credentialsId: env.GERRIT_HOST,
@@ -96,10 +96,10 @@ def _has_approvals(approvals) {
       return true
     } catch (err) {
       println(output)
-      print "Exeption in check_approvals.py"
+      println("Exeption in check_approvals.py")
       def msg = err.getMessage()
       if (msg != null) {
-        print msg
+        println(msg)
       }
       return false
     }

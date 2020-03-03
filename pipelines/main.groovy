@@ -139,7 +139,6 @@ timestamps {
                      parameters: [
                       string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
                       string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                      booleanParam(name: 'COLLECT_SANITY_LOGS', value: job_results["deploy-tf-${name}"]['result'] == 'SUCCESS'),
                     ]])
                 }
               }
@@ -329,7 +328,7 @@ def job_params_to_file(job_name) {
   if (!jobs_from_config.containsKey(job_name) || !jobs_from_config[job_name].containsKey('vars'))
     return
 
-  env_file = "${job_name}.env"
+  env_file = "vars.${job_name}-${job_rnd}.env"
   env_text = ""
   for (jvar in jobs_from_config[job_name]['vars']) {
     env_text += "export ${jvar.getKey()}='${jvar.getValue()}'\n"
@@ -341,20 +340,20 @@ def job_params_to_file(job_name) {
 def run_job(name, params) {
   def job_name = params['job']
   job_results[name] = [:]
+  def err = null
+  def job = null
   try {
-    job_params_to_file(name)
+    def job_rnd = "${rnd.nextInt(99999)}"
+    job_params_to_file(name, job_rnd)
     params['parameters'] = params.get('parameters', []) + [
-      string(name: 'RANDOM', value: "${rnd.nextInt(99999)}"),
+      string(name: 'RANDOM', value: job_rnd"),
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]
-    def job = build(params)
-    job_results[name]['result'] = job.getResult()
-    job_results[name]['number'] = job.getNumber()
-    job_results[name]['duration'] = job.getDuration()
+    job = build(params)
     println "Finished ${name} with SUCCESS"
   } catch (err) {
-    println "Failed ${name}"
+    println "Failed ${name} with error"
     job_results[name]['result'] = 'FAILURE'
     msg = err.getMessage()
     if (msg != null) {
@@ -366,17 +365,22 @@ def run_job(name, params) {
       def build_num_matcher = cause_msg =~ /#\d+/
       if (build_num_matcher.find()) {
         def build_num = ((build_num_matcher[0] =~ /\d+/)[0]).toInteger()
-        def job = Jenkins.getInstanceOrNull().getItemByFullName(job_name).getBuildByNumber(build_num)
-        job_results[name]['result'] = job.getResult()
-        job_results[name]['number'] = job.getNumber()
-        job_results[name]['duration'] = job.getDuration()
+        job = Jenkins.getInstanceOrNull().getItemByFullName(job_name).getBuildByNumber(build_num)
       }
     } catch(e) {
       println("Error in obtaining failed job result ${err.getMessage()}")
     }
-    // re-throw error
-    throw(err)
   }
+  if (job) {
+    def job_number = job.getNumber()
+    job_results[name]['number'] = job_number
+    job_results[name]['duration'] = job.getDuration()
+    job_results[name]['result'] = job.getResult()
+    copyArtifacts(filter: '*.env', fingerprintArtifacts: true, projectName: '${job_name}', selector: specific('${job_number}')
+  }
+  // re-throw error
+  if (err)
+    throw(err)
 }
 
 def terminate_previous_jobs() {
