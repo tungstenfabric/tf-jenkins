@@ -8,9 +8,6 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-source $ENV_FILE
-
 tag_suffix=""
 if [[ "${STABLE,,}" == "true" ]] ; then
   tag_suffix="-stable"
@@ -18,7 +15,7 @@ fi
 tags="$(date --utc +"%Y-%m-%d")$tag_suffix"
 tags+=",latest$tag_suffix"
 
-publish_env_file="$WORKSPACE/publish.$JOB_NAME.env"
+publish_env_file="$WORKSPACE/publish.env"
 cat <<EOF > $publish_env_file
 CONTRAIL_REGISTRY=$CONTAINER_REGISTRY
 CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG

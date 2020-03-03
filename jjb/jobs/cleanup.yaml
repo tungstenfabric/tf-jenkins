@@ -8,6 +8,8 @@
       - label:
           name: NODE_NAME
       - string:
+          name: STREAM 
+      - string:
           name: RANDOM
       - string:
           name: PIPELINE_NAME

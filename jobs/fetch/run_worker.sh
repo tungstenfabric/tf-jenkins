@@ -8,11 +8,6 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-# do it as a latest source to override all exports
-if [[ -e "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" ]]; then
-  source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env"
-fi
-
 stable_tag=${STABLE_TAGS["${ENVIRONMENT_OS^^}"]}
 linux_distr=${TARGET_LINUX_DISTR["$ENVIRONMENT_OS"]}
 tf_devenv_container_name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}
@@ -21,8 +16,8 @@ commit_name="tf-developer-sandbox-$stable_tag"
 #TODO: Rebuild be done only for review for dev-env,
 # re-tagging for stable will be done only after successful tests
 $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/create_workers.sh
-ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-source $ENV_FILE
+# source env right after creation
+source "$WORKSPACE/stackrc.$JOB_NAME.env"
 
 res=0
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./ || res=1

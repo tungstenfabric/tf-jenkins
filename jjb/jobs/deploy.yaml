@@ -8,6 +8,8 @@
       - label:
           name: NODE_NAME
       - string:
+          name: STREAM 
+      - string:
           name: RANDOM
       - string:
           name: PIPELINE_NAME
@@ -66,7 +68,7 @@
           which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
-          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER<br>Job logs: <a href=\"${{LOGS_URL}}/{project}\">${{LOGS_URL}}/{project}</a>"
+          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER<br>Job logs: <a href=\"${{LOGS_URL}}/${{STREAM}}\">${{LOGS_URL}}/${{STREAM}}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -74,12 +76,14 @@
           export ENVIRONMENT_OS={environment_os}
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
+          # do it as a latest source to override all exports
+          source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/create_workers.sh
           # add more information about current deployment
           ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
           echo "export ORCHESTRATOR=$ORCHESTRATOR" >> "$ENV_FILE"
           echo "export DEPLOYER={deployer}" >> "$ENV_FILE"
-          echo "export JOB_LOGS_PATH={project}" >> "$ENV_FILE"
+          echo "export JOB_LOGS_PATH=${{STREAM}}" >> "$ENV_FILE"
       - shell: |
           set +e
           set -o pipefail
@@ -87,6 +91,8 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
+          # do it as a latest source to override all exports
+          source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
 
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
@@ -122,6 +128,8 @@
       - label:
           name: NODE_NAME
       - string:
+          name: STREAM 
+      - string:
           name: RANDOM
       - string:
           name: PIPELINE_NAME
@@ -150,7 +158,7 @@
           which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
-          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER<br>Job logs: <a href=\"${{LOGS_URL}}/{project}\">${{LOGS_URL}}/{project}</a>"
+          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER<br>Job logs: <a href=\"${{LOGS_URL}}/${{STREAM}}\">${{LOGS_URL}}/${{STREAM}}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -160,14 +168,13 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.deploy-platform-{project}.env"
           source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
+          # do it as a latest source to override all exports
+          source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
 
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_tf.sh |& tee $WORKSPACE/output-deploy-tf.log || res=1
           rsync -a -e "ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS" $WORKSPACE/output-deploy-tf.log $LOGS_HOST_USERNAME@$LOGS_HOST:$FULL_LOGS_PATH
           exit $res
-    publishers:
-      - archive:
-          artifacts: '*.env'
 
 - job:
     name: collect-logs-and-cleanup
@@ -176,6 +183,8 @@
     parameters:
       - label:
           name: NODE_NAME
+      - string:
+          name: STREAM 
       - string:
           name: RANDOM
       - string:
@@ -238,8 +247,9 @@
           set +e
           set -o allexport
           source "$WORKSPACE/global.env"
-          export ENV_FILE="$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
-          source "$ENV_FILE"
+          source "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
+          # do it as a latest source to override all exports
+          source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${JOB_LOGS_PATH}"
           "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh"
           "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh"

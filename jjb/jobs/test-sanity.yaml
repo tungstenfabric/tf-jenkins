@@ -8,6 +8,8 @@
       - label:
           name: NODE_NAME
       - string:
+          name: STREAM 
+      - string:
           name: RANDOM
       - string:
           name: PIPELINE_NAME
@@ -53,6 +55,8 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
+          # do it as a latest source to override all exports
+          source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
           ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh |& tee ${WORKSPACE}/output-test-sanity.log || res=1
           rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output-test-sanity.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}

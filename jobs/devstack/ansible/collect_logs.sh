@@ -5,9 +5,6 @@
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-ENV_FILE=${ENV_FILE:-"$WORKSPACE/stackrc.$JOB_NAME.env"}
-source $ENV_FILE
-
 source "$my_dir/definitions"
 
 res=0

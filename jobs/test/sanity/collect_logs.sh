@@ -7,9 +7,6 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ENV_FILE=${ENV_FILE:-"$WORKSPACE/stackrc.$JOB_NAME.env"}
-source $ENV_FILE
-
 SANITY_LOGS_PATH="contrail-test-runs"
 pushd $WORKSPACE
 mkdir -p logs

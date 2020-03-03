@@ -8,9 +8,6 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ENV_FILE="$WORKSPACE/stackrc.$DEPLOY_PLATFORM_JOB_NAME.env"
-source $ENV_FILE
-
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 echo "INFO: Test smoke started"

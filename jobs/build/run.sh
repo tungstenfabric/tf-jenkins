@@ -8,14 +8,6 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-source $ENV_FILE
-
-# do it as a latest source to override all exports
-if [[ -e "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" ]]; then
-  source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env"
-fi
-
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 linux_distr=${TARGET_LINUX_DISTR["${ENVIRONMENT_OS}"]}

@@ -8,11 +8,6 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-# do it as a latest source to override all exports
-if [[ -e "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" ]]; then
-  source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env"
-fi
-
 stable_tag=${STABLE_TAGS["${ENVIRONMENT_OS^^}"]}
 
 export TF_DEVENV_CONTAINER_NAME=tf-developer-sandbox-${PIPELINE_BUILD_TAG}

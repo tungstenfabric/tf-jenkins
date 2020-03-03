@@ -65,7 +65,7 @@ timestamps {
               } else {
                 job_results[name]['number'] = -1
                 job_results[name]['duration'] = 0
-                job_results[name]['result'] = 'NOT_RUN'
+                job_results[name]['result'] = 'NOT_BUILT'
               }
             }
           }
@@ -77,7 +77,7 @@ timestamps {
         println "Logs URL: ${logs_url}"
         println "Destroy VMs"
         try {
-          run_job('cleanup-pipeline-workers', [job: 'cleanup-pipeline-workers'])
+          run_job('cleanup-pipeline-workers')
         } catch(err){
         }
 
@@ -86,15 +86,14 @@ timestamps {
         // TODO: think how to move it into config
         if (verified > 0 && env.GERRIT_PIPELINE == 'nightly') {
           // publish stable
+          // TODO: pass STABLE via env file - pass addit
           stage('publish-latest-stable') {
-            run_job(
-              'publish',
-              [job: 'publish', 
-               parameters: [booleanParam(name: 'STABLE', value: true)]])
+            run_job('publish')
+            // TODO: parameters: [booleanParam(name: 'STABLE', value: true)]
           }
         }
 
-        save_pipeline_output_to_nexus()
+        save_pipeline_output_to_logs()
       }
     }
   }
@@ -267,20 +266,6 @@ def update_list(items, new_items) {
   }
 }
 
-def job_params_to_file(job, job_rnd) {
-  if (!jobs[job].containsKey('vars'))
-    return
-
-  def job_name = jobs[job].get('job-name', job)
-  env_file = "vars.${job_name}-${job_rnd}.env"
-  env_text = ""
-  for (jvar in jobs[job]['vars']) {
-    env_text += "export ${jvar.key}='${jvar.value}'\n"
-  }
-  writeFile(file: env_file, text: env_text)
-  archiveArtifacts artifacts: "${env_file}"
-}
-
 def wait_for_dependencies(name) {
   deps = jobs[name].get('depends-on')
   if (!deps or deps.size())
@@ -301,8 +286,24 @@ def wait_for_dependencies(name) {
   return result
 }
 
+def job_params_to_file(name, job_rnd) {
+  if (!jobs.containsKey(name) || !jobs[name].containsKey('vars'))
+    return
+
+  def job_name = jobs[name].get('job-name', name)
+  env_file = "vars.${job_name}-${job_rnd}.env"
+  env_text = ""
+  for (jvar in jobs[name]['vars']) {
+    env_text += "export ${jvar.key}='${jvar.value}'\n"
+  }
+  writeFile(file: env_file, text: env_text)
+  archiveArtifacts(artifacts: "${env_file}")
+}
+
 def run_job(name) {
-  def job_name = jobs[name].get('job-name', job)
+  // final cleanup job is not in config
+  def job_name = jobs.containsKey(name) ? jobs[name].get('job-name', job) : name
+  def stream = jobs.containsKey(name) ? jobs[name].get('stream', name) : name
   job_results[name] = [:]
   def job = null
   err = null
@@ -310,7 +311,12 @@ def run_job(name) {
     def job_rnd = "${rnd.nextInt(99999)}"
     job_results[name]['job-rnd'] = job_rnd
     job_params_to_file(name, job_rnd)
+    // TODO: create another one env file with collected env files from dependent jobs
+    // searching through all dependecies from current job to the root
+    // store it as parent.${job_name}-${job_rnd}.env
+    // then add sourcing this file to all jobs line vars.*.env
     params['parameters'] = [
+      string(name: 'STREAM', value: stream),
       string(name: 'RANDOM', value: job_rnd),
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
@@ -342,6 +348,8 @@ def run_job(name) {
     job_results[name]['duration'] = job.getDuration()
     job_results[name]['result'] = job.getResult()
     copyArtifacts(filter: '*.env', optional: true, fingerprintArtifacts: true, projectName: "${job_name}", selector: specific("${job_number}"))
+    // TODO: store names in job_results except vars.*.env and global.env
+    // and archive these artifacts
   }
   // re-throw error
   if (err != null)
@@ -370,7 +378,7 @@ def terminate_previous_jobs() {
   }
 }
 
-def save_output_to_nexus() {
+def save_output_to_logs() {
   println("BUILD_URL = ${BUILD_URL}consoleText")
   withCredentials(
     bindings: [
