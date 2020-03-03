@@ -340,8 +340,8 @@ def job_params_to_file(job_name) {
 def run_job(name, params) {
   def job_name = params['job']
   job_results[name] = [:]
-  def err = null
   def job = null
+  err = null
   try {
     def job_rnd = "${rnd.nextInt(99999)}"
     job_params_to_file(name, job_rnd)

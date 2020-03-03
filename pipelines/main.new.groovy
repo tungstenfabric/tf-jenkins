@@ -305,7 +305,7 @@ def run_job(name) {
   def job_name = jobs[name].get('job-name', job)
   job_results[name] = [:]
   def job = null
-  def err = null
+  err = null
   try {
     def job_rnd = "${rnd.nextInt(99999)}"
     job_results[name]['job-rnd'] = job_rnd
