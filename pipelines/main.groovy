@@ -106,12 +106,7 @@ timestamps {
 
               try {
                 top_job_number = job_results["deploy-platform-${name}"]['number']
-                run_job(
-                  "deploy-tf-${name}",
-                  [job: "deploy-tf-${name}",
-                   parameters: [
-                    string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
-                  ]])
+                run_job("deploy-tf-${name}", [job: "deploy-tf-${name}"])
                 def test_jobs = [:]
                 gerrit.get_test_job_names(name).each { test_name ->
                   test_jobs["${test_name} for deploy-tf-${name}"] = {
@@ -123,7 +118,6 @@ timestamps {
                         [job: test_name,
                          parameters: [
                           string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
-                          string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                         ]])
                     }
                   }
@@ -138,7 +132,6 @@ timestamps {
                     [job: "collect-logs-and-cleanup",
                      parameters: [
                       string(name: 'DEPLOY_PLATFORM_JOB_NAME', value: "deploy-platform-${name}"),
-                      string(name: 'DEPLOY_PLATFORM_JOB_NUMBER', value: "${top_job_number}"),
                     ]])
                 }
               }
