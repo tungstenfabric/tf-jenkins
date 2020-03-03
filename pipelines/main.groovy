@@ -324,7 +324,7 @@ def add_job(job_item) {
   }
 }
 
-def job_params_to_file(job_name) {
+def job_params_to_file(job_name, job_rnd) {
   if (!jobs_from_config.containsKey(job_name) || !jobs_from_config[job_name].containsKey('vars'))
     return
 
