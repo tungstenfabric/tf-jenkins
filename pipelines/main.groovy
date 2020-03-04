@@ -33,9 +33,7 @@ timestamps {
         println("Manual run is forbidden")
         return
       }
-      new File("${WORKSPACE}").eachFile() { file ->
-        file.delete()
-      }
+      cleanWs(disableDeferredWipeout: true, notFailBuild: true)
       clone_self()
       gerrit = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
       // has_gate_approvals needs cloned repo for tools
@@ -259,6 +257,19 @@ def get_jobs(project_name, gerrit_pipeline) {
   // merge info from templates with project's jobs
   update_list(streams, project[gerrit_pipeline].get('streams', []))
   update_list(jobs, project[gerrit_pipeline].get('jobs', []))
+
+  // do some checks
+  // check if all deps point to real jobs
+  for (item in jobs) {
+    deps = item.value.get('depends-on')
+    if (!deps || deps.size() == 0)
+      return true
+    for (dep_name in deps) {
+      if (!jobs.containsKey(dep_name))
+        throw new Exception("Item ${item.key} has unknown dependency ${dep_name}")
+    }
+  }
+
   return [streams, jobs]
 }
 
