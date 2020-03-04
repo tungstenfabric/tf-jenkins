@@ -142,6 +142,7 @@ def gerrit_build_started() {
 }
 
 def gerrit_vote(pre_build_done, full_duration) {
+  return
   try {
     def passed = pre_build_done
     def results = [:]

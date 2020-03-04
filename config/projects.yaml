@@ -13,12 +13,12 @@
         - ansible-k8s
         - ansible-os
       jobs:
-        - publish-centos-nightly:
-            job-name: publish
-            depends-on:
-              - build-centos
-            vars:
-              STABLE: false
+        publish-centos-nightly:
+          job-name: publish
+          depends-on:
+            - build-centos
+          vars:
+            STABLE: false
 
 - project:
     name: Juniper/contrail-ansible-deployer

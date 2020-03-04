@@ -47,6 +47,8 @@ timestamps {
         stage('Pre-build') {
           terminate_previous_jobs()
           evaluate_env()
+          println("Streams from  config: ${streams}")
+          println("Jobs from config: ${jobs}")
           archiveArtifacts(artifacts: 'global.env')
           println "Logs URL: ${logs_url}"
           gerrit.gerrit_build_started()
@@ -55,7 +57,7 @@ timestamps {
         }
 
         jobs.each { item ->
-          jobs_code[job.key] = {
+          jobs_code[item.key] = {
             stage(item.key) {
               result = wait_for_dependencies(item.key)
               force_run = item.value.get('force-run', false)
@@ -72,7 +74,8 @@ timestamps {
         }
 
         // run jobs in parallel
-        parallel jobs_code
+        if (jobs_code.size() > 0)
+          parallel(jobs_code)
       } finally {
         println "Logs URL: ${logs_url}"
         println "Destroy VMs"
@@ -164,8 +167,6 @@ def evaluate_env() {
       project_name = "tungstenfabric"
     }
     (streams, jobs) = get_jobs(project_name, env.GERRIT_PIPELINE)
-    println("Streams from  config: ${streams}")
-    println("Jobs from config: ${jobs}")
   } catch (err) {
     msg = err.getMessage()
     if (err != null) {
@@ -259,6 +260,9 @@ def get_jobs(project_name, gerrit_pipeline) {
 
 def update_list(items, new_items) {
   for (item in new_items) {
+    if (item.getClass() != java.util.LinkedHashMap$Entry) {
+      throw new Exception("Invalid item in config - '${item}'. It must be an entry of HashMap")
+    }
     if (!items.containsKey(item.key))
       items[item.key] = item.value
     else
@@ -300,11 +304,13 @@ def job_params_to_file(name, env_file) {
 }
 
 def collect_dependent_env_files(name, deps_env_file) {
-  content = []
+  if (!jobs.containsKey(name) || !jobs[name].containsKey('depends-on'))
+    return
   deps = jobs[name].get('depends-on')
   if (!deps || deps.size() == 0)
     return
   // wait for all jobs even if some of them failed
+  content = []
   for (dep_name in deps) {
     target_dir = "${job_name}-${job_rnd}"
     new File("${WORKSPACE}/${target_dir}").eachFile() { file ->
@@ -327,22 +333,23 @@ def run_job(name) {
   def job_rnd = "${rnd.nextInt(99999)}"
   def vars_env_file = "vars.${job_name}-${job_rnd}.env"
   def deps_env_file = "deps.${job_name}-${job_rnd}.env"
-  err = null
+  def run_err = null
   try {
     job_results[name] = [:]
     job_results[name]['job-rnd'] = job_rnd
     job_params_to_file(name, vars_env_file)
     collect_dependent_env_files(name, deps_env_file)
-    params['parameters'] = [
+    params = [
       string(name: 'STREAM', value: stream),
       string(name: 'RANDOM', value: job_rnd),
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]
-    job = build(params)
+    job = build(job: job_name, parameters: params)
     job_number = job.getNumber()
     println("Finished ${name}(${job_name} - #${job_number}) with SUCCESS")
   } catch (err) {
+    run_err = err
     println("Failed ${name} with errors")
     job_results[name]['result'] = 'FAILURE'
     msg = err.getMessage()
@@ -358,7 +365,7 @@ def run_job(name) {
         job = Jenkins.getInstanceOrNull().getItemByFullName(job_name).getBuildByNumber(job_number)
       }
     } catch(e) {
-      println("Error in obtaining failed job result ${err.getMessage()}")
+      println("Error in obtaining failed job result ${e.getMessage()}")
     }
   }
   if (job != null) {
@@ -380,8 +387,8 @@ def run_job(name) {
     new File("${WORKSPACE}/${target_dir}/${vars_env_file}").delete()
   }
   // re-throw error
-  if (err != null)
-    throw(err)
+  if (run_err != null)
+    throw run_err
 }
 
 def terminate_previous_jobs() {
@@ -406,7 +413,7 @@ def terminate_previous_jobs() {
   }
 }
 
-def save_output_to_logs() {
+def save_pipeline_output_to_logs() {
   println("BUILD_URL = ${BUILD_URL}consoleText")
   withCredentials(
     bindings: [
