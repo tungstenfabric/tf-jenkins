@@ -262,8 +262,8 @@ def get_jobs(project_name, gerrit_pipeline) {
   // check if all deps point to real jobs
   for (item in jobs) {
     deps = item.value.get('depends-on')
-    if (!deps || deps.size() == 0)
-      return true
+    if (deps == null || deps.size() == 0)
+      continue
     for (dep_name in deps) {
       if (!jobs.containsKey(dep_name))
         throw new Exception("Item ${item.key} has unknown dependency ${dep_name}")
@@ -287,7 +287,7 @@ def update_list(items, new_items) {
 
 def wait_for_dependencies(name) {
   deps = jobs[name].get('depends-on')
-  if (!deps || deps.size() == 0)
+  if (deps == null || deps.size() == 0)
     return true
   result = true
   // wait for all jobs even if some of them failed
@@ -323,7 +323,7 @@ def collect_dependent_env_files(name, deps_env_file) {
   if (!jobs.containsKey(name) || !jobs[name].containsKey('depends-on'))
     return
   deps = jobs[name].get('depends-on')
-  if (!deps || deps.size() == 0)
+  if (deps == null || deps.size() == 0)
     return
   // wait for all jobs even if some of them failed
   content = []
