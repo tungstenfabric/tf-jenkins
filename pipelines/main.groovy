@@ -65,6 +65,7 @@ timestamps {
                 // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
                 run_job(item.key)
               } else {
+                job_results[item.key] = [:]
                 job_results[item.key]['number'] = -1
                 job_results[item.key]['duration'] = 0
                 job_results[item.key]['result'] = 'NOT_BUILT'
