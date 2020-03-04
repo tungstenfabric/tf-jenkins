@@ -329,7 +329,7 @@ def collect_dependent_env_files(name, deps_env_file) {
   content = []
   for (dep_name in deps) {
     def job_name = jobs[dep_name].get('job-name', dep_name)
-    def job_rnd = job_results[name]['job-rnd']
+    def job_rnd = job_results[dep_name]['job-rnd']
     target_dir = "${job_name}-${job_rnd}"
     new File("${WORKSPACE}/${target_dir}").eachFile() { file ->
       if (file.isFile())
