@@ -349,9 +349,10 @@ def run_job(name) {
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]
+    println("Starting job ${name} (${job_name} - #${job_rnd})")
     job = build(job: job_name, parameters: params)
     job_number = job.getNumber()
-    println("Finished ${name}(${job_name} - #${job_number}) with SUCCESS")
+    println("Finished ${name} (${job_name} - #${job_number}) with SUCCESS")
   } catch (err) {
     run_err = err
     println("Failed ${name} with errors")
