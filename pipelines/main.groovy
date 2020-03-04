@@ -365,7 +365,7 @@ def run_job(name) {
     job_results[name]['duration'] = job.getDuration()
     job_results[name]['result'] = job.getResult()
   }
-  if (job_number != null)
+  if (job_number != null) {
     job_results[name]['number'] = job_number
     target_dir = "${job_name}-${job_rnd}"
     copyArtifacts(
