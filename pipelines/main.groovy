@@ -305,7 +305,7 @@ def job_params_to_file(name, env_file) {
   archiveArtifacts(artifacts: env_file)
 }
 
-def collect_dependent_env_files(name, deps_env_file, job_rnd) {
+def collect_dependent_env_files(name, deps_env_file) {
   if (!jobs.containsKey(name) || !jobs[name].containsKey('depends-on'))
     return
   deps = jobs[name].get('depends-on')
@@ -315,6 +315,7 @@ def collect_dependent_env_files(name, deps_env_file, job_rnd) {
   content = []
   for (dep_name in deps) {
     def job_name = jobs[dep_name].get('job-name', dep_name)
+    def job_rnd = job_results[name]['job-rnd']
     target_dir = "${job_name}-${job_rnd}"
     new File("${WORKSPACE}/${target_dir}").eachFile() { file ->
       if (file.isFile())
@@ -341,7 +342,7 @@ def run_job(name) {
     job_results[name] = [:]
     job_results[name]['job-rnd'] = job_rnd
     job_params_to_file(name, vars_env_file)
-    collect_dependent_env_files(name, deps_env_file, job_rnd)
+    collect_dependent_env_files(name, deps_env_file)
     params = [
       string(name: 'STREAM', value: stream),
       string(name: 'RANDOM', value: job_rnd),
