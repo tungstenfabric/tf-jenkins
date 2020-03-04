@@ -326,18 +326,21 @@ def collect_dependent_env_files(name, deps_env_file) {
   if (deps == null || deps.size() == 0)
     return
   // wait for all jobs even if some of them failed
-  content = []
+  content = ''
   for (dep_name in deps) {
     def job_name = jobs[dep_name].get('job-name', dep_name)
     def job_rnd = job_results[dep_name]['job-rnd']
     target_dir = "${job_name}-${job_rnd}"
-    new File("${WORKSPACE}/${target_dir}").eachFile() { file ->
-      if (file.isFile())
-        content += file.readLines()
+    dir("${WORKSPACE}") {
+      findFiles(glob: "${target_dir}/*.env").each { filew ->
+        content += readFile(filew.getPath())
+      }
     }
   }
-  if (content.size() == 0)
+  lines = content.split('\n').findAll { it.size() > 0 }
+  if (line.size() == 0)
     return
+  content = lines.join('\n') + '\n'
   writeFile(file: deps_env_file, text: content.join('\n'))
   archiveArtifacts(artifacts: deps_env_file)
 }
@@ -402,8 +405,8 @@ def run_job(name) {
       selector: specific("${job_number}"),
       target: target_dir)
     // store collected file in jobs subfolder except vars.*.env and global.env
-    new File("${WORKSPACE}/${target_dir}/global.env").delete()
-    new File("${WORKSPACE}/${target_dir}/${vars_env_file}").delete()
+    sh("rm -f ${WORKSPACE}/${target_dir}/global.env")
+    sh("rf -f ${WORKSPACE}/${target_dir}/${vars_env_file}")
   }
   // re-throw error
   if (run_err != null)
