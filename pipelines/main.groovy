@@ -33,6 +33,9 @@ timestamps {
         println("Manual run is forbidden")
         return
       }
+      new File("${WORKSPACE}").eachFile() { file ->
+        file.delete()
+      }
       clone_self()
       gerrit = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
       // has_gate_approvals needs cloned repo for tools
