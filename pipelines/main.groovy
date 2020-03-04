@@ -65,9 +65,9 @@ timestamps {
                 // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
                 run_job(item.key)
               } else {
-                job_results[name]['number'] = -1
-                job_results[name]['duration'] = 0
-                job_results[name]['result'] = 'NOT_BUILT'
+                job_results[item.key]['number'] = -1
+                job_results[item.key]['duration'] = 0
+                job_results[item.key]['result'] = 'NOT_BUILT'
               }
             }
           }
@@ -279,6 +279,7 @@ def wait_for_dependencies(name) {
   for (dep_name in deps) {
     waitUntil {
       // TODO: try to use sync objects
+      println("Job ${name} is still waiting for ${dep_name}")
       sleep(15)
       return job_results.containsKey(dep_name) && job_results[dep_name].containsKey('result')
     }
@@ -303,7 +304,7 @@ def job_params_to_file(name, env_file) {
   archiveArtifacts(artifacts: env_file)
 }
 
-def collect_dependent_env_files(name, deps_env_file) {
+def collect_dependent_env_files(name, deps_env_file, job_rnd) {
   if (!jobs.containsKey(name) || !jobs[name].containsKey('depends-on'))
     return
   deps = jobs[name].get('depends-on')
@@ -312,6 +313,7 @@ def collect_dependent_env_files(name, deps_env_file) {
   // wait for all jobs even if some of them failed
   content = []
   for (dep_name in deps) {
+    def job_name = jobs[dep_name].get('job-name', dep_name)
     target_dir = "${job_name}-${job_rnd}"
     new File("${WORKSPACE}/${target_dir}").eachFile() { file ->
       if (file.isFile())
@@ -338,7 +340,7 @@ def run_job(name) {
     job_results[name] = [:]
     job_results[name]['job-rnd'] = job_rnd
     job_params_to_file(name, vars_env_file)
-    collect_dependent_env_files(name, deps_env_file)
+    collect_dependent_env_files(name, deps_env_file, job_rnd)
     params = [
       string(name: 'STREAM', value: stream),
       string(name: 'RANDOM', value: job_rnd),
