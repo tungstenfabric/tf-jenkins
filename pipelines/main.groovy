@@ -280,7 +280,7 @@ def wait_for_dependencies(name) {
     waitUntil {
       // TODO: try to use sync objects
       sleep(15)
-      return job_results[dep_name].containsKey('result')
+      return job_results.containsKey(dep_name) && job_results[dep_name].containsKey('result')
     }
     if (job_results[dep_name]['result'] != 'SUCCESS') {
       println("ERROR: Job ${name} - dependent job failed: ${dep_name} = ${job_results[dep_name]}")
@@ -326,7 +326,7 @@ def collect_dependent_env_files(name, deps_env_file) {
 
 def run_job(name) {
   // final cleanup job is not in config
-  def job_name = jobs.containsKey(name) ? jobs[name].get('job-name', job) : name
+  def job_name = jobs.containsKey(name) ? jobs[name].get('job-name', name) : name
   def stream = jobs.containsKey(name) ? jobs[name].get('stream', name) : name
   def job = null
   def job_number = null
