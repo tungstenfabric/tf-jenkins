@@ -33,7 +33,7 @@ timestamps {
         println("Manual run is forbidden")
         return
       }
-      cleanWs(disableDeferredWipeout: true, notFailBuild: true)
+      cleanWs(disableDeferredWipeout: true, notFailBuild: true, deleteDirs: true)
       clone_self()
       gerrit = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
       // has_gate_approvals needs cloned repo for tools
