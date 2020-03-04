@@ -264,31 +264,31 @@
 - project:
     name: deploy
     project:
-      - k8s_manifests:
+      - k8s-manifests:
           environment_os: centos7
           deployer: k8s_manifests
           orchestrator: kubernetes
-      - helm_k8s:
+      - helm-k8s:
           environment_os: centos7
           deployer: helm
           orchestrator: kubernetes
-      - helm_os:
+      - helm-os:
           environment_os: centos7
           deployer: helm
           orchestrator: openstack
-      - juju_k8s:
+      - juju-k8s:
           environment_os: ubuntu18
           deployer: juju
           orchestrator: kubernetes
-      - juju_os:
+      - juju-os:
           environment_os: ubuntu18
           deployer: juju
           orchestrator: openstack
-      - ansible_k8s:
+      - ansible-k8s:
           environment_os: centos7
           deployer: ansible
           orchestrator: kubernetes
-      - ansible_os:
+      - ansible-os:
           environment_os: centos7
           deployer: ansible
           orchestrator: openstack
