@@ -76,6 +76,7 @@
           export ENVIRONMENT_OS={environment_os}
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
+          source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/create_workers.sh
@@ -91,6 +92,7 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
+          source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
 
@@ -166,8 +168,8 @@
           set +e
           set -o pipefail
           source "$WORKSPACE/global.env"
-          source "$WORKSPACE/stackrc.deploy-platform-{project}.env"
           source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
+          source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
 
@@ -175,6 +177,9 @@
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_tf.sh |& tee $WORKSPACE/output-deploy-tf.log || res=1
           rsync -a -e "ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS" $WORKSPACE/output-deploy-tf.log $LOGS_HOST_USERNAME@$LOGS_HOST:$FULL_LOGS_PATH
           exit $res
+    publishers:
+      - archive:
+          artifacts: '*.env'
 
 - job:
     name: collect-logs-and-cleanup
@@ -191,8 +196,6 @@
           name: PIPELINE_NAME
       - string:
           name: PIPELINE_NUMBER
-      - string:
-          name: DEPLOY_PLATFORM_JOB_NAME
     wrappers:
       - timestamps
       - credentials-binding:
@@ -239,7 +242,7 @@
           filter: "*.env"
           which-build: upstream-build
       - shell: |
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}, Launched by: ${DEPLOY_PLATFORM_JOB_NAME}"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -247,13 +250,16 @@
           set +e
           set -o allexport
           source "$WORKSPACE/global.env"
-          source "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
+          source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${JOB_LOGS_PATH}"
           "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh"
           "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh"
           "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/remove_workers.sh"
+    publishers:
+      - archive:
+          artifacts: '*.env'
 
 - project:
     name: deploy

@@ -85,6 +85,7 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
+          source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
@@ -109,3 +110,6 @@
                 - shell: |
                     source "$WORKSPACE/global.env"
                     ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
+                    rm -f "$WORKSPACE/stackrc.$JOB_NAME.env"
+      - archive:
+          artifacts: '*.env'

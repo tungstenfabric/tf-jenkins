@@ -56,3 +56,5 @@
                 - shell: |
                     source "$WORKSPACE/global.env"
                     # TODO: copy or commonize code with test-unit
+      - archive:
+          artifacts: '*.env'

@@ -83,6 +83,7 @@
           set +e
           set -o pipefail
           source "$WORKSPACE/global.env"
+          source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
@@ -111,6 +112,7 @@
                             # cleanup only if worker was created
                             echo "INFO: cleanup workers"
                             ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh || true
+                            rm -f $WORKSPACE/stackrc.$JOB_NAME.env
                         else
                             echo "INFO: there is no env file. skipping workers cleanup"
                         fi
@@ -119,3 +121,5 @@
                           sudo docker stop $CONTAINER
                           sudo docker rm $CONTAINER
                         fi
+        - archive:
+            artifacts: '*.env'

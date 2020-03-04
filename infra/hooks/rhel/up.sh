@@ -8,12 +8,9 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 source "$WORKSPACE/global.env"
-if [[ -e "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" ]]; then
-  source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env"
-fi
-if [[ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ]] ; then
-  source "$WORKSPACE/stackrc.$JOB_NAME.env"
-fi
+source "$WORKSPACE/stackrc.$JOB_NAME.env" || /bin/true
+source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
+source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
 
 ENVIRONMENT_OS=${ENVIRONMENT_OS:-'rhel7'}
 OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}

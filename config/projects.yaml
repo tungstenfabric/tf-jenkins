@@ -1,243 +1,67 @@
 ---
 
-- project-template:
-    name: unittests
-    check:
-      jobs:
-        - fetch-sources
-        - test-unit
-    gate:
-      jobs:
-        - fetch-sources
-        - test-unit
-
-- project-template:
-    name: unittests-webui
-    check:
-      jobs:
-        - fetch-sources
-        - test-unit:
-            vars:
-              TARGET: ui
-    gate:
-      jobs:
-        - fetch-sources
-        - test-unit:
-            vars:
-              TARGET: ui
-
-- project-template:
-    name: systests
-    check:
-      jobs:
-        - fetch-sources
-        - build
-        - k8s_manifests:
-            voting: false
-            smoke: true
-        - ansible_k8s
-        - ansible_os
-    gate:
-      jobs:
-        - fetch-sources
-        - build
-        - ansible_k8s
-        - ansible_os
+- include:
+    - templates.yaml
 
 - project:
     name: tungstenfabric
     nightly:
-      jobs:
-        - fetch-sources
-        - build
+      templates:
         - test-unit
-        - ansible_k8s
-        - ansible_os
-        - helm_k8s
-        - helm_os
-        - k8s_manifests:
-            voting: false
-            smoke: true
-        - juju_k8s:
-            voting: false
-            smoke: true
-        - juju_os:
-            voting: false
-            smoke: true
-        # TODO: think how to choose image tag (centos/rhel) for sanity jobs 
-        #- fetch-sources-rhel:
-        #    job-name: fetch-sources
-        #    vars:
-        #      ENVIRONMENT_OS: rhel7
-        #- build-rhel:
-        #    job-name: build
-        #    vars:
-        #      ENVIRONMENT_OS: rhel7
-
-- project:
-    name: Juniper/contrail-container-builder
-    templates:
-      - systests
-    experimental:
+        - test-unit-ui
+        - k8s-manifests
+        - ansible-k8s
+        - ansible-os
       jobs:
-        - fetch-sources
-        - build:
+        - publish-centos-nightly:
+            job-name: publish
+            depends-on:
+              - build-centos
             vars:
-              CONTRAIL_BUILD_FROM_SOURCE: true
-        - ansible_os:
-            smoke: true
+              STABLE: false
 
 - project:
     name: Juniper/contrail-ansible-deployer
-    templates:
-      - systests
+    check:
+      templates:
+        - ansible-k8s
+        - ansible-os
+    gate:
+      templates:
+        - ansible-k8s
+        - ansible-os
 
 - project:
-    name: Juniper/openshift-ansible
-    branches:
-      - ^release-3\.[0-9]+-contrail$
-    # TODO: implentation openshift deployment jobs
-    # check:
-    #   jobs:
-    #     - fetch-sources:
-    #         vars:
-    #           ENVIRONMENT_OS: rhel7
-    #     - build:
-    #         vars:
-    #           ENVIRONMENT_OS: rhel7
-    #     - openshift:
-    #         voting: false
-    #         sanity: false
-    #         smoke: true
-    # gate:
-    #   jobs:
-    #     - fetch-sources:
-    #         vars:
-    #           ENVIRONMENT_OS: rhel7
-    #     - build:
-    #         vars:
-    #           ENVIRONMENT_OS: rhel7
-    #     - openshift:
-    #         voting: false
-    #         sanity: false
-    #         smoke: true
+    name: Juniper/contrail-container-builder
+    check:
+      templates:
+        - k8s-manifests
+        - ansible-k8s
+        - ansible-os
+    gate:
+      templates:
+        - build-centos
+    experimental:
+      # ?????
+      templates:
+        - ansible-os
+      jobs:
+        - build-centos:
+            job-name: build
+            depends-on:
+              - fetch-sources-centos
+            vars:
+              CONTRAIL_BUILD_FROM_SOURCE: true
 
 - project:
     name: Juniper/contrail-controller
-    templates:
-      - unittests
-      - systests
-
-- project:
-    name: Juniper/contrail-common
-    templates:
-      - unittests
-      - systests
-
-- project:
-    name: Juniper/contrail-api-client
-    templates:
-      - unittests
-      - systests
-
-- project:
-    name: Juniper/contrail-vrouter
-    templates:
-      - unittests
-      - systests
-
-- project:
-    name: Juniper/contrail-test
-    templates:
-      - systests
-
-- project:
-    name: tungstenfabric/tf-analytics
-    templates:
-      - unittests
-      - systests
-
-- project:
-    name: Juniper/contrail-helm-deployer
-    templates:
-      - systests
     check:
-      jobs:
-        - helm_k8s
-        - helm_os
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os
     gate:
-      jobs:
-        - helm_k8s
-        - helm_os
-
-- project:
-    name: Juniper/contrail-third-party-packages
-    templates:
-      - unittests
-      - systests
-
-- project:
-    name: tungstenfabric/tf-charms
-    check:
-      jobs:
-        - juju_k8s:
-            voting: false
-            smoke: true
-        - juju_os:
-            voting: false
-            smoke: true
-    gate:
-      jobs:
-        - juju_k8s:
-            voting: false
-            smoke: true
-        - juju_os:
-            voting: false
-            smoke: true
-
-- project:
-    name: Juniper/contrail-web-core
-    templates:
-      - unittests-webui
-
-- project:
-    name: Juniper/contrail-web-controller
-    templates:
-      - unittests-webui
-
-- project:
-    name: tungstenfabric/tf-web-controller
-    templates:
-      - unittests-webui
-
-- project:
-    name: Juniper/contrail-webui-third-party
-    templates:
-      - unittests-webui
-
-- project:
-    name: Juniper/contrail-tripleo-heat-templates
-    check:
-      jobs:
-        - rhosp
-    gate:
-      jobs:
-        - rhosp
-
-- project:
-    name: tungstenfabric/tf-helm-deployer
-    templates:
-      - systests
-    check:
-      jobs:
-        - helm_os
-        - helm_k8s
-    gate:
-      jobs:
-        - helm_os
-        - helm_k8s
-
-- project:
-    name: tungstenfabric/tf-devstack
-    templates:
-      - systests
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os

@@ -15,8 +15,6 @@
           name: PIPELINE_NAME
       - string:
           name: PIPELINE_NUMBER
-      - string:
-          name: DEPLOY_PLATFORM_JOB_NAME
     properties:
       - build-discarder:
           num-to-keep: 50
@@ -43,8 +41,8 @@
           which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
-          source "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}<br>, Launched by: ${DEPLOY_PLATFORM_JOB_NAME}<br>"
+          source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}<br>"
           desc+="Job logs: <a href=\"${LOGS_URL}/$JOB_LOGS_PATH\">${LOGS_URL}/$JOB_LOGS_PATH</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
@@ -53,11 +51,14 @@
           set +e
           set -o pipefail
           source "$WORKSPACE/global.env"
-          source "$WORKSPACE/stackrc.${DEPLOY_PLATFORM_JOB_NAME}.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
+          source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
           ./src/progmaticlab/tf-jenkins/jobs/test/smoke/run.sh |& tee ${WORKSPACE}/output-test-smoke.log || res=1
           rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output-test-smoke.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
           exit $res
+    publishers:
+      - archive:
+          artifacts: '*.env'
