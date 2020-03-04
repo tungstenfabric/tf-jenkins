@@ -96,7 +96,7 @@
         stream: ansible-k8s
         force-run: true
         depends-on:
-          - test-smoke-ansible-k8s
+          - test-sanity-ansible-k8s
 
 - template:
     name: ansible-os
