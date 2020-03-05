@@ -365,7 +365,7 @@ def run_job(name) {
     collect_dependent_env_files(name, deps_env_file)
     params = [
       string(name: 'STREAM', value: stream),
-      string(name: 'RANDOM', value: job_rnd),
+      string(name: 'RND', value: job_rnd),
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]

@@ -11,7 +11,7 @@
       - string:
           name: STREAM 
       - string:
-          name: RANDOM
+          name: RND
       - string:
           name: PIPELINE_NAME
       - string:
@@ -77,17 +77,17 @@
           regexp: "DESCRIPTION (.*)"
       - shell: |
           source "$WORKSPACE/global.env"
-          source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
-          source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
+          source "${WORKSPACE}/deps.${JOB_NAME}-${RND}.env" || /bin/true
+          source "${WORKSPACE}/vars.${JOB_NAME}-${RND}.env" || /bin/true
           ./src/progmaticlab/tf-jenkins/jobs/build/create_workers.sh
       - shell: |
           set +e
           set -o pipefail
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
-          source "${WORKSPACE}/deps.${JOB_NAME}-${RANDOM}.env" || /bin/true
+          source "${WORKSPACE}/deps.${JOB_NAME}-${RND}.env" || /bin/true
           # do it as a latest source to override all exports
-          source "${WORKSPACE}/vars.${JOB_NAME}-${RANDOM}.env" || /bin/true
+          source "${WORKSPACE}/vars.${JOB_NAME}-${RND}.env" || /bin/true
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
           # main run

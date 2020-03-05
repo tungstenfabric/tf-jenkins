@@ -10,7 +10,7 @@
       - string:
           name: STREAM 
       - string:
-          name: RANDOM
+          name: RND
       - string:
           name: PIPELINE_NAME
       - string:
