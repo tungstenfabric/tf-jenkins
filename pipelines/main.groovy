@@ -64,7 +64,11 @@ timestamps {
               force_run = item.value.get('force-run', false)
               if (result || force_run) {
                 // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
-                run_job(item.key)
+                try {
+                  run_job(item.key)
+                } catch (err) {
+                  println("job fail ${err} - ${err.getMessage()}")
+                }
               } else {
                 job_results[item.key] = [:]
                 job_results[item.key]['number'] = -1
@@ -349,7 +353,6 @@ def run_job(name) {
   // final cleanup job is not in config
   def job_name = jobs.containsKey(name) ? jobs[name].get('job-name', name) : name
   def stream = jobs.containsKey(name) ? jobs[name].get('stream', name) : name
-  def job = null
   def job_number = null
   def job_rnd = "${rnd.nextInt(99999)}"
   def vars_env_file = "vars.${job_name}-${job_rnd}.env"
@@ -367,13 +370,16 @@ def run_job(name) {
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]
     println("Starting job ${name} (${job_name} - #${job_rnd})")
-    job = build(job: job_name, parameters: params)
+    def job = build(job: job_name, parameters: params)
     job_number = job.getNumber()
+    job_results[name]['number'] = job_number
+    job_results[name]['duration'] = job.getDuration()
+    job_results[name]['result'] = job.getResult()
     println("Finished ${name} (${job_name} - #${job_number}) with SUCCESS")
   } catch (err) {
     run_err = err
-    println("Failed ${name} with errors")
     job_results[name]['result'] = 'FAILURE'
+    println("Failed ${name} with errors")
     msg = err.getMessage()
     if (msg != null) {
       println(msg)
@@ -384,18 +390,16 @@ def run_job(name) {
       def build_num_matcher = cause_msg =~ /#\d+/
       if (build_num_matcher.find()) {
         job_number = ((build_num_matcher[0] =~ /\d+/)[0]).toInteger()
-        job = Jenkins.getInstanceOrNull().getItemByFullName(job_name).getBuildByNumber(job_number)
+        def job = Jenkins.getInstanceOrNull().getItemByFullName(job_name).getBuildByNumber(job_number)
+        job_results[name]['number'] = job_number
+        job_results[name]['duration'] = job.getDuration()
+        job_results[name]['result'] = job.getResult()
       }
     } catch(e) {
       println("Error in obtaining failed job result ${e.getMessage()}")
     }
   }
-  if (job != null) {
-    job_results[name]['duration'] = job.getDuration()
-    job_results[name]['result'] = job.getResult()
-  }
   if (job_number != null) {
-    job_results[name]['number'] = job_number
     target_dir = "${job_name}-${job_rnd}"
     copyArtifacts(
       filter: '*.env',
@@ -406,7 +410,7 @@ def run_job(name) {
       target: target_dir)
     // store collected file in jobs subfolder except vars.*.env and global.env
     sh("rm -f ${WORKSPACE}/${target_dir}/global.env || /bin/true")
-    sh("rf -f ${WORKSPACE}/${target_dir}/${vars_env_file} || /bin/true")
+    sh("rm -f ${WORKSPACE}/${target_dir}/${vars_env_file} || /bin/true")
   }
   // re-throw error
   if (run_err != null)
