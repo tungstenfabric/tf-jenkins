@@ -60,16 +60,21 @@ timestamps {
         jobs.each { item ->
           jobs_code[item.key] = {
             stage(item.key) {
-              result = wait_for_dependencies(item.key)
-              force_run = item.value.get('force-run', false)
-              if (result || force_run) {
-                // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
-                run_job(item.key)
-              } else {
-                job_results[item.key] = [:]
-                job_results[item.key]['number'] = -1
-                job_results[item.key]['duration'] = 0
-                job_results[item.key]['result'] = 'NOT_BUILT'
+              try {
+                result = wait_for_dependencies(item.key)
+                force_run = item.value.get('force-run', false)
+                if (result || force_run) {
+                  // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
+                  run_job(item.key)
+                } else {
+                  job_results[item.key] = [:]
+                  job_results[item.key]['number'] = -1
+                  job_results[item.key]['duration'] = 0
+                  job_results[item.key]['result'] = 'NOT_BUILT'
+                }
+              } catch(err) {
+                println("ERROR: failed in job ${item.key} - ${err.getMessage()}")
+                throw err
               }
             }
           }
@@ -292,11 +297,13 @@ def wait_for_dependencies(name) {
   result = true
   // wait for all jobs even if some of them failed
   for (dep_name in deps) {
-    waitUntil {
-      // TODO: try to use sync objects
-      println("Job ${name} is still waiting for ${dep_name}")
-      sleep(15)
-      return job_results.containsKey(dep_name) && job_results[dep_name].containsKey('result')
+    if (!job_results.containsKey(dep_name) || !job_results[dep_name].containsKey('result')) {
+      waitUntil {
+        // TODO: try to use sync objects
+        println("Job ${name} is still waiting for ${dep_name}")
+        sleep(15)
+        return job_results.containsKey(dep_name) && job_results[dep_name].containsKey('result')
+      }
     }
     if (job_results[dep_name]['result'] != 'SUCCESS') {
       println("ERROR: Job ${name} - dependent job failed: ${dep_name} = ${job_results[dep_name]}")
