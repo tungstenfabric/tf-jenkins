@@ -164,7 +164,7 @@ def evaluate_env() {
     println("Pipeline to run: ${env.GERRIT_PIPELINE}")
     project_name = env.GERRIT_PROJECT
     if (env.GERRIT_CHANGE_ID) {
-      url = resolve_gerrit_url()
+      url = gerrit.resolve_gerrit_url()
       sh """#!/bin/bash -e
         echo "export GERRIT_URL=${url}" >> global.env
         echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
