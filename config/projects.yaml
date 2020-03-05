@@ -32,6 +32,17 @@
         - ansible-os
 
 - project:
+    name: Juniper/contrail-deployers-containers
+    check:
+      templates:
+        - ansible-k8s
+        - ansible-os
+    gate:
+      templates:
+        - ansible-k8s
+        - ansible-os
+
+- project:
     name: Juniper/contrail-container-builder
     check:
       templates:
