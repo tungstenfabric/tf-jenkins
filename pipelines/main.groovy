@@ -241,15 +241,17 @@ def get_jobs(project_name, gerrit_pipeline) {
     project = item.get('project')
     break
   }
-  if (!project)
-    throw new Exception("ERROR: Unknown project: ${project_name}")
-  if (!project.containsKey(gerrit_pipeline)) {
-    print("WARNING: project ${project_name} doesn't define pipeline ${gerrit_pipeline}")
-    return
-  }
   // fill jobs from project and templates
   streams = [:]
   jobs = [:]  
+  if (!project) {
+    println("INFO: project ${project_name} is not defined in config")
+    return [streams, jobs]
+  }
+  if (!project.containsKey(gerrit_pipeline)) {
+    print("WARNING: project ${project_name} doesn't define pipeline ${gerrit_pipeline}")
+    return [streams, jobs]
+  }
   if (project[gerrit_pipeline].containsKey('templates')) {
     for (template_name in project[gerrit_pipeline].templates) {
       if (!templates.containsKey(template_name))
