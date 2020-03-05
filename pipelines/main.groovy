@@ -342,7 +342,7 @@ def collect_dependent_env_files(name, deps_env_file) {
     }
   }
   lines = content.split('\n').findAll { it.size() > 0 }
-  if (line.size() == 0)
+  if (lines.size() == 0)
     return
   content = lines.join('\n') + '\n'
   writeFile(file: deps_env_file, text: content.join('\n'))
