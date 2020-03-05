@@ -350,7 +350,7 @@ def collect_dependent_env_files(name, deps_env_file) {
   if (lines.size() == 0)
     return
   content = lines.join('\n') + '\n'
-  writeFile(file: deps_env_file, text: content.join('\n'))
+  writeFile(file: deps_env_file, text: content)
   archiveArtifacts(artifacts: deps_env_file)
 }
 
