@@ -64,11 +64,7 @@ timestamps {
               force_run = item.value.get('force-run', false)
               if (result || force_run) {
                 // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
-                try {
-                  run_job(item.key)
-                } catch (err) {
-                  println("job fail ${err} - ${err.getMessage()}")
-                }
+                run_job(item.key)
               } else {
                 job_results[item.key] = [:]
                 job_results[item.key]['number'] = -1
