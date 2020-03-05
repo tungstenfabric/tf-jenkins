@@ -405,8 +405,8 @@ def run_job(name) {
       selector: specific("${job_number}"),
       target: target_dir)
     // store collected file in jobs subfolder except vars.*.env and global.env
-    sh("rm -f ${WORKSPACE}/${target_dir}/global.env")
-    sh("rf -f ${WORKSPACE}/${target_dir}/${vars_env_file}")
+    sh("rm -f ${WORKSPACE}/${target_dir}/global.env || /bin/true")
+    sh("rf -f ${WORKSPACE}/${target_dir}/${vars_env_file} || /bin/true")
   }
   // re-throw error
   if (run_err != null)
