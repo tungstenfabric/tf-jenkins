@@ -60,16 +60,25 @@ timestamps {
         jobs.keySet().each { name ->
           jobs_code[name] = {
             stage(name) {
-              def result = wait_for_dependencies(name)
-              def force_run = jobs[name].get('force-run', false)
-              if (result || force_run) {
-                // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
-                run_job(name)
-              } else {
-                job_results[name] = [:]
-                job_results[name]['number'] = -1
-                job_results[name]['duration'] = 0
-                job_results[name]['result'] = 'NOT_BUILT'
+              try {
+                def result = wait_for_dependencies(name)
+                def force_run = jobs[name].get('force-run', false)
+                if (result || force_run) {
+                  // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
+                  run_job(name)
+                } else {
+                  job_results[name] = [:]
+                  job_results[name]['number'] = -1
+                  job_results[name]['duration'] = 0
+                  job_results[name]['result'] = 'NOT_BUILT'
+                }
+              } catch (err) {
+                println("JOB ${name}: error in job!!!")
+                println("JOB ${name}: Err - ${err}")
+                println("JOB ${name}: Message - ${err.getMessage()}")
+                println("JOB ${name}: Cause - ${err.getCause()}")
+                println("JOB ${name}: Stacktrace - ${err.getStackTrace()}")
+                throw(err)
               }
             }
           }
