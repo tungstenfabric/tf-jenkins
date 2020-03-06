@@ -59,6 +59,7 @@ timestamps {
 
         jobs.keySet().each { name ->
           job_results[name] = [:]
+          job_results[name]['job-rnd'] = "${rnd.nextInt(99999)}"
           jobs_code[name] = {
             stage(name) {
               try {
@@ -296,6 +297,7 @@ def update_list(items, new_items) {
   }
 }
 
+@NonCPS
 def wait_for_dependencies(name) {
   def deps = jobs[name].get('depends-on')
   if (deps == null || deps.size() == 0)
@@ -363,18 +365,18 @@ def collect_dependent_env_files(name, deps_env_file) {
   archiveArtifacts(artifacts: deps_env_file)
 }
 
+@NonCPS
 def run_job(name) {
   println("JOB ${name}: entering run_job")
   // final cleanup job is not in config
   def job_name = jobs.containsKey(name) ? jobs[name].get('job-name', name) : name
   def stream = jobs.containsKey(name) ? jobs[name].get('stream', name) : name
-  def job_number = null
-  def job_rnd = "${rnd.nextInt(99999)}"
+  def job_rnd = job_results[name]['job-rnd']
   def vars_env_file = "vars.${job_name}.${job_rnd}.env"
   def deps_env_file = "deps.${job_name}.${job_rnd}.env"
+  def job_number = null
   def run_err = null
   try {
-    job_results[name]['job-rnd'] = job_rnd
     job_params_to_file(name, vars_env_file)
     collect_dependent_env_files(name, deps_env_file)
     def params = [
