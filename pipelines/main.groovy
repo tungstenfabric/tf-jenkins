@@ -304,7 +304,9 @@ def wait_for_dependencies(name) {
   println("JOB ${name}: waiting for dependecies")
   def result = true
   // wait for all jobs even if some of them failed
-  for (def dep_name in deps) {
+  // simple for-loop to avoid non-Serializable exception
+  for (def i = 0; i < deps.size(); ++i) {
+    def dep_name = deps[i]
     println("JOB ${name}: wait for dependecy ${dep_name}")
     if (!job_results.containsKey(dep_name) || !job_results[dep_name].containsKey('result')) {
       waitUntil {
@@ -324,15 +326,17 @@ def wait_for_dependencies(name) {
   return result
 }
 
-@NonCPS
 def job_params_to_file(name, env_file) {
   if (!jobs.containsKey(name) || !jobs[name].containsKey('vars'))
     return
 
   def job_name = jobs[name].get('job-name', name)
   def env_text = ""
-  for (def jvar in jobs[name]['vars']) {
-    env_text += "export ${jvar.key}='${jvar.value}'\n"
+  def vars = jobs[name]['vars']
+  def vars_keys = vars.keySet() as List
+  // simple for-loop to avoid non-Serializable exception
+  for (def i = 0; i < vars_keys.size(); ++i) {
+    env_text += "export ${vars_keys[i]}='${vars[vars_keys[i]]}'\n"
   }
   writeFile(file: env_file, text: env_text)
   archiveArtifacts(artifacts: env_file)
@@ -346,12 +350,14 @@ def collect_dependent_env_files(name, deps_env_file) {
     return
   println("JOB ${name}: deps: ${deps}")
   def content = []
-  for (def dep_name in deps) {
-    def job_name = jobs[dep_name].get('job-name', dep_name)
-    def job_rnd = job_results[dep_name]['job-rnd']
+  // simple for-loop to avoid non-Serializable exception
+  for (def i = 0; i < deps.size(); ++i) {
+    def job_name = jobs[deps[i]].get('job-name', deps[i])
+    def job_rnd = job_results[deps[i]]['job-rnd']
     dir("${WORKSPACE}") {
-      findFiles(glob: "${job_name}-${job_rnd}/*.env").each { filew ->
-        data = readFile(filew.getPath())
+      def files = findFiles(glob: "${job_name}-${job_rnd}/*.env")
+      for (def j = 0; j < files.size(); ++j) {
+        data = readFile(files[j].getPath())
         content += data.split('\n')
       }
     }
