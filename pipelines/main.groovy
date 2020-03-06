@@ -61,13 +61,13 @@ timestamps {
           jobs_code[name] = {
             stage(name) {
               try {
+                job_results[name] = [:]
                 def result = wait_for_dependencies(name)
                 def force_run = jobs[name].get('force-run', false)
                 if (result || force_run) {
                   // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
                   run_job(name)
                 } else {
-                  job_results[name] = [:]
                   job_results[name]['number'] = -1
                   job_results[name]['duration'] = 0
                   job_results[name]['result'] = 'NOT_BUILT'
