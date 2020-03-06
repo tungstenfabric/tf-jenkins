@@ -336,6 +336,7 @@ def job_params_to_file(name, env_file) {
   archiveArtifacts(artifacts: env_file)
 }
 
+@NonCPS
 def collect_dependent_env_files(name, deps_env_file) {
   if (!jobs.containsKey(name) || !jobs[name].containsKey('depends-on'))
     return
