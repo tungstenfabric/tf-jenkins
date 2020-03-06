@@ -337,7 +337,6 @@ def job_params_to_file(name, env_file) {
   archiveArtifacts(artifacts: env_file)
 }
 
-@NonCPS
 def collect_dependent_env_files(name, deps_env_file) {
   if (!jobs.containsKey(name) || !jobs[name].containsKey('depends-on'))
     return
@@ -365,6 +364,18 @@ def collect_dependent_env_files(name, deps_env_file) {
 }
 
 @NonCPS
+def get_job_number_from_exception(err)
+  def causes = err.getCauses()
+  if (causes == null || causes.size() == 0)
+    return null
+  def cause_msg = causes[0].getShortDescription()
+
+  def build_num_matcher = cause_msg =~ /#\d+/
+  if (build_num_matcher.find())
+    return ((build_num_matcher[0] =~ /\d+/)[0]).toInteger()
+  return null
+}
+
 def run_job(name) {
   println("JOB ${name}: entering run_job")
   // final cleanup job is not in config
@@ -401,10 +412,8 @@ def run_job(name) {
     }
     // get build num from exception and find job to get duration and result
     try {
-      def cause_msg = err.getCauses()[0].getShortDescription()
-      def build_num_matcher = cause_msg =~ /#\d+/
-      if (build_num_matcher.find()) {
-        job_number = ((build_num_matcher[0] =~ /\d+/)[0]).toInteger()
+      job_number = get_job_number_from_exception(run_err)
+      if (job_number) {
         def job = Jenkins.getInstanceOrNull().getItemByFullName(job_name).getBuildByNumber(job_number)
         job_results[name]['number'] = job_number
         job_results[name]['duration'] = job.getDuration()
