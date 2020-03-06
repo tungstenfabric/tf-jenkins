@@ -10,6 +10,9 @@ source "$my_dir/definitions"
 
 echo "INFO: Deploy platform for $JOB_NAME"
 
+# TODO: remove hack
+exit 1
+
 # target 'platform' tries to fetch_deployer and use code from that container.
 # but for gerrit's check this container will be created in hour in build job.
 # as a workaround we will skip deploy platform here.
