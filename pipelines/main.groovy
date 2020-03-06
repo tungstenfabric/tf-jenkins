@@ -338,7 +338,6 @@ def job_params_to_file(name, env_file) {
   archiveArtifacts(artifacts: env_file)
 }
 
-@NonCPS
 def collect_dependent_env_files(name, deps_env_file) {
   if (!jobs.containsKey(name) || !jobs[name].containsKey('depends-on'))
     return
@@ -346,22 +345,27 @@ def collect_dependent_env_files(name, deps_env_file) {
   if (deps == null || deps.size() == 0)
     return
   println("JOB ${name}: deps: ${deps}")
-  def content = ''
+  def content = []
   for (def dep_name in deps) {
     def job_name = jobs[dep_name].get('job-name', dep_name)
     def job_rnd = job_results[dep_name]['job-rnd']
     dir("${WORKSPACE}") {
       findFiles(glob: "${job_name}-${job_rnd}/*.env").each { filew ->
-        content += readFile(filew.getPath())
+        data = readFile(filew.getPath())
+        content += data.split('\n')
       }
     }
   }
-  def lines = content.split('\n').findAll { it.size() > 0 }
+  def lines = []
+  for (def i = 0; i < content.size(); ++i) {
+    def line = content[i]
+    if (line.size() > 0 && !lines.contains(line))
+      lines += line
+  }
   if (lines.size() == 0)
     return
-  content = lines.join('\n') + '\n'
   println("JOB ${name}: deps_env_file: ${deps_env_file}")
-  writeFile(file: deps_env_file, text: content)
+  writeFile(file: deps_env_file, text: lines.join('\n') + '\n')
   archiveArtifacts(artifacts: deps_env_file)
 }
 
