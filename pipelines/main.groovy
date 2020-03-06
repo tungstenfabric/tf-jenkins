@@ -364,7 +364,7 @@ def collect_dependent_env_files(name, deps_env_file) {
 }
 
 @NonCPS
-def get_job_number_from_exception(err)
+def get_job_number_from_exception(err) {
   def causes = err.getCauses()
   if (causes == null || causes.size() == 0)
     return null
