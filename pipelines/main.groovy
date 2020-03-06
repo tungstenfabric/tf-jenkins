@@ -58,10 +58,10 @@ timestamps {
         }
 
         jobs.keySet().each { name ->
+          job_results[name] = [:]
           jobs_code[name] = {
             stage(name) {
               try {
-                job_results[name] = [:]
                 def result = wait_for_dependencies(name)
                 def force_run = jobs[name].get('force-run', false)
                 if (result || force_run) {
