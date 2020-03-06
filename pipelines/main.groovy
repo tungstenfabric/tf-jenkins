@@ -60,21 +60,16 @@ timestamps {
         jobs.keySet().each { name ->
           jobs_code[name] = {
             stage(name) {
-              try {
-                result = wait_for_dependencies(name)
-                force_run = jobs[name].get('force-run', false)
-                if (result || force_run) {
-                  // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
-                  run_job(name)
-                } else {
-                  job_results[name] = [:]
-                  job_results[name]['number'] = -1
-                  job_results[name]['duration'] = 0
-                  job_results[name]['result'] = 'NOT_BUILT'
-                }
-              } catch(err) {
-                println("ERROR: failed in job ${name} - ${err.getMessage()}")
-                throw err
+              def result = wait_for_dependencies(name)
+              def force_run = jobs[name].get('force-run', false)
+              if (result || force_run) {
+                // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
+                run_job(name)
+              } else {
+                job_results[name] = [:]
+                job_results[name]['number'] = -1
+                job_results[name]['duration'] = 0
+                job_results[name]['result'] = 'NOT_BUILT'
               }
             }
           }
@@ -293,13 +288,13 @@ def update_list(items, new_items) {
 }
 
 def wait_for_dependencies(name) {
-  deps = jobs[name].get('depends-on')
+  def deps = jobs[name].get('depends-on')
   if (deps == null || deps.size() == 0)
     return true
   println("JOB ${name}: waiting for dependecies")
-  result = true
+  def result = true
   // wait for all jobs even if some of them failed
-  for (dep_name in deps) {
+  for (def dep_name in deps) {
     println("JOB ${name}: wait for dependecy ${dep_name}")
     if (!job_results.containsKey(dep_name) || !job_results[dep_name].containsKey('result')) {
       waitUntil {
@@ -324,8 +319,8 @@ def job_params_to_file(name, env_file) {
     return
 
   def job_name = jobs[name].get('job-name', name)
-  env_text = ""
-  for (jvar in jobs[name]['vars']) {
+  def env_text = ""
+  for (def jvar in jobs[name]['vars']) {
     env_text += "export ${jvar.key}='${jvar.value}'\n"
   }
   writeFile(file: env_file, text: env_text)
@@ -335,22 +330,21 @@ def job_params_to_file(name, env_file) {
 def collect_dependent_env_files(name, deps_env_file) {
   if (!jobs.containsKey(name) || !jobs[name].containsKey('depends-on'))
     return
-  deps = jobs[name].get('depends-on')
+  def deps = jobs[name].get('depends-on')
   if (deps == null || deps.size() == 0)
     return
   println("JOB ${name}: deps: ${deps}")
-  content = ''
-  for (dep_name in deps) {
+  def content = ''
+  for (def dep_name in deps) {
     def job_name = jobs[dep_name].get('job-name', dep_name)
     def job_rnd = job_results[dep_name]['job-rnd']
-    target_dir = "${job_name}-${job_rnd}"
     dir("${WORKSPACE}") {
-      findFiles(glob: "${target_dir}/*.env").each { filew ->
+      findFiles(glob: "${job_name}-${job_rnd}/*.env").each { filew ->
         content += readFile(filew.getPath())
       }
     }
   }
-  lines = content.split('\n').findAll { it.size() > 0 }
+  def lines = content.split('\n').findAll { it.size() > 0 }
   if (lines.size() == 0)
     return
   content = lines.join('\n') + '\n'
@@ -374,7 +368,7 @@ def run_job(name) {
     job_results[name]['job-rnd'] = job_rnd
     job_params_to_file(name, vars_env_file)
     collect_dependent_env_files(name, deps_env_file)
-    params = [
+    def params = [
       string(name: 'STREAM', value: stream),
       string(name: 'JOB_RND', value: job_rnd),
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
@@ -391,7 +385,7 @@ def run_job(name) {
     run_err = err
     job_results[name]['result'] = 'FAILURE'
     println("JOB ${name}: Failed")
-    msg = err.getMessage()
+    def msg = err.getMessage()
     if (msg != null) {
       println("JOB ${name}: err msg: ${msg}")
     }
