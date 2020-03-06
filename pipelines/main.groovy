@@ -361,8 +361,8 @@ def run_job(name) {
   def stream = jobs.containsKey(name) ? jobs[name].get('stream', name) : name
   def job_number = null
   def job_rnd = "${rnd.nextInt(99999)}"
-  def vars_env_file = "vars.${job_name}-${job_rnd}.env"
-  def deps_env_file = "deps.${job_name}-${job_rnd}.env"
+  def vars_env_file = "vars.${job_name}.${job_rnd}.env"
+  def deps_env_file = "deps.${job_name}.${job_rnd}.env"
   def run_err = null
   try {
     job_results[name] = [:]
@@ -371,7 +371,7 @@ def run_job(name) {
     collect_dependent_env_files(name, deps_env_file)
     params = [
       string(name: 'STREAM', value: stream),
-      string(name: 'RND', value: job_rnd),
+      string(name: 'JOB_RND', value: job_rnd),
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]

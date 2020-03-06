@@ -13,7 +13,7 @@
       - string:
           name: STREAM 
       - string:
-          name: RND
+          name: JOB_RND
       - string:
           name: PIPELINE_NAME
       - string:
@@ -60,12 +60,12 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "*.env"
+          filter: "global.env,*.$JOB_RND.env"
           which-build: upstream-build
           optional: true
       - shell: |
           source "$WORKSPACE/global.env"
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -79,9 +79,9 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
-          source "${WORKSPACE}/deps.${JOB_NAME}-${RND}.env" || /bin/true
+          source "${WORKSPACE}/deps.${JOB_NAME}-${JOB_RND}.env" || /bin/true
           # do it as a latest source to override all exports
-          source "${WORKSPACE}/vars.${JOB_NAME}-${RND}.env" || /bin/true
+          source "${WORKSPACE}/vars.${JOB_NAME}-${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
           # main run
           ./src/progmaticlab/tf-jenkins/jobs/test/unit/run.sh |& tee ${WORKSPACE}/output.log || res=1

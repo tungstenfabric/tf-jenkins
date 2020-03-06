@@ -10,7 +10,7 @@
       - string:
           name: STREAM 
       - string:
-          name: RND
+          name: JOB_RND
       - string:
           name: PIPELINE_NAME
       - string:
@@ -39,12 +39,12 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "*.env"
+          filter: "global.env,*.$JOB_RND.env"
           which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
-          source "${WORKSPACE}/deps.${JOB_NAME}-${RND}.env" || /bin/true
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${RND}<br>"
+          source "${WORKSPACE}/deps.${JOB_NAME}-${JOB_RND}.env" || /bin/true
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>"
           desc+="Job logs: <a href=\"${LOGS_URL}/$JOB_LOGS_PATH\">${LOGS_URL}/$JOB_LOGS_PATH</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
@@ -54,9 +54,9 @@
           set -o pipefail
           source "$WORKSPACE/global.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
-          source "${WORKSPACE}/deps.${JOB_NAME}-${RND}.env" || /bin/true
+          source "${WORKSPACE}/deps.${JOB_NAME}-${JOB_RND}.env" || /bin/true
           # do it as a latest source to override all exports
-          source "${WORKSPACE}/vars.${JOB_NAME}-${RND}.env" || /bin/true
+          source "${WORKSPACE}/vars.${JOB_NAME}-${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
           ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh |& tee ${WORKSPACE}/output-test-sanity.log || res=1
           rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output-test-sanity.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}

@@ -10,7 +10,7 @@
       - string:
           name: STREAM 
       - string:
-          name: RND
+          name: JOB_RND
       - string:
           name: PIPELINE_NAME
       - string:

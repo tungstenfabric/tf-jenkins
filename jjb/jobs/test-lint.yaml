@@ -8,7 +8,7 @@
       - string:
           name: STREAM 
       - string:
-          name: RND
+          name: JOB_RND
       - string:
           name: PIPELINE_NAME
       - string:
@@ -31,12 +31,12 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "*.env"
+          filter: "global.env,*.$JOB_RND.env"
           which-build: upstream-build
           optional: true
       - shell: |
           source "$WORKSPACE/global.env"
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
