@@ -373,7 +373,6 @@ def run_job(name) {
   def deps_env_file = "deps.${job_name}.${job_rnd}.env"
   def run_err = null
   try {
-    job_results[name] = [:]
     job_results[name]['job-rnd'] = job_rnd
     job_params_to_file(name, vars_env_file)
     collect_dependent_env_files(name, deps_env_file)
