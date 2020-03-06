@@ -8,7 +8,8 @@
     scm:
       - tf-jenkins
     wrappers:
-      - workspace-cleanup
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
       - timestamps
       - credentials-binding:
           - text:

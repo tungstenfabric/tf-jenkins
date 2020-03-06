@@ -22,8 +22,9 @@
           default: false
           description: "Publish containers as stable."
     wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
       - timestamps
-      - workspace-cleanup
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: worker

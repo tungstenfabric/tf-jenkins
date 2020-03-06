@@ -16,7 +16,8 @@
       - string:
           name: PIPELINE_NUMBER
     wrappers:
-      - workspace-cleanup
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
       - timestamps
       - credentials-binding:
           - amazon-web-services:

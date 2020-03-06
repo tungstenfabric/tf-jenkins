@@ -19,6 +19,8 @@
       - build-discarder:
           num-to-keep: 50
     wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
       - timestamps
       - credentials-binding:
           - ssh-user-private-key:
