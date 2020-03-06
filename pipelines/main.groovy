@@ -324,6 +324,7 @@ def wait_for_dependencies(name) {
   return result
 }
 
+@NonCPS
 def job_params_to_file(name, env_file) {
   if (!jobs.containsKey(name) || !jobs[name].containsKey('vars'))
     return
@@ -337,6 +338,7 @@ def job_params_to_file(name, env_file) {
   archiveArtifacts(artifacts: env_file)
 }
 
+@NonCPS
 def collect_dependent_env_files(name, deps_env_file) {
   if (!jobs.containsKey(name) || !jobs[name].containsKey('depends-on'))
     return
@@ -369,7 +371,6 @@ def get_job_number_from_exception(err) {
   if (causes == null || causes.size() == 0)
     return null
   def cause_msg = causes[0].getShortDescription()
-
   def build_num_matcher = cause_msg =~ /#\d+/
   if (build_num_matcher.find())
     return ((build_num_matcher[0] =~ /\d+/)[0]).toInteger()
