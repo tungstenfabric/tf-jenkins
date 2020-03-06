@@ -78,9 +78,9 @@
           export ENVIRONMENT_OS={environment_os}
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
-          source "${{WORKSPACE}}/deps.${{JOB_NAME}}-${{JOB_RND}}.env" || /bin/true
+          source "${{WORKSPACE}}/deps.${{JOB_NAME}}.${{JOB_RND}}.env" || /bin/true
           # do it as a latest source to override all exports
-          source "${{WORKSPACE}}/vars.${{JOB_NAME}}-${{JOB_RND}}.env" || /bin/true
+          source "${{WORKSPACE}}/vars.${{JOB_NAME}}.${{JOB_RND}}.env" || /bin/true
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/create_workers.sh
           # add more information about current deployment
           ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
@@ -94,9 +94,9 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
-          source "${{WORKSPACE}}/deps.${{JOB_NAME}}-${{JOB_RND}}.env" || /bin/true
+          source "${{WORKSPACE}}/deps.${{JOB_NAME}}.${{JOB_RND}}.env" || /bin/true
           # do it as a latest source to override all exports
-          source "${{WORKSPACE}}/vars.${{JOB_NAME}}-${{JOB_RND}}.env" || /bin/true
+          source "${{WORKSPACE}}/vars.${{JOB_NAME}}.${{JOB_RND}}.env" || /bin/true
 
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
@@ -109,8 +109,6 @@
           fi
           exit $res
     publishers:
-      - archive:
-          artifacts: '*.env'
       - postbuildscript:
           builders:
             - role: SLAVE
@@ -123,6 +121,9 @@
                       source "$WORKSPACE/stackrc.$JOB_NAME.env"
                       source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
                       ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/remove_workers.sh
+                      rm -f "$WORKSPACE/stackrc.$JOB_NAME.env"
+      - archive:
+          artifacts: '*.env'
 
 - job-template:
     name: deploy-tf-{project}
@@ -173,9 +174,9 @@
           set -o pipefail
           source "$WORKSPACE/global.env"
           source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
-          source "${{WORKSPACE}}/deps.${{JOB_NAME}}-${{JOB_RND}}.env" || /bin/true
+          source "${{WORKSPACE}}/deps.${{JOB_NAME}}.${{JOB_RND}}.env" || /bin/true
           # do it as a latest source to override all exports
-          source "${{WORKSPACE}}/vars.${{JOB_NAME}}-${{JOB_RND}}.env" || /bin/true
+          source "${{WORKSPACE}}/vars.${{JOB_NAME}}.${{JOB_RND}}.env" || /bin/true
 
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
           ./src/progmaticlab/tf-jenkins/jobs/devstack/{deployer}/deploy_tf.sh |& tee $WORKSPACE/output-deploy-tf.log || res=1
@@ -256,13 +257,17 @@
           set +e
           set -o allexport
           source "$WORKSPACE/global.env"
-          source "${WORKSPACE}/deps.${JOB_NAME}-${JOB_RND}.env" || /bin/true
+          source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           # do it as a latest source to override all exports
-          source "${WORKSPACE}/vars.${JOB_NAME}-${JOB_RND}.env" || /bin/true
+          source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${JOB_LOGS_PATH}"
-          "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh"
-          "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh"
-          "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/remove_workers.sh"
+          # deploy platform kills env in case of error - skip all things for this case
+          # TODO: think how to skip this job for some cases
+          if [[ -n "$instance_ip" ]]; then
+            "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh"
+            "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/test/sanity/collect_logs.sh"
+            "$WORKSPACE/src/progmaticlab/tf-jenkins/jobs/devstack/${DEPLOYER}/remove_workers.sh"
+          fi
     publishers:
       - archive:
           artifacts: '*.env'

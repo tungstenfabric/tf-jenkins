@@ -84,9 +84,9 @@
           set +e
           set -o pipefail
           source "$WORKSPACE/global.env"
-          source "${WORKSPACE}/deps.${JOB_NAME}-${JOB_RND}.env" || /bin/true
+          source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           # do it as a latest source to override all exports
-          source "${WORKSPACE}/vars.${JOB_NAME}-${JOB_RND}.env" || /bin/true
+          source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
           # main run
           ./src/progmaticlab/tf-jenkins/jobs/fetch/run.sh |& tee ${WORKSPACE}/output.log || res=1

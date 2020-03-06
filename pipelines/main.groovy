@@ -334,7 +334,7 @@ def collect_dependent_env_files(name, deps_env_file) {
   deps = jobs[name].get('depends-on')
   if (deps == null || deps.size() == 0)
     return
-  println("JOB ${name} deps: ${deps}")
+  println("JOB ${name}: deps: ${deps}")
   content = ''
   for (dep_name in deps) {
     def job_name = jobs[dep_name].get('job-name', dep_name)
@@ -350,7 +350,7 @@ def collect_dependent_env_files(name, deps_env_file) {
   if (lines.size() == 0)
     return
   content = lines.join('\n') + '\n'
-  println("JOB ${name} deps_env_file: ${deps_env_file}")
+  println("JOB ${name}: deps_env_file: ${deps_env_file}")
   writeFile(file: deps_env_file, text: content)
   archiveArtifacts(artifacts: deps_env_file)
 }
@@ -375,20 +375,20 @@ def run_job(name) {
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]
-    println("Starting job ${name} (${job_name} - #${job_rnd})")
+    println("JOB ${name}: Starting job: ${job_name}  rnd: #${job_rnd}")
     def job = build(job: job_name, parameters: params)
     job_number = job.getNumber()
     job_results[name]['number'] = job_number
     job_results[name]['duration'] = job.getDuration()
     job_results[name]['result'] = job.getResult()
-    println("Finished ${name} (${job_name} - #${job_number}) with SUCCESS")
+    println("JOB ${name}: Finished with SUCCESS")
   } catch (err) {
     run_err = err
     job_results[name]['result'] = 'FAILURE'
-    println("Failed ${name} with errors")
+    println("JOB ${name}: Failed")
     msg = err.getMessage()
     if (msg != null) {
-      println(msg)
+      println("JOB ${name}: err msg: ${msg}")
     }
     // get build num from exception and find job to get duration and result
     try {
@@ -402,7 +402,7 @@ def run_job(name) {
         job_results[name]['result'] = job.getResult()
       }
     } catch(e) {
-      println("Error in obtaining failed job result ${e.getMessage()}")
+      println("JOB ${name}: Error in obtaining failed job result ${e.getMessage()}")
     }
   }
   if (job_number != null) {
@@ -416,7 +416,7 @@ def run_job(name) {
       selector: specific("${job_number}"),
       target: target_dir)
   }
-  println("Collected artifacts:")
+  println("JOB ${name}: Collected artifacts:")
   sh("ls -la ${target_dir}")
   // re-throw error
   if (run_err != null)

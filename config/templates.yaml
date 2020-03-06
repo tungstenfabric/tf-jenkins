@@ -98,6 +98,8 @@
         stream: ansible-k8s
         force-run: true
         depends-on:
+          - deploy-platform-ansible-k8s
+          - deploy-tf-ansible-k8s
           - test-sanity-ansible-k8s
 
 - template:
@@ -126,4 +128,6 @@
         stream: ansible-os
         force-run: true
         depends-on:
+          - deploy-platform-ansible-os
+          - deploy-tf-ansible-os
           - test-sanity-ansible-os

@@ -86,9 +86,9 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
-          source "${WORKSPACE}/deps.${JOB_NAME}-${JOB_RND}.env" || /bin/true
+          source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           # do it as a latest source to override all exports
-          source "${WORKSPACE}/vars.${JOB_NAME}-${JOB_RND}.env" || /bin/true
+          source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
           # main run
           ./src/progmaticlab/tf-jenkins/jobs/publish/run.sh |& tee ${WORKSPACE}/output.log || res=1
