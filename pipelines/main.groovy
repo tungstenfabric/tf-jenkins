@@ -297,7 +297,6 @@ def update_list(items, new_items) {
   }
 }
 
-@NonCPS
 def wait_for_dependencies(name) {
   def deps = jobs[name].get('depends-on')
   if (deps == null || deps.size() == 0)
