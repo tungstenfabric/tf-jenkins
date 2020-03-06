@@ -334,7 +334,7 @@ def collect_dependent_env_files(name, deps_env_file) {
   deps = jobs[name].get('depends-on')
   if (deps == null || deps.size() == 0)
     return
-  // wait for all jobs even if some of them failed
+  println("JOB ${name} deps: ${deps}")
   content = ''
   for (dep_name in deps) {
     def job_name = jobs[dep_name].get('job-name', dep_name)
@@ -350,6 +350,7 @@ def collect_dependent_env_files(name, deps_env_file) {
   if (lines.size() == 0)
     return
   content = lines.join('\n') + '\n'
+  println("JOB ${name} deps_env_file: ${deps_env_file}")
   writeFile(file: deps_env_file, text: content)
   archiveArtifacts(artifacts: deps_env_file)
 }
@@ -408,15 +409,15 @@ def run_job(name) {
     target_dir = "${job_name}-${job_rnd}"
     copyArtifacts(
       filter: '*.env',
+      excludes: "global.env,${vars_env_file}",
       optional: true,
       fingerprintArtifacts: true,
       projectName: job_name,
       selector: specific("${job_number}"),
       target: target_dir)
-    // store collected file in jobs subfolder except vars.*.env and global.env
-    sh("rm -f ${WORKSPACE}/${target_dir}/global.env || /bin/true")
-    sh("rm -f ${WORKSPACE}/${target_dir}/${vars_env_file} || /bin/true")
   }
+  println("Collected artifacts:")
+  sh("ls -la ${target_dir}")
   // re-throw error
   if (run_err != null)
     throw run_err

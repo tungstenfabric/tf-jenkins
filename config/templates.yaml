@@ -67,6 +67,8 @@
         stream: k8s-manifests
         force-run: true
         depends-on:
+          - deploy-platform-k8s-manifests
+          - deploy-tf-k8s-manifests
           - test-sanity-k8s-manifests
           - test-smoke-k8s-manifests
 
