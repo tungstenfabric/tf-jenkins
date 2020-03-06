@@ -111,6 +111,7 @@
               build-steps:
                   - shell: |
                       source "$WORKSPACE/global.env"
+                      source "$WORKSPACE/stackrc.$JOB_NAME.env"
                       ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
                       rm -f "$WORKSPACE/stackrc.$JOB_NAME.env"
       - archive:

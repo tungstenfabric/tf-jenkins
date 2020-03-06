@@ -57,23 +57,23 @@ timestamps {
           pre_build_done = true
         }
 
-        jobs.each { item ->
-          jobs_code[item.key] = {
-            stage(item.key) {
+        jobs.keySet().each { name ->
+          jobs_code[name] = {
+            stage(name) {
               try {
-                result = wait_for_dependencies(item.key)
-                force_run = item.value.get('force-run', false)
+                result = wait_for_dependencies(name)
+                force_run = jobs[name].get('force-run', false)
                 if (result || force_run) {
                   // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
-                  run_job(item.key)
+                  run_job(name)
                 } else {
-                  job_results[item.key] = [:]
-                  job_results[item.key]['number'] = -1
-                  job_results[item.key]['duration'] = 0
-                  job_results[item.key]['result'] = 'NOT_BUILT'
+                  job_results[name] = [:]
+                  job_results[name]['number'] = -1
+                  job_results[name]['duration'] = 0
+                  job_results[name]['result'] = 'NOT_BUILT'
                 }
               } catch(err) {
-                println("ERROR: failed in job ${item.key} - ${err.getMessage()}")
+                println("ERROR: failed in job ${name} - ${err.getMessage()}")
                 throw err
               }
             }
@@ -296,6 +296,7 @@ def wait_for_dependencies(name) {
   deps = jobs[name].get('depends-on')
   if (deps == null || deps.size() == 0)
     return true
+  println("JOB ${name}: waiting for dependecies")
   result = true
   // wait for all jobs even if some of them failed
   for (dep_name in deps) {
@@ -314,6 +315,7 @@ def wait_for_dependencies(name) {
       result = false
     }
   }
+  println("JOB ${name}: wait finished with result: ${result}")
   return result
 }
 
@@ -358,6 +360,7 @@ def collect_dependent_env_files(name, deps_env_file) {
 }
 
 def run_job(name) {
+  println("JOB ${name}: entering run_job")
   // final cleanup job is not in config
   def job_name = jobs.containsKey(name) ? jobs[name].get('job-name', name) : name
   def stream = jobs.containsKey(name) ? jobs[name].get('stream', name) : name
