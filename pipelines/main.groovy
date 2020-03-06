@@ -299,6 +299,7 @@ def wait_for_dependencies(name) {
   result = true
   // wait for all jobs even if some of them failed
   for (dep_name in deps) {
+    println("JOB ${name}: wait for dependecy ${dep_name}")
     if (!job_results.containsKey(dep_name) || !job_results[dep_name].containsKey('result')) {
       waitUntil {
         // TODO: try to use sync objects
@@ -307,6 +308,7 @@ def wait_for_dependencies(name) {
         return job_results.containsKey(dep_name) && job_results[dep_name].containsKey('result')
       }
     }
+    println("JOB ${name}: wait finished for dependency ${dep_name} with result ${job_results.get(dep_name)}")
     if (job_results[dep_name]['result'] != 'SUCCESS') {
       println("ERROR: Job ${name} - dependent job failed: ${dep_name} = ${job_results[dep_name]}")
       result = false
@@ -417,7 +419,7 @@ def run_job(name) {
       target: target_dir)
   }
   println("JOB ${name}: Collected artifacts:")
-  sh("ls -la ${target_dir}")
+  sh("ls -la ${target_dir} || /bin/true") // folder can be absent
   // re-throw error
   if (run_err != null)
     throw run_err
