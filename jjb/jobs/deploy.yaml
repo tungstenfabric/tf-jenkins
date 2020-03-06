@@ -70,7 +70,7 @@
           which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
-          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER Stream: ${{STREAM}}<br>Job logs: <a href=\"${{LOGS_URL}}/${{STREAM}}\">${{LOGS_URL}}/${{STREAM}}</a>"
+          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER    Random: ${{RND}}  Stream: ${{STREAM}}<br>Job logs: <a href=\"${{LOGS_URL}}/${{STREAM}}\">${{LOGS_URL}}/${{STREAM}}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -164,7 +164,7 @@
           which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
-          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER Stream: ${{STREAM}}<br>Job logs: <a href=\"${{LOGS_URL}}/${{STREAM}}\">${{LOGS_URL}}/${{STREAM}}</a>"
+          desc="Pipeline: ${{PIPELINE_NAME}}-$PIPELINE_NUMBER  Random: ${{RND}}  Stream: ${{STREAM}}<br>Job logs: <a href=\"${{LOGS_URL}}/${{STREAM}}\">${{LOGS_URL}}/${{STREAM}}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -248,7 +248,7 @@
           filter: "*.env"
           which-build: upstream-build
       - shell: |
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER} Stream: ${STREAM}"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${RND}  Stream: ${STREAM}"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"

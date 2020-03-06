@@ -44,7 +44,7 @@
       - shell: |
           source "$WORKSPACE/global.env"
           source "${WORKSPACE}/deps.${JOB_NAME}-${RND}.env" || /bin/true
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}<br>"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${RND}<br>"
           desc+="Job logs: <a href=\"${LOGS_URL}/$JOB_LOGS_PATH\">${LOGS_URL}/$JOB_LOGS_PATH</a>"
           echo "DESCRIPTION $desc"
       - description-setter:

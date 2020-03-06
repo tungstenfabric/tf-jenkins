@@ -36,7 +36,7 @@
           optional: true
       - shell: |
           source "$WORKSPACE/global.env"
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
