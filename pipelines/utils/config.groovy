@@ -62,6 +62,7 @@ def get_jobs(project_name, gerrit_pipeline) {
 
 def _check_dependencies(def jobs) {
   for (def item in jobs) {
+    println(item)
     def deps = item.value.get('depends-on')
     if (deps == null || deps.size() == 0)
       continue
