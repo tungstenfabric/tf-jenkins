@@ -35,8 +35,9 @@ timestamps {
         }
         cleanWs(disableDeferredWipeout: true, notFailBuild: true, deleteDirs: true)
         clone_self()
-        gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit_utils.groovy")
-        config = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config_utils.groovy")
+        gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
+        config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
+        jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
         // has_gate_approvals needs cloned repo for tools
         println("Verified value to report on success: ${gerrit_utils.VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]}")
         if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
