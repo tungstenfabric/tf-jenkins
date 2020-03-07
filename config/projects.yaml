@@ -1,5 +1,9 @@
 ---
 
+# TODO: implement 'default' project with cleanup job
+
+# TODO: implement templates for projects with pipelines/templates to reduce copy-paste in each project 
+
 - include:
     - templates.yaml
 
@@ -12,6 +16,10 @@
         - k8s-manifests
         - ansible-k8s
         - ansible-os
+        - helm-k8s
+        - helm-os
+        - juju-k8s
+        - juju-os
         - cleanup
       jobs:
         publish-centos-nightly:
@@ -85,4 +93,116 @@
         - test-unit
         - ansible-k8s
         - ansible-os
+        - cleanup
+
+- project:
+    name: Juniper/contrail-api-client
+    check:
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
+- project:
+    name: Juniper/contrail-common
+    check:
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
+- project:
+    name: Juniper/contrail-vrouter
+    check:
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
+- project:
+    name: tungstenfabric/tf-analytics
+    check:
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
+- project:
+    name: Juniper/contrail-test
+    check:
+      templates:
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
+- project:
+    name: Juniper/contrail-helm-deployer
+    check:
+      templates:
+        - helm-k8s
+        - helm-os
+        - cleanup
+    gate:
+      templates:
+        - helm-k8s
+        - helm-os
+        - cleanup
+
+- project:
+    name: Juniper/contrail-third-party-packages
+    check:
+      templates:
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
+- project:
+    name: tungstenfabric/tf-charms
+    check:
+      streams:
+        juju-os:
+          voting: false
+        juju-k8s:
+          voting: false
+      templates:
+        - juju-k8s
+        - juju-os
         - cleanup

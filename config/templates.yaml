@@ -136,3 +136,115 @@
           - deploy-platform-ansible-os
           - deploy-tf-ansible-os
           - test-sanity-ansible-os
+
+- template:
+    name: helm-k8s
+    parents:
+      - build-centos
+    streams:
+      helm-k8s:
+    jobs:
+      deploy-platform-helm-k8s:
+        stream: helm-k8s
+      deploy-tf-helm-k8s:
+        stream: helm-k8s
+        depends-on:
+          - build-centos
+          - deploy-platform-helm-k8s
+      test-sanity-helm-k8s:
+        job-name: test-sanity
+        stream: helm-k8s
+        depends-on:
+          - deploy-tf-helm-k8s
+      collect-logs-and-cleanup-helm-k8s:
+        job-name: collect-logs-and-cleanup
+        stream: helm-k8s
+        force-run: true
+        depends-on:
+          - deploy-platform-helm-k8s
+          - deploy-tf-helm-k8s
+          - test-sanity-helm-k8s
+
+- template:
+    name: helm-os
+    parents:
+      - build-centos
+    streams:
+      helm-os:
+    jobs:
+      deploy-platform-helm-os:
+        stream: helm-os
+      deploy-tf-helm-os:
+        stream: helm-os
+        depends-on:
+          - build-centos
+          - deploy-platform-helm-os
+      test-sanity-helm-os:
+        job-name: test-sanity
+        stream: helm-os
+        depends-on:
+          - deploy-tf-helm-os
+      collect-logs-and-cleanup-helm-os:
+        job-name: collect-logs-and-cleanup
+        stream: helm-os
+        force-run: true
+        depends-on:
+          - deploy-platform-helm-os
+          - deploy-tf-helm-os
+          - test-sanity-helm-os
+
+- template:
+    name: juju-k8s
+    parents:
+      - build-centos
+    streams:
+      juju-k8s:
+    jobs:
+      deploy-platform-juju-k8s:
+        stream: juju-k8s
+      deploy-tf-juju-k8s:
+        stream: juju-k8s
+        depends-on:
+          - build-centos
+          - deploy-platform-juju-k8s
+      test-sanity-juju-k8s:
+        job-name: test-sanity
+        stream: juju-k8s
+        depends-on:
+          - deploy-tf-juju-k8s
+      collect-logs-and-cleanup-juju-k8s:
+        job-name: collect-logs-and-cleanup
+        stream: juju-k8s
+        force-run: true
+        depends-on:
+          - deploy-platform-juju-k8s
+          - deploy-tf-juju-k8s
+          - test-sanity-juju-k8s
+
+- template:
+    name: juju-os
+    parents:
+      - build-centos
+    streams:
+      juju-os:
+    jobs:
+      deploy-platform-juju-os:
+        stream: juju-os
+      deploy-tf-juju-os:
+        stream: juju-os
+        depends-on:
+          - build-centos
+          - deploy-platform-juju-os
+      test-sanity-juju-os:
+        job-name: test-sanity
+        stream: juju-os
+        depends-on:
+          - deploy-tf-juju-os
+      collect-logs-and-cleanup-juju-os:
+        job-name: collect-logs-and-cleanup
+        stream: juju-os
+        force-run: true
+        depends-on:
+          - deploy-platform-juju-os
+          - deploy-tf-juju-os
+          - test-sanity-juju-os
