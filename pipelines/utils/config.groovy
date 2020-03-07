@@ -52,6 +52,15 @@ def get_jobs(project_name, gerrit_pipeline) {
   _update_list(jobs, project[gerrit_pipeline].get('jobs', []))
   _update_list(post_jobs, project[gerrit_pipeline].get('post-jobs', []))
 
+  // set empty dict for jobs without params
+  for (def item in jobs.keySet()) {
+    if (jobs[item] == null)
+      jobs[item] = [:]
+  }
+  for (def item in post_jobs.keySet()) {
+    if (post_jobs[item] == null)
+      post_jobs[item] = [:]
+  }
   // do some checks
   // check if all deps point to real jobs
   _check_dependencies(jobs)
@@ -62,7 +71,6 @@ def get_jobs(project_name, gerrit_pipeline) {
 
 def _check_dependencies(def jobs) {
   for (def item in jobs) {
-    println(item)
     def deps = item.value.get('depends-on')
     if (deps == null || deps.size() == 0)
       continue
