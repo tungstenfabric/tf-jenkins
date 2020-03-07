@@ -73,7 +73,7 @@ def _check_dependencies(def jobs) {
 }
 
 def _resolve_templates(def config_data) {
-  def tempaltes = [:]
+  def templates = [:]
   for (def item in config_data) {
     if (item.containsKey('template')) {
       def template = item['template']
