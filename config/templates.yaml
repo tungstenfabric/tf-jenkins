@@ -2,7 +2,7 @@
 
 - template:
     name: cleanup
-    jobs:
+    post-jobs:
       cleanup-pipeline-workers:
 
 - template:
