@@ -53,16 +53,15 @@
       templates:
         - build-centos
     experimental:
-      # ?????
       templates:
         - ansible-os
       jobs:
-        - build-centos:
-            job-name: build
-            depends-on:
-              - fetch-sources-centos
-            vars:
-              CONTRAIL_BUILD_FROM_SOURCE: true
+        build-centos:
+          job-name: build
+          depends-on:
+            - fetch-sources-centos
+          vars:
+            CONTRAIL_BUILD_FROM_SOURCE: true
 
 - project:
     name: Juniper/contrail-controller
