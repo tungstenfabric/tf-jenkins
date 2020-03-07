@@ -112,7 +112,7 @@ def _resolve_templates(def config_data) {
     if (!parents_resolved)
       throw new Exception("ERROR: Unresolvable template structure: " + templates)
   }
-  return tempaltes  
+  return templates
 }
 
 def _update_list(items, new_items) {
