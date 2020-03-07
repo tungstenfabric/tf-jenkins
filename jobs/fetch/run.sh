@@ -8,7 +8,4 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-# temporary workaround
-exit 0
-
 ${my_dir}/run_${BUILD_WORKER["${ENVIRONMENT_OS^^}"]}.sh

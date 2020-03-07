@@ -6,9 +6,6 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-# TODO: remove hack
-exit 1
-
 source "$my_dir/definitions"
 
 echo 'INFO: Deploy TF with manifests'
