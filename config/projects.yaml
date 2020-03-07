@@ -12,13 +12,15 @@
         - k8s-manifests
         - ansible-k8s
         - ansible-os
+        - cleanup
       jobs:
         publish-centos-nightly:
           job-name: publish
           depends-on:
             - build-centos
-          vars:
-            STABLE: false
+      post-jobs:
+        publish-centos-stable:
+          job-name: publish
 
 - project:
     name: Juniper/contrail-ansible-deployer
@@ -26,10 +28,12 @@
       templates:
         - ansible-k8s
         - ansible-os
+        - cleanup
     gate:
       templates:
         - ansible-k8s
         - ansible-os
+        - cleanup
 
 - project:
     name: Juniper/contrail-deployers-containers
@@ -37,10 +41,12 @@
       templates:
         - ansible-k8s
         - ansible-os
+        - cleanup
     gate:
       templates:
         - ansible-k8s
         - ansible-os
+        - cleanup
 
 - project:
     name: Juniper/contrail-container-builder
@@ -49,12 +55,15 @@
         - k8s-manifests
         - ansible-k8s
         - ansible-os
+        - cleanup
     gate:
       templates:
         - build-centos
+        - cleanup
     experimental:
       templates:
         - ansible-os
+        - cleanup
       jobs:
         build-centos:
           job-name: build
@@ -70,8 +79,10 @@
         - test-unit
         - ansible-k8s
         - ansible-os
+        - cleanup
     gate:
       templates:
         - test-unit
         - ansible-k8s
         - ansible-os
+        - cleanup

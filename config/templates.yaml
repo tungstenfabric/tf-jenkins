@@ -1,6 +1,11 @@
 ---
 
 - template:
+    name: cleanup
+    jobs:
+      cleanup-pipeline-workers:
+
+- template:
     name: fetch-sources-centos
     jobs:
       fetch-sources-centos:

@@ -141,7 +141,7 @@ def gerrit_build_started() {
   }
 }
 
-def gerrit_vote(pre_build_done, full_duration) {
+def gerrit_vote(pre_build_done, streams, jobs, job_results, full_duration) {
   return
   try {
     def passed = pre_build_done
