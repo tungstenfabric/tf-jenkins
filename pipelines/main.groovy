@@ -349,7 +349,7 @@ def collect_dependent_env_files(name, deps_env_file) {
   if (deps == null || deps.size() == 0)
     return
   println("JOB ${name}: deps: ${deps}")
-  def content = []
+  def raw_data = []
   // simple for-loop to avoid non-Serializable exception
   for (def i = 0; i < deps.size(); ++i) {
     def job_name = jobs[deps[i]].get('job-name', deps[i])
@@ -358,13 +358,13 @@ def collect_dependent_env_files(name, deps_env_file) {
       def files = findFiles(glob: "${job_name}-${job_rnd}/*.env")
       for (def j = 0; j < files.size(); ++j) {
         data = readFile(files[j].getPath())
-        content += data.split('\n')
+        raw_data.addAll(data.split('\n'))
       }
     }
   }
   def lines = []
-  for (def i = 0; i < content.size(); ++i) {
-    def line = content[i]
+  for (def i = 0; i < raw_data.size(); ++i) {
+    def line = raw_data[i]
     if (line.size() > 0 && !lines.contains(line))
       lines += line
   }
