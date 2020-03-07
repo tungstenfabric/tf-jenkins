@@ -77,6 +77,10 @@ def _resolve_templates(def config_data) {
   for (def item in config_data) {
     if (item.containsKey('template')) {
       def template = item['template']
+      if (!template.containsKey('jobs'))
+        template['jobs'] = [:]
+      if (!template.containsKey('post-jobs'))
+        template['post-jobs'] = [:]
       templates[template.name] = template
     }
   }
