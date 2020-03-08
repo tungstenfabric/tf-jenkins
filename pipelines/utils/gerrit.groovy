@@ -3,6 +3,122 @@
 VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2]
 VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2]
 
+def resolve_gerrit_url() {
+  def url = "http://${env.GERRIT_HOST}/"
+  while (true) {
+    def getr = new URL(url).openConnection()
+    getr.setFollowRedirects(false)
+    if (((int)(getr.getResponseCode() / 100)) != 3)
+      break
+    url = getr.getHeaderField("Location")
+  }
+  println("INFO: resolved gerrit URL is ${url}")
+  return url
+}
+
+def gerrit_build_started() {
+  try {
+    def msg = """Jenkins Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
+    _notify_gerrit(msg)
+  } catch (err) {
+    println("Failed to provide comment to gerrit")
+    def msg = err.getMessage()
+    if (msg != null) {
+      println(msg)
+    }
+  }
+}
+
+def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
+  try {
+    if (!pre_build_done) {
+      msg = "Jenkins general failure (${env.GERRIT_PIPELINE})\nPlease check pipeline logs:\n"
+      msg += "${BUILD_URL}\n${logs_url}\n"
+      _notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
+      return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
+    }
+
+    def results = [:]
+    for (name in job_set.keySet()) {
+      def stream = job_set[name].get('stream', name)
+      def job_result = job_results.get(name)
+      if (!results.containsKey(stream)) {
+        results[stream] = [
+          'results': [job_result != null ? job_result['result'] : 'NOT_BUILT'],
+          'duration': job_result != null ? job_result.get('duration', 0) : 0]
+      } else {
+        results[stream]['results'] += job_result != null ? job_result['result'] : 'NOT_BUILT'
+        results[stream]['duration'] += job_result != null ? job_result.get('duration', 0) : 0
+      }
+    }
+
+    def passed = true
+    def msg = ''
+    for (stream in results.keySet()) {
+      def result = _get_status(results[stream]['results'])
+      if (result == 'NOT_BUILT') {
+        msg += "\n- ${stream} : NOT_BUILT"
+      } else {
+        msg += "\n- " + _get_gerrit_msg_for_job(stream, result, results[stream]['duration'])
+      }
+      def voting = true
+      if (streams.containsKey(stream) && streams[stream].containsKey('voting')) {
+        voting = streams[stream]['voting']
+      } else if (jobs.containsKey(stream) && jobs[stream].containsKey('voting')) {
+        voting = jobs[stream]['voting']
+      }
+      if (!voting) {
+        msg += ' (non-voting)'
+      }
+      if (voting && result != 'SUCCESS') {
+        passed = false
+      }
+    }
+
+    def duration_string = _get_duration_string(full_duration)
+    def verified = VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]
+    if (passed) {
+      msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
+    } else {
+      msg = "Jenkins Build Failed (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
+      verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
+    }
+    _notify_gerrit(msg, verified)
+    return verified
+  } catch (err) {
+    println("Failed to provide vote to gerrit")
+    msg = err.getMessage()
+    if (msg != null)
+      println("Message - ${msg}")
+    println("Stacktrace - ${err.getStackTrace()}")
+  }
+  return 0
+}
+
+def _get_status(def results) {
+  // There are 5 status available: NOT_BUILT, ABORTED, FAILURE, UNSTABLE, SUCCESS
+  if ('FAILURE' in results || 'UNSTABLE' in results)
+    return 'FAILURE'
+  if ('ABORTED' in results)
+    return 'ABORTED'
+  if ('NOT_BUILT' in results && 'SUCCESS' in results)
+    return 'ABORTED'
+  return results[0]
+}
+
+def _get_gerrit_msg_for_job(stream, status, duration) {
+  def duration_string = _get_duration_string(duration)
+  return "${stream} ${logs_url}/${stream} : ${status} ${duration_string}"
+}
+
+def _get_duration_string(duration) {
+  if (duration == null) {
+    return ""
+  }
+  def d = (int)(duration/1000)
+  return String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
+}
+
 def _notify_gerrit(msg, verified=0, submit=false) {
   if (!env.GERRIT_HOST) {
     // looks like it's a nightly pipeline
@@ -92,122 +208,6 @@ def has_gate_approvals() {
 
 def has_gate_submits() {
   return _has_approvals('VerifiedTF:approved,Code-Review:approved,Approved:approved')  
-}
-
-def resolve_gerrit_url() {
-  def url = "http://${env.GERRIT_HOST}/"
-  while (true) {
-    def getr = new URL(url).openConnection()
-    getr.setFollowRedirects(false)
-    if (((int)(getr.getResponseCode() / 100)) != 3)
-      break
-    url = getr.getHeaderField("Location")
-  }
-  println("INFO: resolved gerrit URL is ${url}")
-  return url
-}
-
-def gerrit_build_started() {
-  try {
-    def msg = """Jenkins Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
-    _notify_gerrit(msg)
-  } catch (err) {
-    println("Failed to provide comment to gerrit")
-    def msg = err.getMessage()
-    if (msg != null) {
-      println(msg)
-    }
-  }
-}
-
-def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
-  try {
-    if (!pre_build_done) {
-      msg = "Jenkins general failure (${env.GERRIT_PIPELINE})\nPlease check pipeline logs:\n"
-      msg += "${BUILD_URL}\n${logs_url}\n"
-      _notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
-      return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
-    }
-
-    def results = [:]
-    for (name in job_set.keySet()) {
-      def stream = job_set[name].get('stream', name)
-      def job_result = job_results.get(name)
-      if (!results.containsKey(stream)) {
-        results[stream] = [
-          'results': job_result != null ? job_result['result'] : ['NOT_BUILT'],
-          'duration': job_result != null ? job_result.get('duration', 0) : 0]
-      } else {
-        results[stream]['results'] += job_result != null ? job_result['result'] : 'NOT_BUILT'
-        results[stream]['duration'] += job_result != null ? job_result.get('duration', 0) : 0
-      }
-    }
-
-    def passed = true
-    def msg = ''
-    for (stream in results.keySet()) {
-      def result = _get_status(results[stream]['results'])
-      if (result == 'NOT_BUILT') {
-        msg += "\n- ${stream} : NOT_BUILT"
-      } else {
-        msg += "\n- " + _get_gerrit_msg_for_job(stream, result, results[stream]['duration'])
-      }
-      def voting = true
-      if (streams.containsKey(stream) && streams[stream].containsKey('voting')) {
-        voting = streams[stream]['voting']
-      } else if (jobs.containsKey(stream) && jobs[stream].containsKey('voting')) {
-        voting = jobs[stream]['voting']
-      }
-      if (!voting) {
-        msg += ' (non-voting)'
-      }
-      if (voting && result != 'SUCCESS') {
-        passed = false
-      }
-    }
-
-    def duration_string = _get_duration_string(full_duration)
-    def verified = VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]
-    if (passed) {
-      msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
-    } else {
-      msg = "Jenkins Build Failed (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
-      verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
-    }
-    _notify_gerrit(msg, verified)
-    return verified
-  } catch (err) {
-    println("Failed to provide vote to gerrit")
-    msg = err.getMessage()
-    if (msg != null)
-      println("Message - ${msg}")
-    println("Stacktrace - ${err.getStackTrace()}")
-  }
-  return 0
-}
-
-def _get_status(def results) {
-  // There are 5 status available: NOT_BUILT, ABORTED, FAILURE, UNSTABLE, SUCCESS
-  if ('FAILURE' in results || 'UNSTABLE' in results)
-    return 'FAILURE'
-  if ('ABORTED' in results)
-    return 'ABORTED'
-  if ('NOT_BUILT' in results && 'SUCCESS' in results)
-    return 'ABORTED'
-  return results[0]
-}
-
-def _get_gerrit_msg_for_job(stream, status, duration) {
-  def duration_string = _get_duration_string(duration)
-  return "${stream} ${logs_url}/${stream} : ${status} ${duration_string}"
-}
-
-def _get_duration_string(duration) {
-  if (duration == null) {
-    return ""
-  }
-  def d = (int)(duration/1000)
-  return String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
 }
 
 return this

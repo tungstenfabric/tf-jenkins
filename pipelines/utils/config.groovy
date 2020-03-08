@@ -52,21 +52,23 @@ def get_jobs(project_name, gerrit_pipeline) {
   _update_list(jobs, project[gerrit_pipeline].get('jobs', []))
   _update_list(post_jobs, project[gerrit_pipeline].get('post-jobs', []))
 
-  // set empty dict for jobs without params
-  for (def item in jobs.keySet()) {
-    if (jobs[item] == null)
-      jobs[item] = [:]
-  }
-  for (def item in post_jobs.keySet()) {
-    if (post_jobs[item] == null)
-      post_jobs[item] = [:]
-  }
+  // set empty dict for dicts without params
+  _set_default_values(streams)
+  _set_default_values(jobs)
+  _set_default_values(post_jobs)
   // do some checks
   // check if all deps point to real jobs
   _check_dependencies(jobs)
   _check_dependencies(post_jobs)
 
   return [streams, jobs, post_jobs]
+}
+
+def _set_default_values(def items) {
+  for (def item in items.keySet()) {
+    if (items[item] == null)
+      items[item] = [:]
+  }
 }
 
 def _check_dependencies(def jobs) {

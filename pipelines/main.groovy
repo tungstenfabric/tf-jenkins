@@ -28,22 +28,20 @@ jobs_utils = null
 timestamps {
   timeout(time: TIMEOUT_HOURS, unit: 'HOURS') {
     node("${SLAVE}") {
+      if (!env.GERRIT_CHANGE_ID && env.GERRIT_PIPELINE != 'nightly') {
+        println("Manual run is forbidden")
+        return
+      }
       stage('init') {
-        if (!env.GERRIT_CHANGE_ID && env.GERRIT_PIPELINE != 'nightly') {
-          println("Manual run is forbidden")
-          return
-        }
         cleanWs(disableDeferredWipeout: true, notFailBuild: true, deleteDirs: true)
         clone_self()
         gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
         config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
         jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
-        // has_gate_approvals needs cloned repo for tools
-        println("Verified value to report on success: ${gerrit_utils.VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]}")
-        if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
-          println("There is no gate approvals.. skip gate")
-          return
-        }
+      }
+      if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
+        println("There is no gate approvals.. skip gate")
+        return
       }
 
       def streams = [:]
