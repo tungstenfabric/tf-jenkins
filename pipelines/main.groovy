@@ -66,7 +66,7 @@ timestamps {
 
         jobs_utils.run_jobs(jobs)
       } finally {
-        println "Logs URL: ${logs_url}"
+        println(job_results)
         stage('gerrit vote') {
           // add gerrit voting +2 +1 / -1 -2
           verified = gerrit_utils.gerrit_vote(pre_build_done, streams, jobs, job_results, (new Date()).getTime() - time_start)
