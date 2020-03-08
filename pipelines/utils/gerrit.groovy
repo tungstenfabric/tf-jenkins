@@ -43,7 +43,6 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
       def stream = job_set[name].get('stream', name)
       def job_result = job_results.get(name)
       def result = job_result != null ? job_result.get('result', 'NOT_BUILT') : 'NOT_BUILT'
-      def result = job_result != null ? job_result.get('result', 'NOT_BUILT') : 'NOT_BUILT'
       def duration = job_result != null ? job_result.get('duration', 0) : 0
       if (!results.containsKey(stream)) {
         results[stream] = ['results': [result], 'duration': duration]
