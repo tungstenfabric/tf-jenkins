@@ -1,27 +1,7 @@
 // Gerrit utils
 
-VERIFIED_SUCCESS_VALUES= [
-  'check': 1,
-  'gate': 2
-]
-
-VERIFIED_FAIL_VALUES= [
-  'check': -1,
-  'gate': -2
-]
-
-def _get_gerrit_msg_for_job(name, status, duration) {
-  def duration_string = _get_duration_string(duration)
-  return "${name} ${logs_url}/${name} : ${status} ${duration_string}"
-}
-
-def _get_duration_string(duration) {
-  if (duration == null) {
-    return ""
-  }
-  d = (int)(duration/1000)
-  return String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
-}
+def VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2]
+def VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2]
 
 def _notify_gerrit(msg, verified=0, submit=false) {
   if (!env.GERRIT_HOST) {
@@ -34,11 +14,11 @@ def _notify_gerrit(msg, verified=0, submit=false) {
       usernamePassword(credentialsId: env.GERRIT_HOST,
       passwordVariable: 'GERRIT_API_PASSWORD',
       usernameVariable: 'GERRIT_API_USER')]) {
-    opts = ""
+    def opts = ""
 
     //label_name = 'VerifiedTF'
     // temporary hack to not vote for review.opencontrail.org
-    label_name = 'Verified'
+    def label_name = 'Verified'
     if (env.GERRIT_HOST == 'review.opencontrail.org')
       label_name = 'VerifiedTF'
 
@@ -48,7 +28,8 @@ def _notify_gerrit(msg, verified=0, submit=false) {
     if (submit) {
       opts += " --submit"
     }
-    url = resolve_gerrit_url()
+    def url = resolve_gerrit_url()
+    // TODO: send comment by sha or patchset num
     sh """
       ${WORKSPACE}/tf-jenkins/infra/gerrit/notify.py \
         --gerrit ${url} \
@@ -79,8 +60,8 @@ def _has_approvals(approvals) {
     // if (env.GERRIT_HOST == 'review.opencontrail.org')
     //   label_name = 'VerifiedTF'
 
-    url = resolve_gerrit_url()
-    output = ""
+    def url = resolve_gerrit_url()
+    def output = ""
     try {
       output = sh(returnStdout: true, script: """
         ${WORKSPACE}/tf-jenkins/infra/gerrit/check_approvals.py \
@@ -95,7 +76,6 @@ def _has_approvals(approvals) {
       println(output)
       return true
     } catch (err) {
-      println(output)
       println("Exeption in check_approvals.py")
       def msg = err.getMessage()
       if (msg != null) {
@@ -119,8 +99,7 @@ def resolve_gerrit_url() {
   while (true) {
     def getr = new URL(url).openConnection()
     getr.setFollowRedirects(false)
-    code = (int)(getr.getResponseCode() / 100)
-    if (code != 3)
+    if (((int)(getr.getResponseCode() / 100)) != 3)
       break
     url = getr.getHeaderField("Location")
   }
@@ -133,83 +112,56 @@ def gerrit_build_started() {
     def msg = """Jenkins Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
     _notify_gerrit(msg)
   } catch (err) {
-    print "Failed to provide comment to gerrit "
+    println("Failed to provide comment to gerrit")
     def msg = err.getMessage()
     if (msg != null) {
-      print msg
+      println(msg)
     }
   }
 }
 
-def gerrit_vote(pre_build_done, streams, jobs, job_results, full_duration) {
-  return 0
+def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
   try {
-    def passed = pre_build_done
+    if (!pre_build_done) {
+      msg = "Jenkins general failure (${env.GERRIT_PIPELINE})\nPlease check pipeline logs:\n"
+      msg += "${BUILD_URL}\n${logs_url}\n"
+      _notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
+      return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
+    }
+
     def results = [:]
-    def msg = ''
-    for (name in top_jobs_to_run) {
-      def status = ''
-      def job_result = job_results[name]
-      if (!job_result) {
-        status = 'NOT_BUILT'
-        msg += "\n- ${name} : NOT_BUILT"
+    for (name in job_set.keySet()) {
+      def stream = job_set[name].get('stream', name)
+      def job_result = job_results.get(name)
+      if (!results.containsKey(stream)) {
+        results[stream] = [
+          'results': job_result != null ? job_result['result'] : ['NOT_BUILT'],
+          'duration': job_result != null ? job_result.get('duration', 0) : 0]
       } else {
-        status = job_result['result']
-        msg += "\n- " + _get_gerrit_msg_for_job(name, status, job_result.get('duration'))
-      }
-      def voting = jobs_from_config.get(name, [:]).get('voting', true)
-      if (!voting) {
-        msg += ' (non-voting)'
-      }
-      if (voting && status != 'SUCCESS') {
-        passed = false
+        results[stream]['results'] += job_result != null ? job_result['result'] : 'NOT_BUILT'
+        results[stream]['duration'] += job_result != null ? job_result.get('duration', 0) : 0
       }
     }
-    for (name in test_configuration_names) {
-      def job_names = ["deploy-platform-${name}", "deploy-tf-${name}"]
-      get_test_job_names(name).each {test_name -> job_names += "${test_name}-${name}"}
-      def jobs_found = false
-      def status = 'SUCCESS'
-      for (job_name in job_names) {
-        def job_result = job_results[job_name]
-        if (!job_result) {
-          status = 'FAILURE'
-        } else {
-          jobs_found = true
-          if (status == 'SUCCESS' && job_result['result'] != 'SUCCESS') {
-            // we can't provide exact job's status due to parallel test jobs
-            status = 'FAILURE'
-          }
-        }
-      }
-      // Calculate duration of test configuration = {deploy-platform} + {deploy-tf} + {max([test-unit, test-sanity])}
-      def duration = 0
-      for (job_name in ["deploy-platform-${name}", "deploy-tf-${name}"]) {
-        job_result = job_results[job_name]
-        if (job_result) {
-          duration += job_result.get('duration', 0)
-        }
-      }
-      def max_test_duration = 0
-      for (test_name in get_test_job_names(name)) {
-        job_result = job_results["${test_name}-${name}"]
-        if (job_result && job_result.get('duration', 0) > max_test_duration) {
-          max_test_duration = job_result['duration']
-        }
-      }
-      duration += max_test_duration
 
-      if (!jobs_found) {
-        status = 'NOT_BUILT'
-        msg += "\n- ${name} : NOT_BUILT"
+    def passed = true
+    def msg = ''
+    for (stream in results.keySet()) {
+      def result = _get_status(results[stream]['results'])
+      if (result == 'NOT_BUILT') {
+        msg += "\n- ${stream} : NOT_BUILT"
       } else {
-        msg += "\n- " + _get_gerrit_msg_for_job(name, status, duration)
+        msg += "\n- " + _get_gerrit_msg_for_job(stream, result, results[stream]['duration'])
       }
-      def voting = jobs_from_config[name].get('voting', true)
+      def voting = true
+      if (streams.containsKey(stream) && streams[stream].containsKey('voting')) {
+        voting = streams[stream]['voting']
+      } else if (jobs.containsKey(stream) && jobs[stream].containsKey('voting')) {
+        voting = jobs[stream]['voting']
+      }
       if (!voting) {
         msg += ' (non-voting)'
       }
-      if (voting && status != 'SUCCESS') {
+      if (voting && result != 'SUCCESS') {
         passed = false
       }
     }
@@ -225,29 +177,37 @@ def gerrit_vote(pre_build_done, streams, jobs, job_results, full_duration) {
     _notify_gerrit(msg, verified)
     return verified
   } catch (err) {
-    print "Failed to provide vote to gerrit "
+    println("Failed to provide vote to gerrit")
     msg = err.getMessage()
-    if (msg != null) {
-      print msg
-    }
+    if (msg != null)
+      println("Message - ${msg}")
+    println("Stacktrace - ${err.getStackTrace()}")
   }
   return 0
 }
 
-// TODO: to remove
-def get_test_job_names(test_config_name) {
-  def config = jobs_from_config.get(test_config_name)
-  if (!config) {
-    return ['test-sanity']
+def _get_status(def results) {
+  // There are 5 status available: NOT_BUILT, ABORTED, FAILURE, UNSTABLE, SUCCESS
+  if ('FAILURE' in results || 'UNSTABLE' in results)
+    return 'FAILURE'
+  if ('ABORTED' in results)
+    return 'ABORTED'
+  if ('NOT_BUILT' in results && 'SUCCESS' in results)
+    return 'ABORTED'
+  return results[0]
+}
+
+def _get_gerrit_msg_for_job(stream, status, duration) {
+  def duration_string = _get_duration_string(duration)
+  return "${stream} ${logs_url}/${stream} : ${status} ${duration_string}"
+}
+
+def _get_duration_string(duration) {
+  if (duration == null) {
+    return ""
   }
-  def job_names = []
-  if (config.get('sanity', true)) {
-    job_names += 'test-sanity'
-  }
-  if (config.get('smoke', false)) {
-    job_names += 'test-smoke'
-  }
-  return job_names
+  def d = (int)(duration/1000)
+  return String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
 }
 
 return this
