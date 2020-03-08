@@ -1,7 +1,7 @@
 // Gerrit utils
 
-def VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2]
-def VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2]
+VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2]
+VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2]
 
 def _notify_gerrit(msg, verified=0, submit=false) {
   if (!env.GERRIT_HOST) {
