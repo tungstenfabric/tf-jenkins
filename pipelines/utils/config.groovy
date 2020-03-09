@@ -42,15 +42,15 @@ def get_jobs(project_name, gerrit_pipeline) {
       if (!templates.containsKey(template_name))
         throw new Exception("ERROR: template ${template_name} is absent in configuration")
       template = templates[template_name]
-      _update_list(streams, template.get('streams', []))
-      _update_list(jobs, template.get('jobs', []))
-      _update_list(post_jobs, template.get('post-jobs', []))
+      _update_map(streams, template.get('streams', [:]))
+      _update_map(jobs, template.get('jobs', [:]))
+      _update_map(post_jobs, template.get('post-jobs', [:]))
     }
   }
   // merge info from templates with project's jobs
-  _update_list(streams, project[gerrit_pipeline].get('streams', []))
-  _update_list(jobs, project[gerrit_pipeline].get('jobs', []))
-  _update_list(post_jobs, project[gerrit_pipeline].get('post-jobs', []))
+  _update_map(streams, project[gerrit_pipeline].get('streams', [:]))
+  _update_map(jobs, project[gerrit_pipeline].get('jobs', [:]))
+  _update_map(post_jobs, project[gerrit_pipeline].get('post-jobs', [:]))
 
   // set empty dict for dicts without params
   _set_default_values(streams)
@@ -126,7 +126,7 @@ def _resolve_templates(def config_data) {
   return templates
 }
 
-def _update_list(items, new_items) {
+def _update_map(items, new_items) {
   for (item in new_items) {
     if (item.getClass() != java.util.LinkedHashMap$Entry) {
       throw new Exception("Invalid item in config - '${item}'. It must be an entry of HashMap")
