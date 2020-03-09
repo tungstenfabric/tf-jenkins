@@ -58,7 +58,8 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
     def passed = true
     def msg = ''
     for (stream in results.keySet()) {
-      def result = _get_status(results[stream]['results'])
+      println("Evaluated results for ${stream} = ${results[stream]}")
+      def result = _get_stream_result(results[stream]['results'])
       if (result == 'NOT_BUILT') {
         msg += "\n- ${stream} : NOT_BUILT"
       } else {
@@ -98,7 +99,7 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
   return 0
 }
 
-def _get_status(def results) {
+def _get_stream_result(def results) {
   // There are 5 status available: NOT_BUILT, ABORTED, FAILURE, UNSTABLE, SUCCESS
   if ('FAILURE' in results || 'UNSTABLE' in results)
     return 'FAILURE'
