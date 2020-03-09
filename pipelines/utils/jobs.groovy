@@ -9,8 +9,7 @@ def run_jobs(def job_set) {
       stage(name) {
         try {
           def result = _wait_for_dependencies(job_set, name)
-          def force_run = job_set[name].get('force-run', false)
-          if (result || force_run) {
+          if (result) {
             // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
             _run_job(job_set, name)
           } else {
@@ -40,9 +39,7 @@ def _wait_for_dependencies(job_set, name) {
   if (deps == null || deps.size() == 0)
     return true
   println("JOB ${name}: waiting for dependecies")
-  def result = true
-  // wait for all jobs even if some of them failed - to let collect-logs-and-cleanup work properly
-  // simple for-loop to avoid non-Serializable exception
+  def wait_all = job_set[name].get('type') == 'stream-post-hook'
   for (def i = 0; i < deps.size(); ++i) {
     def dep_name = deps[i]
     println("JOB ${name}: wait for dependecy ${dep_name}")
@@ -55,13 +52,12 @@ def _wait_for_dependencies(job_set, name) {
       }
     }
     println("JOB ${name}: wait finished for dependency ${dep_name} with result ${job_results.get(dep_name)}")
-    if (job_results[dep_name]['result'] != 'SUCCESS') {
-      println("ERROR: Job ${name} - dependent job failed: ${dep_name} = ${job_results[dep_name]}")
-      result = false
+    if (job_results[dep_name]['result'] != 'SUCCESS' && !wait_all) {
+      reutnr false
     }
   }
-  println("JOB ${name}: wait finished with result: ${result}")
-  return result
+  println("JOB ${name}: wait finished")
+  return true
 }
 
 def _job_params_to_file(job_set, name, env_file) {

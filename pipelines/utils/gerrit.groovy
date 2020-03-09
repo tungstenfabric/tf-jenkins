@@ -40,6 +40,9 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
 
     def results = [:]
     for (name in job_set.keySet()) {
+      // do not include post job into report
+      if (job_set[name].get('type') == 'stream-post-hook')
+        continue
       def stream = job_set[name].get('stream', name)
       def job_result = job_results.get(name)
       def result = job_result != null ? job_result.get('result', 'NOT_BUILT') : 'NOT_BUILT'
