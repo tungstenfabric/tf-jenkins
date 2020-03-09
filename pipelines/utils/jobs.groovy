@@ -54,13 +54,6 @@ def _wait_for_dependencies(job_set, name) {
       println("JOB ${name}: waiting for all = ${!results.contains(null)}")
       return !results.contains(null)
     }
-
-    println("DEBUG: ......")
-    println(results)
-    println('FAILURE' in results || 'UNSTABLE' in results || 'NOT_BUILT'in results || 'ABORTED' in results)
-    println('FAILURE' in results)
-    println('SUCCESS' in results)
-
     // stop waiting if someone failed
     if ('FAILURE' in results || 'UNSTABLE' in results || 'NOT_BUILT'in results || 'ABORTED' in results) {
       overall_result = false
@@ -164,7 +157,7 @@ def _run_job(job_set, name) {
     job_number = job.getNumber()
     job_results[name]['number'] = job_number
     job_results[name]['duration'] = job.getDuration()
-    job_results[name]['result'] = job.getResult()
+    job_results[name]['result'] = job.getResult().toString()
     println("JOB ${name}: Finished with SUCCESS")
   } catch (err) {
     run_err = err
@@ -181,7 +174,7 @@ def _run_job(job_set, name) {
         def job = Jenkins.getInstanceOrNull().getItemByFullName(job_name).getBuildByNumber(job_number)
         job_results[name]['number'] = job_number
         job_results[name]['duration'] = job.getDuration()
-        job_results[name]['result'] = job.getResult()
+        job_results[name]['result'] = job.getResult().toString()
       }
     } catch(e) {
       println("JOB ${name}: Error in obtaining failed job result ${e.getMessage()}")
