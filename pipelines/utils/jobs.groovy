@@ -39,25 +39,33 @@ def _wait_for_dependencies(job_set, name) {
   if (deps == null || deps.size() == 0)
     return true
   println("JOB ${name}: waiting for dependecies")
-  def wait_all = job_set[name].get('type') == 'stream-post-hook'
-  for (def i = 0; i < deps.size(); ++i) {
-    def dep_name = deps[i]
-    println("JOB ${name}: wait for dependecy ${dep_name}")
-    if (!job_results.containsKey(dep_name) || !job_results[dep_name].containsKey('result')) {
-      waitUntil {
-        // TODO: try to use sync objects
-        println("Job ${name} is still waiting for ${dep_name}")
-        sleep(15)
-        return job_results.containsKey(dep_name) && job_results[dep_name].containsKey('result')
-      }
+  def post_hook = job_set[name].get('type') == 'stream-post-hook'
+  def overall_result = true
+  waitUntil(initialRecurrencePeriod: 15000) {
+    def result_map = [:]
+    for (def i = 0; i < deps.size(); ++i) {
+      dep_name = deps[i]
+      result_map[dep_name] = job_results.containsKey(dep_name) ? job_results[dep_name].get('result') : null
     }
-    println("JOB ${name}: wait finished for dependency ${dep_name} with result ${job_results.get(dep_name)}")
-    if (job_results[dep_name]['result'] != 'SUCCESS' && !wait_all) {
-      reutnr false
+    println("JOB ${name}: waiting for dependecy ${result_map}")
+    results = results.values()
+    if (post_hook) {
+      // wait while 'null' is still in results
+      return !results.contains(null)
     }
+    // stop waiting if someone failed
+    if ('FAILURE' in results || 'UNSTABLE' in results || 'NOT_BUILT'in results || 'ABORTED' in results) {
+      overall_result = false
+      return true
+    }
+    // continue waiting if someone still is not ready
+    if (null in results)
+      return false
+    // here only SUCCESS is in the results - stop waiting
+    return true
   }
-  println("JOB ${name}: wait finished")
-  return true
+  println("JOB ${name}: wait finished. overall result = ${overall_result}")
+  return overall_result
 }
 
 def _job_params_to_file(job_set, name, env_file) {
