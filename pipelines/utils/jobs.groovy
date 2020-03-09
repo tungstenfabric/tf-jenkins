@@ -48,7 +48,7 @@ def _wait_for_dependencies(job_set, name) {
       result_map[dep_name] = job_results.containsKey(dep_name) ? job_results[dep_name].get('result') : null
     }
     println("JOB ${name}: waiting for dependecy ${result_map}")
-    results = results.values()
+    results = result_map.values()
     if (post_hook) {
       // wait while 'null' is still in results
       return !results.contains(null)
