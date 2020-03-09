@@ -51,6 +51,7 @@ def _wait_for_dependencies(job_set, name) {
     results = result_map.values()
     if (post_hook) {
       // wait while 'null' is still in results
+      println("JOB ${name}: waiting for all = ${!results.contains(null)}")
       return !results.contains(null)
     }
     // stop waiting if someone failed
@@ -59,8 +60,10 @@ def _wait_for_dependencies(job_set, name) {
       return true
     }
     // continue waiting if someone still is not ready
-    if (null in results)
+    if (null in results) {
+      println("JOB ${name}: fails were not found, unfinished jobs are still present")
       return false
+    }
     // here only SUCCESS is in the results - stop waiting
     return true
   }
