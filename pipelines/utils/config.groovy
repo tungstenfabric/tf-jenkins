@@ -127,6 +127,8 @@ def _resolve_templates(def config_data) {
 }
 
 def _update_map(items, new_items) {
+  println(items)
+  println(new_items)
   for (item in new_items) {
     if (item.getClass() != java.util.LinkedHashMap$Entry) {
       throw new Exception("Invalid item in config - '${item}'. It must be an entry of HashMap")
