@@ -54,6 +54,13 @@ def _wait_for_dependencies(job_set, name) {
       println("JOB ${name}: waiting for all = ${!results.contains(null)}")
       return !results.contains(null)
     }
+
+    println("DEBUG: ......")
+    println(results)
+    println('FAILURE' in results || 'UNSTABLE' in results || 'NOT_BUILT'in results || 'ABORTED' in results)
+    println('FAILURE' in results)
+    println('SUCCESS' in results)
+
     // stop waiting if someone failed
     if ('FAILURE' in results || 'UNSTABLE' in results || 'NOT_BUILT'in results || 'ABORTED' in results) {
       overall_result = false
