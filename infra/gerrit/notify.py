@@ -38,6 +38,7 @@ def main():
     parser.add_argument("--debug", dest="debug", action="store_true")
     parser.add_argument("--gerrit", help="Gerrit URL", dest="gerrit", type=str)
     parser.add_argument("--review", help="Review ID", dest="review", type=str)
+    parser.add_argument("--patchset", help="Patch Set ID", dest="patchset", type=str)
     parser.add_argument("--branch",
         help="Branch (optional, it is mundatory in case of cherry-picks)",
         dest="branch", type=str)
@@ -57,9 +58,9 @@ def main():
         gerrit = Gerrit(args.gerrit, args.user, args.password)
         change = gerrit.get_current_change(args.review, branch=args.branch)
         labels = parse_labels(args.labels)
-        gerrit.push_message(change, args.message, labels=labels)
+        gerrit.push_message(change, args.message, args.patchset, labels=labels)
         if args.submit:
-            gerrit.submit(change)
+            gerrit.submit(change, args.patchset)
     except Exception as e:
         print(traceback.format_exc())
         err("ERROR: failed to push message: %s" % e)

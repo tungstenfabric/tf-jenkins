@@ -106,20 +106,20 @@ class Gerrit(object):
             raise GerritRequestError(msg)
         return Change(res[0])
 
-    def push_message(self, change, message, labels={}):
+    def push_message(self, change, message, patchset, labels={}):
         data = {
             "labels": labels,
             "message": message,
         }
         dbg("push message data: %s" % data)
         url = "/changes/%s/revisions/%s/review" % \
-            (change.id, change.revision_number)
+            (change.id, patchset)
         self._session.post(url, data=data)
 
-    def submit(self, change):
+    def submit(self, change, patchset):
         data = {
             "wait_for_merge": True
         }
         url = "/changes/%s/revisions/%s/submit" % \
-            (change.id, change.revision_number)
+            (change.id, patchset)
         self._session.post(url, data=data)

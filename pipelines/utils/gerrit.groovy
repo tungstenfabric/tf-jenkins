@@ -156,6 +156,7 @@ def _notify_gerrit(msg, verified=0, submit=false) {
         --user ${GERRIT_API_USER} \
         --password ${GERRIT_API_PASSWORD} \
         --review ${GERRIT_CHANGE_ID} \
+        --patchset ${GERRIT_PATCHSET_NUMBER} \
         --branch ${GERRIT_BRANCH} \
         --message "${msg}" \
         ${opts}
