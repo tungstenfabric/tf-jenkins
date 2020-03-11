@@ -34,7 +34,7 @@
     parents:
       - fetch-sources-rhel
     jobs:
-      build-centos:
+      build-rhel:
         job-name: build
         depends-on:
           - fetch-sources-rhel
