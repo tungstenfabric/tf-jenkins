@@ -20,7 +20,27 @@
         job-name: build
         depends-on:
           - fetch-sources-centos
-      
+
+- template:
+    name: fetch-sources-rhel
+    jobs:
+      fetch-sources-rhel:
+        job-name: fetch-sources
+        vars:
+          ENVIRONMENT_OS: rhel7
+
+- template:
+    name: build-rhel
+    parents:
+      - fetch-sources-rhel
+    jobs:
+      build-centos:
+        job-name: build
+        depends-on:
+          - fetch-sources-rhel
+        vars:
+          ENVIRONMENT_OS: rhel7
+
 - template:
     name: test-unit
     parents:
@@ -251,3 +271,32 @@
           - deploy-platform-juju-os
           - deploy-tf-juju-os
           - test-sanity-juju-os
+
+- template:
+    name: rhosp
+    parents:
+      - build-rhel
+    streams:
+      rhosp:
+    jobs:
+      deploy-platform-rhosp:
+        stream: rhosp
+      deploy-tf-rhosp:
+        stream: rhosp
+        depends-on:
+          # TODO: use build artifacts in deploy
+          #- build-rhel
+          - deploy-platform-rhosp
+      test-sanity-rhosp:
+        job-name: test-sanity
+        stream: rhosp
+        depends-on:
+          - deploy-tf-rhosp
+      collect-logs-and-cleanup-rhosp:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-rhosp
+          - deploy-tf-rhosp
+          - test-sanity-rhosp

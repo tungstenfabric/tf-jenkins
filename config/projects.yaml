@@ -20,6 +20,7 @@
         - helm-os
         - juju-k8s
         - juju-os
+        - rhosp
         - cleanup
       jobs:
         publish-centos-nightly:
@@ -208,4 +209,15 @@
       templates:
         - juju-k8s
         - juju-os
+        - cleanup
+
+- project:
+    name: Juniper/contrail-tripleo-heat-templates
+    check:
+      tempaltes:
+        - rhosp
+        - cleanup
+    gate:
+      templates:
+        - rhosp
         - cleanup
