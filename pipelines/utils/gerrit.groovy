@@ -38,13 +38,6 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
       return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
 
-    if (currentBuild.currentResult == 'ABORTED') {
-      msg = "Jenkins build has been aborted ${duration_string}\n"
-      msg += "${BUILD_URL}\n${logs_url}\n"
-      _notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
-      return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
-    }
-
     def results = [:]
     for (name in job_set.keySet()) {
       // do not include post job into report
