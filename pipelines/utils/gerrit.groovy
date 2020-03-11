@@ -57,9 +57,13 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
 
     def passed = true
     def msg = ''
+    def stopping_cause = 'Failed'
     for (stream in results.keySet()) {
       println("Evaluated results for ${stream} = ${results[stream]}")
       def result = _get_stream_result(results[stream]['results'])
+      if (result == 'ABORTED') {
+        stopping_cause = 'Aborted'
+      }
       if (result == 'NOT_BUILT') {
         msg += "\n- ${stream} : NOT_BUILT"
       } else {
@@ -84,7 +88,7 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
     if (passed) {
       msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
     } else {
-      msg = "Jenkins Build Failed (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
+      msg = "Jenkins Build ${stopping_cause} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
       verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
     _notify_gerrit(msg, verified)
