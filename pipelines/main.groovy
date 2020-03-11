@@ -184,6 +184,7 @@ def terminate_previous_runs() {
     change_num = gerrit_change_number.value.toInteger()
     patchset_num = action.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger()
     if (GERRIT_CHANGE_NUMBER.toInteger() == change_num && GERRIT_PATCHSET_NUMBER.toInteger() > patchset_num) {
+      rb.@result = hudson.model.Result.ABORTED
       rb.doStop()
       println "Build $rb has been aborted when a new patchset is created"
     }
