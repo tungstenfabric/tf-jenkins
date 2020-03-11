@@ -66,6 +66,7 @@ timestamps {
 
         jobs_utils.run_jobs(jobs)
       } finally {
+        println("Debug: current pipeline status ${currentBuild.currentResult}")
         println(job_results)
         stage('gerrit vote') {
           // add gerrit voting +2 +1 / -1 -2
