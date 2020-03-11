@@ -214,7 +214,7 @@
 - project:
     name: Juniper/contrail-tripleo-heat-templates
     check:
-      tempaltes:
+      templates:
         - rhosp
         - cleanup
     gate:
