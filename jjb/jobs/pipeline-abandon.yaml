@@ -32,7 +32,6 @@
           if (rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER") != null ) {
             change_num = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER").value.toInteger()
             if (GERRIT_CHANGE_NUMBER.toInteger() == change_num) {
-              rb.@result = hudson.model.Result.ABORTED
               rb.doStop()
               println "Build $rb has been aborted when the change $GERRIT_CHANGE_NUMBER abandoned."
             }

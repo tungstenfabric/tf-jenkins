@@ -66,7 +66,6 @@ timestamps {
 
         jobs_utils.run_jobs(jobs)
       } finally {
-        println("Debug: current pipeline status ${currentBuild.currentResult}")
         println(job_results)
         stage('gerrit vote') {
           // add gerrit voting +2 +1 / -1 -2
@@ -184,7 +183,6 @@ def terminate_previous_runs() {
     change_num = gerrit_change_number.value.toInteger()
     patchset_num = action.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger()
     if (GERRIT_CHANGE_NUMBER.toInteger() == change_num && GERRIT_PATCHSET_NUMBER.toInteger() > patchset_num) {
-      rb.@result = hudson.model.Result.ABORTED
       rb.doStop()
       println "Build $rb has been aborted when a new patchset is created"
     }
