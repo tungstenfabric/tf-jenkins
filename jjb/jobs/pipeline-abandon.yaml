@@ -18,6 +18,8 @@
             notbuilt: true
           trigger-on:
             - change-abandoned-event 
+            - comment-added-contains-event:
+                comment-contains-value: '^(cancel)$'
           projects:
             - project-compare-type: 'ANT'
               project-pattern: '**'
@@ -33,7 +35,7 @@
             change_num = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_NUMBER").value.toInteger()
             if (GERRIT_CHANGE_NUMBER.toInteger() == change_num) {
               rb.doStop()
-              println "Build $rb has been aborted when the change $GERRIT_CHANGE_NUMBER abandoned."
+              println "Build $rb has been aborted"
             }
           }
         }
