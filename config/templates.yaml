@@ -77,6 +77,8 @@
         depends-on:
           - build-centos
           - deploy-platform-k8s-manifests
+        vars:
+          DEBUG: true
       test-sanity-k8s-manifests:
         job-name: test-sanity
         stream: k8s-manifests
