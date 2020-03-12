@@ -25,5 +25,5 @@ cd src/tungstenfabric/tf-devstack/rhosp
 ./run.sh
 EOF
 
-echo "INFO: Deploy platform finished"
+echo "INFO: Deploy TF finished"
 exit $res
