@@ -8,11 +8,9 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-stable_tag=${STABLE_TAGS["${ENVIRONMENT_OS^^}"]}
 linux_distr=${TARGET_LINUX_DISTR["$ENVIRONMENT_OS"]}
-tf_devenv_container_name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}
-commit_name="tf-developer-sandbox-$stable_tag"
-
+tf_devenv_container_name="tf-developer-sandbox-${PIPELINE_BUILD_TAG}"
+devenvtag="stable${TAG_SUFFIX}"
 #TODO: Rebuild be done only for review for dev-env,
 # re-tagging for stable will be done only after successful tests
 $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/create_workers.sh
@@ -24,8 +22,7 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER
 
 function run_dev_env() {
   local stage=$1
-  local devenv=$2
-  local build_dev_env=$3
+  local build_dev_env=$2
   local res=0
   echo "INFO: run tf-dev-env started..."
   cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
@@ -50,7 +47,7 @@ export BUILD_DEV_ENV_ON_PULL_FAIL=$build_dev_env
 export LINUX_DISTR=$linux_distr
 export TF_DEVENV_CONTAINER_NAME=$tf_devenv_container_name
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
-export DEVENVTAG=$devenv
+export DEVENVTAG=$devenvtag
 
 cd src/tungstenfabric/tf-dev-env
 
@@ -74,6 +71,7 @@ function push_dev_env() {
   local tag=$1
   local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
   local res=0
+  local commit_name="tf-developer-sandbox-$devenvtag"
   echo "INFO: Save container $target_tag"
   cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -98,9 +96,8 @@ EOF
 
 # build stable
 if [[ $res == 0 ]] ; then
-  build_dev_env=1
-  if run_dev_env none $stable_tag $build_dev_env ; then
-    push_dev_env $stable_tag || res=1
+  if run_dev_env none 1 ; then
+    push_dev_env $devenvtag || res=1
   else
     res=1
   fi
@@ -108,9 +105,8 @@ fi
 
 # sync & configure
 if [[ $res == 0 ]] ; then
-  build_dev_env=0
-  if run_dev_env "" $stable_tag $build_dev_env ; then
-    push_dev_env $CONTRAIL_CONTAINER_TAG || res=1
+  if run_dev_env "" 0 ; then
+    push_dev_env $CONTRAIL_CONTAINER_TAG$TAG_SUFFIX || res=1
   else
     res=1
   fi

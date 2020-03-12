@@ -8,14 +8,13 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-stable_tag=${STABLE_TAGS["${ENVIRONMENT_OS^^}"]}
-
-export TF_DEVENV_CONTAINER_NAME=tf-developer-sandbox-${PIPELINE_BUILD_TAG}
+export TF_DEVENV_CONTAINER_NAME="tf-developer-sandbox-${PIPELINE_BUILD_TAG}"
+devenvtag="stable${TAG_SUFFIX}"
+container_tag=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
 function run_dev_env() {
   local stage=$1
-  local devenv=$2
-  local build_dev_env=$3
+  local build_dev_env=$2
 
   export CONTRAIL_SETUP_DOCKER=0
   export TF_CONFIG_DIR=$WORKSPACE
@@ -33,7 +32,7 @@ function run_dev_env() {
   # TODO: enable later
   # export CONTRAIL_BUILD_FROM_SOURCE=1
   export OPENSTACK_VERSIONS=rocky
-  export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG
+  export CONTRAIL_CONTAINER_TAG=$container_tag
 
   export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}
   export GERRIT_URL=${GERRIT_URL}
@@ -46,7 +45,7 @@ function run_dev_env() {
   export BUILD_DEV_ENV=$build_dev_env
   export BUILD_DEV_ENV_ON_PULL_FAIL=0
   export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
-  export DEVENVTAG=$devenv
+  export DEVENVTAG=$devenvtag
 
   cd $WORKSPACE/src/tungstenfabric/tf-dev-env
   ./run.sh $stage
@@ -81,13 +80,12 @@ function push_dev_env() {
 }
 
 
-if ! sudo docker pull "$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$stable_tag" ; then
-  build_dev_env=1
-  if ! run_dev_env none $stable_tag $build_dev_env ; then
+if ! sudo docker pull "$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$devenvtag" ; then
+  if ! run_dev_env none 1 ; then
     echo "ERROR: Sync failed"
     exit 1
   fi
-  if ! push_dev_env $stable_tag ; then
+  if ! push_dev_env $devenvtag ; then
     echo "ERROR: Save tf-sandbox failed"
     exit 1
   fi
@@ -95,12 +93,11 @@ fi
 
 echo "INFO: Sync started"
 
-build_dev_env=0
-if ! run_dev_env "" $stable_tag $build_dev_env ; then
+if ! run_dev_env "" 0 ; then
   echo "ERROR: Sync failed"
   exit 1
 fi
-if ! push_dev_env $CONTRAIL_CONTAINER_TAG ; then
+if ! push_dev_env $container_tag ; then
   echo "ERROR: Save tf-sandbox failed"
   exit 1
 fi

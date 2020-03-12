@@ -28,6 +28,7 @@
         job-name: fetch-sources
         vars:
           ENVIRONMENT_OS: rhel7
+          TAG_SUFFIX: -rhel7
 
 - template:
     name: build-rhel
@@ -40,6 +41,7 @@
           - fetch-sources-rhel
         vars:
           ENVIRONMENT_OS: rhel7
+          TAG_SUFFIX: -rhel7
 
 - template:
     name: test-unit

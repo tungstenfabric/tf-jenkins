@@ -27,13 +27,13 @@ export REGISTRY_IP=$REGISTRY_IP
 export REGISTRY_PORT=$REGISTRY_PORT
 export SITE_MIRROR=http://${REGISTRY_IP}/repository
 
-export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG
+export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
-export DEVENVTAG=$CONTRAIL_CONTAINER_TAG
+export DEVENVTAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
 # Some tests (like test.test_flow.FlowQuerierTest.test_1_noarg_query) expect
 # PST timezone, and fail otherwise.
