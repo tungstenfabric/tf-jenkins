@@ -276,8 +276,9 @@
 
 - template:
     name: rhosp
-    parents:
-      - build-rhel
+    # comment it for now
+    #parents:
+    #  - build-rhel
     streams:
       rhosp:
     jobs:
