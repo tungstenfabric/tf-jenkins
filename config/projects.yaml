@@ -175,7 +175,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-helm-deployer
+    name: tungstenfabric/tf-helm-deployer
     check:
       templates:
         - helm-k8s
