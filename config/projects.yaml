@@ -223,3 +223,40 @@
       templates:
         - rhosp
         - cleanup
+
+- project:
+    name: tungstenfabric/tf-vcenter-fabric-manager
+    check:
+      templates:
+        - test-unit
+        - build-centos
+        - cleanup
+    gate:
+      templates:
+        - test-unit
+        - build-centos
+        - cleanup
+
+- project:
+    name: tungstenfabric/tf-vcenter-manager
+    check:
+      templates:
+        - test-unit
+        - build-centos
+        - cleanup
+    gate:
+      templates:
+        - test-unit
+        - build-centos
+        - cleanup
+
+- project:
+    name: tungstenfabric/tf-vcenter-plugin
+    check:
+      templates:
+        - build-centos
+        - cleanup
+    gate:
+      templates:
+        - build-centos
+        - cleanup
