@@ -73,6 +73,12 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
+          source "$WORKSPACE/global.env"
+          if [[ -n "$VERIFIED" ]] && (( VERIFIED < 1 )); then
+            echo "ERROR: verified flag is not empty and equal to $VERIFIED. Skip this job"
+            exit 1
+          fi          
+      - shell: |
           export ENVIRONMENT_OS=centos7
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/publish/create_workers.sh
@@ -86,6 +92,9 @@
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
           # main run
+          if (( VERIFIED > 0 )); then
+            export STABLE=true
+          fi
           ./src/progmaticlab/tf-jenkins/jobs/publish/run.sh |& tee ${WORKSPACE}/output.log || res=1
           # collect logs
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"

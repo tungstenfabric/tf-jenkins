@@ -70,13 +70,10 @@ timestamps {
         stage('gerrit vote') {
           // add gerrit voting +2 +1 / -1 -2
           verified = gerrit_utils.gerrit_vote(pre_build_done, streams, jobs, job_results, (new Date()).getTime() - time_start)
-          // update global.env for post jobs
-          if (verified > 0) {
-            sh """#!/bin/bash -e
-            echo "export STABLE=true" >> global.env
-            """
-            archiveArtifacts(artifacts: 'global.env')
-          }
+          sh """#!/bin/bash -e
+          echo "export VERIFIED=${verified}" >> global.env
+          """
+          archiveArtifacts(artifacts: 'global.env')
         }
         jobs_utils.run_jobs(post_jobs)
 
