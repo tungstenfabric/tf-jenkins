@@ -32,6 +32,15 @@ timestamps {
         println("Manual run is forbidden")
         return
       }
+
+      if ("${env.JOB_NAME}".contains("gate-opencontrail")) {
+        println("Gate opencontrail job")
+        for (job in Hudson.instance.getAllItems(org.jenkinsci.plugins.workflow.job.WorkflowJob)) {
+            println job.fullName
+        }
+        sleep 300
+      }
+
       stage('init') {
         cleanWs(disableDeferredWipeout: true, notFailBuild: true, deleteDirs: true)
         clone_self()

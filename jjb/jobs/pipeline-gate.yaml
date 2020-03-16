@@ -5,7 +5,7 @@
     node: aws
     description: Please do not run this manually
     project-type: pipeline
-    concurrent: false
+    concurrent: true
     parameters:
       - choice:
           name: SLAVE
