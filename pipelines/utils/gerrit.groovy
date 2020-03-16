@@ -129,7 +129,9 @@ def _get_duration_string(duration) {
 
 def _notify_gerrit(msg, verified=0, submit=false) {
   if (!env.GERRIT_HOST) {
-    // looks like it's a nightly pipeline
+    if (env.GERRIT_PIPELINE == 'nightly') {
+      emailext body: msg, subject: '[TF-JENKINS] Nightly build report', to: '$DEFAULT_RECIPIENTS'
+    }
     return
   }
   println("Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}")
