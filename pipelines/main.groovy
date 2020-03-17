@@ -1,3 +1,5 @@
+import groovy.json.JsonOutput;
+
 // constansts
 TIMEOUT_HOURS = 4
 REGISTRY_IP = "pnexus.sytes.net"
@@ -32,13 +34,28 @@ timestamps {
         println("Manual run is forbidden")
         return
       }
+      //TODO Uncomment after concurrent mode will be ready
+      /* if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
+            println("There is no gate approvals.. skip gate")
+            return
+        } */
 
       if ("${env.JOB_NAME}".contains("gate-opencontrail")) {
         println("Gate opencontrail job")
-        for (job in Hudson.instance.getAllItems(org.jenkinsci.plugins.workflow.job.WorkflowJob)) {
-            println job.fullName
-        }
-        sleep 300
+
+        def json = JsonOutput.toJson([foo: 'bar', baz: [1]])
+        println("JSON data = " + json)
+        //def workspace = pwd()
+        //fd = new File("${workspace}/gate_data.json")
+        //fd.write(json)
+        //println fd.text
+        //sh "ls -l"
+        //archiveArtifacts(artifacts: 'gate_data.json')
+
+        workspace = pwd()
+        println("workspace = ${workspace}")
+
+        // sleep 3000
       }
 
       stage('init') {
@@ -47,10 +64,6 @@ timestamps {
         gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
         config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
         jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
-      }
-      if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
-        println("There is no gate approvals.. skip gate")
-        return
       }
 
       def streams = [:]
@@ -62,6 +75,7 @@ timestamps {
         stage('Pre-build') {
           terminate_previous_runs()
           (streams, jobs, post_jobs) = evaluate_env()
+
           gerrit_utils.gerrit_build_started()
 
           desc = "<a href='${logs_url}'>${logs_url}</a>"
@@ -71,6 +85,11 @@ timestamps {
           }
           currentBuild.description = desc
           pre_build_done = true
+        }
+
+        if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
+            println("There is no gate approvals.. skip gate")
+            return
         }
 
         jobs_utils.run_jobs(jobs)
