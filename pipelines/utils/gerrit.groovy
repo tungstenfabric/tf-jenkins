@@ -128,6 +128,10 @@ def _get_duration_string(duration) {
 }
 
 def _notify_gerrit(msg, verified=0, submit=false) {
+  // TODO: remove this hack when gating will be implemented
+  if (env.GERRIT_PIPELINE == 'gate')
+    return
+
   if (!env.GERRIT_HOST) {
     if (env.GERRIT_PIPELINE == 'nightly') {
       emailext body: msg, subject: '[TF-JENKINS] Nightly build report', to: '$DEFAULT_RECIPIENTS'
