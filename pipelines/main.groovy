@@ -43,18 +43,6 @@ timestamps {
       if ("${env.JOB_NAME}".contains("gate-opencontrail")) {
         println("Gate opencontrail job")
 
-        def json = JsonOutput.toJson([foo: 'bar', baz: [1]])
-        println("JSON data = " + json)
-        //def workspace = pwd()
-        //fd = new File("${workspace}/gate_data.json")
-        //fd.write(json)
-        //println fd.text
-        //sh "ls -l"
-        //archiveArtifacts(artifacts: 'gate_data.json')
-
-        workspace = pwd()
-        println("workspace = ${workspace}")
-
         // sleep 3000
       }
 
@@ -86,6 +74,9 @@ timestamps {
           currentBuild.description = desc
           pre_build_done = true
         }
+
+        println "Builds map:"
+        // println create_gate_builds_map().class
 
         if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
             println("There is no gate approvals.. skip gate")
@@ -228,4 +219,46 @@ def save_pipeline_output_to_logs() {
   }
   archiveArtifacts artifacts: "pipelinelog.txt"
   echo "Output logs saved at ${logs_url}/pipelinelog.txt"
+}
+
+def create_gate_builds_map(){
+
+  def builds_map = [:]
+
+  // Get through all gate's builds
+  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail')
+  job.builds.each {
+    def build = it
+    builds_map[build.getEnvVars().BUILD_ID] = [status:build.getResult().toString()]
+
+    // Find global.env artifact for each build
+    artifactManager =  build.getArtifactManager()
+    if (artifactManager.root().isDirectory()) {
+      fileList = artifactManager.root().list()
+      fileList.each {
+      if(it.toString().contains('global.env')) {
+        // Find CONTRAIL_CONTAINER_TAG variable in global.env for the build
+        ctagLine = it.open().filterLine {
+          it.contains('CONTRAIL_CONTAINER_TAG')
+        }
+        if(ctagLine) {
+          builds_map[build.getEnvVars().BUILD_ID]['container_tag'] = ctagLine.toString().split('=')[1].trim()
+        }
+
+        // Find CONTRAIL_CONTAINER_TAG variable in global.env for the build
+        dtagLine = println it.open().filterLine {
+          it.contains('DEVENVTAG')
+        }
+        if(dtagLine){
+          builds_map[build.getEnvVars().BUILD_ID]['devenvtag'] = ctagLine.toString().split('=')[1].trim()
+        }
+       }
+
+      }
+
+    }
+
+  }
+
+  return builds_map
 }
