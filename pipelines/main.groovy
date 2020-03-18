@@ -264,5 +264,21 @@ def create_gate_builds_map(){
 }
 
 def tmp_add_devenv_tag(builds_map){
-  println("Builds map coming : ${builds_map}")
+
+  def devenv_tag = ""
+
+  builds_map.any {
+    def build_id = it.key
+    def build_data = it.value
+
+    if ( build_data.containsKey('container_tag') && build_data['status'] == 'SUCCESS' && build_id != currentBuild.number ) {
+      println "DEBUG: New devenv_tag = ${build_data['container_tag']}, from build ${build_id}"
+      sh """#!/bin/bash -e
+        echo "export DEVENVTAG=${build_data['container_tag']}" >> global.env
+      """
+      archiveArtifacts(artifacts: 'global.env')
+      return true
+    }
+  }
+
 }
