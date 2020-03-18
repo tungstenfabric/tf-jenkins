@@ -34,17 +34,6 @@ timestamps {
         println("Manual run is forbidden")
         return
       }
-      //TODO Uncomment after concurrent mode will be ready
-      /* if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
-            println("There is no gate approvals.. skip gate")
-            return
-        } */
-
-      if ("${env.JOB_NAME}".contains("gate-opencontrail")) {
-        println("Gate opencontrail job")
-
-        // sleep 3000
-      }
 
       stage('init') {
         cleanWs(disableDeferredWipeout: true, notFailBuild: true, deleteDirs: true)
@@ -53,6 +42,11 @@ timestamps {
         config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
         jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
       }
+      //TODO Uncomment after concurrent mode will be ready
+      /* if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
+            println("There is no gate approvals.. skip gate")
+            return
+        } */
 
       def streams = [:]
       def jobs = [:]
@@ -63,7 +57,6 @@ timestamps {
         stage('Pre-build') {
           terminate_previous_runs()
           (streams, jobs, post_jobs) = evaluate_env()
-
           gerrit_utils.gerrit_build_started()
 
           desc = "<a href='${logs_url}'>${logs_url}</a>"
@@ -79,7 +72,8 @@ timestamps {
         tmp_add_devenv_tag(builds_map)
 
         //TODO Pipeline ends Here now. Remove when gating will be done
-        return
+        if (env.GERRIT_PIPELINE == 'gate')
+          return
 
         jobs_utils.run_jobs(jobs)
       } finally {
