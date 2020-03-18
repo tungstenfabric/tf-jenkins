@@ -75,13 +75,11 @@ timestamps {
           pre_build_done = true
         }
 
-        println "Builds map:"
-        // println create_gate_builds_map().class
+        builds_map = create_gate_builds_map()
+        println "Builds map: ${builds_map}"
 
-        if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
-            println("There is no gate approvals.. skip gate")
-            return
-        }
+        //TODO Pipeline ends Here now. Remove when gating will be done
+        return
 
         jobs_utils.run_jobs(jobs)
       } finally {
@@ -222,37 +220,39 @@ def save_pipeline_output_to_logs() {
 }
 
 def create_gate_builds_map(){
-
   def builds_map = [:]
-
   // Get through all gate's builds
   def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail')
   job.builds.each {
     def build = it
-    builds_map[build.getEnvVars().BUILD_ID] = [status:build.getResult().toString()]
+    def build_id = build.getEnvVars().BUILD_ID
+    def build_status = build.getResult().toString()
+    builds_map[build_id] = [status:build_status]
 
-    // Find global.env artifact for each build
-    artifactManager =  build.getArtifactManager()
+    def artifactManager =  build.getArtifactManager()
+
     if (artifactManager.root().isDirectory()) {
-      fileList = artifactManager.root().list()
+      def fileList = artifactManager.root().list()
       fileList.each {
-      if(it.toString().contains('global.env')) {
-        // Find CONTRAIL_CONTAINER_TAG variable in global.env for the build
-        ctagLine = it.open().filterLine {
-          it.contains('CONTRAIL_CONTAINER_TAG')
-        }
-        if(ctagLine) {
-          builds_map[build.getEnvVars().BUILD_ID]['container_tag'] = ctagLine.toString().split('=')[1].trim()
-        }
+        def file = it
+        if(file.toString().contains('global.env')) {
+          // extract global.env artifact for each build if exists
+          def fileText = it.open().getText()
+          fileText.split("\n").each {
+            def line = it
+            // Check if CONTRAIL_CONTAINER_TAG or DEVENVTAG exists in global.env file
+            // store theil values into builds_map
+            if(line.contains('CONTRAIL_CONTAINER_TAG')) {
+              def container_tag = line.split('=')[1].trim()
+              builds_map[build_id]['container_tag'] = container_tag
+            }
 
-        // Find CONTRAIL_CONTAINER_TAG variable in global.env for the build
-        dtagLine = println it.open().filterLine {
-          it.contains('DEVENVTAG')
+            if(line.contains('DEVENVTAG')) {
+              def container_tag = line.split('=')[1].trim()
+              builds_map[build_id]['devenv_tag'] = container_tag
+            }
+          }
         }
-        if(dtagLine){
-          builds_map[build.getEnvVars().BUILD_ID]['devenvtag'] = ctagLine.toString().split('=')[1].trim()
-        }
-       }
 
       }
 
