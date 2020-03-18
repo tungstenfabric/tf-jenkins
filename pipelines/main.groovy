@@ -76,7 +76,7 @@ timestamps {
         }
 
         builds_map = create_gate_builds_map()
-        println "Builds map: ${builds_map}"
+        tmp_add_devenv_tag(builds_map)
 
         //TODO Pipeline ends Here now. Remove when gating will be done
         return
@@ -261,4 +261,8 @@ def create_gate_builds_map(){
   }
 
   return builds_map
+}
+
+def tmp_add_devenv_tag(builds_map){
+  println("Builds map coming : ${builds_map}")
 }
