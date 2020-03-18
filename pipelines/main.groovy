@@ -257,6 +257,7 @@ def create_gate_builds_map(){
   return builds_map
 }
 
+//TODO This is temporary function - remove after gating done
 def tmp_add_devenv_tag(builds_map){
 
   def devenv_tag = ""
@@ -275,4 +276,57 @@ def tmp_add_devenv_tag(builds_map){
     }
   }
 
+}
+
+def set_devenv_tag(builds_map){
+  builds_map.any {
+    def build = it
+    if(build.status == "FAILED")
+      // continue iterate to SUCCESS build or build in progress
+      return
+    else if( build.status == "SUCCESS")
+      // We meet Sucess build - no any DEVENVTAG needed - break loop
+      return true
+    else
+      // We meet inprogress build but perhaps it is already fails
+      // it is not failed if build not have devenv_tag
+      // or if is_build_fail - recursive function return true
+      if(!build.containsKey('devenv_tag') || is_build_fail(build['devenv_tag'])){
+        // build is in the process and it is not failed - we can use its image
+        // for start next build
+        // TODO Save DEVENVTAG to global.env here
+      }
+  }
+}
+
+def is_build_fail(devenv_tag, builds_map) {
+  def is_build_not_fail = false
+  builds_map.any {
+    def build = it
+    if(build['container_tag'] != devenv_tag)
+      // iterate up to build while we not meet container_tag equal devenv_tag
+      return
+    else if(build['status'] == 'SUCCESS'){
+      // Build is not fail
+      is_build_not_fail = true
+      return true
+    }
+    else if(build['status'] == 'FAILED'){
+      // Build has been failed
+      return true
+    // Here we know - build is not finished yet
+    } else if(! build.containsKey('devenv_tag')){
+      // Buils is in process and it not based on any DEVENVTAG image
+      // therefore it not fails
+      is_build_not_fail = true
+      return true
+    } else{
+      // We need one recursive call more to check if this build is not fail
+      is_build_not_fail = is_build_fail(build['devenv_tag'],builds_map)
+      return true
+    }
+
+  }
+
+  return is_build_not_fail
 }
