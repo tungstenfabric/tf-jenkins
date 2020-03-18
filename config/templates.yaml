@@ -32,6 +32,7 @@
           - fetch-sources-centos
         vars:
           CONTRAIL_BUILD_FROM_SOURCE: true
+          TAG_SUFFIX: -src
 
 - template:
     name: fetch-sources-rhel
