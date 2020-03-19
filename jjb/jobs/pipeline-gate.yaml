@@ -82,18 +82,6 @@
           trigger-on:
             - comment-added-contains-event:
                 comment-contains-value: '^(gatetf)$'
-            - comment-added-event:
-                approval-category: 'Code-Review'
-                approval-value: 2
-            - comment-added-event:
-                approval-category: 'Approved'
-                approval-value: 1
-            - comment-added-event:
-                approval-category: 'VerifiedTF'
-                approval-value: 1
-            - comment-added-event:
-                approval-category: 'Verified'
-                approval-value: 1
           trigger-for-unreviewed-patches: true
           projects:
             - project-compare-type: 'ANT'
