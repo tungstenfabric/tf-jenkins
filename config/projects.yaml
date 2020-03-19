@@ -30,6 +30,10 @@
           job-name: publish
           depends-on:
             - build-centos
+        aquascan-rhel-nightly:
+          job-name: aquascan
+          depends-on:
+            - build-rhel
       post-jobs:
         publish-centos-stable:
           job-name: publish

@@ -1,0 +1,4 @@
+AQUASEC_HOST_USERNAME=centos
+AQUASCAN_INSTANCE_NAME='jenkins-aquascan'
+
+SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
