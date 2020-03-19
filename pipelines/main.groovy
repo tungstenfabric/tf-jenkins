@@ -279,7 +279,7 @@ def set_devenv_tag(builds_map){
   builds_map.any {
     def build = it.value
     def build_no = it.key
-    println("DEBUG: build = ${build}")
+    println("DEBUG: build_no = ${build_no} build = ${build}")
     if(build_no == BUILD_ID){
       // skip current build
       return false
