@@ -72,8 +72,6 @@ timestamps {
           pre_build_done = true
         }
 
-        println("DEBUG: env.GERRIT_PIPELINE is ${env.GERRIT_PIPELINE}")
-
         if (env.GERRIT_PIPELINE == 'gate_concurrent'){
           println("DEBUG: Gate concurrent detect")
           // Choose base image for gating pipeline if
@@ -233,7 +231,7 @@ def create_gate_builds_map(){
   def builds_map = [:]
   // Get through all gate's builds
   def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
-  println("DEBUG: job.builds class is ${job.builds.class}")
+  println("DEBUG: job is ${job}")
   job.builds.each {
     def build = it
     def build_id = build.getEnvVars().BUILD_ID
