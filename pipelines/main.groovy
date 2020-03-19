@@ -240,32 +240,24 @@ def create_gate_builds_map(){
               def container_tag = line.split('=')[1].trim()
               builds_map[build_id]['container_tag'] = container_tag
             }
-
             if(line.contains('DEVENVTAG')) {
-              def container_tag = line.split('=')[1].trim()
-              builds_map[build_id]['devenv_tag'] = container_tag
+              def devenv_tag = line.split('=')[1].trim()
+              builds_map[build_id]['devenv_tag'] = devenv_tag
             }
           }
         }
-
       }
-
     }
-
   }
-
   return builds_map
 }
 
 //TODO This is temporary function - remove after gating done
 def tmp_add_devenv_tag(builds_map){
-
   def devenv_tag = ""
-
   builds_map.any {
     def build_id = it.key
     def build_data = it.value
-
     if ( build_data.containsKey('container_tag') && build_data['status'] == 'SUCCESS' && build_id != currentBuild.number ) {
       println "DEBUG: New devenv_tag = ${build_data['container_tag']}, from build ${build_id}"
       sh """#!/bin/bash -e
@@ -275,7 +267,6 @@ def tmp_add_devenv_tag(builds_map){
       return true
     }
   }
-
 }
 
 def set_devenv_tag(builds_map){
@@ -294,7 +285,11 @@ def set_devenv_tag(builds_map){
       if(!build.containsKey('devenv_tag') || is_build_fail(build['devenv_tag'])){
         // build is in the process and it is not failed - we can use its image
         // for start next build
-        // TODO Save DEVENVTAG to global.env here
+        sh """#!/bin/bash -e
+          echo "export DEVENVTAG=${build_data['container_tag']}" >> global.env
+        """
+        archiveArtifacts(artifacts: 'global.env')
+        return true
       }
   }
 }
@@ -325,8 +320,6 @@ def is_build_fail(devenv_tag, builds_map) {
       is_build_not_fail = is_build_fail(build['devenv_tag'],builds_map)
       return true
     }
-
   }
-
   return is_build_not_fail
 }
