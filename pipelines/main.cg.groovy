@@ -231,7 +231,7 @@ def create_gate_builds_map(){
   def builds_map = [:]
   // Get through all gate's builds
   def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
-  println("DEBUG: job is ${job}")
+  println("DEBUG: job is ${job.builds}")
   job.builds.each {
     def build = it
     def build_id = build.getEnvVars().BUILD_ID
