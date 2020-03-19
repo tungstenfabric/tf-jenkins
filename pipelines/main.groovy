@@ -278,10 +278,10 @@ def create_gate_builds_map(){
 def set_devenv_tag(builds_map){
   builds_map.any {
     def build = it
-    if(build.status == "FAILURE")
+    if(build['status'] == "FAILURE")
       // continue iterate to SUCCESS build or build in progress
       return false
-    else if( build.status == "SUCCESS")
+    else if( build['status'] == "SUCCESS")
       // We meet Sucess build - no any DEVENVTAG needed - break loop
       return true
     else
