@@ -70,7 +70,7 @@ timestamps {
 
         builds_map = create_gate_builds_map()
         println("INFO prepare builds_map = ${builds_map} ")
-        tmp_add_devenv_tag(builds_map)
+        set_devenv_tag(builds_map)
 
         //TODO Pipeline ends Here now. Remove when gating will be done
         if (env.GERRIT_PIPELINE == 'gate')
@@ -267,23 +267,6 @@ def create_gate_builds_map(){
     }
   }
   return builds_map
-}
-
-//TODO This is temporary function - remove after gating done
-def tmp_add_devenv_tag(builds_map){
-  def devenv_tag = ""
-  builds_map.any {
-    def build_id = it.key
-    def build_data = it.value
-    if ( build_data.containsKey('container_tag') && build_data['status'] == 'SUCCESS' && build_id != currentBuild.number ) {
-      println "DEBUG: New devenv_tag = ${build_data['container_tag']}, from build ${build_id}"
-      sh """#!/bin/bash -e
-        echo "export DEVENVTAG=${build_data['container_tag']}" >> global.env
-      """
-      archiveArtifacts(artifacts: 'global.env')
-      return true
-    }
-  }
 }
 
 def set_devenv_tag(builds_map){
