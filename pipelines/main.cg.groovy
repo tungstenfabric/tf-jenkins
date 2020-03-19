@@ -72,20 +72,6 @@ timestamps {
           pre_build_done = true
         }
 
-        return
-        jobs_utils.run_jobs(jobs)
-      } finally {
-        println(job_results)
-        stage('gerrit vote') {
-          // add gerrit voting +2 +1 / -1 -2
-          verified = gerrit_utils.gerrit_vote(pre_build_done, streams, jobs, job_results, (new Date()).getTime() - time_start)
-          sh """#!/bin/bash -e
-          echo "export VERIFIED=${verified}" >> global.env
-          """
-          archiveArtifacts(artifacts: 'global.env')
-        }
-
-
         println("DEBUG: env.GERRIT_PIPELINE is ${env.GERRIT_PIPELINE}")
 
         if (env.GERRIT_PIPELINE == 'gate_concurrent'){
@@ -102,7 +88,17 @@ timestamps {
           return
         }
 
-//TODO Gating Pipeline ends Here now. Remove when gating will be done
+        jobs_utils.run_jobs(jobs)
+      } finally {
+        println(job_results)
+        stage('gerrit vote') {
+          // add gerrit voting +2 +1 / -1 -2
+          verified = gerrit_utils.gerrit_vote(pre_build_done, streams, jobs, job_results, (new Date()).getTime() - time_start)
+          sh """#!/bin/bash -e
+          echo "export VERIFIED=${verified}" >> global.env
+          """
+          archiveArtifacts(artifacts: 'global.env')
+        }
 
         jobs_utils.run_jobs(post_jobs)
 
