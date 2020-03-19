@@ -45,10 +45,12 @@ timestamps {
         config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
         jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
       }
-      if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
-            println("There is no gate approvals.. skip gate")
-            return
-      }
+
+      // TODO Uncommend when concurrent pipeline will be ready
+      //if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
+      //      println("There is no gate approvals.. skip gate")
+      //      return
+      //}
 
       def streams = [:]
       def jobs = [:]
@@ -81,6 +83,22 @@ timestamps {
           """
           archiveArtifacts(artifacts: 'global.env')
         }
+
+
+        if (env.GERRIT_PIPELINE == 'gate'){
+          // Choose base image for gating pipeline if
+          // some gating builds are in process
+          builds_map = create_gate_builds_map()
+          println("INFO: prepare builds_map = ${builds_map} ")
+          set_devenv_tag(builds_map)
+          println("INFO: jobs are: ${jobs}")
+
+// Run fetch_sources - remove after debugging
+          jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
+//TODO Gating Pipeline ends Here now. Remove when gating will be done
+          return
+        }
+
         jobs_utils.run_jobs(post_jobs)
 
         save_pipeline_output_to_logs()
