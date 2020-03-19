@@ -7,14 +7,14 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
+source "$my_dir/../../infra/${SLAVE}/functions.sh"
 
-env_file="$WORKSPACE/$ENV_FILE"
+AQUASEC_HOST_IP=$(get_instance_ip $AQUASCAN_INSTANCE_NAME)
+
+env_file="$WORKSPACE/scan.env"
 cat <<EOF > $env_file
 CONTRAIL_REGISTRY=$CONTAINER_REGISTRY
 CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
-SCAN_REGISTRY=tungstenfabric
-SCAN_REGISTRY_USER=$DOCKERHUB_USERNAME
-SCAN_REGISTRY_PASSWORD=$DOCKERHUB_PASSWORD
 SCAN_REPORTS_STASH=/tmp/scan_reports
 SCAN_THRESHOLD=9.8
 AQUASEC_HOST_IP=$AQUASEC_HOST_IP
@@ -26,8 +26,8 @@ SCANNER_USER=$AQUASEC_SCANNER_USERNAME
 SCANNER_PASSWORD=$AQUASEC_SCANNER_PASSWORD
 EOF
 
-scp -i $WORKER_SSH_KEY $SSH_OPTIONS $my_dir/$JOB_FILE $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:./
-scp -i $WORKER_SSH_KEY $SSH_OPTIONS $env_file $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:./$ENV_FILE
+scp -i $WORKER_SSH_KEY $SSH_OPTIONS $my_dir/scan.sh $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:./
+scp -i $WORKER_SSH_KEY $SSH_OPTIONS $env_file $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:./scan.env
 
 echo "INFO: Prepare the Aquasec environment"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP
@@ -51,7 +51,7 @@ EOF
 echo "INFO: Start scanning containers"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP
 export WORKSPACE=\$HOME
-source ./$ENV_FILE
-sudo -E ./$JOB_FILE
+source ./scan.env
+sudo -E ./scan.sh
 EOF
 echo "INFO: Scanning containers is done"

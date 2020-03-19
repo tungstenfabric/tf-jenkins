@@ -40,10 +40,6 @@
               credential-id: aquascanner
               username: AQUASEC_SCANNER_USERNAME
               password: AQUASEC_SCANNER_PASSWORD
-          - username-password-separated:
-              credential-id: dockerhub
-              username: DOCKERHUB_USERNAME
-              password: DOCKERHUB_PASSWORD
       - credentials-binding:
           - text:
               credential-id: VEXX_OS_USERNAME
@@ -76,13 +72,9 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/aquascan/prepare_worker.sh
-      - shell: |
           set +e
           set -o pipefail
           source "$WORKSPACE/global.env"
-          source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true

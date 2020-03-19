@@ -26,27 +26,15 @@ log "Scan TF containers"
 
 CONTRAIL_REGISTRY_INSECURE=${CONTRAIL_REGISTRY_INSECURE:-"true"}
 AQUASEC_REGISTRY=registry.aquasec.com
-SCAN_REGISTRY=${SCAN_REGISTRY:-}
-SCAN_REGISTRY_USER=${SCAN_REGISTRY_USER:-}
-SCAN_REGISTRY_PASSWORD=${SCAN_REGISTRY_PASSWORD:-}
 SCAN_INCLUDE_REGEXP=${SCAN_INCLUDE_REGEXP:-"contrail-\|tf-"}
 SCAN_EXCLUDE_REGEXP=${SCAN_EXCLUDE_REGEXP:-"base\|contrail-third-party-packages\|tf-developer-sandbox\|-src"}
 SCAN_CONTAINERS_LIST=${SCAN_CONTAINERS_LIST:-'auto'}
 
 log_msg="\n CONTRAIL_REGISTRY=$CONTRAIL_REGISTRY"
 log_msg+="\n CONTRAIL_REGISTRY_INSECURE=$CONTRAIL_REGISTRY_INSECURE"
-log_msg+="\n SCAN_REGISTRY=${SCAN_REGISTRY}"
-log_msg+="\n SCAN_REGISTRY_USER=${SCAN_REGISTRY_USER}"
 log_msg+="\n SCAN_INCLUDE_REGEXP=${SCAN_INCLUDE_REGEXP}"
 log_msg+="\n SCAN_EXCLUDE_REGEXP=${SCAN_EXCLUDE_REGEXP}"
 log "Options:$log_msg"
-
-if [[ -n "$SCAN_REGISTRY_USER" && "$SCAN_REGISTRY_PASSWORD" ]] ; then
-  registry_addr=$(echo $SCAN_REGISTRY | cut -s -d '/' -f 1)
-  log "Login to target docker registry $registry_addr"
-  [[ $SCAN_REGISTRY =~ / ]] && registry_addr+=
-  echo $SCAN_REGISTRY_PASSWORD | docker login --username $SCAN_REGISTRY_USER --password-stdin $registry_addr
-fi
 
 if [[ -n "$AQUASEC_REGISTRY" ]]; then
   log "Login to aquasec docker registry $AQUASEC_REGISTRY"
