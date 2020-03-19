@@ -86,6 +86,8 @@ timestamps {
         }
 
 
+        println("DEBUG: env.GERRIT_PIPELINE is ${env.GERRIT_PIPELINE}")
+
         if (env.GERRIT_PIPELINE == 'gate_concurrent'){
           println("DEBUG: Gate concurrent detect")
           // Choose base image for gating pipeline if
