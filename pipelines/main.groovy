@@ -245,6 +245,10 @@ def create_gate_builds_map(){
               def devenv_tag = line.split('=')[1].trim()
               builds_map[build_id]['devenv_tag'] = devenv_tag
             }
+            if(line.contains('VERIFIED')) {
+              def verified = line.split('=')[1].trim()
+              builds_map[build_id]['verified'] = verified
+            }
           }
         }
       }
