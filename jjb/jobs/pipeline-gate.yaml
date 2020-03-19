@@ -65,7 +65,7 @@
           description: "Slave where all jobs will be run: vexxhost, aws"
       - hidden:
           name: GERRIT_PIPELINE
-          default: gate
+          default: gate_concurrent
     pipeline-scm:
       scm:
         - tf-jenkins

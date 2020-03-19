@@ -85,7 +85,8 @@ timestamps {
         }
 
 
-        if (env.GERRIT_PIPELINE == 'gate'){
+        if (env.GERRIT_PIPELINE == 'gate_concurrent'){
+          println("DEBUG: Gate concurrent detect")
           // Choose base image for gating pipeline if
           // some gating builds are in process
           builds_map = create_gate_builds_map()
@@ -95,9 +96,10 @@ timestamps {
 
 // Run fetch_sources - remove after debugging
           jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
-//TODO Gating Pipeline ends Here now. Remove when gating will be done
           return
         }
+
+//TODO Gating Pipeline ends Here now. Remove when gating will be done
 
         jobs_utils.run_jobs(post_jobs)
 
