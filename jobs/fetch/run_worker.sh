@@ -10,7 +10,7 @@ source "$my_dir/definitions"
 
 linux_distr=${TARGET_LINUX_DISTR["$ENVIRONMENT_OS"]}
 tf_devenv_container_name="tf-developer-sandbox-${PIPELINE_BUILD_TAG}"
-devenvtag="stable${TAG_SUFFIX}"
+devenvtag=${DEVENVTAG:-stable${TAG_SUFFIX}}
 #TODO: Rebuild be done only for review for dev-env,
 # re-tagging for stable will be done only after successful tests
 $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/create_workers.sh

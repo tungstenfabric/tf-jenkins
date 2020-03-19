@@ -9,7 +9,7 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 export TF_DEVENV_CONTAINER_NAME="tf-developer-sandbox-${PIPELINE_BUILD_TAG}"
-devenvtag="stable${TAG_SUFFIX}"
+devenvtag=${DEVENVTAG:-stable${TAG_SUFFIX}}
 container_tag=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
 function run_dev_env() {
