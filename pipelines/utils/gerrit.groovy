@@ -129,7 +129,7 @@ def _get_duration_string(duration) {
 
 def _notify_gerrit(msg, verified=0, submit=false) {
   // TODO: remove this hack when gating will be implemented
-  if (env.GERRIT_PIPELINE == 'gate')
+  if (env.GERRIT_PIPELINE == 'gate' || env.GERRIT_PIPELINE == 'gate_concurrent')
     return
 
   if (!env.GERRIT_HOST) {
