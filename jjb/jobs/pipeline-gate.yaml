@@ -5,7 +5,7 @@
     node: aws
     description: Please do not run this manually
     project-type: pipeline
-    concurrent: true
+    concurrent: false
     parameters:
       - choice:
           name: SLAVE
@@ -44,7 +44,7 @@
             - comment-added-event:
                 approval-category: 'Verified'
                 approval-value: 1
-          trigger-for-unreviewed-patches: true
+          trigger-for-unreviewed-patches: false
           projects:
             - project-compare-type: 'ANT'
               project-pattern: '**'
