@@ -277,7 +277,7 @@ def create_gate_builds_map(){
 
 def set_devenv_tag(builds_map){
   builds_map.any {
-    def build = it
+    def build = it.value
     if(build['status'] == "FAILURE")
       // continue iterate to SUCCESS build or build in progress
       return false
@@ -303,7 +303,7 @@ def set_devenv_tag(builds_map){
 def is_build_fail(devenv_tag, builds_map) {
   def is_build_not_fail = false
   builds_map.any {
-    def build = it
+    def build = it.value
     if(build['container_tag'] != devenv_tag)
       // iterate up to build while we not meet container_tag equal devenv_tag
       return false
