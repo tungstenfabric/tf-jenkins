@@ -68,13 +68,17 @@ timestamps {
           pre_build_done = true
         }
 
-        builds_map = create_gate_builds_map()
-        println("INFO prepare builds_map = ${builds_map} ")
-        set_devenv_tag(builds_map)
+        if (env.GERRIT_PIPELINE == 'gate'){
+          // Choose base image for gating pipeline if
+          // some gating builds are in process
+          builds_map = create_gate_builds_map()
+          println("INFO: prepare builds_map = ${builds_map} ")
+          set_devenv_tag(builds_map)
+          println("INFO: jobs are: ${jobs}")
 
-        //TODO Pipeline ends Here now. Remove when gating will be done
-        if (env.GERRIT_PIPELINE == 'gate')
+//TODO Gating Pipeline ends Here now. Remove when gating will be done
           return
+        }
 
         jobs_utils.run_jobs(jobs)
       } finally {
@@ -214,6 +218,8 @@ def save_pipeline_output_to_logs() {
   echo "Output logs saved at ${logs_url}/pipelinelog.txt"
 }
 
+// Prepare map of gate pipeline builds for choose
+// base gating image if concurent mode enabled
 def create_gate_builds_map(){
   def builds_map = [:]
   // Get through all gate's builds
