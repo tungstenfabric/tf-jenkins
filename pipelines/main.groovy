@@ -222,6 +222,8 @@ def create_gate_builds_map(){
     def build = it
     def build_id = build.getEnvVars().BUILD_ID
     def build_status = build.getResult().toString()
+    // by defailt we apply failed status to build. It can be changed later
+    // after we get VERIFIED flag from global.env
     builds_map[build_id] = [status:build_status]
 
     def artifactManager =  build.getArtifactManager()
@@ -252,6 +254,16 @@ def create_gate_builds_map(){
           }
         }
       }
+    }
+    // Check build status based on VERIFIED value from global.env
+    if( build_status == 'FAILED' &&
+        builds_map[build_id].containsKey('verified') &&
+        builds_map[build_id].toInteger() > 0){
+      builds_map[build_id]['status'] = 'SUCCESS'
+    }
+    if( build_status == 'SUCCESS' &&
+        (! builds_map[build_id].containsKey('verified') || builds_map[build_id]['verified'] <= 0 )){
+      builds_map[build_id]['status'] = 'FAILED'
     }
   }
   return builds_map
