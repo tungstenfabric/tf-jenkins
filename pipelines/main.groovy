@@ -13,6 +13,7 @@ if (env.GERRIT_PIPELINE == 'nightly') {
 // pipeline flow variables
 // base url for all jobs
 logs_url = ""
+logs_path = ""
 // set of result for each job 
 job_results = [:]
 
@@ -52,6 +53,7 @@ timestamps {
       try {
         time_start = (new Date()).getTime()
         stage('Pre-build') {
+          evaluate_logs_params()
           terminate_previous_runs()
           (streams, jobs, post_jobs) = evaluate_env()
           gerrit_utils.gerrit_build_started()
@@ -76,7 +78,8 @@ timestamps {
           """
           archiveArtifacts(artifacts: 'global.env')
         }
-        jobs_utils.run_jobs(post_jobs)
+        if (pre_build_done)
+          jobs_utils.run_jobs(post_jobs)
 
         save_pipeline_output_to_logs()
       }
@@ -100,30 +103,30 @@ def clone_self() {
   ])
 }
 
+def evaluate_logs_params() {
+  // evaluate logs params
+  if (env.GERRIT_CHANGE_ID) {
+    contrail_container_tag = env.GERRIT_CHANGE_NUMBER + '-' + env.GERRIT_PATCHSET_NUMBER
+    hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
+    logs_path = "${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
+    logs_url = "${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
+  } else if (env.GERRIT_PIPELINE == 'nightly') {
+    contrail_container_tag = 'nightly'
+    logs_path = "${LOGS_BASE_PATH}/nightly/pipeline_${BUILD_NUMBER}"
+    logs_url = "${LOGS_BASE_URL}/nightly/pipeline_${BUILD_NUMBER}"
+  } else {
+    contrail_container_tag = 'dev'
+    logs_path = "${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
+    logs_url = "${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
+  }
+  println("Logs URL: ${logs_url}")
+}
+
 def evaluate_env() {
   try {
     sh """#!/bin/bash -e
       echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
       echo "export SLAVE=${SLAVE}" >> global.env
-    """
-
-    // evaluate logs params
-    if (env.GERRIT_CHANGE_ID) {
-      contrail_container_tag = env.GERRIT_CHANGE_NUMBER + '-' + env.GERRIT_PATCHSET_NUMBER
-      hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
-      logs_path = "${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
-      logs_url = "${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
-    } else if (env.GERRIT_PIPELINE == 'nightly') {
-      contrail_container_tag = 'nightly'
-      logs_path = "${LOGS_BASE_PATH}/nightly/pipeline_${BUILD_NUMBER}"
-      logs_url = "${LOGS_BASE_URL}/nightly/pipeline_${BUILD_NUMBER}"
-    } else {
-      contrail_container_tag = 'dev'
-      logs_path = "${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
-      logs_url = "${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
-    }
-    println("Logs URL: ${logs_url}")
-    sh """#!/bin/bash -e
       echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
       echo "export LOGS_PATH=${logs_path}" >> global.env
       echo "export LOGS_URL=${logs_url}" >> global.env
