@@ -258,11 +258,11 @@ def create_gate_builds_map(){
     // Check build status based on VERIFIED value from global.env
     if( build_status == 'FAILED' &&
         builds_map[build_id].containsKey('verified') &&
-        builds_map[build_id].toInteger() > 0){
+        builds_map[build_id]['verified'].toInteger() > 0){
       builds_map[build_id]['status'] = 'SUCCESS'
     }
     if( build_status == 'SUCCESS' &&
-        (! builds_map[build_id].containsKey('verified') || builds_map[build_id]['verified'] <= 0 )){
+        (! builds_map[build_id].containsKey('verified') || builds_map[build_id]['verified'].toInteger() <= 0 )){
       builds_map[build_id]['status'] = 'FAILED'
     }
   }
