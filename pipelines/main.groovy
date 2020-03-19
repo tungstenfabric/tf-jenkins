@@ -69,6 +69,7 @@ timestamps {
         }
 
         builds_map = create_gate_builds_map()
+        println("INFO prepare builds_map = ${builds_map} ")
         tmp_add_devenv_tag(builds_map)
 
         //TODO Pipeline ends Here now. Remove when gating will be done
