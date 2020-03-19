@@ -292,7 +292,7 @@ def set_devenv_tag(builds_map){
         // build is in the process and it is not failed - we can use its image
         // for start next build
         sh """#!/bin/bash -e
-          echo "export DEVENVTAG=${build_data['container_tag']}" >> global.env
+          echo "export DEVENVTAG=${build['container_tag']}" >> global.env
         """
         archiveArtifacts(artifacts: 'global.env')
         return true
