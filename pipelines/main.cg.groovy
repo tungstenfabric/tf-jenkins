@@ -233,6 +233,7 @@ def create_gate_builds_map(){
   def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
   println("DEBUG: job is ${job.builds}")
   job.builds.each {
+    println("DEBUG: iterate over build ${it}")
     def build = it
     def build_id = build.getEnvVars().BUILD_ID
     def build_status = build.getResult().toString()
