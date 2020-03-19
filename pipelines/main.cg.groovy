@@ -72,6 +72,7 @@ timestamps {
           pre_build_done = true
         }
 
+        return
         jobs_utils.run_jobs(jobs)
       } finally {
         println(job_results)
