@@ -263,7 +263,7 @@ def create_gate_builds_map(){
     }
     if( build_status == 'SUCCESS' &&
         (! builds_map[build_id].containsKey('verified') || builds_map[build_id]['verified'].toInteger() <= 0 )){
-      builds_map[build_id]['status'] = 'FAILED'
+      builds_map[build_id]['status'] = 'FAILURE'
     }
   }
   return builds_map
@@ -289,7 +289,7 @@ def tmp_add_devenv_tag(builds_map){
 def set_devenv_tag(builds_map){
   builds_map.any {
     def build = it
-    if(build.status == "FAILED")
+    if(build.status == "FAILURE")
       // continue iterate to SUCCESS build or build in progress
       return false
     else if( build.status == "SUCCESS")
@@ -323,7 +323,7 @@ def is_build_fail(devenv_tag, builds_map) {
       is_build_not_fail = true
       return true
     }
-    else if(build['status'] == 'FAILED'){
+    else if(build['status'] == 'FAILURE'){
       // Build has been failed
       return true
     // Here we know - build is not finished yet
