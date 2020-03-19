@@ -1,0 +1,99 @@
+- job:
+    name: "aquascan"
+    description: "scan published containers for security vulnerabilities"
+    defaults: global
+    concurrent: false
+    scm:
+      - tf-jenkins
+    parameters:
+      - label:
+          name: NODE_NAME
+      - string:
+          name: STREAM 
+      - string:
+          name: JOB_RND
+      - string:
+          name: PIPELINE_NAME
+      - string:
+          name: PIPELINE_NUMBER
+    wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: logs_host
+              key-file-variable: LOGS_HOST_SSH_KEY
+              username-variable: LOGS_HOST_USERNAME
+      - credentials-binding:
+          - username-password-separated:
+              credential-id: aquasec
+              username: AQUASEC_USERNAME
+              password: AQUASEC_PASSWORD
+          - username-password-separated:
+              credential-id: aquascanner
+              username: AQUASEC_SCANNER_USERNAME
+              password: AQUASEC_SCANNER_PASSWORD
+          - username-password-separated:
+              credential-id: dockerhub
+              username: DOCKERHUB_USERNAME
+              password: DOCKERHUB_PASSWORD
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
+    builders:
+      - copyartifact:
+          project: ${PIPELINE_NAME}
+          filter: "global.env,*.$JOB_RND.env"
+          which-build: upstream-build
+          optional: true
+      - shell: |
+          source "$WORKSPACE/global.env"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
+          source "$WORKSPACE/global.env"
+          ./src/progmaticlab/tf-jenkins/jobs/aquascan/prepare_worker.sh
+      - shell: |
+          set +e
+          set -o pipefail
+          source "$WORKSPACE/global.env"
+          source "$WORKSPACE/stackrc.$JOB_NAME.env"
+          source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
+          # do it as a latest source to override all exports
+          source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
+          export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
+          # main run
+          ./src/progmaticlab/tf-jenkins/jobs/aquascan/run.sh |& tee ${WORKSPACE}/output.log || res=1
+          # collect logs
+          ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
+          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
+          ./src/progmaticlab/tf-jenkins/jobs/aquascan/collect_logs.sh
+          exit $res
+    publishers:
+        - archive:
+            artifacts: '*.env'

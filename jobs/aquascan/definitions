@@ -1,0 +1,6 @@
+export VM_TYPE=small
+
+ENV_FILE=scan.env
+JOB_FILE=scan.sh
+AQUASEC_HOST_USERNAME=centos
+SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
