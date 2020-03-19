@@ -233,7 +233,7 @@ def save_pipeline_output_to_logs() {
 def create_gate_builds_map(){
   def builds_map = [:]
   // Get through all gate's builds
-  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail')
+  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
   println("DEBUG: job.builds class is ${job.builds.class}")
   job.builds.each {
     def build = it
