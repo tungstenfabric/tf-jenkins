@@ -274,13 +274,15 @@ def create_gate_builds_map(){
     println ("DEBUG: builds_map[build_id]['verified'] = ${builds_map[build_id]['verified']}")
     if( build_status == 'FAILED' &&
         builds_map[build_id].containsKey('verified') &&
+        builds_map[build_id].['verified'].isInteger() &&
         builds_map[build_id]['verified'].toInteger() > 0){
       builds_map[build_id]['status'] = 'SUCCESS'
     }
     if( build_status == 'SUCCESS'){
       if(! builds_map[build_id].containsKey('verified')){
         builds_map[build_id]['status'] = 'FAILURE'
-      } else if(builds_map[build_id]['verified'].toInteger() <= 0){
+      } else if(builds_map[build_id]['verified'].isInteger() &&
+                builds_map[build_id]['verified'].toInteger() <= 0){
         builds_map[build_id]['status'] = 'FAILURE'
       }
     }
