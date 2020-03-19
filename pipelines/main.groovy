@@ -274,7 +274,7 @@ def set_devenv_tag(builds_map){
     def build = it
     if(build.status == "FAILED")
       // continue iterate to SUCCESS build or build in progress
-      return
+      return false
     else if( build.status == "SUCCESS")
       // We meet Sucess build - no any DEVENVTAG needed - break loop
       return true
@@ -300,7 +300,7 @@ def is_build_fail(devenv_tag, builds_map) {
     def build = it
     if(build['container_tag'] != devenv_tag)
       // iterate up to build while we not meet container_tag equal devenv_tag
-      return
+      return false
     else if(build['status'] == 'SUCCESS'){
       // Build is not fail
       is_build_not_fail = true
