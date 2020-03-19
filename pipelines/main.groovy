@@ -77,7 +77,7 @@ timestamps {
           println("INFO: jobs are: ${jobs}")
 
 // Run fetch_sources - remove after debugging
-          jobs_utils.run_jobs([fetch-sources-centos:[job-name:fetch-sources]])
+          jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
 //TODO Gating Pipeline ends Here now. Remove when gating will be done
           return
         }
