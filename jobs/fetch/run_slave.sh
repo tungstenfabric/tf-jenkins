@@ -49,9 +49,7 @@ function run_dev_env() {
 
   cd $WORKSPACE/src/tungstenfabric/tf-dev-env
   if ((0 != build_dev_env)); then
-    local y=./config/etc/yum.repos.d
-    mkdir -p $y
-    cp ${my_dir}/../common/pnexus.repo $y/
+    cp ${my_dir}/../common/pnexus.repo container/
   fi
 
   ./run.sh $stage
