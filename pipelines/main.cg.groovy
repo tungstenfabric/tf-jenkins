@@ -83,6 +83,8 @@ timestamps {
 
 // Run fetch_sources - remove after debugging
           jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
+
+          sleep(3600)
           return
         }
 
@@ -373,7 +375,7 @@ def gate_wait_for_fetch(build_no){
   // Find fetch-sounces job for our build
   def fetch_job = null
   while(! fetch_job = gate_lookup_fetch_job(fetch_jobs, build_no)){
-    sleep 5
+    sleep(5)
     // check if build is not fail at last 5 sec
     // if build is not finished yet,
     // or if it finished it's VERIFY must be more than 0
@@ -386,7 +388,7 @@ def gate_wait_for_fetch(build_no){
 
   // Wait for fetch job finished
   while( ! fetch_job.getResult().toString()){
-    sleep 5
+    sleep(5)
   }
 
   return (fetch_job.getResult() == "SUCCESS")?true:false
@@ -408,8 +410,8 @@ def gate_lookup_fetch_job(fetch_jobs, build_no){
 }
 
 // The function get builds artifacts, find there VERIFIED,
-// and check if it is intheger and more than 0 return SUCCESS
-// and return FAILRUE in any cases
+// and check if it is integer and more than 0 return SUCCESS
+// and return FAILRUE in another case
 // !!! Works only if build has been finished! Check getResult() before call this function
 def gate_get_build_state(build){
     def result = "FAILURE"
