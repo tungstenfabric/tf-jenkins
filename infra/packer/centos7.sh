@@ -1,6 +1,9 @@
 #!/bin/bash -eE
 set -o pipefail
 
+sudo yum update -y
+exit
+
 sudo -- sh <<MANY
 yum-config-manager --disable \*
 yum-config-manager --add-repo http://pnexus.sytes.net/repository/centos7-extras
