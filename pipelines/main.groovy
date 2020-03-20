@@ -125,7 +125,8 @@ def evaluate_logs_params() {
 def evaluate_env() {
   try {
     sh """#!/bin/bash -e
-      echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" > global.env
+      echo "export DEBUG=true" > globsl.env
+      echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
       echo "export SLAVE=${SLAVE}" >> global.env
       echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
       echo "export LOGS_PATH=${logs_path}" >> global.env
