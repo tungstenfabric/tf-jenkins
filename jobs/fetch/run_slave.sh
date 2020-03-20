@@ -48,10 +48,6 @@ function run_dev_env() {
   export DEVENVTAG=$devenvtag
 
   cd $WORKSPACE/src/tungstenfabric/tf-dev-env
-  if [[ "${ENVIRONMENT_OS,,}" == centos7 ]]; then
-    mkdir -p ./config/etc/yum.repos.d
-    cp ${my_dir}/../common/pnexus.repo ./config/etc/yum.repos.d/
-  fi
   ./run.sh $stage
 }
 
