@@ -367,10 +367,8 @@ def gate_wait_for_fetch(build_no){
   def gate_pipeline = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
   def build = null
   gate_pipeline.getBuilds().each {
-    if (it.getEnvVars().BUILD_ID == build_no){
-      println("DEBUG: Befure using build")
+    if (it.getEnvVars().BUILD_ID.toInteger() == build_no){
       build = it
-      println("DEBUG: After using build")
     }
   }
 
