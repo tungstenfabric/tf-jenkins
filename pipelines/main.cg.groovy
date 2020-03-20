@@ -366,7 +366,7 @@ def gate_wait_for_fetch(build_no){
   // Get the build
   def gate_pipeline = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
   def build = null
-  gate_pipeline.builds.each {
+  gate_pipeline.getBuilds().each {
     if (it.getEnvVars().BUILD_ID == build_no){
       build = it
     }
