@@ -72,6 +72,10 @@ timestamps {
           pre_build_done = true
         }
 
+        println("DEBUG: Jobs = ${jobs}")
+
+        return
+
         if (env.GERRIT_PIPELINE == 'gate_concurrent'){
           println("DEBUG: Gate concurrent detect")
           // Choose base image for gating pipeline if
