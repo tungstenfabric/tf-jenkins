@@ -42,6 +42,11 @@ sudo timedatectl set-timezone America/Los_Angeles
 timedatectl
 
 cd src/tungstenfabric/tf-dev-env
+if [[ -z "$@" && "\${ENVIRONMENT_OS,,}" == centos7 ]]; then
+  local y=./config/etc/yum.repos.d
+  mkdir -p \${y}
+  cp ${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/pnexus.repo \${y}/
+fi
 ./run.sh $@
 EOF
 return $res
