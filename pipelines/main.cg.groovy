@@ -401,7 +401,7 @@ def gate_lookup_fetch_job(fetch_jobs, build_no){
   def res = null
 
   for (job in fetch_jobs) {
-    def cause = build.getCause(Cause.UpstreamCause)
+    def cause = job.getCause(Cause.UpstreamCause)
     if(cause.getUpstreamProject() == 'pipeline-gate-opencontrail-concurrent' &&
        cause.getUpstreamBuild() == build_no){
           // We have found our fetch the job needed
