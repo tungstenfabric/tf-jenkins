@@ -172,9 +172,11 @@ def terminate_previous_runs() {
   if (!env.GERRIT_CHANGE_ID)
     return
 
-  def runningBuilds = Jenkins.getInstanceOrNull().getView('All').getBuilds().findAll() { it.getResult().equals(null) }
-  for (rb in runningBuilds) {
-    def action = rb.allActions.find { it in hudson.model.ParametersAction }
+  def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
+  for (build in builds) {
+    if (!build || !build.getResult().equals(null))
+      continue
+    def action = build.allActions.find { it in hudson.model.ParametersAction }
     if (!action)
       continue
     gerrit_change_number = action.getParameter("GERRIT_CHANGE_NUMBER")
@@ -184,8 +186,8 @@ def terminate_previous_runs() {
     change_num = gerrit_change_number.value.toInteger()
     patchset_num = action.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger()
     if (GERRIT_CHANGE_NUMBER.toInteger() == change_num && GERRIT_PATCHSET_NUMBER.toInteger() > patchset_num) {
-      rb.doStop()
-      println "Build $rb has been aborted when a new patchset is created"
+      build.doStop()
+      println "Build ${build} has been aborted when a new patchset is created"
     }
   }
 }
