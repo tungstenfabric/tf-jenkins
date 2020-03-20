@@ -312,6 +312,10 @@ def set_devenv_tag(builds_map){
       if(!build.containsKey('devenv_tag') || is_build_fail(build['devenv_tag'])){
         // build is in the process and it is not failed - we can use its image
         // for start next build
+        // If build's fetch job not have SUCCESS skip the build
+        if(! gate_wait_for_fetch(build_no))
+          return false
+
         sh """#!/bin/bash -e
           echo "export DEVENVTAG=${build['container_tag']}" >> global.env
         """
@@ -349,4 +353,84 @@ def is_build_fail(devenv_tag, builds_map) {
     }
   }
   return is_build_not_fail
+}
+
+// Function look up fetch job for gate pipeline with build_no
+// And return true if fetch has been finished successfully
+// return false in any other cases
+def gate_wait_for_fetch(build_no){
+  def fetch_jobs = jenkins.model.Jenkins.instance.getItem('fetch-sources').getBuilds()
+
+  // Get the build
+  def gate_pipeline = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
+  def build = null
+  gate_pipeline.builds.each {
+    if (it.getEnvVars().BUILD_ID == build_no){
+      build = it
+    }
+  }
+
+  // Find fetch-sounces job for our build
+  def fetch_job = null
+  while(! fetch_job = gate_lookup_fetch_job(fetch_jobs, build_no)){
+    sleep 5
+    // check if build is not fail at last 5 sec
+    // if build is not finished yet,
+    // or if it finished it's VERIFY must be more than 0
+    if(build.getResult().toString()){
+      // Skip the build if it fails
+      if(gate_get_build_state(build) == 'FAILURE')
+        return false
+    }
+  }
+
+  // Wait for fetch job finished
+  while( ! fetch_job.getResult().toString()){
+    sleep 5
+  }
+
+  return (fetch_job.getResult() == "SUCCESS")?true:false
+}
+
+// Function look up fetch-sources job for gate pipeline build with no build_no
+def gate_lookup_fetch_job(fetch_jobs, build_no){
+  def res = null
+
+  for (job in fetch_jobs) {
+    def cause = build.getCause(Cause.UpstreamCause)
+    if(cause.getUpstreamProject() == 'pipeline-gate-opencontrail-concurrent' &&
+       cause.getUpstreamBuild() == build_no){
+          // We have found our fetch the job needed
+          res = job
+       }
+  }
+  return res
+}
+
+// The function get builds artifacts, find there VERIFIED,
+// and check if it is intheger and more than 0 return SUCCESS
+// and return FAILRUE in any cases
+// !!! Works only if build has been finished! Check getResult() before call this function
+def gate_get_build_state(build){
+    def result = "FAILURE"
+    def artifactManager =  build.getArtifactManager()
+    if (artifactManager.root().isDirectory()) {
+      def fileList = artifactManager.root().list()
+      fileList.each {
+        def file = it
+        if(file.toString().contains('global.env')) {
+          // extract global.env artifact for each build if exists
+          def fileText = it.open().getText()
+          fileText.split("\n").each {
+            def line = it
+            if(line.contains('VERIFIED')) {
+              def verified = line.split('=')[1].trim()
+              if(verified.isInteger() && verified.toInteger() > 0)
+                result = "SUCCESS"
+            }
+          }
+        }
+      }
+    }
+  return result
 }
