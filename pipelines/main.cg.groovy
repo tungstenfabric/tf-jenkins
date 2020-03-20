@@ -374,7 +374,7 @@ def gate_wait_for_fetch(build_no){
 
   // Find fetch-sounces job for our build
   def fetch_job = null
-  while(! fetch_job = gate_lookup_fetch_job(fetch_jobs, build_no)){
+  while((fetch_job = gate_lookup_fetch_job(fetch_jobs, build_no) != null)){
     sleep(5)
     // check if build is not fail at last 5 sec
     // if build is not finished yet,
