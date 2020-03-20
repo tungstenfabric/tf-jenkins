@@ -55,8 +55,11 @@ case "${ENVIRONMENT_OS}" in
     find ./config/etc/yum.repos.d/ -name "*.repo" -exec sed -i 's/^gpgcheck.*/gpgcheck=0/g' {} + ;
     ;;
   "centos7")
-    mkdir -p ./config/etc
-    cp -r /etc/yum.repos.d ./config/etc/
+    # TODO: think how to copy only required repos
+    # - host has centos7/epel enabled. but we also need to copy chrome/docker/openstack repos
+    # but these repos are not needed for rhel
+    mkdir -p ./config/etc/yum.repos.d
+    cp ${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/pnexus.repo ./config/etc/yum.repos.d/
     ;;
 esac
 

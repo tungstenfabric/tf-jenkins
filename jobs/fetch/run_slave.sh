@@ -48,10 +48,6 @@ function run_dev_env() {
   export DEVENVTAG=$devenvtag
 
   cd $WORKSPACE/src/tungstenfabric/tf-dev-env
-  if ((0 != build_dev_env)); then
-    cp ${my_dir}/../common/pnexus.repo container/
-  fi
-
   ./run.sh $stage
 }
 
