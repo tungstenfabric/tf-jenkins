@@ -1,0 +1,42 @@
+[pnexus.sytes.net_repository_epel.repo]
+name=added from: http://pnexus.sytes.net/repository/epel
+baseurl=http://pnexus.sytes.net/repository/epel
+enabled=1
+gpgcheck=0
+
+[pnexus.sytes.net_repository_centos7-os]
+name=added from: http://pnexus.sytes.net/repository/centos7-os
+baseurl=http://pnexus.sytes.net/repository/centos7-os
+enabled=1
+gpgcheck=0
+
+[pnexus.sytes.net_repository_centos7-extras]
+name=added from: http://pnexus.sytes.net/repository/centos7-extras
+baseurl=http://pnexus.sytes.net/repository/centos7-extras
+enabled=1
+gpgcheck=0
+
+[pnexus.sytes.net_repository_centos7-updates]
+name=added from: http://pnexus.sytes.net/repository/centos7-updates
+baseurl=http://pnexus.sytes.net/repository/centos7-updates
+enabled=1
+gpgcheck=0
+
+[pnexus.sytes.net_repository_docker-ce-stable]
+name=added from: http://pnexus.sytes.net/repository/docker-ce-stable
+baseurl=http://pnexus.sytes.net/repository/docker-ce-stable
+enabled=1
+gpgcheck=0
+
+[pnexus.sytes.net_repository_openstack-rocky]
+name=added from: http://pnexus.sytes.net/repository/openstack-rocky
+baseurl=http://pnexus.sytes.net/repository/openstack-rocky
+enabled=1
+gpgcheck=0
+
+[pnexus.sytes.net_repository_google-chrome]
+name=added from: http://pnexus.sytes.net/repository/google-chrome
+baseurl=http://pnexus.sytes.net/repository/google-chrome
+enabled=1
+gpgcheck=0
+

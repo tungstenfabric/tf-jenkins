@@ -42,6 +42,19 @@
             - publish-centos-stable
 
 - project:
+    name: Juniper/contrail-vnc
+    check:
+      templates:
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
+- project:
     name: Juniper/contrail-ansible-deployer
     check:
       templates:

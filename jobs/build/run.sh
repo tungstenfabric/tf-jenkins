@@ -45,13 +45,20 @@ cd src/tungstenfabric/tf-dev-env
 
 # TODO: use in future generic mirror approach
 # Copy yum repos for rhel from host to containers to use local mirrors
-if [[ "$linux_distr" =~ 'rhel' ]] ; then
-  mkdir -p ./config/etc
-  cp -r /etc/yum.repos.d ./config/etc/
-  # TODO: now no way to pu gpg keys into containers for repo mirrors
-  # disable gpgcheck as keys are not available inside the contianers
-  find ./config/etc/yum.repos.d/ -name "*.repo" -exec sed -i 's/^gpgcheck.*/gpgcheck=0/g' {} + ;
-fi
+
+case "${ENVIRONMENT_OS}" in
+  "rhel*")
+    mkdir -p ./config/etc
+    cp -r /etc/yum.repos.d ./config/etc/
+    # TODO: now no way to pu gpg keys into containers for repo mirrors
+    # disable gpgcheck as keys are not available inside the contianers
+    find ./config/etc/yum.repos.d/ -name "*.repo" -exec sed -i 's/^gpgcheck.*/gpgcheck=0/g' {} + ;
+    ;;
+  "centos7")
+    mkdir -p ./config/etc
+    cp -r /etc/yum.repos.d ./config/etc/
+    ;;
+esac
 
 ./run.sh build
 EOF
