@@ -125,15 +125,13 @@ def evaluate_logs_params() {
 def evaluate_env() {
   try {
     sh """#!/bin/bash -e
-      echo "export DEBUG=true" > global.env
+      rm -rf global.env
       echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
       echo "export SLAVE=${SLAVE}" >> global.env
       echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
       echo "export LOGS_PATH=${logs_path}" >> global.env
       echo "export LOGS_URL=${logs_url}" >> global.env
-    """
-    // store default registry params. jobs can redefine them if needed in own config (VARS).
-    sh """#!/bin/bash -e
+      # store default registry params. jobs can redefine them if needed in own config (VARS).
       echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
       echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
       echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
