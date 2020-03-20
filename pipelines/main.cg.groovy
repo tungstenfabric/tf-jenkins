@@ -74,7 +74,7 @@ timestamps {
 
         println("DEBUG: Jobs = ${jobs}")
 
-        def fetch_sources_count = jobs.count { return (it.value['job-name'] == 'fetch-sources')?true:false }
+        def fetch_sources_count = jobs.count { return it.value['job-name'] == 'fetch-sources' }
 
         return
 
