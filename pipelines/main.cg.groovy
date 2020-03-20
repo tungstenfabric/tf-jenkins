@@ -301,7 +301,7 @@ def set_devenv_tag(builds_map){
       // skip current build
       return false
     }
-    if(build['status'] == "FAILURE")
+    if(build['status'] == "FAILURE" || build['status'] == "ABORTED" )
       // continue iterate to SUCCESS build or build in progress
       return false
     else if( build['status'] == "SUCCESS")
