@@ -368,7 +368,9 @@ def gate_wait_for_fetch(build_no){
   def build = null
   gate_pipeline.getBuilds().each {
     if (it.getEnvVars().BUILD_ID == build_no){
+      println("DEBUG: Befure using build")
       build = it
+      println("DEBUG: After using build")
     }
   }
 
