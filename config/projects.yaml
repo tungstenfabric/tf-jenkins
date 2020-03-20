@@ -92,6 +92,10 @@
       templates:
         - build-centos
         - cleanup
+    gate_concurrent:
+      templates:
+        - build-centos
+        - cleanup
     experimental:
       templates:
         - ansible-os
