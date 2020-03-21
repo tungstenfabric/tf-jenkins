@@ -69,7 +69,8 @@ case "${ENVIRONMENT_OS}" in
     mkdir -p ./config/etc/yum.repos.d
     cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-base.repo ./config/etc/yum.repos.d/
     cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-epel.repo ./config/etc/yum.repos.d/
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-docker.repo ./config/etc/yum.repos.d/
+    # copy docker repo to local machine
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-docker.repo /etc/yum.repos.d/
     ;;
 esac
 
