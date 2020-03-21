@@ -80,8 +80,10 @@ function push_dev_env() {
 }
 
 if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
-  mkdir -p $WORKSPACE/src/tungstenfabric/tf-dev-env/config/etc/yum.repos.d
-  cp ${my_dir}/../common/pnexus.repo $WORKSPACE/src/tungstenfabric/tf-dev-env/config/etc/yum.repos.d/
+  yum_dir="$WORKSPACE/src/tungstenfabric/tf-dev-env/config/etc/yum.repos.d"
+  mkdir -p $yum_dir
+  cp ${my_dir}/../common/mirror-base.repo $yum_dir/
+  cp ${my_dir}/../common/mirror-epel.repo $yum_dir/
 fi
 
 if ! sudo docker pull "$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$devenvtag" ; then
