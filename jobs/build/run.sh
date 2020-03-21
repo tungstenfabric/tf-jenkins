@@ -59,7 +59,7 @@ case "${ENVIRONMENT_OS}" in
     # - host has centos7/epel enabled. but we also need to copy chrome/docker/openstack repos
     # but these repos are not needed for rhel
     mkdir -p ./config/etc/yum.repos.d
-    cp ${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/pnexus.repo ./config/etc/yum.repos.d/
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/pnexus.repo ./config/etc/yum.repos.d/
     ;;
 esac
 
