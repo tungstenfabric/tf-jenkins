@@ -46,7 +46,7 @@ cd src/tungstenfabric/tf-dev-env
 # substitute repos only for centos7
 if [[ "${ENVIRONMENT_OS,,}" == centos7 ]]; then
   mkdir -p ./config/etc/yum.repos.d
-  cp ${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/pnexus.repo ./config/etc/yum.repos.d/
+  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/pnexus.repo ./config/etc/yum.repos.d/
 fi
 ./run.sh $@
 EOF
