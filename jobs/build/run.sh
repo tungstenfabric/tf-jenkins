@@ -60,7 +60,6 @@ case "${ENVIRONMENT_OS}" in
     # but these repos are not needed for rhel
     mkdir -p ./config/etc/yum.repos.d
     cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-base.repo ./config/etc/yum.repos.d/
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-epel.repo ./config/etc/yum.repos.d/
     cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-google-chrome.repo ./config/etc/yum.repos.d/
     cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-openstack.repo ./config/etc/yum.repos.d/
     # copy docker repo to local machine
