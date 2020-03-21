@@ -79,6 +79,10 @@ function push_dev_env() {
   fi
 }
 
+if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
+  mkdir -p $WORKSPACE/src/tungstenfabric/tf-dev-env/config/etc/yum.repos.d
+  cp ${my_dir}/../common/pnexus.repo $WORKSPACE/src/tungstenfabric/tf-dev-env/config/etc/yum.repos.d/
+fi
 
 if ! sudo docker pull "$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$devenvtag" ; then
   if ! run_dev_env none 1 ; then

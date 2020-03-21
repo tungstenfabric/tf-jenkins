@@ -53,13 +53,23 @@ cd src/tungstenfabric/tf-dev-env
 
 # TODO: use in future generic mirror approach
 # Copy yum repos for rhel from host to containers to use local mirrors
-if [[ "$linux_distr" =~ 'rhel' ]] ; then
-  mkdir -p ./config/etc
-  cp -r /etc/yum.repos.d ./config/etc/
-  # TODO: now no way to pu gpg keys into containers for repo mirrors
-  # disable gpgcheck as keys are not available inside the contianers
-  find ./config/etc/yum.repos.d/ -name "*.repo" -exec sed -i 's/^gpgcheck.*/gpgcheck=0/g' {} + ;
-fi
+
+case "${ENVIRONMENT_OS}" in
+  "rhel*")
+    mkdir -p ./config/etc
+    cp -r /etc/yum.repos.d ./config/etc/
+    # TODO: now no way to pu gpg keys into containers for repo mirrors
+    # disable gpgcheck as keys are not available inside the contianers
+    find ./config/etc/yum.repos.d/ -name "*.repo" -exec sed -i 's/^gpgcheck.*/gpgcheck=0/g' {} + ;
+    ;;
+  "centos7")
+    # TODO: think how to copy only required repos
+    # - host has centos7/epel enabled. but we also need to copy chrome/docker/openstack repos
+    # but these repos are not needed for rhel
+    mkdir -p ./config/etc/yum.repos.d
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/pnexus.repo ./config/etc/yum.repos.d/
+    ;;
+esac
 
 ./run.sh $stage
 EOF
@@ -92,7 +102,6 @@ EOF
   echo "INFO: Save container $target_tag done"
   return $res
 }
-
 
 # build stable
 if [[ $res == 0 ]] ; then
