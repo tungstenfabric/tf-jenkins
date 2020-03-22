@@ -35,7 +35,8 @@ export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 export CONTRAIL_DIR=""
 
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
-export DEVENVTAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
+# devenftag is passed from parent fetch-sources job
+export DEVENVTAG=$DEVENVTAG
 export CONTRAIL_KEEP_LOG_FILES=true
 
 export LINUX_DISTR=$linux_distr

@@ -33,7 +33,8 @@ export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 export CONTRAIL_DIR=""
 
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
-export DEVENVTAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
+# devenftag is passed from parent fetch-sources job
+export DEVENVTAG=$DEVENVTAG
 
 # Some tests (like test.test_flow.FlowQuerierTest.test_1_noarg_query) expect
 # PST timezone, and fail otherwise.
