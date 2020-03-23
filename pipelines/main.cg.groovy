@@ -427,7 +427,7 @@ def gate_wait_for_fetch(build_no){
   waitUntil { 
     def res = is_fetch_job_finished(fetch_job_no)
     println("DEBUG: waitUntil is_fetch_job_finished is ${res}")
-    return res
+    return res == null
     
     }
   // while(! is_fetch_job_finished(fetch_job_no)){
