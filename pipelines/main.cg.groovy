@@ -411,6 +411,7 @@ def gate_wait_for_fetch(build_no){
   }
 
   def fetch_job_no = fetch_job.getId()
+  fetch_job.delete()
   println("We've got fetch job no is ${fetch_job_no}")
   // Wait for fetch job finished
   while(! is_fetch_job_finished(fetch_job_no)){
