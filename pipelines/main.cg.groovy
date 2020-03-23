@@ -362,26 +362,30 @@ def is_build_fail(devenv_tag, builds_map) {
 }
 
 // Function check build using build_no is failed
-  def gate_check_build_is_failed(build_no){
+  def gate_check_build_is_not_failed(build_no){
+    println("DEBUG: check build ${build_no} is failure")
+
     // Get the build
     def gate_pipeline = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
     def build = null
 
     gate_pipeline.getBuilds().any {
-    println("DEBUG: check if ${it.getEnvVars().BUILD_ID.toInteger()} == ${build_no.toInteger()}")
-    if (it.getEnvVars().BUILD_ID.toInteger() == build_no.toInteger()){
-      println("DEBUG: build found: ${build_no}")
-      build = it
-      return true
+      println("DEBUG: check if ${it.getEnvVars().BUILD_ID.toInteger()} == ${build_no.toInteger()}")
+      if (it.getEnvVars().BUILD_ID.toInteger() == build_no.toInteger()){
+        build = it
+        return true
+      }
     }
-  }
 
-  if(build.getResult() != null){
-      // Skip the build if it fails
-      if(gate_get_build_state(build) == 'FAILURE')
-        println "INFO: Build ${build} fails before fetch job is finishes"
-        return false
-    }
+    println("DEBUG: build for check found: ${build}")
+
+    if(build.getResult() != null){
+        // Skip the build if it fails
+        if(gate_get_build_state(build) == 'FAILURE')
+          println "INFO: Build ${build} fails before fetch job is finishes"
+          return false
+      }
+    return true
 }
 // Function look up fetch job for gate pipeline with build_no
 // And return true if fetch has been finished successfully
@@ -394,13 +398,7 @@ def gate_wait_for_fetch(build_no){
 
   // Find fetch-sounces job for our build
   def fetch_job = null
-  println("DEBUG: Just before Wait until")
-            try{
-            println "DEBUG: sleep debug 5"
-            sleep (10)
-        }catch(Exception e){
-        println ("ERROR: First Sleep exception happened ${e}")
-        }
+
   while( ! fetch_job ){
     println("DEBUG: Just enter Wait until")
     sleep(5)
