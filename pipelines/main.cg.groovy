@@ -82,7 +82,7 @@ timestamps {
           // some gating builds are in process
           builds_map = create_gate_builds_map()
           println("INFO: prepare builds_map = ${builds_map} ")
-          set_devenv_tag(builds_map)
+          set_devenv_tag(builds_map, fetch_sources_count)
 
 // Run fetch_sources - remove after debugging
           jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
@@ -295,7 +295,7 @@ def create_gate_builds_map(){
   return builds_map
 }
 
-def set_devenv_tag(builds_map){
+def set_devenv_tag(builds_map, fetch_sources_count){
   println("DEBUG: I'm at set_devenv_tag builds_map = ${builds_map}")
   builds_map.any {
     def build = it.value
@@ -319,7 +319,7 @@ def set_devenv_tag(builds_map){
         // build is in the process and it is not failed - we can use its image
         // for start next build
         // If build's fetch job not have SUCCESS skip the build
-        if(! gate_wait_for_fetch(build_no))
+        if(! gate_wait_for_fetch(build_no, fetch_sources_count))
           return false
 
         sh """#!/bin/bash -e
@@ -405,9 +405,10 @@ def get_fetch_job_no(build_no){
 // Function look up fetch job for gate pipeline with build_no
 // And return true if fetch has been finished successfully
 // return false in any other cases
-def gate_wait_for_fetch(build_no){
+def gate_wait_for_fetch(build_no, fetch_sources_count){
   println("DEBUG: Try use as a base build ${build_no}")
-  // Get the build
+  // Get fetch job
+  // TODO job must return array with fetch-source jobs numbers if
   def fetch_job_no = get_fetch_job_no(build_no)
   // Build of this fetch_job was failed
   if(fetch_job_no == false)
