@@ -96,6 +96,11 @@
       templates:
         - build-centos
         - cleanup
+      jobs:
+        fetch-sources-test:
+          job-name: fetch-sources
+          vars:
+            TAG_SUFFIX: -test
     experimental:
       templates:
         - ansible-os

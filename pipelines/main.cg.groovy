@@ -75,7 +75,8 @@ timestamps {
         println("DEBUG: Jobs = ${jobs}")
 
 // TODO temporary reinit jobs for double fetch_sources
-        jobs = ["fetch-sources-centos":["job-name":"fetch-sources"],"fetch-sources-centos-more":["job-name":"fetch-sources"]]
+        jobs = ["fetch-sources-centos":["job-name":"fetch-sources"],
+                "fetch-sources-test":["job-name":"fetch-sources"]]
 
         def fetch_sources_count = jobs.count { return it.value['job-name'] == 'fetch-sources' }
         println("DEBUG: There must be two fetch jobs: ${fetch_sources_count}")
@@ -225,7 +226,7 @@ def save_pipeline_output_to_logs() {
       sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
     sh """#!/bin/bash -e
       set -x
-      curl ${BUILD_URL}consoleText > pipelinelog.txt 
+      curl ${BUILD_URL}consoleText > pipelinelog.txt
       ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
       rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path} 
     """
@@ -323,8 +324,12 @@ def set_devenv_tag(builds_map, fetch_sources_count){
         // build is in the process and it is not failed - we can use its image
         // for start next build
         // If build's fetch job not have SUCCESS skip the build
-        if(! gate_wait_for_fetch(build_no, fetch_sources_count))
+        if(! gate_wait_for_fetch(build_no, fetch_sources_count)){
+          println("DEBUG: not set DEVENVTAG")
           return false
+        }
+
+        println("DEBUG: Set DEVENVTAG is ${build['container_tag']}")
 
         sh """#!/bin/bash -e
           echo "export DEVENVTAG=${build['container_tag']}" >> global.env
