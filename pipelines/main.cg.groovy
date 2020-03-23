@@ -323,8 +323,12 @@ def set_devenv_tag(builds_map, fetch_sources_count){
         // build is in the process and it is not failed - we can use its image
         // for start next build
         // If build's fetch job not have SUCCESS skip the build
-        if(! gate_wait_for_fetch(build_no, fetch_sources_count))
+        if(! gate_wait_for_fetch(build_no, fetch_sources_count)){
+          println("DEBUG: not set DEVENVTAG")
           return false
+        }
+
+        println("DEBUG: Set DEVENVTAG is ${build['container_tag']}")
 
         sh """#!/bin/bash -e
           echo "export DEVENVTAG=${build['container_tag']}" >> global.env
