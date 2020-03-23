@@ -85,7 +85,7 @@ timestamps {
           set_devenv_tag(builds_map)
 
 // Run fetch_sources - remove after debugging
-          // jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
+          jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
 
           //  sleep(3600)
           return
