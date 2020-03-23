@@ -413,7 +413,7 @@ def gate_wait_for_fetch(build_no){
     try{
            sleep(10000)
     }catch(Exception e){
-        "ERROR: Sleep exception happened ${e}"
+        println ("ERROR: Sleep exception happened ${e}")
     }
   }
 
