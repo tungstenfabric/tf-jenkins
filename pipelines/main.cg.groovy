@@ -85,9 +85,9 @@ timestamps {
           set_devenv_tag(builds_map)
 
 // Run fetch_sources - remove after debugging
-          jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
+          // jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
 
-          sleep(3600)
+          //  sleep(3600)
           return
         }
 
@@ -337,7 +337,7 @@ def is_build_fail(devenv_tag, builds_map) {
     def build = it.value
     if(build['container_tag'] != devenv_tag)
       // iterate up to build while we not meet container_tag equal devenv_tag
-      return false
+      return false/run
     else if(build['status'] == 'SUCCESS'){
       // Build is not fail
       is_build_not_fail = true
