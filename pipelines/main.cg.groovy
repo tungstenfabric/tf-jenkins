@@ -83,7 +83,6 @@ timestamps {
           builds_map = create_gate_builds_map()
           println("INFO: prepare builds_map = ${builds_map} ")
           set_devenv_tag(builds_map)
-          println("INFO: jobs are: ${jobs}")
 
 // Run fetch_sources - remove after debugging
           jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
@@ -297,6 +296,7 @@ def create_gate_builds_map(){
 }
 
 def set_devenv_tag(builds_map){
+  println("DEBUG: I'm at set_devenv_tag builds_map = ${builds_map}")
   builds_map.any {
     def build = it.value
     def build_no = it.key
