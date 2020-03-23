@@ -74,7 +74,11 @@ timestamps {
 
         println("DEBUG: Jobs = ${jobs}")
 
+// TODO temporary reinit jobs for double fetch_sources
+        jobs = ["fetch-sources-centos":["job-name":"fetch-sources"],"fetch-sources-centos-more":["job-name":"fetch-sources"]]
+
         def fetch_sources_count = jobs.count { return it.value['job-name'] == 'fetch-sources' }
+        println("DEBUG: There must be two fetch jobs: ${fetch_sources_count}")
 
         if (env.GERRIT_PIPELINE == 'gate_concurrent'){
           println("DEBUG: Gate concurrent detect")
@@ -85,7 +89,7 @@ timestamps {
           set_devenv_tag(builds_map, fetch_sources_count)
 
 // Run fetch_sources - remove after debugging
-          jobs_utils.run_jobs(["fetch-sources-centos":["job-name":"fetch-sources"]])
+          jobs_utils.run_jobs(jobs)
 
           //  sleep(3600)
           return
@@ -387,7 +391,8 @@ def is_build_fail(devenv_tag, builds_map) {
 }
 
 // Separate function return detch-source job no for build_no
-def get_fetch_job_no(build_no){
+// return array of numbers fetch_sources running
+def get_fetch_job_no(build_no, fetch_sources_count){
   // Find fetch-sounces job for our build
   def fetch_job = null
   while( ! fetch_job ){
@@ -409,7 +414,7 @@ def gate_wait_for_fetch(build_no, fetch_sources_count){
   println("DEBUG: Try use as a base build ${build_no}")
   // Get fetch job
   // TODO job must return array with fetch-source jobs numbers if
-  def fetch_job_no = get_fetch_job_no(build_no)
+  def fetch_job_no = get_fetch_job_no(build_no,fetch_sources_count)
   // Build of this fetch_job was failed
   if(fetch_job_no == false)
     return false
