@@ -372,11 +372,12 @@ def gate_wait_for_fetch(build_no){
   def gate_pipeline = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
   def build = null
   println("DEBUG: pipelines list: ${gate_pipeline.getBuilds()}")
-  gate_pipeline.getBuilds().each {
-
-    println("DEBUG: check if ${it.getEnvVars().BUILD_ID.toInteger()} == ${build_no}")
+  gate_pipeline.getBuilds().any {
+    println("DEBUG: check if ${it.getEnvVars().BUILD_ID.toInteger()} == ${build_notoInteger()}")
     if (it.getEnvVars().BUILD_ID.toInteger() == build_no.toInteger()){
+      println("DEBUG: build found: ${build_no}")
       build = it
+      return true
     }
   }
 
