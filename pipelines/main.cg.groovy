@@ -410,7 +410,7 @@ def gate_wait_for_fetch(build_no){
       return false
   }
 
-  println("We've got fetch job is ${fetch_job}")
+  println("We've got fetch job no is ${fetch_job.getId()}")
   // Wait for fetch job finished
   while(gate_lookup_fetch_job(build_no).getResult().toString() == "null"){
     println("INFO: Waiting for fetch job will finished")
