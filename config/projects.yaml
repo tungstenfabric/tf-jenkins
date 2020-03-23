@@ -256,6 +256,19 @@
         - cleanup
 
 - project:
+    name: tungstenfabric/tf-tripleo-puppet
+    check:
+      templates:
+        - build-rhel
+        #- rhosp
+        - cleanup
+    gate:
+      templates:
+        - build-rhel
+        #- rhosp
+        - cleanup
+
+- project:
     name: Juniper/contrail-tripleo-heat-templates
     check:
       templates:
