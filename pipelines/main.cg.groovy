@@ -410,9 +410,10 @@ def gate_wait_for_fetch(build_no){
       return false
   }
 
-  println("We've got fetch job no is ${fetch_job.getId()}")
+  def fetch_job_no = fetch_job.getId()
+  println("We've got fetch job no is ${fetch_job_no}")
   // Wait for fetch job finished
-  while(gate_lookup_fetch_job(build_no).getResult().toString() == "null"){
+  while(! is_fetch_job_finished(fetch_job_no)){
     println("INFO: Waiting for fetch job will finished")
     sleep(20)
   }
@@ -426,9 +427,25 @@ def gate_wait_for_fetch(build_no){
   //  return fetch_job.getResult().toString() != "null"
   //}
 
-  println("DEBUG: Fetch job ${fetch_job} finishes with result ${fetch_job.getResult()} ")
+  println("DEBUG: Fetch job ${fetch_job} finishes with result ...TO BE IMPLEMENTED ")
 
-  return (fetch_job.getResult() == "SUCCESS")?true:false
+  return false
+  // return (fetch_job.getResult() == "SUCCESS")?true:false
+}
+
+// function check if fetch-sources job is finished and return it's result
+// Return Job Result is finished
+// Or null if is not finished yed
+def is_fetch_job_finished(fetch_job_no) {
+  def fetch_jobs = jenkins.model.Jenkins.instance.getItem('fetch-sources').getBuilds()
+  def res = null
+
+  for (job in fetch_jobs) {
+    if(job.getId() == fetch_job_no){
+      res = job.getResult()
+    }
+  }
+  return res
 }
 
 // Function look up fetch-sources job for gate pipeline build with no build_no
