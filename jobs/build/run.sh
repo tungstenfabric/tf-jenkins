@@ -60,11 +60,12 @@ case "${ENVIRONMENT_OS}" in
     # - host has centos7/epel enabled. but we also need to copy chrome/docker/openstack repos
     # but these repos are not needed for rhel
     mkdir -p ./config/etc/yum.repos.d
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-base.repo ./config/etc/yum.repos.d/
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-google-chrome.repo ./config/etc/yum.repos.d/
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-openstack.repo ./config/etc/yum.repos.d/
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-base.repo ./config/etc/yum.repos.d/
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-google-chrome.repo ./config/etc/yum.repos.d/
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-openstack.repo ./config/etc/yum.repos.d/
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
     # copy docker repo to local machine
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-docker.repo /etc/yum.repos.d/
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
     ;;
 esac
 

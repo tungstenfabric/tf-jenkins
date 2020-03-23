@@ -47,10 +47,11 @@ cd src/tungstenfabric/tf-dev-env
 # substitute repos only for centos7
 if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   mkdir -p ./config/etc/yum.repos.d
-  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-base.repo ./config/etc/yum.repos.d/
-  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-openstack.repo ./config/etc/yum.repos.d/
+  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-base.repo ./config/etc/yum.repos.d/
+  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-openstack.repo ./config/etc/yum.repos.d/
+  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
   # copy docker repo to local machine
-  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/jobs/common/mirror-docker.repo /etc/yum.repos.d/
+  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
 fi
 ./run.sh $@
 EOF
