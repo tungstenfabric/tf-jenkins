@@ -373,7 +373,7 @@ def gate_wait_for_fetch(build_no){
   def build = null
   println("DEBUG: pipelines list: ${gate_pipeline.getBuilds()}")
   gate_pipeline.getBuilds().any {
-    println("DEBUG: check if ${it.getEnvVars().BUILD_ID.toInteger()} == ${build_notoInteger()}")
+    println("DEBUG: check if ${it.getEnvVars().BUILD_ID.toInteger()} == ${build_no.toInteger()}")
     if (it.getEnvVars().BUILD_ID.toInteger() == build_no.toInteger()){
       println("DEBUG: build found: ${build_no}")
       build = it
