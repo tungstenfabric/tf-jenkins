@@ -81,7 +81,7 @@ function push_dev_env() {
 
 if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   etc_dir="$WORKSPACE/src/tungstenfabric/tf-dev-env/config/etc"
-  mkdir -p $yum_dir
+  mkdir -p $etc_dir
   cp ${my_dir}/../../infra/mirrors/mirror-base.repo $yum_dir/yum.repos.d/
   cp ${my_dir}/../../infra/mirrors/mirror-epel.repo $yum_dir/yum.repos.d/
   cp ${my_dir}/../../infra/mirrors/mirror-pip.conf $yum_dir/pip.conf
