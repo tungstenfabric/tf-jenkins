@@ -387,15 +387,8 @@ def is_build_fail(devenv_tag, builds_map) {
       }
     return true
 }
-// Function look up fetch job for gate pipeline with build_no
-// And return true if fetch has been finished successfully
-// return false in any other cases
-def gate_wait_for_fetch(build_no){
 
-  println("DEBUG: Try use as a base build ${build_no}")
-
-  // Get the buil
-
+def get_fetch_job_no(build_no){
   // Find fetch-sounces job for our build
   def fetch_job = null
 
@@ -410,8 +403,19 @@ def gate_wait_for_fetch(build_no){
       return false
   }
 
-  def fetch_job_no = fetch_job.getId()
-  fetch_job.delete()
+  return fetch_job.getId()
+}
+// Function look up fetch job for gate pipeline with build_no
+// And return true if fetch has been finished successfully
+// return false in any other cases
+def gate_wait_for_fetch(build_no){
+
+  println("DEBUG: Try use as a base build ${build_no}")
+
+  // Get the buil
+
+  def fetch_job_no = get_fetch_job_no(build_no)
+
   println("We've got fetch job no is ${fetch_job_no}")
   // Wait for fetch job finished
   while(! is_fetch_job_finished(fetch_job_no)){
