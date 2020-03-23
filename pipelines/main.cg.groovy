@@ -394,7 +394,7 @@ def gate_wait_for_fetch(build_no){
 
     // check if build is not fail at last 5 sec
     // if build is not finished yet,
-    // or if it finished it's VERIFY must be more than 
+    // or if it finished it's VERIFY must be more than
     println("DEBUG: check if build is running ${build.getResult().toString()}")
     if(build.getResult() != null){
       // Skip the build if it fails
@@ -404,7 +404,8 @@ def gate_wait_for_fetch(build_no){
     }
   }
 
-  println("DEBUG: We've got fetch job is : ${fetch_job}")
+  println("DEBUG: We've got fetch job is : ${fetch_job}   ${fetch_job.class}")
+  println("DEBUG: Result of fetch job is : ${fetch_job.class.getResult()}")
 
   // Wait for fetch job finished
   waitUntil {
