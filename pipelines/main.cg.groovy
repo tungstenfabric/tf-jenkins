@@ -364,7 +364,6 @@ def is_build_fail(devenv_tag, builds_map) {
 // Function look up fetch job for gate pipeline with build_no
 // And return true if fetch has been finished successfully
 // return false in any other cases
-@NonCPS
 def gate_wait_for_fetch(build_no){
   println("DEBUG: Try use as a base build ${build_no}")
   def fetch_jobs = jenkins.model.Jenkins.instance.getItem('fetch-sources').getBuilds()
