@@ -411,7 +411,7 @@ def gate_wait_for_fetch(build_no){
   while(fetch_job.getResult().toString() == "null"){
     println("INFO: Waiting for fetch job will finished")
     try{
-           sleep(20)
+           sleep(10000)
     }catch(Exception e){
         "ERROR: Sleep exception happened ${e}"
     }
