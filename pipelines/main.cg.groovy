@@ -301,8 +301,8 @@ def set_devenv_tag(builds_map){
     def build = it.value
     def build_no = it.key
     println("DEBUG: build_no = ${build_no} build = ${build}")
-    if(build_no == BUILD_ID){
-      // skip current build
+    if(build_no.toInteger() >= BUILD_ID.toInteger()){
+      // skip current build or builds start late
       return false
     }
     if(build['status'] == "FAILURE" || build['status'] == "ABORTED" )
