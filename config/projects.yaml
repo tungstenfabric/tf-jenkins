@@ -202,6 +202,21 @@
         - cleanup
 
 - project:
+    name: Juniper/contrail-neutron-plugin
+    check:
+      templates:
+        - test-unit
+        - ansible-os
+        - juju-os
+        - cleanup
+    gate:
+      templates:
+        - test-unit
+        - ansible-os
+        - juju-os
+        - cleanup
+
+- project:
     name: tungstenfabric/tf-helm-deployer
     check:
       templates:
