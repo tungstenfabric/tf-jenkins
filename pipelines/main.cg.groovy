@@ -388,6 +388,7 @@ def is_build_fail(devenv_tag, builds_map) {
     return true
 }
 
+// Separate function return detch-source job no for build_no
 def get_fetch_job_no(build_no){
   // Find fetch-sounces job for our build
   def fetch_job = null
@@ -415,6 +416,10 @@ def gate_wait_for_fetch(build_no){
   // Get the buil
 
   def fetch_job_no = get_fetch_job_no(build_no)
+
+  // Build of this fetch_job was failed
+  if(fetch_job_no == false)
+    return false
 
   println("We've got fetch job no is ${fetch_job_no}")
   // Wait for fetch job finished
