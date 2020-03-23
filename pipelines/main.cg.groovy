@@ -406,7 +406,7 @@ def gate_wait_for_fetch(build_no){
     println("DEBUG: fetch_job found = ${fetch_job}")
     println("INFO: Waiting for fetch_job will be started")
     // Skip the build if it failed
-    if(! gate_check_build_is_failed(build_no))
+    if(! gate_check_build_is_not_failed(build_no))
       return false
   }
 
