@@ -361,18 +361,13 @@ def is_build_fail(devenv_tag, builds_map) {
   return is_build_not_fail
 }
 
-// Function look up fetch job for gate pipeline with build_no
-// And return true if fetch has been finished successfully
-// return false in any other cases
-def gate_wait_for_fetch(build_no){
+// Function check build using build_no is failed
+  def gate_check_build_is_failed(build_no){
+    // Get the build
+    def gate_pipeline = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
+    def build = null
 
-  println("DEBUG: Try use as a base build ${build_no}")
-
-  // Get the build
-  def gate_pipeline = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
-  def build = null
-
-  gate_pipeline.getBuilds().any {
+    gate_pipeline.getBuilds().any {
     println("DEBUG: check if ${it.getEnvVars().BUILD_ID.toInteger()} == ${build_no.toInteger()}")
     if (it.getEnvVars().BUILD_ID.toInteger() == build_no.toInteger()){
       println("DEBUG: build found: ${build_no}")
@@ -380,6 +375,22 @@ def gate_wait_for_fetch(build_no){
       return true
     }
   }
+
+  if(build.getResult() != null){
+      // Skip the build if it fails
+      if(gate_get_build_state(build) == 'FAILURE')
+        println "INFO: Build ${build} fails before fetch job is finishes"
+        return false
+    }
+}
+// Function look up fetch job for gate pipeline with build_no
+// And return true if fetch has been finished successfully
+// return false in any other cases
+def gate_wait_for_fetch(build_no){
+
+  println("DEBUG: Try use as a base build ${build_no}")
+
+  // Get the buil
 
   // Find fetch-sounces job for our build
   def fetch_job = null
@@ -396,16 +407,9 @@ def gate_wait_for_fetch(build_no){
     fetch_job = gate_lookup_fetch_job(build_no)
     println("DEBUG: fetch_job found = ${fetch_job}")
     println("INFO: Waiting for fetch_job will be started")
-    // check if build is not fail at last 5 sec
-    // if build is not finished yet,
-    // or if it finished it's VERIFY must be more than
-    println("DEBUG: check if build is running ${build.getResult().toString()}")
-    if(build.getResult() != null){
-      // Skip the build if it fails
-      if(gate_get_build_state(build) == 'FAILURE')
-        println "INFO: Build ${build} fails before fetch job is finishes"
-        return false
-    }
+    // Skip the build if it failed
+    if(! gate_check_build_is_failed(build_no))
+      return false
   }
 
   println("DEBUG: We've got fetch job is : ${fetch_job}   ${fetch_job.class}")
