@@ -76,8 +76,6 @@ timestamps {
 
         def fetch_sources_count = jobs.count { return it.value['job-name'] == 'fetch-sources' }
 
-        return
-
         if (env.GERRIT_PIPELINE == 'gate_concurrent'){
           println("DEBUG: Gate concurrent detect")
           // Choose base image for gating pipeline if
