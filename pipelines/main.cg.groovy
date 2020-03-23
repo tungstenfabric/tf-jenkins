@@ -315,6 +315,7 @@ def set_devenv_tag(builds_map){
       // We meet inprogress build but perhaps it is already fails
       // it is not failed if build not have devenv_tag
       // or if is_build_fail - recursive function return true
+      println("DEBUG: build.containsKey('devenv_tag') ${build.containsKey('devenv_tag')}  is_build_fail(build['devenv_tag']) = ${is_build_fail(build['devenv_tag'])} ")
       if(!build.containsKey('devenv_tag') || is_build_fail(build['devenv_tag'])){
         // build is in the process and it is not failed - we can use its image
         // for start next build
