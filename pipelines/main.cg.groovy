@@ -376,9 +376,7 @@ def is_build_fail(devenv_tag, builds_map) {
         return true
       }
     }
-
     println("DEBUG: build for check found: ${build}")
-
     if(build.getResult() != null){
         // Skip the build if it fails
         if(gate_get_build_state(build) == 'FAILURE')
@@ -392,7 +390,6 @@ def is_build_fail(devenv_tag, builds_map) {
 def get_fetch_job_no(build_no){
   // Find fetch-sounces job for our build
   def fetch_job = null
-
   while( ! fetch_job ){
     println("DEBUG: Just enter Wait until")
     sleep(5)
@@ -403,59 +400,36 @@ def get_fetch_job_no(build_no){
     if(! gate_check_build_is_not_failed(build_no))
       return false
   }
-
   return fetch_job.getId()
 }
 // Function look up fetch job for gate pipeline with build_no
 // And return true if fetch has been finished successfully
 // return false in any other cases
 def gate_wait_for_fetch(build_no){
-
   println("DEBUG: Try use as a base build ${build_no}")
-
-  // Get the buil
-
+  // Get the build
   def fetch_job_no = get_fetch_job_no(build_no)
-
   // Build of this fetch_job was failed
   if(fetch_job_no == false)
     return false
-
-  println("We've got fetch job no is ${fetch_job_no}")
+  println("DEBUG: We've got fetch job no is ${fetch_job_no}")
   // Wait for fetch job finished
-
   waitUntil {
-    def res = is_fetch_job_finished(fetch_job_no)
+    def res = get_fetch_job_result(fetch_job_no)
     println("DEBUG: waitUntil is_fetch_job_finished is ${res}")
     return res != null
     }
-  // while(! is_fetch_job_finished(fetch_job_no)){
-  //  println("INFO: Waiting for fetch job will finished")
-  //  sleep(20)
- // }
-
-  //waitUntil {
-  //  fetch_job.getResult().toString() != "null"
-  //}
-
-  //waitUntil {
-  //  println("INFO: Waiting for fetch job will finished fetch_job.getResult().toString -> ${fetch_job.getResult().toString() != "null"}")
-  //  return fetch_job.getResult().toString() != "null"
-  //}
-
- println("DEBUG: Fetch job ${fetch_job_no} finishes with result ...TO BE IMPLEMENTED ")
-
-  return false
-  // return (fetch_job.getResult() == "SUCCESS")?true:false
+  def res = get_fetch_job_result(fetch_job_no)
+  println("DEBUG: Fetch job ${fetch_job_no} finishes with result ${res} ")
+  return res == "SUCCESS"
 }
 
 // function check if fetch-sources job is finished and return it's result
 // Return Job Result is finished
 // Or null if is not finished yed
-def is_fetch_job_finished(fetch_job_no) {
+def get_fetch_job_result(fetch_job_no) {
   def fetch_jobs = jenkins.model.Jenkins.instance.getItem('fetch-sources').getBuilds()
   def res = null
-
   for (job in fetch_jobs) {
     if(job.getId() == fetch_job_no){
       res = job.getResult()
