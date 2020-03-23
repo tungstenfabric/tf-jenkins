@@ -367,6 +367,12 @@ def is_build_fail(devenv_tag, builds_map) {
 def gate_wait_for_fetch(build_no){
 
   println("DEBUG: Try use as a base build ${build_no}")
+            try{
+            println "DEBUG: sleep debug 0"
+            sleep (10)
+        }catch(Exception e){
+        println ("ERROR: First Sleep exception happened ${e}")
+        }
   def fetch_jobs = jenkins.model.Jenkins.instance.getItem('fetch-sources').getBuilds()
 
           try{
