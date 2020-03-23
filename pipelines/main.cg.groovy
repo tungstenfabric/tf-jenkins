@@ -404,6 +404,8 @@ def gate_wait_for_fetch(build_no){
     }
   }
 
+  println("DEBUG: We've got fetch job is : fetch_job")
+
   // Wait for fetch job finished
   waitUntil {
     println("INFO: Waiting for fetch job will finished")
