@@ -7,3 +7,4 @@ sudo subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms \
                                 --enable=rhel-8-for-x86_64-appstream-rpms
 sudo yum update -y
 sudo subscription-manager unregister
+sudo sed -i '/192\.168\.122\.1/d' /etc/resolv.conf
