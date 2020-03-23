@@ -319,6 +319,11 @@ def set_devenv_tag(builds_map){
         // build is in the process and it is not failed - we can use its image
         // for start next build
         // If build's fetch job not have SUCCESS skip the build
+        try{
+            sleep (10)
+        }catch(Exception e){
+        println ("ERROR: First Sleep exception happened ${e}")
+        }
         if(! gate_wait_for_fetch(build_no))
           return false
 
