@@ -423,10 +423,12 @@ def gate_wait_for_fetch(build_no){
 
   println("We've got fetch job no is ${fetch_job_no}")
   // Wait for fetch job finished
-  while(! is_fetch_job_finished(fetch_job_no)){
-    println("INFO: Waiting for fetch job will finished")
-    sleep(20)
-  }
+
+  waitUntil { ! is_fetch_job_finished(fetch_job_no) }
+  // while(! is_fetch_job_finished(fetch_job_no)){
+  //  println("INFO: Waiting for fetch job will finished")
+  //  sleep(20)
+ // }
 
   //waitUntil {
   //  fetch_job.getResult().toString() != "null"
