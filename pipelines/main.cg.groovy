@@ -403,24 +403,18 @@ def gate_wait_for_fetch(build_no){
     println("DEBUG: Just enter Wait until")
     sleep(5)
     fetch_job = gate_lookup_fetch_job(build_no)
-    println("DEBUG: fetch_job found = ${fetch_job}")
+    //println("DEBUG: fetch_job found = ${fetch_job}")
     println("INFO: Waiting for fetch_job will be started")
     // Skip the build if it failed
     if(! gate_check_build_is_not_failed(build_no))
       return false
   }
 
-  println("DEBUG: We've got fetch job is : ${fetch_job}   ${fetch_job.class}")
-  println("DEBUG: Result of fetch job is : ${fetch_job.getResult()}")
-
+  println("We've got fetch job is ${fetch_job}")
   // Wait for fetch job finished
-  while(fetch_job.getResult().toString() == "null"){
+  while(gate_lookup_fetch_job(build_no).getResult().toString() == "null"){
     println("INFO: Waiting for fetch job will finished")
-    try{
-           sleep(20)
-    }catch(Exception e){
-        println ("ERROR: Sleep exception happened ${e}")
-    }
+    sleep(20)
   }
 
   //waitUntil {
