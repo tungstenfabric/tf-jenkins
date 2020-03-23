@@ -396,7 +396,7 @@ def gate_wait_for_fetch(build_no){
     // if build is not finished yet,
     // or if it finished it's VERIFY must be more than 
     println("DEBUG: check if build is running ${build.getResult().toString()}")
-    if(build.getResult().toString()){
+    if(build.getResult() != null){
       // Skip the build if it fails
       if(gate_get_build_state(build) == 'FAILURE')
         println "INFO: Build ${build} fails before fetch job is finishes"
