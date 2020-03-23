@@ -374,7 +374,7 @@ def gate_wait_for_fetch(build_no){
   gate_pipeline.getBuilds().each {
 
     println("DEBUG: check if ${it.getEnvVars().BUILD_ID.toInteger()} == ${build_no}")
-    if (it.getEnvVars().BUILD_ID.toInteger() == build_no){
+    if (it.getEnvVars().BUILD_ID.toInteger() == build_no.toInteger()){
       build = it
     }
   }
