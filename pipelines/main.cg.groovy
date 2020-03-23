@@ -367,36 +367,11 @@ def is_build_fail(devenv_tag, builds_map) {
 def gate_wait_for_fetch(build_no){
 
   println("DEBUG: Try use as a base build ${build_no}")
-            try{
-            println "DEBUG: sleep debug 0"
-            sleep (10)
-        }catch(Exception e){
-        println ("ERROR: First Sleep exception happened ${e}")
-        }
-  def fetch_jobs = jenkins.model.Jenkins.instance.getItem('fetch-sources').getBuilds()
 
-          try{
-            println "DEBUG: sleep debug 1"
-            sleep (10)
-        }catch(Exception e){
-        println ("ERROR: First Sleep exception happened ${e}")
-        }
   // Get the build
   def gate_pipeline = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
   def build = null
-            try{
-            println "DEBUG: sleep debug 2"
-            sleep (10)
-        }catch(Exception e){
-        println ("ERROR: First Sleep exception happened ${e}")
-        }
-  println("DEBUG: pipelines list: ${gate_pipeline.getBuilds()}")
-            try{
-            println "DEBUG: sleep debug 3"
-            sleep (10)
-        }catch(Exception e){
-        println ("ERROR: First Sleep exception happened ${e}")
-        }
+
   gate_pipeline.getBuilds().any {
     println("DEBUG: check if ${it.getEnvVars().BUILD_ID.toInteger()} == ${build_no.toInteger()}")
     if (it.getEnvVars().BUILD_ID.toInteger() == build_no.toInteger()){
@@ -406,19 +381,9 @@ def gate_wait_for_fetch(build_no){
     }
   }
 
-            try{
-            println "DEBUG: sleep debug 4"
-            sleep (10)
-        }catch(Exception e){
-        println ("ERROR: First Sleep exception happened ${e}")
-        }
-
-  println("DEBUG: Build_no = ${build_no} fetch_jobs = ${fetch_jobs}  build = ${build}")
-
   // Find fetch-sounces job for our build
   def fetch_job = null
   println("DEBUG: Just before Wait until")
-
             try{
             println "DEBUG: sleep debug 5"
             sleep (10)
@@ -427,8 +392,8 @@ def gate_wait_for_fetch(build_no){
         }
   while( ! fetch_job ){
     println("DEBUG: Just enter Wait until")
-    // sleep(5)
-    fetch_job = gate_lookup_fetch_job(fetch_jobs, build_no)
+    sleep(5)
+    fetch_job = gate_lookup_fetch_job(build_no)
     println("DEBUG: fetch_job found = ${fetch_job}")
     println("INFO: Waiting for fetch_job will be started")
     // check if build is not fail at last 5 sec
@@ -471,7 +436,8 @@ def gate_wait_for_fetch(build_no){
 }
 
 // Function look up fetch-sources job for gate pipeline build with no build_no
-def gate_lookup_fetch_job(fetch_jobs, build_no){
+def gate_lookup_fetch_job( build_no){
+  def fetch_jobs = jenkins.model.Jenkins.instance.getItem('fetch-sources').getBuilds()
   def res = null
 
   for (job in fetch_jobs) {
