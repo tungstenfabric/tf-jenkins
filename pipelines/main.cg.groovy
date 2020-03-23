@@ -387,7 +387,7 @@ def gate_wait_for_fetch(build_no){
   while( ! fetch_job ){
     println("DEBUG: Just enter Wait until")
     fetch_job = gate_lookup_fetch_job(fetch_jobs, build_no)
-    println("DEBUG: fetch_job = ${fetch_job}")
+    println("DEBUG: fetch_job found = ${fetch_job}")
     println("INFO: Waiting for fetch_job will be started")
 
     // check if build is not fail at last 5 sec
@@ -396,6 +396,7 @@ def gate_wait_for_fetch(build_no){
     if(build.getResult().toString()){
       // Skip the build if it fails
       if(gate_get_build_state(build) == 'FAILURE')
+        println "INFO: Build fails before fetch job is finishes"
         return false
     }
   }
@@ -420,7 +421,7 @@ def gate_lookup_fetch_job(fetch_jobs, build_no){
   for (job in fetch_jobs) {
     def cause = job.getCause(Cause.UpstreamCause)
     if(cause.getUpstreamProject() == 'pipeline-gate-opencontrail-concurrent' &&
-       cause.getUpstreamBuild() == build_no){
+       cause.getUpstreamBuild().toInteger() == build_no.toInteger()){
           // We have found our fetch the job needed
           res = job
        }
