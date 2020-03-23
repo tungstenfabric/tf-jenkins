@@ -394,7 +394,8 @@ def gate_wait_for_fetch(build_no){
 
     // check if build is not fail at last 5 sec
     // if build is not finished yet,
-    // or if it finished it's VERIFY must be more than 0
+    // or if it finished it's VERIFY must be more than 
+    println("DEBUG: check if build is running ${build.getResult().toString()}")
     if(build.getResult().toString()){
       // Skip the build if it fails
       if(gate_get_build_state(build) == 'FAILURE')
@@ -455,6 +456,8 @@ def gate_get_build_state(build){
           }
         }
       }
+    }else{
+      println("DEBUG: Not found artifact directory - suppose build fails")
     }
   return result
 }
