@@ -439,7 +439,7 @@ def gate_wait_for_fetch(build_no){
   //  return fetch_job.getResult().toString() != "null"
   //}
 
-  println("DEBUG: Fetch job ${fetch_job} finishes with result ...TO BE IMPLEMENTED ")
+ println("DEBUG: Fetch job ${fetch_job_no} finishes with result ...TO BE IMPLEMENTED ")
 
   return false
   // return (fetch_job.getResult() == "SUCCESS")?true:false
