@@ -409,7 +409,7 @@ def gate_wait_for_fetch(build_no){
 
   // Wait for fetch job finished
   waitUntil { fetch_job =>
-    println("INFO: Waiting for fetch job will finished fetch_job.getResult().toString => ${fetch_job.getResult().toString() != "null"}")
+    println("INFO: Waiting for fetch job will finished fetch_job.getResult().toString -> ${fetch_job.getResult().toString() != "null"}")
     return fetch_job.getResult().toString() != "null"
   }
 
