@@ -388,7 +388,7 @@ def gate_wait_for_fetch(build_no){
   println("DEBUG: Just before Wait until")
   while( ! fetch_job ){
     println("DEBUG: Just enter Wait until")
-    sleep(5)
+    // sleep(5)
     fetch_job = gate_lookup_fetch_job(fetch_jobs, build_no)
     println("DEBUG: fetch_job found = ${fetch_job}")
     println("INFO: Waiting for fetch_job will be started")
@@ -410,7 +410,7 @@ def gate_wait_for_fetch(build_no){
   // Wait for fetch job finished
   while(fetch_job.getResult().toString() != "null"){
     println("INFO: Waiting for fetch job will finished")
-    sleep(20)
+    // sleep(20)
   }
 
   //waitUntil {
