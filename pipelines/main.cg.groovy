@@ -391,7 +391,7 @@ def gate_wait_for_fetch(build_no){
     fetch_job = gate_lookup_fetch_job(fetch_jobs, build_no)
     println("DEBUG: fetch_job found = ${fetch_job}")
     println("INFO: Waiting for fetch_job will be started")
-
+    sleep(5)
     // check if build is not fail at last 5 sec
     // if build is not finished yet,
     // or if it finished it's VERIFY must be more than
@@ -408,10 +408,19 @@ def gate_wait_for_fetch(build_no){
   println("DEBUG: Result of fetch job is : ${fetch_job.getResult()}")
 
   // Wait for fetch job finished
+  //while(fetch_job.getResult().toString() != "null"){
+  //  println("INFO: Waiting for fetch job will finished")
+  //  sleep(20)
+  //}
+
   waitUntil {
-    println("INFO: Waiting for fetch job will finished fetch_job.getResult().toString -> ${fetch_job.getResult().toString() != "null"}")
-    return fetch_job.getResult().toString() != "null"
+    fetch_job.getResult().toString() != "null"
   }
+
+  //waitUntil {
+  //  println("INFO: Waiting for fetch job will finished fetch_job.getResult().toString -> ${fetch_job.getResult().toString() != "null"}")
+  //  return fetch_job.getResult().toString() != "null"
+  //}
 
   println("DEBUG: Fetch job ${fetch_job} finishes with result ${fetch_job.getResult()} ")
 
