@@ -367,6 +367,12 @@ def set_devenv_tag(builds_map, fetch_sources_count){
   }
 }
 
+// Return true if branch matches product branch
+def is_branch_product(branch){
+  return branch == "master" || branch ==~ /R19\d*/ || branch ==~ /R20\d*/ || branch ==~ /R21\d*/
+}
+
+
 // if DEVENVTAG is set for build_no, function find build which CONTAINER_TAG is same and return
 // build_id.
 // if DEVENVTAG not found for the build - return false
