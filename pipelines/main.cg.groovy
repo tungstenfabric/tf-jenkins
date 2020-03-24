@@ -443,7 +443,7 @@ def get_fetch_job_result(fetch_job_no) {
   def res = null
   for (job in fetch_jobs) {
     if(job.getId() == fetch_job_no){
-      res = job.getResult()
+      res = job.getResult().toString()
     }
   }
   return res
