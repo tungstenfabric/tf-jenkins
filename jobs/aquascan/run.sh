@@ -10,12 +10,13 @@ source "$my_dir/definitions"
 source "$my_dir/../../infra/${SLAVE}/functions.sh"
 
 AQUASEC_HOST_IP=$(get_instance_ip $AQUASCAN_INSTANCE_NAME)
+SCAN_REPORTS_STASH=/tmp/scan_reports
 
 env_file="$WORKSPACE/scan.env"
 cat <<EOF > $env_file
 CONTRAIL_REGISTRY=$CONTAINER_REGISTRY
 CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
-SCAN_REPORTS_STASH=/tmp/scan_reports
+SCAN_REPORTS_STASH=${SCAN_REPORTS_STASH}
 SCAN_THRESHOLD=9.8
 AQUASEC_HOST_IP=$AQUASEC_HOST_IP
 AQUASEC_VERSION=4.6
@@ -26,8 +27,7 @@ SCANNER_USER=$AQUASEC_SCANNER_USERNAME
 SCANNER_PASSWORD=$AQUASEC_SCANNER_PASSWORD
 EOF
 
-scp -i $WORKER_SSH_KEY $SSH_OPTIONS $my_dir/scan.sh $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:./
-scp -i $WORKER_SSH_KEY $SSH_OPTIONS $env_file $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:./scan.env
+scp -i $WORKER_SSH_KEY $SSH_OPTIONS $env_file $my_dir/scan.sh $my_dir/excel.py $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:
 
 echo "INFO: Prepare the Aquasec environment"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP
@@ -52,6 +52,8 @@ echo "INFO: Start scanning containers"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP
 export WORKSPACE=\$HOME
 source ./scan.env
-sudo -E ./scan.sh
+if sudo -E ./scan.sh; then
+	sudo -E python ./excel.py -i ${SCAN_REPORTS_STASH} -o aquasec-report-\$(date --utc +"%Y-%m-%dT%H-%M-%S").xls
+fi
 EOF
 echo "INFO: Scanning containers is done"
