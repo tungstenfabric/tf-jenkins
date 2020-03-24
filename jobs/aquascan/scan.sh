@@ -38,7 +38,10 @@ log "Options:$log_msg"
 
 if [[ -n "$AQUASEC_REGISTRY" ]]; then
   log "Login to aquasec docker registry $AQUASEC_REGISTRY"
-  docker login "${AQUASEC_REGISTRY}" -u "${AQUASEC_REGISTRY_USER}" -p "${AQUASEC_REGISTRY_PASSWORD}"
+  if ! docker login "${AQUASEC_REGISTRY}" -u "${AQUASEC_REGISTRY_USER}" -p "${AQUASEC_REGISTRY_PASSWORD}"; then
+    err "Logon to aquasec docker registry has failed!"
+    exit -1
+  fi
 fi
 
 rm -rf "${SCAN_REPORTS_STASH}"
