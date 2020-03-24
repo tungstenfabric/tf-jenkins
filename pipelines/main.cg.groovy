@@ -92,7 +92,7 @@ timestamps {
 // Run fetch_sources - remove after debugging
           jobs_utils.run_jobs(jobs)
 
-          //  sleep(3600)
+          sleep(3600)
           return
         }
 
