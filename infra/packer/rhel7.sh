@@ -29,6 +29,28 @@ baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-openstac
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+[local-rhel-7-server-ose-3.11-rpms]
+name = Red Hat OSE 3.11 for RHEL 7 (RPMs) local
+baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-ose-3.11-rpms
+enabled = 1
+gpgcheck = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+[local-rhel-7-server-ansible-2.6-rpms]
+name = Red Hat Ansible 2.6 for RHEL 7 (RPMs) local
+baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-ansible-2.6-rpms
+enabled = 1
+gpgcheck = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+[local-rhel-7-fast-datapath-rpms]
+name = Red Hat Fast Datapath for RHEL 7 (RPMs) local
+baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-fast-datapath-rpms
+enabled = 1
+gpgcheck = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
 EOF
 
 sudo mv local.repo /etc/yum.repos.d/
