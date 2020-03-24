@@ -83,20 +83,37 @@ timestamps {
 
         if (env.GERRIT_PIPELINE == 'gate_concurrent'){
           println("DEBUG: Gate concurrent detect")
-          // Choose base image for gating pipeline if
-          // some gating builds are in process
-          builds_map = create_gate_builds_map()
-          println("INFO: prepare builds_map = ${builds_map} ")
-          set_devenv_tag(builds_map, fetch_sources_count)
+          while(true){
+            try{
+              // Choose base build for gate pipeline if
+              // some gate builds are in process
+              builds_map = create_gate_builds_map()
+              println("DEBUG: prepare builds_map = ${builds_map} ")
+              set_devenv_tag(builds_map, fetch_sources_count)
+              // Run jubs baset on DEVENVTAG if exists
+              jobs_utils.run_jobs(jobs)
+            }catch(Exception ex){
+              println("DEBUG: Something fails ${ex}")
+              if (! check_build_verified(BUILD_ID)){
+                // If build has been failed - throw exection
+                throw new Exception(ex)
+              }
+            }finally{
+              def base_build_no = get_base_build_no(BUILD_ID)
+              if(base_build_no){
+                wait_build_finished(base_build_no)
+                if(check_build_verified(base_build_no))
+                // Finish the pipeline if base build finished successfully
+                // else try to find new base build
+                  break
+              }else
+                // we not have base build - Just finish the job
+                break
+            }
+          }
 
-// Run fetch_sources - remove after debugging
-          jobs_utils.run_jobs(jobs)
-
-          sleep(3600)
-          return
         }
 
-        jobs_utils.run_jobs(jobs)
       } finally {
         println(job_results)
         stage('gerrit vote') {
