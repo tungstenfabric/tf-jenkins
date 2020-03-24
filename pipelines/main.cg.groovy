@@ -342,6 +342,11 @@ def set_devenv_tag(builds_map, fetch_sources_count){
       // skip current build or builds start late
       return false
     }
+    // Skip if we have product branch and current build has another branch
+    if(is_branch_product(GERRIT_BRANCH) && build.gerrit_branch != GERRIT_BRANCH){
+      println("DEBUG: Branch ${build.gerrit_branch} not fit to branch ${GERRIT_BRANCH}")
+      return false
+    }
     if(build['status'] == "FAILURE" || build['status'] == "ABORTED" )
       // continue iterate to SUCCESS build or build in progress
       return false
