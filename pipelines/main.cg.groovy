@@ -424,7 +424,7 @@ def get_pipeline_result(build_no){
     // Get DEVENVTAG for build_no pipeline
     def build = null
     job.builds.any {
-      if(base_build_no.toInteger() = it.getEnvVars().BUILD_ID.toInteger()){
+      if(base_build_no.toInteger() == it.getEnvVars().BUILD_ID.toInteger()){
         build = it
       }
     }
