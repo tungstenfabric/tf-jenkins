@@ -100,7 +100,7 @@ timestamps {
               }
             }finally{
               if(base_build_no){
-                println("DEBUG: We are found base pipeline and waiting when base pipeline will finished")
+                println("DEBUG: We are found base pipeline ${base_build_no} and waiting when base pipeline will finished")
                 wait_pipeline_finished(base_build_no)
                 println("DEBUG: Base pipeline has been finished")
                 if(gate_check_build_is_not_failed(base_build_no)){
