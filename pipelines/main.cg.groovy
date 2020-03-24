@@ -361,7 +361,44 @@ def set_devenv_tag(builds_map, fetch_sources_count){
 // build_id.
 // if DEVENVTAG not found for the build - return false
 get_base_build_no(build_no){
+  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
+  // Get DEVENVTAG for build_no pipeline
+  def devenv_tag = null
+  def base_build = null
+  job.builds.any {
+    build = it
+      if (artifactManager.root().isDirectory()) {
+        def fileList = artifactManager.root().list()
+        fileList.each {
+          def file = it
+          if(file.toString().contains('global.env')) {
+            // extract global.env artifact for each build if exists
+            def fileText = it.open().getText()
+            fileText.split("\n").each {
+              def line = it
+              // Check if DEVENVTAG is set for build_no
+              if(line.contains('DEVENVTAG') &&
+                 build_no.toInteger() == build.getEnvVars().BUILD_ID.toInteger()) {
+                devenv_tag = line.split('=')[1].trim()
+              }
+              // We suppose we've met CONTRAIL_CONTAINER_TAG after we met DEVENVTAG and init devenv_tag
+              if(devenv_tag && line.contains('CONTRAIL_CONTAINER_TAG')){
+                def container_tag = line.split('=')[1].trim()
+                if(container_tag == devenv_tag){
+                  base_build = build.getEnvVars().BUILD_ID.toInteger()
+                  return true
+                }
+              }
+            }
+          }
+        }
+      }
+  }
 
+  // We not found DEVENVTAG for current build and return false
+  if(! devenv_tag || ! base_build)
+    return false
+  return base_build
 }
 
 // Function find the build with build_no and wait it finishes with any result
