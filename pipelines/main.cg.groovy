@@ -91,7 +91,9 @@ timestamps {
               println("DEBUG: prepare builds_map = ${builds_map} ")
               set_devenv_tag(builds_map, fetch_sources_count)
               // Run jubs baset on DEVENVTAG if exists
+              println("DEBUG: Just before starts jobs: ${jobs}")
               jobs_utils.run_jobs(jobs)
+              println("DEBUG: Just after start jobs")
             }catch(Exception ex){
               println("DEBUG: Something fails ${ex}")
               if (! gate_check_build_is_not_failed(BUILD_ID)){
