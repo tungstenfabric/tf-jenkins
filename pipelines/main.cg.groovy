@@ -344,7 +344,13 @@ def set_devenv_tag(builds_map, fetch_sources_count){
     }
     // Skip if we have product branch and current build has another branch
     if(is_branch_product(GERRIT_BRANCH) && build.gerrit_branch != GERRIT_BRANCH){
-      println("DEBUG: Branch ${build.gerrit_branch} not fit to branch ${GERRIT_BRANCH}")
+      println("DEBUG: Product Branch ${build.gerrit_branch} not fit to branch ${GERRIT_BRANCH}")
+      return false
+    }
+    // Skip if we have non product branch if no the same branch of if not master branch
+    if(! is_branch_product(GERRIT_BRANCH) &&
+       ( build.gerrit_branch != 'master' || build.gerrit_branch != GERRIT_BRANCH)){
+      println("DEBUG: Non product branch ${GERRIT_BRANCH} not fit to ${build.gerrit_branch} or master")
       return false
     }
     if(build['status'] == "FAILURE" || build['status'] == "ABORTED" )
