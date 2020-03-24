@@ -263,7 +263,7 @@ def save_pipeline_output_to_logs() {
 def create_gate_builds_map(){
   def builds_map = [:]
   // Get through all gate's builds
-  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
+  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-c')
   job.builds.each {
 
     println("DEBUG: build execution is ${it.findAll()}")
@@ -371,7 +371,7 @@ def set_devenv_tag(builds_map, fetch_sources_count){
 // build_id.
 // if DEVENVTAG not found for the build - return false
 def get_base_build_no(build_no){
-  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
+  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-c')
   // Get DEVENVTAG for build_no pipeline
   def devenv_tag = null
   def base_build = null
@@ -422,7 +422,7 @@ def wait_pipeline_finished(build_no){
 
 // Put all this staff in separate function due to Serialisation under waitUntil
 def get_pipeline_result(build_no){
-  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
+  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-c')
     // Get DEVENVTAG for build_no pipeline
     def build = null
     job.builds.any {
@@ -468,7 +468,7 @@ def is_build_fail(devenv_tag, builds_map) {
     println("DEBUG: check build ${build_no} is failure")
 
     // Get the build
-    def gate_pipeline = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
+    def gate_pipeline = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-c')
     def build = null
 
     gate_pipeline.getBuilds().any {
@@ -549,7 +549,7 @@ def gate_lookup_fetch_job( build_no){
 
   for (job in fetch_jobs) {
     def cause = job.getCause(Cause.UpstreamCause)
-    if(cause.getUpstreamProject() == 'pipeline-gate-opencontrail-concurrent' &&
+    if(cause.getUpstreamProject() == 'pipeline-gate-opencontrail-c' &&
        cause.getUpstreamBuild().toInteger() == build_no.toInteger()){
           // We have found our fetch the job needed
           res = job

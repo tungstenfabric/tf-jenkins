@@ -51,7 +51,7 @@
                   branch-pattern: '^((?!R3\.|R4\.|R5\.).*)'
 
 - job:
-    name: pipeline-gate-opencontrail-concurrent
+    name: pipeline-gate-opencontrail-c
     node: aws
     description: Please do not run this manually
     project-type: pipeline
