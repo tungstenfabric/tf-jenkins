@@ -188,7 +188,7 @@
         - cleanup
     gate_concurrent:
       templates:
-        - build-centos
+        - test-unit-ui
         - cleanup
 - project:
     name: tungstenfabric/tf-analytics
