@@ -434,7 +434,7 @@ def gate_wait_for_fetch(build_no, fetch_sources_count){
   println("DEBUG: Fetch job ${fetch_job_no} finishes with result ${res} ")
   def toRet = (res.toString() == 'SUCCESS')
   println("DEBUG: res == 'SUCCESS' is ${toRet} ")
-  return res == "SUCCESS"
+  return (res.toString() == "SUCCESS")
 }
 
 // function check if fetch-sources job is finished and return it's result
