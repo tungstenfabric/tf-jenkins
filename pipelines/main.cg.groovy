@@ -101,14 +101,22 @@ timestamps {
             }finally{
               def base_build_no = get_base_build_no(BUILD_ID)
               if(base_build_no){
+                println("DEBUG: We are found base pipeline and waiting when base pipeline will finished")
                 wait_pipeline_finished(base_build_no)
-                if(gate_check_build_is_not_failed(base_build_no))
+                println("DEBUG: Base pipeline has been finished")
+                if(gate_check_build_is_not_failed(base_build_no)){
                 // Finish the pipeline if base build finished successfully
                 // else try to find new base build
-                  break
-              }else
+                    println("DEBUG: Base pipeline has been verified")
+                    break
+                  }else{
+                    println("DEBUG: Base pipeline has been NOT verified")
+                  }
+              }else{
                 // we not have base build - Just finish the job
+                println("DEBUG: We are NOT found base pipeline")
                 break
+              }
             }
           }
 
