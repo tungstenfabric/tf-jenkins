@@ -101,7 +101,7 @@ timestamps {
             }finally{
               def base_build_no = get_base_build_no(BUILD_ID)
               if(base_build_no){
-                wait_build_finished(base_build_no)
+                wait_pipeline_finished(base_build_no)
                 if(gate_check_build_is_not_failed(base_build_no))
                 // Finish the pipeline if base build finished successfully
                 // else try to find new base build
@@ -360,7 +360,7 @@ def set_devenv_tag(builds_map, fetch_sources_count){
 // if DEVENVTAG is set for build_no, function find build which CONTAINER_TAG is same and return
 // build_id.
 // if DEVENVTAG not found for the build - return false
-get_base_build_no(build_no){
+def get_base_build_no(build_no){
   def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
   // Get DEVENVTAG for build_no pipeline
   def devenv_tag = null
@@ -402,8 +402,25 @@ get_base_build_no(build_no){
 }
 
 // Function find the build with build_no and wait it finishes with any result
-wait_build_finished(base_build_no){
+def wait_pipeline_finished(build_no){
+  waitUntil {
+    def res = get_pipeline_result(build_no)
+    println("DEBUG: waitUntil get_pipeline_result is ${res}")
+    return res != null
+  }
+}
 
+// Put all this staff in separate function due to Serialisation under waitUntil
+def get_pipeline_result(build_no){
+  def job = jenkins.model.Jenkins.instance.getItem('pipeline-gate-opencontrail-concurrent')
+    // Get DEVENVTAG for build_no pipeline
+    def build = null
+    job.builds.any {
+      if(base_build_no.toInteger() = it.getEnvVars().BUILD_ID.toInteger()){
+        build = it
+      }
+    }
+    return build.getResult() == null
 }
 
 def is_build_fail(devenv_tag, builds_map) {
