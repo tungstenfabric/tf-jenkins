@@ -74,10 +74,6 @@ timestamps {
 
         println("DEBUG: Jobs = ${jobs}")
 
-// TODO temporary reinit jobs for double fetch_sources
-        jobs = ["fetch-sources-centos":["job-name":"fetch-sources"]/*,
-                "fetch-sources-test":["job-name":"fetch-sources"]*/]
-
         def fetch_sources_count = jobs.count { return it.value['job-name'] == 'fetch-sources' }
         println("DEBUG: There must be two fetch jobs: ${fetch_sources_count}")
 
