@@ -458,9 +458,12 @@ def is_build_fail(devenv_tag, builds_map) {
     println("DEBUG: build for check found: ${build}")
     if(build.getResult() != null){
         // Skip the build if it fails
-        if(gate_get_build_state(build) == 'FAILURE')
-          println "INFO: Build ${build} fails before fetch job is finishes"
+        if(gate_get_build_state(build) == 'FAILURE'){
+          println ("DEBUG: Build ${build} fails")
           return false
+        }else{
+          println ("DEBUG: Build ${build} is not fails")
+        }
       }
     return true
 }
