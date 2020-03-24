@@ -49,7 +49,7 @@ sudo docker system prune -a -f || true
 EOF
 
 echo "INFO: Start scanning containers"
-report=aquasec-report-\$(date --utc +"%Y-%m-%dT%H-%M-%S").xls
+report=aquasec-report-$(date --utc +"%Y-%m-%dT%H-%M-%S").xls
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP
 export WORKSPACE=\$HOME
 source ./scan.env
