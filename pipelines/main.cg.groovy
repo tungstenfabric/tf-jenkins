@@ -94,7 +94,7 @@ timestamps {
               jobs_utils.run_jobs(jobs)
             }catch(Exception ex){
               println("DEBUG: Something fails ${ex}")
-              if (! check_build_verified(BUILD_ID)){
+              if (! gate_check_build_is_not_failed(BUILD_ID)){
                 // If build has been failed - throw exection
                 throw new Exception(ex)
               }
@@ -102,7 +102,7 @@ timestamps {
               def base_build_no = get_base_build_no(BUILD_ID)
               if(base_build_no){
                 wait_build_finished(base_build_no)
-                if(check_build_verified(base_build_no))
+                if(gate_check_build_is_not_failed(base_build_no))
                 // Finish the pipeline if base build finished successfully
                 // else try to find new base build
                   break
@@ -317,6 +317,8 @@ def create_gate_builds_map(){
   return builds_map
 }
 
+// The function find base build in builds_map, wait for fetch-sources of base build is finished
+// and set DEVENVTAG to global.env
 def set_devenv_tag(builds_map, fetch_sources_count){
   println("DEBUG: I'm at set_devenv_tag builds_map = ${builds_map}")
   builds_map.any {
@@ -345,9 +347,7 @@ def set_devenv_tag(builds_map, fetch_sources_count){
           println("DEBUG: not set DEVENVTAG")
           return false
         }
-
         println("DEBUG: Set DEVENVTAG is ${build['container_tag']}")
-
         sh """#!/bin/bash -e
           echo "export DEVENVTAG=${build['container_tag']}" >> global.env
         """
@@ -355,6 +355,18 @@ def set_devenv_tag(builds_map, fetch_sources_count){
         return true
       }
   }
+}
+
+// if DEVENVTAG is set for build_no, function find build which CONTAINER_TAG is same and return
+// build_id.
+// if DEVENVTAG not found for the build - return false
+get_base_build_no(build_no){
+
+}
+
+// Function find the build with build_no and wait it finishes with any result
+wait_build_finished(base_build_no){
+
 }
 
 def is_build_fail(devenv_tag, builds_map) {
