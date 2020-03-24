@@ -299,6 +299,10 @@ def create_gate_builds_map(){
               def verified = line.split('=')[1].trim()
               builds_map[build_id]['verified'] = verified
             }
+            if(line.contains('GERRIT_BRANCH')) {
+              def gerrit_branch = line.split('=')[1].trim()
+              builds_map[build_id]['gerrit_branch'] = gerrit_branch
+            }
           }
         }
       }
