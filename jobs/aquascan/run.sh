@@ -49,11 +49,13 @@ sudo docker system prune -a -f || true
 EOF
 
 echo "INFO: Start scanning containers"
+report=aquasec-report-\$(date --utc +"%Y-%m-%dT%H-%M-%S").xls
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP
 export WORKSPACE=\$HOME
 source ./scan.env
 if sudo -E ./scan.sh; then
-	sudo -E python ./excel.py -i ${SCAN_REPORTS_STASH} -o aquasec-report-\$(date --utc +"%Y-%m-%dT%H-%M-%S").xls
+	sudo -E python ./excel.py -i ${SCAN_REPORTS_STASH} -o $report
 fi
 EOF
+rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:$report . || true
 echo "INFO: Scanning containers is done"
