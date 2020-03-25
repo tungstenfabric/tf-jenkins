@@ -79,7 +79,7 @@ timestamps {
 
         def base_build_no = null
 
-        if (env.GERRIT_PIPELINE == 'gate_concurrent'){
+        if (env.GERRIT_PIPELINE == 'gate'){
           println("DEBUG: Gate concurrent detect")
           while(true){
             try{
