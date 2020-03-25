@@ -34,6 +34,8 @@
           job-name: aquascan
           depends-on:
             - build-rhel
+          vars:
+            TAG_SUFFIX: -rhel
       post-jobs:
         publish-centos-stable:
           job-name: publish
