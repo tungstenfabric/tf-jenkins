@@ -96,6 +96,8 @@
           # collect logs
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
           rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
+          tail -n 2000 ${WORKSPACE}/output.log > ${WORKSPACE}/output.log.tail
+          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log.tail ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
           ./src/progmaticlab/tf-jenkins/jobs/build/collect_logs.sh
           exit $res
     publishers:
