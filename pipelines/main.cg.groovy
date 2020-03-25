@@ -394,7 +394,7 @@ def wait_pipeline_finished(build_no){
   waitUntil {
     def res = get_pipeline_result(build_no)
     println("DEBUG: waitUntil get_pipeline_result is ${res}")
-    return res != null
+    return ! res
   }
 }
 
@@ -457,6 +457,7 @@ def is_build_fail(devenv_tag, builds_map) {
       }
     }
     println("DEBUG: build for check found: ${build}")
+    println("DEBUG: Result of build is ${build.getResult()}")
     if(build.getResult() != null){
         // Skip the build if it fails
         if(gate_get_build_state(build) == 'FAILURE'){
@@ -548,7 +549,7 @@ def gate_get_build_state(build){
     println("DEBUG: Check build here: gate_get_build_state")
     def artifactManager =  build.getArtifactManager()
     if (artifactManager.root().isDirectory()) {
-      println("DEBUG: Artifact directory fount")
+      println("DEBUG: Artifact directory found")
       def fileList = artifactManager.root().list()
       println("DUBUG: filelist = ${fileList}")
       fileList.each {
