@@ -56,6 +56,8 @@ cd src/tungstenfabric/tf-dev-env
 
 case "${ENVIRONMENT_OS}" in
   "rhel7")
+    export BASE_EXTRA_RPMS=''
+    export RHEL_HOST_REPOS=''
     mkdir -p ./config/etc
     cp -r /etc/yum.repos.d ./config/etc/
     # TODO: now no way to pu gpg keys into containers for repo mirrors
