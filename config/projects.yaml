@@ -92,10 +92,6 @@
       templates:
         - build-centos
         - cleanup
-    gate_concurrent:
-      templates:
-        - build-centos
-        - cleanup
     experimental:
       templates:
         - ansible-os
@@ -167,24 +163,7 @@
         - ansible-k8s
         - ansible-os
         - cleanup
-- project:
-    name: tungstenfabric/vijava
-    check:
-      templates:
-        - test-unit
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-    gate:
-      templates:
-        - test-unit
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-    gate_concurrent:
-      templates:
-        - test-unit-ui
-        - cleanup
+
 - project:
     name: tungstenfabric/tf-analytics
     check:

@@ -128,10 +128,6 @@ def _get_duration_string(duration) {
 }
 
 def _notify_gerrit(msg, verified=0, submit=false) {
-  // TODO: remove this hack when gating will be implemented
-  if (env.GERRIT_PIPELINE == 'gate' || env.GERRIT_PIPELINE == 'gate_concurrent')
-    return
-
   if (!env.GERRIT_HOST) {
     if (env.GERRIT_PIPELINE == 'nightly') {
       emailext body: msg, subject: '[TF-JENKINS] Nightly build report', to: '$DEFAULT_RECIPIENTS'
@@ -222,6 +218,8 @@ def has_gate_approvals() {
 }
 
 def has_gate_submits() {
+  return false
+  // TODO: remove workaround later
   return _has_approvals('VerifiedTF:approved,Code-Review:approved,Approved:approved')  
 }
 
