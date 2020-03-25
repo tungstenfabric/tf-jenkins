@@ -544,17 +544,23 @@ def gate_lookup_fetch_job( build_no){
 // !!! Works only if build has been finished! Check getResult() before call this function
 def gate_get_build_state(build){
     def result = "FAILURE"
+    println("DEBUG: Check build here: gate_get_build_state")
     def artifactManager =  build.getArtifactManager()
     if (artifactManager.root().isDirectory()) {
+      println("DEBUG: Artifact directory fount")
       def fileList = artifactManager.root().list()
+      println("DUBUG: filelist = ${fileList}")
       fileList.each {
         def file = it
+        println("DEBUG: found file: ${file}")
         if(file.toString().contains('global.env')) {
           // extract global.env artifact for each build if exists
           def fileText = it.open().getText()
+          println("DEBUG: content of global.env is : ${fileText}")
           fileText.split("\n").each {
             def line = it
             if(line.contains('VERIFIED')) {
+              println("DEBUG: found VERIFIED line is ${line}")
               def verified = line.split('=')[1].trim()
               if(verified.isInteger() && verified.toInteger() > 0)
                 result = "SUCCESS"
@@ -565,5 +571,6 @@ def gate_get_build_state(build){
     }else{
       println("DEBUG: Not found artifact directory - suppose build fails")
     }
+  println("DEBUG: Build is ${result}")  
   return result
 }
