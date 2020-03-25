@@ -88,6 +88,7 @@ timestamps {
               builds_map = create_gate_builds_map()
               println("DEBUG: prepare builds_map = ${builds_map} ")
               base_build_no = set_devenv_tag(builds_map, fetch_sources_count)
+              println("DEBUG: Base buildNo = ${base_build_no}")
               // Run jubs baset on DEVENVTAG if exists
               println("DEBUG: Just before starts jobs: ${jobs}")
               jobs_utils.run_jobs(jobs)
