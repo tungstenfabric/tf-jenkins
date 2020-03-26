@@ -2,6 +2,9 @@
     name: "build"
     description: "build"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 100
     scm:
       - tf-jenkins
       - tf-dev-env

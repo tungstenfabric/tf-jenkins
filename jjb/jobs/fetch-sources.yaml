@@ -2,6 +2,9 @@
     name: "fetch-sources"
     description: "fetch sources"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 100
     scm:
       - tf-jenkins
       - tf-dev-env
