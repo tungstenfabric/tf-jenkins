@@ -291,9 +291,8 @@
 
 - template:
     name: rhosp
-    # comment it for now
-    #parents:
-    #  - build-rhel
+    parents:
+      - build-rhel
     streams:
       rhosp:
     jobs:
@@ -302,8 +301,7 @@
       deploy-tf-rhosp:
         stream: rhosp
         depends-on:
-          # TODO: use build artifacts in deploy
-          #- build-rhel
+          - build-rhel
           - deploy-platform-rhosp
       test-sanity-rhosp:
         job-name: test-sanity

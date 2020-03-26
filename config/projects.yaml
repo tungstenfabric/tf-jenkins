@@ -20,9 +20,7 @@
         - helm-k8s
         - helm-os
         - juju-k8s
-        - juju-os
-        # build-rhel can be removed when it will be enabled in rhosp template
-        - build-rhel
+        - juju-os        
         - rhosp
         - cleanup
       jobs:
