@@ -11,7 +11,7 @@
     name: tungstenfabric
     nightly:
       templates:
-        - build-from-src-centos
+        - build-r1912
         - test-unit
         - test-unit-ui
         - k8s-manifests

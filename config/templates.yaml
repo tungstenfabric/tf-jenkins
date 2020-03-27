@@ -57,6 +57,28 @@
           TAG_SUFFIX: -rhel7
 
 - template:
+    name: fetch-sources-r1912
+    jobs:
+      fetch-sources-r1912:
+        job-name: fetch-sources
+        vars:
+          GERRIT_BRANCH: R1912
+          TAG_SUFFIX: "-1912"
+
+- template:
+    name: build-r1912
+    parents:
+      - fetch-sources-r1912
+    jobs:
+      build-r1912:
+        job-name: build
+        depends-on:
+          - fetch-sources-r1912
+        vars:
+          GERRIT_BRANCH: R1912
+          TAG_SUFFIX: "-1912"
+
+- template:
     name: test-unit
     parents:
       - fetch-sources-centos
