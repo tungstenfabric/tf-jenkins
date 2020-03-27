@@ -310,6 +310,10 @@
           environment_os: rhel7
           deployer: rhosp
           orchestrator: openstack
+      - openshift:
+          environment_os: rhel7
+          deployer: openshift
+          orchestrator: kubernetes
     jobs:
       - 'deploy-platform-{project}'
       - 'deploy-tf-{project}'

@@ -316,3 +316,31 @@
           - deploy-platform-rhosp
           - deploy-tf-rhosp
           - test-sanity-rhosp
+
+- template:
+    name: openshift
+    parents:
+      - build-rhel
+    streams:
+      openshift:
+    jobs:
+      deploy-platform-openshift:
+        stream: openshift
+      deploy-tf-openshift:
+        stream: openshift
+        depends-on:
+          - build-rhel
+          - deploy-platform-openshift
+      test-sanity-openshift:
+        job-name: test-sanity
+        stream: openshift
+        depends-on:
+          - deploy-tf-openshift
+      collect-logs-and-cleanup-openshift:
+        job-name: collect-logs-and-cleanup
+        stream: openshift
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-openshift
+          - deploy-tf-openshift
+          - test-sanity-openshift

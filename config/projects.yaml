@@ -271,6 +271,17 @@
         - cleanup
 
 - project:
+    name: Juniper/openshift-ansible
+    check:
+      templates:
+        - openshift
+        - cleanup
+    gate:
+      templates:
+        - openshift
+        - cleanup
+
+- project:
     name: tungstenfabric/tf-vcenter-fabric-manager
     check:
       templates:
