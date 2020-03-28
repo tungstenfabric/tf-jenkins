@@ -10,6 +10,13 @@
 - project:
     name: tungstenfabric
     nightly:
+      streams:
+        juju-k8s:
+          voting: false
+        rhosp:
+          voting: false
+        helm-os:
+          voting: false
       templates:
         - build-r1912
         - test-unit
@@ -33,7 +40,7 @@
           depends-on:
             - build-rhel
           vars:
-            TAG_SUFFIX: -rhel
+            TAG_SUFFIX: -rhel7
       post-jobs:
         publish-centos-stable:
           job-name: publish
@@ -237,8 +244,6 @@
     name: tungstenfabric/tf-charms
     check:
       streams:
-        juju-os:
-          voting: false
         juju-k8s:
           voting: false
       templates:
