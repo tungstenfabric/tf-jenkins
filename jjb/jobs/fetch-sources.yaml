@@ -113,6 +113,9 @@
                 build-steps:
                     - shell: |
                         source "$WORKSPACE/global.env"
+                        source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
+                        # do it as a latest source to override all exports
+                        source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
                         # have cleanup here for case of 'cancel job'
                         if [[ -e $WORKSPACE/stackrc.$JOB_NAME.env ]] ; then
                             # cleanup only if worker was created
@@ -123,10 +126,10 @@
                         else
                             echo "INFO: there is no env file. skipping workers cleanup"
                         fi
-                        CONTAINER="$(sudo docker ps --all --quiet --filter "status=running" --filter "name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}")"
+                        CONTAINER="$(sudo docker ps --all --quiet --filter "status=running" --filter "name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}")"
                         if [ -n "$CONTAINER" ]; then
-                          sudo docker stop $CONTAINER
-                          sudo docker rm $CONTAINER
+                            sudo docker stop $CONTAINER
+                            sudo docker rm $CONTAINER
                         fi
         - archive:
             artifacts: '*.env'
