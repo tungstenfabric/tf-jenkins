@@ -9,6 +9,8 @@ if (env.GERRIT_PIPELINE == 'nightly') {
   TIMEOUT_HOURS = 6
   REGISTRY_PORT = "5002"
 }
+// this is default LTS release for all deployers
+OPENSTACK_VERSION="queens"
 
 // pipeline flow variables
 // base url for all jobs
@@ -135,6 +137,7 @@ def evaluate_env() {
       # store default registry params. jobs can redefine them if needed in own config (VARS).
       echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
       echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
+      echo "export OPENSTACK_VERSION=${OPENSTACK_VERSION}" >> global.env
       echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
     """

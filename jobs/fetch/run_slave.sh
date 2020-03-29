@@ -31,7 +31,7 @@ function run_dev_env() {
 
   # TODO: enable later
   # export CONTRAIL_BUILD_FROM_SOURCE=1
-  export OPENSTACK_VERSIONS=rocky
+  export OPENSTACK_VERSIONS=queens,rocky
   export CONTRAIL_CONTAINER_TAG=$container_tag
 
   export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}
