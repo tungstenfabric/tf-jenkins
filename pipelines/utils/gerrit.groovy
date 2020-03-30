@@ -1,7 +1,7 @@
 // Gerrit utils
 
-VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2]
-VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2]
+VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2, 'nightly': 1]
+VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2, 'nightly': -1]
 
 def resolve_gerrit_url() {
   def url = "http://${env.GERRIT_HOST}/"
@@ -128,13 +128,13 @@ def _get_duration_string(duration) {
 }
 
 def _notify_gerrit(msg, verified=0, submit=false) {
+  println("Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}")
   if (!env.GERRIT_HOST) {
     if (env.GERRIT_PIPELINE == 'nightly') {
       emailext body: msg, subject: '[TF-JENKINS] Nightly build report', to: '$DEFAULT_RECIPIENTS'
     }
     return
   }
-  println("Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}")
   withCredentials(
     bindings: [
       usernamePassword(credentialsId: env.GERRIT_HOST,
