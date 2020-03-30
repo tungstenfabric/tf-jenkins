@@ -38,6 +38,7 @@ pipeline{
           }
         }
         stage('Docker cleanup on aws') {
+          agent { label 'aws'}
           steps{
             sh '''
             docker system prune -a --filter "until=48h" -f || true
@@ -72,6 +73,7 @@ pipeline{
           }
         }
         stage('Docker cleanup on vexx') {
+          agent { label 'vexxhost'}
           steps{
             sh '''
             docker system prune -a --filter "until=48h" -f || true
