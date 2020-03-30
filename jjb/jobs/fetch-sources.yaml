@@ -131,7 +131,7 @@
                             docker stop $CONTAINER
                             docker rm $CONTAINER
                         fi
-                        IMAGE="$(sudo docker images -a | grep tf-developer-sandbox | grep ${TAG_SUFFIX} | awk '{print \$3}' | sort | uniq)"
+                        IMAGE="$(sudo docker images -a | grep tf-developer-sandbox | grep ${TAG_SUFFIX} | awk '{print $3}' | sort | uniq)"
                         if [[ -n "$IMAGE" ]]; then
                             docker rmi $IMAGE
                         fi
