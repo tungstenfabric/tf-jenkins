@@ -126,14 +126,14 @@
                         else
                             echo "INFO: there is no env file. skipping workers cleanup"
                         fi
-                        CONTAINER="$(docker ps --all --quiet --filter "status=running" --filter "name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}")"
-                        if [ -n "$CONTAINER" ]; then
+                        CONTAINER="$(docker ps --all --quiet --filter 'status=running' --filter 'name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}')"
+                        if [[ -n "$CONTAINER" ]]; then
                             docker stop $CONTAINER
                             docker rm $CONTAINER
                         fi
-                        IMAGE=$(sudo docker images -a | grep tf-developer-sandbox | grep ${TAG_SUFFIX}" | awk '{print $3}' | sort | uniq)
-                        if [ -n "$CONTAINER" ]; then
-                          docker rmi $IMAGE
+                        IMAGE="$(sudo docker images -a | grep tf-developer-sandbox | grep ${TAG_SUFFIX} | awk '{print \$3}' | sort | uniq)"
+                        if [[ -n "$IMAGE" ]]; then
+                            docker rmi $IMAGE
                         fi
         - archive:
             artifacts: '*.env'
