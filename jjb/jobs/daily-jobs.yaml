@@ -1,14 +1,14 @@
 ---
 
 - job:
-    name: pipeline-report
-    description: report
+    name: daily-jobs
+    description: daily-jobs
     project-type: pipeline
     concurrent: false
     pipeline-scm:
       scm:
         - tf-jenkins
-      script-path: pipelines/report.groovy
+      script-path: pipelines/daily-jobs.groovy
       lightweight-checkout: true
     triggers:
       - timed: '15 4 * * *'

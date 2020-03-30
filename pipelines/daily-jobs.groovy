@@ -37,6 +37,13 @@ pipeline{
             }
           }
         }
+        stage('Docker cleanup') {
+          steps{
+            sh '''
+            docker system prune -a --filter "until=48h" -f || true
+            '''
+          }
+        }
         stage('Build Vexxhost usage report') {
           agent { label 'vexxhost'}
           steps {
@@ -62,6 +69,13 @@ pipeline{
               """
               stash allowEmpty: true, name: "vexxhost", excludes: "src/**"
             }
+          }
+        }
+        stage('Docker cleanup') {
+          steps{
+            sh '''
+            docker system prune -a --filter "until=48h" -f || true
+            '''
           }
         }
       }
