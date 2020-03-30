@@ -76,9 +76,8 @@
           which-build: upstream-build
           optional: true
       - shell: |
-          # ignore errors for prune because
-          # docker allows only one prune operationa at a time
-          sudo docker system prune -a --filter "until=1h" -f || true
+          source "$WORKSPACE/global.env"
+          docker rmi ${CONTAINER_REGISTRY}/tf-developer-sandbox:stable 
       - shell: |
           source "$WORKSPACE/global.env"
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
@@ -126,10 +125,14 @@
                         else
                             echo "INFO: there is no env file. skipping workers cleanup"
                         fi
-                        CONTAINER="$(sudo docker ps --all --quiet --filter "status=running" --filter "name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}")"
+                        CONTAINER="$(docker ps --all --quiet --filter "status=running" --filter "name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}")"
                         if [ -n "$CONTAINER" ]; then
-                            sudo docker stop $CONTAINER
-                            sudo docker rm $CONTAINER
+                            docker stop $CONTAINER
+                            docker rm $CONTAINER
+                        fi
+                        IMAGE=$(sudo docker images -a | grep tf-developer-sandbox | grep ${TAG_SUFFIX}" | awk '{print $3}' | sort | uniq)
+                        if [ -n "$CONTAINER" ]; then
+                          docker rmi $IMAGE
                         fi
         - archive:
             artifacts: '*.env'
