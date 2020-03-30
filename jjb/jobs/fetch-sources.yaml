@@ -77,7 +77,8 @@
           optional: true
       - shell: |
           source "$WORKSPACE/global.env"
-          docker rmi ${CONTAINER_REGISTRY}/tf-developer-sandbox:stable || /bin/true
+          docker tag ${CONTAINER_REGISTRY}/tf-developer-sandbox:stable ${BUILD_TAG}
+          docker rmi ${CONTAINER_REGISTRY}/tf-developer-sandbox:stable
       - shell: |
           source "$WORKSPACE/global.env"
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
