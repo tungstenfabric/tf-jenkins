@@ -76,9 +76,7 @@
           which-build: upstream-build
           optional: true
       - shell: |
-          source "$WORKSPACE/global.env"
-          docker tag "${CONTAINER_REGISTRY}/tf-developer-sandbox:stable" "${BUILD_TAG}"
-          docker rmi "${CONTAINER_REGISTRY}/tf-developer-sandbox:stable"
+          docker system prune -a --filter "until=2h" -f || true
       - shell: |
           source "$WORKSPACE/global.env"
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
@@ -130,10 +128,6 @@
                         if [[ -n "$CONTAINER" ]]; then
                             docker stop $CONTAINER
                             docker rm $CONTAINER
-                        fi
-                        IMAGE="$(sudo docker images -a | grep tf-developer-sandbox | grep ${TAG_SUFFIX} | awk '{print $3}' | sort | uniq)"
-                        if [[ -n "$IMAGE" ]]; then
-                            docker rmi $IMAGE
                         fi
         - archive:
             artifacts: '*.env'
