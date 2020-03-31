@@ -76,8 +76,6 @@
           which-build: upstream-build
           optional: true
       - shell: |
-          docker system prune -a --filter "until=2h" -f || true
-      - shell: |
           source "$WORKSPACE/global.env"
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
           echo "DESCRIPTION $desc"
