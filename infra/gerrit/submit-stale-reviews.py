@@ -7,7 +7,6 @@ import traceback
 
 from gerrit import Gerrit, Change, Expert
 
-
 def dbg(msg):
     logging.debug(msg)
 
@@ -16,26 +15,14 @@ def err(msg):
     logging.error(msg)
 
 
-def is_eligible_for_nothing(expert_, change_):
-    dbg("Not Ready for anything")
-    sys.exit(2)
-
-def main(strategy_):
+def main():
     parser = argparse.ArgumentParser(
-        description="TF tool for pushing messages to Gerrit review")
+        description="TF tool for auto-submitting stale Gerrit reviews")
     parser.add_argument("--debug", dest="debug", action="store_true")
     parser.add_argument("--gerrit", help="Gerrit URL", dest="gerrit", type=str)
-    parser.add_argument("--review", help="Review ID", dest="review", type=str)
-    parser.add_argument("--branch",
+    parser.add_argument("--branch", required=False,
         help="Branch (optional, it is mundatory in case of cherry-picks)",
         dest="branch", type=str)
-    parser.add_argument("--approvals",
-        help="List of approvals to check. "
-             "Format: <Name:Key[:Value>]>,<Name:Key>,...\n"
-             "If Value is not provided then just checks if Key is present\n"
-             "E.g. 'Verified:recommended:1,Code-Review:approved,Approved:approved'",
-        dest="approvals", type=str,
-        default='Verified:recommended:1,Code-Review:approved,Approved:approved')
     parser.add_argument("--user", help="Gerrit user", dest="user", type=str)
     parser.add_argument("--password", help="Gerrit API password",
         dest="password", type=str)
@@ -45,7 +32,11 @@ def main(strategy_):
     logging.basicConfig(level=log_level)
     try:
         gerrit = Gerrit(args.gerrit, args.user, args.password)
-        strategy_(Expert(gerrit), gerrit.get_current_change(args.review, args.branch))
+        expert = Expert(gerrit)
+        for c in filter(lambda c_: expert.is_eligible_for_submit(c_), gerrit.list_active_changes(args.branch)):
+            dbg('submitting review #%s/%s' % (str(c.number), str(c.revision_number)))
+#            gerrit.submit(c.number, c.revision_number)
+
     except Exception as e:
         print(traceback.format_exc())
         err("ERROR: failed to check approvals: %s" % e)
@@ -53,4 +44,5 @@ def main(strategy_):
 
 
 if __name__ == "__main__":
-    main(is_eligible_for_nothing)
+    main()
+
