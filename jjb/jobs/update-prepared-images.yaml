@@ -4,7 +4,7 @@
     defaults: global
     node: vexxhost
     triggers:
-      - timed: 'H H(6-7) * * 1'
+      - timed: 'H H(3-4) * * 1'
     scm:
       - tf-jenkins
     wrappers:
