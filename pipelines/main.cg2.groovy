@@ -70,6 +70,8 @@ timestamps {
           pre_build_done = true
         }
 
+
+        println("DEBUG: env.GERRIT_PIPELINE  = ${env.GERRIT_PIPELINE}")
         if (env.GERRIT_PIPELINE == 'gate'){
           println("DEBUG: Welcome to gate pipeline!!!")
         }
