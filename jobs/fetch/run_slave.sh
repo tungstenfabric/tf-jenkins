@@ -61,7 +61,7 @@ function push_dev_env() {
   sudo docker stop $TF_DEVENV_CONTAINER_NAME || true
 
   echo "INFO: commit tf-developer-sandbox container"
-  if ! sudo docker commit --change "LABEL pipeline=$PIPELINE_BUILD_TAG" $TF_DEVENV_CONTAINER_NAME $commit_name ; then
+  if ! sudo docker commit $TF_DEVENV_CONTAINER_NAME $commit_name ; then
     echo "ERROR: failed to commit tf-developer-sandbox"
     exit 1
   fi
