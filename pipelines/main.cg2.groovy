@@ -5,6 +5,7 @@ REGISTRY_PORT = "5001"
 LOGS_HOST = "pnexus.sytes.net"
 LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
 LOGS_BASE_URL = "http://pnexus.sytes.net:8082/jenkins_logs"
+GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
 if (env.GERRIT_PIPELINE == 'nightly') {
   TIMEOUT_HOURS = 6
   REGISTRY_PORT = "5002"
@@ -42,6 +43,7 @@ timestamps {
         gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
         config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
         jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
+        gate_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gate.groovy")
       }
       // TODO: remove comment here when gating is ready
       //if (env.GERRIT_PIPELINE == 'gate') { // && !gerrit_utils.has_gate_approvals()) {
@@ -72,9 +74,25 @@ timestamps {
 
         if (env.GERRIT_PIPELINE == 'gate'){
           println("DEBUG: Welcome to gate pipeline!!!")
-        }
 
-        // jobs_utils.run_jobs(jobs)
+          while(true){
+            def base_build = gate_utils.save_base_builds()
+            try{
+              jobs_utils.run_jobs(jobs)
+
+            }catch{
+              println("DEBUG: Something fails ${ex}")
+              if (! gate_utils.check_build_is_not_failed(BUILD_ID)){
+                // If build has been failed - throw exection
+                throw new Exception(ex)
+              }
+            }finally{
+              // wait for finiches base build
+
+            }
+          }
+          // jobs_utils.run_jobs(jobs)
+        }
       } finally {
         println(job_results)
         stage('gerrit vote') {
@@ -93,7 +111,6 @@ timestamps {
     }
   }
 }
-
 
 def clone_self() {
   checkout([
