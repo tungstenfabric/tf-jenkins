@@ -170,7 +170,7 @@ def _notify_gerrit(msg, verified=0, submit=false) {
   }
 }
 
-def _has_approvals(approvals) {
+def _has_approvals(strategy_) {
   if (!env.GERRIT_HOST) {
     // looks like it's a nightly pipeline
     return false
@@ -191,19 +191,18 @@ def _has_approvals(approvals) {
     def output = ""
     try {
       output = sh(returnStdout: true, script: """
-        ${WORKSPACE}/tf-jenkins/infra/gerrit/check_approvals.py \
+        ${WORKSPACE}/tf-jenkins/infra/gerrit/${strategy_}.py \
           --debug \
           --gerrit ${url} \
           --user ${GERRIT_API_USER} \
           --password ${GERRIT_API_PASSWORD} \
           --review ${GERRIT_CHANGE_ID} \
-          --branch ${GERRIT_BRANCH} \
-          --approvals '${approvals}' 
+          --branch ${GERRIT_BRANCH}
       """).trim()
       println(output)
       return true
     } catch (err) {
-      println("Exeption in check_approvals.py")
+      println("Exeption in ${strategy_}.py")
       def msg = err.getMessage()
       if (msg != null) {
         println(msg)
@@ -213,14 +212,32 @@ def _has_approvals(approvals) {
   }
 }
 
+def submit_stale_reviews() {
+  if (!env.GERRIT_HOST) {
+    return
+  }
+  withCredentials(
+    bindings: [
+      usernamePassword(credentialsId: env.GERRIT_HOST,
+      passwordVariable: 'GERRIT_API_PASSWORD',
+      usernameVariable: 'GERRIT_API_USER')]) {
+
+    def url = resolve_gerrit_url()
+    sh """
+      ${WORKSPACE}/tf-jenkins/infra/gerrit/submit-stale-reviews.py \
+        --gerrit ${url} \
+        --user ${GERRIT_API_USER} \
+        --password ${GERRIT_API_PASSWORD}
+    """
+  }
+}
+
 def has_gate_approvals() {
-  return _has_approvals('VerifiedTF:recommended:1,Code-Review:approved,Approved:approved')
+  return _has_approvals('check_gating_approvals')
 }
 
 def has_gate_submits() {
-  return false
-  // TODO: remove workaround later
-  return _has_approvals('VerifiedTF:approved,Code-Review:approved,Approved:approved')  
+  return _has_approvals('check_submit_approvals')
 }
 
 return this
