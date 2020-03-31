@@ -5,7 +5,7 @@ import logging
 import sys
 import traceback
 
-from gerrit import Gerrit, Change
+import gerrit_utils
 
 
 def dbg(msg):
@@ -55,7 +55,7 @@ def main():
     log_level = logging.DEBUG if args.debug else logging.INFO
     logging.basicConfig(level=log_level)
     try:
-        gerrit = Gerrit(args.gerrit, args.user, args.password)
+        gerrit = gerrit_utils.Gerrit(args.gerrit, args.user, args.password)
         change = gerrit.get_current_change(args.review, branch=args.branch)
         labels = parse_labels(args.labels)
         gerrit.push_message(change, args.message, args.patchset, labels=labels)

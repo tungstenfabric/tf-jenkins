@@ -170,7 +170,7 @@ def _notify_gerrit(msg, verified=0, submit=false) {
   }
 }
 
-def _has_approvals(strategy_) {
+def _has_approvals(strategy) {
   if (!env.GERRIT_HOST) {
     // looks like it's a nightly pipeline
     return false
@@ -191,8 +191,9 @@ def _has_approvals(strategy_) {
     def output = ""
     try {
       output = sh(returnStdout: true, script: """
-        ${WORKSPACE}/tf-jenkins/infra/gerrit/${strategy_}.py \
+        ${WORKSPACE}/tf-jenkins/infra/gerrit/check_approvals.py \
           --debug \
+          --strategy ${strategy}
           --gerrit ${url} \
           --user ${GERRIT_API_USER} \
           --password ${GERRIT_API_PASSWORD} \
@@ -202,7 +203,7 @@ def _has_approvals(strategy_) {
       println(output)
       return true
     } catch (err) {
-      println("Exeption in ${strategy_}.py")
+      println("Exeption in check_approvals.py")
       def msg = err.getMessage()
       if (msg != null) {
         println(msg)
@@ -224,7 +225,7 @@ def submit_stale_reviews() {
 
     def url = resolve_gerrit_url()
     sh """
-      ${WORKSPACE}/tf-jenkins/infra/gerrit/submit-stale-reviews.py \
+      ${WORKSPACE}/tf-jenkins/infra/gerrit/submit_stale_reviews.py \
         --gerrit ${url} \
         --user ${GERRIT_API_USER} \
         --password ${GERRIT_API_PASSWORD}
@@ -233,11 +234,17 @@ def submit_stale_reviews() {
 }
 
 def has_gate_approvals() {
-  return _has_approvals('check_gating_approvals')
+  def result = _has_approvals('gate')
+  println("INFO: has_gate_approvals = ${result}")
+  return result
 }
 
 def has_gate_submits() {
-  return _has_approvals('check_submit_approvals')
+  def result = _has_approvals('submit')
+  println("INFO: has_submit_approvals = ${result}")
+  // TODO: remove return false and uncomment real result when we will be ready for this
+  return false
+  //return result
 }
 
 return this
