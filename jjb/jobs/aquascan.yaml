@@ -84,7 +84,7 @@
           # collect logs
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
           rsync -a --remove-source-files -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
-          find ${WORKSPACE} -maxdepth 1 -name \*.xls | rsync --remove-source-files -a -e  "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" --files-from=- / ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
+          find ${WORKSPACE} -maxdepth 1 -name \*.xls -printf "%f\n" | rsync --remove-source-files -ave "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" --files-from=- ${WORKSPACE} ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
 
           ./src/progmaticlab/tf-jenkins/jobs/aquascan/collect_logs.sh
           exit $res
