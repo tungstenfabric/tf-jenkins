@@ -348,6 +348,8 @@
     jobs:
       deploy-platform-openshift:
         stream: openshift
+        depends-on:
+          - build-rhel
       deploy-tf-openshift:
         stream: openshift
         depends-on:
