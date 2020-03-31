@@ -24,6 +24,7 @@ export RHEL_USER=$RHEL_USER
 export RHEL_PASSWORD=$RHEL_PASSWORD
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
+export ENABLE_RHEL_REGISTRATION='false'
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
 cd tf-devstack/rhosp
