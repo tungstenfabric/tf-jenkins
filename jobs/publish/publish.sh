@@ -18,8 +18,6 @@ function err(){
 
 log "Publish TF container"
 
-[ -e $my_dir/publish.env ] && source $my_dir/publish.env
-
 [ -z "$CONTRAIL_REGISTRY" ] && { err "empty CONTRAIL_REGISTRY" && exit -1; }
 [ -z "$CONTAINER_TAG" ] && { err "empty CONTAINER_TAG" && exit -1; }
 [ -z "$PUBLISH_TAGS" ] && { err "empty PUBLISH_TAGS" && exit -1; }
