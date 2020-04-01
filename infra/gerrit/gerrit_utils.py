@@ -156,7 +156,7 @@ class Change(object):
         msg = self._data['revisions'][self.revision]['commit']['message']
         for d in DEPENDS_RE.findall(msg):
             review_id = d.split(':')[1].strip()
-            change = self._gerrit.get_current_change_smart(review_id, self.branch)
+            change = self._gerrit.get_current_change(review_id, self.branch)
             if change.is_active:
                 result.append(review_id)
         dbg("Change: %s: depends_on: %s" % (self._data['change_id'], result))
