@@ -2,8 +2,6 @@
     name: "fetch-sources"
     description: "fetch sources"
     defaults: global
-    # to avoid collisions at 'docker prune' operation
-    quiet-period: 30
     properties:
       - build-discarder:
           num-to-keep: 100
