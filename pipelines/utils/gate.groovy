@@ -9,8 +9,7 @@ NORMAL_PROJECTS = ['Juniper/contrail-ansible-deployer',
 // get its base builds list if any, and then iterate over the list
 // check if items of the list is still working or SUCCESS or FAILURE.
 // If next build is fit to be a base build, the function add its id to BASE_BUILDS_LIST
-// also prepare DEPS_LIST and these vars to global.env
-// return false if base build not found or build_id if found
+// return false if base build not found or build_id if foundпше
 // save BASE_BUILD_ID_LIST sting including base builds chain like "23,22,20"
 def save_base_builds(){
   def builds_map = _prepare_builds_map()
@@ -279,7 +278,7 @@ def _get_pipeline_result(build_no){
 }
 
 // Check if pipeline with the same GERRIT_PROJECT is running
-// and if it is wait until finishes
+// and if it is then wait until finishes
 def wait_until_project_pipeline(){
   def builds_map = _prepare_builds_map()
   def same_project_build = false
