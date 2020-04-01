@@ -71,6 +71,10 @@ def addVulnerabilities(source_, sink_, firstLine_):
         if 'nvd_score' in v:
           s = s and 7 > float(v['nvd_score'])
           x['NVD CVSS v2 Score'] = v['nvd_score']
+	if 'fix_version' in v:
+          x['Fix Version'] = v['fix_version']
+	if 'solution' in v:
+          x['Solution'] = v['solution']
         if 'publish_date' in v:
           x['Publish Date'] = v['publish_date']
         if 'vendor_vectors_v3' in v:
