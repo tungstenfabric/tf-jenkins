@@ -75,7 +75,7 @@ timestamps {
           println("DEBUG: Welcome to gate pipeline!!!")
 
           while(true){
-            def base_build = gate_utils.save_base_builds()
+            def base_build_no = gate_utils.save_base_builds()
             try{
               jobs_utils.run_jobs(jobs)
             }catch{
@@ -85,7 +85,7 @@ timestamps {
                 throw new Exception(ex)
               }
             }finally{
-              if(base_build){
+              if(base_build_no){
                 println("DEBUG: We are found base pipeline ${base_build_no} and waiting when base pipeline will finished")
                 gate_utils.wait_pipeline_finished(base_build_no)
                 println("DEBUG: Base pipeline has been finished")

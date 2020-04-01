@@ -7,11 +7,12 @@ GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
 // check if items of the list is still working or SUCCESS or FAILURE.
 // If next build is fit to be a base build, the function add its id to BASE_BUILDS_LIST
 // also prepare DEPS_LIST and these vars to global.env
-// return false if base build not found or string with base builds chain ( i.e. 25,24,23 )
+// return false if base build not found or build_id if found
+// save BASE_BUILD_ID_LIST sting including base builds chain like "23,22,20"
 def save_base_builds(){
   def builds_map = _prepare_builds_map()
 
-  def res_chain = null
+  def base_build_no = false
 
   builds_map.any { build_id, build_map ->
     if(_is_branch_fit(build_id)){
@@ -23,13 +24,20 @@ def save_base_builds(){
         // Wait for build chain will be prepared
         def base_chain = _wait_for_chain_calculated(build_id)
         if(_check_base_chain_is_not_failed(base_chain)){
-          // We found base build! Return base chain
-          res_chain = base_chain
+          // We found base build! Save base_chain in global.vars
+          base_build_no = build_id
+          // TODO Here save BASE_BUILD_ID_LIST to global.vars
+        sh """#!/bin/bash -e
+          echo "export BASE_BUILD_ID_LIST=${base_chain}" >> global.env
+        """
+        archiveArtifacts(artifacts: 'global.env')
           return true
         }
       }
     }
   }
+
+  return base_build_no
 }
 
 // Function parse base chain and check if all builds is not failed
