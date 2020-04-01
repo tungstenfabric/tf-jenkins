@@ -23,16 +23,27 @@ def save_base_builds(){
       }else{ // build is running
         // Wait for build chain will be prepared
         def base_chain = _wait_for_chain_calculated(build_id)
-        if(_check_base_chain_is_not_failed(base_chain)){
-          // We found base build! Save base_chain in global.vars
-          base_build_no = build_id
-          // TODO Here save BASE_BUILD_ID_LIST to global.vars
+        if(base_chain == "-1"){ // build fails before can calculate BASE_BUILD_ID_LIST
+          println("DEBUG: Build failed before BASE_BUILD_ID_LIST has been calculated")
+          return false
+        }
+        if(base_chain){ // base_chain is not empty string
+          base_chain = _check_base_chain_is_not_failed(base_chain)
+          if(base_chain == false){ // Some of base builds fails
+            println("DEBUG: Some of base build fails")
+            return false
+          }
+          base_chain = "${build_id}," + base_chain
+        }else{ // base_chain is empty, add the only this build to chain
+          base_chain = build_id.toString()
+        }
+        // We found base build! Save base_chain in global.vars
+        base_build_no = build_id
         sh """#!/bin/bash -e
           echo "export BASE_BUILD_ID_LIST=${base_chain}" >> global.env
         """
         archiveArtifacts(artifacts: 'global.env')
-          return true
-        }
+        return true
       }
     }
   }
@@ -40,10 +51,20 @@ def save_base_builds(){
   return base_build_no
 }
 
+// Function find build with build_id and gets it's global env.
+// Read global.env and wait until variable BASE_BUILD_ID_LIST will be added there
+// or if build failed.
+// return value of BASE_BUILD_ID_LIST if it has been found
+// or -1 if build fails
+def _wait_for_chain_calculated(build_id){
+  res = "-1"
+
+}
+
 // Function parse base chain and check if all builds is not failed
 // if function meet successfully finished build in the chain, this
 // build and all its base builds remove from the chain (chain shortened)
-// Return true if NOT meet faileru build and chain
+// Return true if NOT meet failure build and chain
 // and false if meet some failures
 def _check_base_chain_is_not_failed(base_chain){
   return true
