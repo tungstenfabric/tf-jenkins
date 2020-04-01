@@ -30,7 +30,7 @@ class ParentError(Exception):
 
 
 class Session(object):
-    def __init__(self, url, user, password):
+    def __init__(self, url, user=None, password=None):
         if user is not None and password is not None:
             self._url = url + "/a"
             self._auth = requests.auth.HTTPBasicAuth(user, password)
@@ -164,7 +164,7 @@ class Change(object):
 
 
 class Gerrit(object):
-    def __init__(self, gerrit_url, user, password):
+    def __init__(self, gerrit_url, user=None, password=None):
         self._url = gerrit_url.rstrip('/')
         self._session = Session(self._url, user, password)
 
