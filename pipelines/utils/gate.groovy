@@ -57,8 +57,66 @@ def save_base_builds(){
 // return value of BASE_BUILD_ID_LIST if it has been found
 // or -1 if build fails
 def _wait_for_chain_calculated(build_id){
-  res = "-1"
+  def base_id_list = "-1"
 
+  waitUntil {
+    def build = _get_build_by_id(build_id)
+    base_id_list = _find_base_list(build)
+    if(build.getResult() != null && base_id_list == "-1"){
+      // build finishes but no base_id_list was found
+      println("DEBUG: build finishes but no base_id_list was found")
+      return false
+    }
+    return _find_base_list(build) == '-1'
+  }
+}
+
+// Function get global.env artifact and find there BASE_BUILD_ID_LIST
+// Return value of BASE_BUILD_ID_LIST of has been found
+// Otherwise retirn "-1"
+def _find_base_list(build){
+  def base_id_list = "-1"
+  def artifactManager =  build.getArtifactManager()
+  if (artifactManager.root().isDirectory()) {
+    def fileList = artifactManager.root().list()
+    fileList.any {
+      def file = it
+      if(file.toString().contains('global.env')) {
+        // extract global.env artifact for each build if exists
+        def fileText = it.open().getText()
+        fileText.split("\n").each {
+          def line = it
+          // Check if BASE_BUILD_ID_LIST exists in global.env file
+          if(line.contains('BASE_BUILD_ID_LIST')) {
+            def bil = line.split('=')
+            if(bil.size() == 2){
+              base_id_list = bil[1].trim()
+            }else{ // looks like BASE_BUILD_ID_LIST= empty strinf
+              base_id_list = ""
+            }
+            return true
+          }
+        }
+      }
+    }
+  }
+
+  return base_id_list
+}
+
+// find and return build of gate pipeline using build_id
+// otherwise return false
+def _get_build_by_id(build_id){
+  def gate_pipeline = jenkins.model.Jenkins.instance.getItem(GATING_PIPELINE)
+  def build = false
+  gate_pipeline.getBuilds().any {
+    println("DEBUG: check if ${it.getId().toInteger()} == ${build_no.toInteger()}")
+    if (it.getId().toInteger() == build_no.toInteger()){
+      build = it
+      return true
+    }
+  }
+  return build
 }
 
 // Function parse base chain and check if all builds is not failed
