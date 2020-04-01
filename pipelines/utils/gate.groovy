@@ -7,9 +7,63 @@ GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
 // check if items of the list is still working or SUCCESS or FAILURE.
 // If next build is fit to be a base build, the function add its id to BASE_BUILDS_LIST
 // also prepare DEPS_LIST and these vars to global.env
-// return false if base build not found or base build id in the other case
+// return false if base build not found or string with base builds chain ( i.e. 25,24,23 )
 def save_base_builds(){
-  return false
+  def builds_map = _prepare_builds_map()
+
+  def res_chain = null
+
+  builds_map.any { build_id, build_map ->
+    if(_is_branch_fit(build_id)){
+      if(build_map['status'] != 'null'){ // build has been finished
+        if(check_build_is_not_failed(build_id)){ // We not need base build!
+          return true
+        } // else just skip the build
+      }else{ // build is running
+        // Wait for build chain will be prepared
+        def base_chain = _wait_for_chain_calculated(build_id)
+        if(_check_base_chain_is_not_failed(base_chain)){
+          // We found base build! Return base chain
+          res_chain = base_chain
+          return true
+        }
+      }
+    }
+  }
+}
+
+// Function parse base chain and check if all builds is not failed
+// if function meet successfully finished build in the chain, this
+// build and all its base builds remove from the chain (chain shortened)
+// Return true if NOT meet faileru build and chain
+// and false if meet some failures
+def _check_base_chain_is_not_failed(base_chain){
+  return true
+}
+
+// Function return ordered map with builds with data needed for find
+// and process base build
+def _prepare_builds_map(){
+  def gate_pipeline = jenkins.model.Jenkins.instance.getItem(GATING_PIPELINE)
+  def builds_map = [:]
+
+  gate_pipeline.builds.each {
+    def build = it
+    def build_id = build.getId()
+    def build_status = build.getResult().toString()
+    def build_env = build.getEnvironment()
+
+    builds_map[build_id] = {'status' : build_status , 'branch' : build_env['GERRIT_BRANCH']}
+  }
+
+  return builds_map
+}
+
+// Function check if build's branch fit to current project branch
+// Return true if we can use this build as a base build for current running pipeline
+def _is_branch_fit(build_id){
+  // TODO
+  return true
 }
 
 // Function check build using build_no is failed
