@@ -9,7 +9,9 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 # transfer patchsets info into sandbox
-cp -f $WORKSPACE/patchsets-info.json $WORKSPACE/src/tungstenfabric/tf-dev-env/
+if [ -e $WORKSPACE/patchsets-info.json ]; then
+  cp -f $WORKSPACE/patchsets-info.json $WORKSPACE/src/tungstenfabric/tf-dev-env/
+fi
 
 ${my_dir}/run_${BUILD_WORKER["${ENVIRONMENT_OS^^}"]}.sh
 
