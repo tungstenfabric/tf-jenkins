@@ -1,6 +1,9 @@
 
 // Constants
 GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
+// TODO Fill up the normal projectls list
+NORMAL_PROJECTS = ['Juniper/contrail-ansible-deployer',
+                   'Juniper/contrail-container-builder']
 
 // Function find base build fits to be the base build
 // get its base builds list if any, and then iterate over the list
@@ -162,8 +165,20 @@ def _prepare_builds_map(){
 
 // Function check if build's branch fit to current project branch
 // Return true if we can use this build as a base build for current running pipeline
+// Otherwise return false
 def _is_branch_fit(build_id){
-  // TODO
+  def build = _get_build_by_id(build_id)
+  if(NORMAL_PROJECTS.containsValue(GERRIT_PROJECT)){
+    // Project has contrail releases structure
+    // Branch of the base build must be the same
+    if(GERRIT_BRANCH != build_id.getEnvironment()['GERRIT_BRANCH'])
+      return false
+  }else{
+    // Project has its own releases structure
+    // Branch of the base build must be master
+    if(build_id.getEnvironment()['GERRIT_BRANCH'] != 'master')
+      return false
+  }
   return true
 }
 
