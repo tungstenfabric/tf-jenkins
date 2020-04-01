@@ -29,8 +29,6 @@ function run_dev_env() {
   export REGISTRY_PORT=$REGISTRY_PORT
   export SITE_MIRROR=http://${REGISTRY_IP}/repository
 
-  # TODO: enable later
-  # export CONTRAIL_BUILD_FROM_SOURCE=1
   export OPENSTACK_VERSIONS=queens,rocky
   export CONTRAIL_CONTAINER_TAG=$container_tag
 
