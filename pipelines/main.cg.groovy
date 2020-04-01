@@ -574,6 +574,6 @@ def gate_get_build_state(build){
     }else{
       println("DEBUG: Not found artifact directory - suppose build fails")
     }
-  println("DEBUG: Build is ${result}")  
+  println("DEBUG: Build is ${result}")
   return result
 }

@@ -5,7 +5,6 @@ REGISTRY_PORT = "5001"
 LOGS_HOST = "pnexus.sytes.net"
 LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
 LOGS_BASE_URL = "http://pnexus.sytes.net:8082/jenkins_logs"
-GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
 if (env.GERRIT_PIPELINE == 'nightly') {
   TIMEOUT_HOURS = 6
   REGISTRY_PORT = "5002"
@@ -79,7 +78,6 @@ timestamps {
             def base_build = gate_utils.save_base_builds()
             try{
               jobs_utils.run_jobs(jobs)
-
             }catch{
               println("DEBUG: Something fails ${ex}")
               if (! gate_utils.check_build_is_not_failed(BUILD_ID)){
@@ -87,8 +85,23 @@ timestamps {
                 throw new Exception(ex)
               }
             }finally{
-              // wait for finiches base build
-
+              if(base_build){
+                println("DEBUG: We are found base pipeline ${base_build_no} and waiting when base pipeline will finished")
+                gate_utils.wait_pipeline_finished(base_build_no)
+                println("DEBUG: Base pipeline has been finished")
+                if(gate_utils.check_build_is_not_failed(base_build_no)){
+                // Finish the pipeline if base build finished successfully
+                // else try to find new base build
+                    println("DEBUG: Base pipeline has been verified")
+                    break
+                  }else{
+                    println("DEBUG: Base pipeline has been NOT verified run build again")
+                  }
+              }else{
+                // we not have base build - Just finish the job
+                println("DEBUG: We are NOT have base pipeline")
+                break
+              }
             }
           }
           // jobs_utils.run_jobs(jobs)

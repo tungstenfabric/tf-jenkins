@@ -1,4 +1,7 @@
 
+// Constants
+GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
+
 // Function find base build fits to be the base build
 // get its base builds list if any, and then iterate over the list
 // check if items of the list is still working or SUCCESS or FAILURE.
@@ -73,4 +76,26 @@ def _gate_get_build_state(build){
     }
   println("DEBUG: Build is ${result}")
   return result
+}
+
+// Function find the build with build_no and wait it finishes with any result
+def wait_pipeline_finished(build_no){
+  waitUntil {
+    def res = _get_pipeline_result(build_no)
+    println("DEBUG: waitUntil get_pipeline_result is ${res}")
+    return ! res
+  }
+}
+
+// Put all this staff in separate function due to Serialisation under waitUntil
+def _get_pipeline_result(build_no){
+  def job = jenkins.model.Jenkins.instance.getItem(GATING_PIPELINE)
+    // Get DEVENVTAG for build_no pipeline
+    def build = null
+    job.builds.any {
+      if(build_no.toInteger() == it.getEnvVars().BUILD_ID.toInteger()){
+        build = it
+      }
+    }
+    return build.getResult() == null
 }
