@@ -320,16 +320,23 @@
     jobs:
       deploy-platform-rhosp:
         stream: rhosp
+        vars:
+          ENVIRONMENT_OS: rhel7
+          TAG_SUFFIX: -rhel7
       deploy-tf-rhosp:
         stream: rhosp
         depends-on:
           - build-rhel
           - deploy-platform-rhosp
+        vars:
+          TAG_SUFFIX: -rhel7
       test-sanity-rhosp:
         job-name: test-sanity
         stream: rhosp
         depends-on:
           - deploy-tf-rhosp
+        vars:
+          TAG_SUFFIX: -rhel7
       collect-logs-and-cleanup-rhosp:
         job-name: collect-logs-and-cleanup
         stream: rhosp
@@ -338,6 +345,8 @@
           - deploy-platform-rhosp
           - deploy-tf-rhosp
           - test-sanity-rhosp
+        vars:
+          TAG_SUFFIX: -rhel7
 
 - template:
     name: openshift
@@ -350,16 +359,23 @@
         stream: openshift
         depends-on:
           - build-rhel
+        vars:
+          ENVIRONMENT_OS: rhel7
+          TAG_SUFFIX: -rhel7
       deploy-tf-openshift:
         stream: openshift
         depends-on:
           - build-rhel
           - deploy-platform-openshift
+        vars:
+          TAG_SUFFIX: -rhel7
       test-sanity-openshift:
         job-name: test-sanity
         stream: openshift
         depends-on:
           - deploy-tf-openshift
+        vars:
+          TAG_SUFFIX: -rhel7
       collect-logs-and-cleanup-openshift:
         job-name: collect-logs-and-cleanup
         stream: openshift
@@ -368,3 +384,5 @@
           - deploy-platform-openshift
           - deploy-tf-openshift
           - test-sanity-openshift
+        vars:
+          TAG_SUFFIX: -rhel7
