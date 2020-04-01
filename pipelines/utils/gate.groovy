@@ -157,10 +157,18 @@ def _prepare_builds_map(){
     def build_status = build.getResult().toString()
     def build_env = build.getEnvironment()
 
-    builds_map[build_id] = {'status' : build_status , 'branch' : build_env['GERRIT_BRANCH']}
+    builds_map[build_id] = {'status' : build_status ,
+                            'branch' : build_env['GERRIT_BRANCH'],
+                            'project' : build_env['GERRIT_PROJECT']}
   }
 
   return builds_map
+}
+
+// function return true if project has contrail releases/branches structure
+// otherwise return false
+def is_normal_project(){
+  return NORMAL_PROJECTS.containsValue(GERRIT_PROJECT)
 }
 
 // Function check if build's branch fit to current project branch
@@ -168,7 +176,7 @@ def _prepare_builds_map(){
 // Otherwise return false
 def _is_branch_fit(build_id){
   def build = _get_build_by_id(build_id)
-  if(NORMAL_PROJECTS.containsValue(GERRIT_PROJECT)){
+  if(is_normal_project()){
     // Project has contrail releases structure
     // Branch of the base build must be the same
     if(GERRIT_BRANCH != build_id.getEnvironment()['GERRIT_BRANCH'])
@@ -268,4 +276,23 @@ def _get_pipeline_result(build_no){
       }
     }
     return build.getResult() == null
+}
+
+// Check if pipeline with the same GERRIT_PROJECT is running
+// and if it is wait until finishes
+def wait_until_project_pipeline(){
+  def builds_map = _prepare_builds_map()
+  def same_project_build = false
+  builds_map.any { build_id, build_map ->
+    if(build_map['project'] == GERRIT_PROJECT && build_map['status'] == 'null'){
+      same_project_build = build_id
+    }
+  }
+
+  if(same_project_build){
+    waitUntil {
+      build = _get_build_by_id(same_project_build)
+      return ! (build.getResult() == null)
+    }
+  }
 }

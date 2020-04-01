@@ -77,7 +77,12 @@ timestamps {
           while(true){
             def base_build_no = gate_utils.save_base_builds()
             try{
-              jobs_utils.run_jobs(jobs)
+              if(gate_utils.is_normal_project()) // Run immediately if normal projest
+                jobs_utils.run_jobs(jobs)
+              else{ // Wait for the same project pipeline is finishes
+                gate_utils.wait_until_project_pipeline()
+                jobs_utils.run_jobs(jobs)
+              }
             }catch{
               println("DEBUG: Something fails ${ex}")
               if (! gate_utils.check_build_is_not_failed(BUILD_ID)){
