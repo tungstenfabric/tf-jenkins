@@ -2,8 +2,6 @@
     name: "fetch-sources"
     description: "fetch sources"
     defaults: global
-    # to avoid collisions at 'docker prune' operation
-    quiet-period: 30
     properties:
       - build-discarder:
           num-to-keep: 100
@@ -72,11 +70,9 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "global.env,*.$JOB_RND.env"
+          filter: "global.env,*.$JOB_RND.env,patchsets-info.json"
           which-build: upstream-build
           optional: true
-      - shell: |
-          docker system prune -a --filter "until=2h" -f || true
       - shell: |
           source "$WORKSPACE/global.env"
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
@@ -110,6 +106,7 @@
                     - UNSTABLE
                 build-steps:
                     - shell: |
+                        set -o pipefail
                         source "$WORKSPACE/global.env"
                         source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
                         # do it as a latest source to override all exports
@@ -124,10 +121,22 @@
                         else
                             echo "INFO: there is no env file. skipping workers cleanup"
                         fi
-                        CONTAINER="$(docker ps --all --quiet --filter 'status=running' --filter "name=tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}")"
-                        if [[ -n "$CONTAINER" ]]; then
-                            docker stop $CONTAINER
-                            docker rm $CONTAINER
+                        # docker cleanup
+                        CONTAINER="tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}"
+                        if docker ps -a --format '{{.Names}}' | grep "$CONTAINER" ; then 
+                            if [[ "$(docker container inspect $CONTAINER --format='{{ .State.Status }}')" == 'running' ]] ; then
+                                docker stop $CONTAINER
+                                docker rm $CONTAINER
+                            else
+                                docker rm $CONTAINER
+                            fi
+                        fi
+
+                        if docker images -a | grep "tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX" ; then
+                            IMAGES_TO_DELETE="$(docker image inspect "tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX" --format {{.RepoTags}} | tr -d '[]')"
+                            if [[ -n "$IMAGES_TO_DELETE" ]]; then
+                                docker rmi $IMAGES_TO_DELETE
+                            fi
                         fi
         - archive:
             artifacts: '*.env'

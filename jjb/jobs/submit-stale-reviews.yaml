@@ -2,7 +2,7 @@
 
 - job:
     name: submit-stale-reviews
-    description: submit-stale-reviews
+    description: Checks stale reviews that has all required flags for submit but still are not submitted
     project-type: pipeline
     concurrent: false
     parameters:
@@ -17,11 +17,12 @@
           default: review.opencontrail.org
       - hidden:
           name: GERRIT_PIPELINE
-          default: submit-stale-reviews
+          default: submit
     pipeline-scm:
       scm:
         - tf-jenkins
       script-path: pipelines/submit-stale-reviews.groovy
       lightweight-checkout: true
+# TODO: enbale cron trigger
 #    triggers:
 #      - timed: '0 * * * *'

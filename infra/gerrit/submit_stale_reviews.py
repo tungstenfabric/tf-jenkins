@@ -5,7 +5,8 @@ import logging
 import sys
 import traceback
 
-from gerrit import Gerrit, Change, Expert
+import gerrit_utils
+
 
 def dbg(msg):
     logging.debug(msg)
@@ -31,10 +32,11 @@ def main():
     log_level = logging.DEBUG if args.debug else logging.INFO
     logging.basicConfig(level=log_level)
     try:
-        gerrit = Gerrit(args.gerrit, args.user, args.password)
-        expert = Expert(gerrit)
+        gerrit = gerrit_utils.Gerrit(args.gerrit, args.user, args.password)
+        expert = gerrit_utils.Expert(gerrit)
         for c in filter(lambda c_: expert.is_eligible_for_submit(c_), gerrit.list_active_changes(args.branch)):
             dbg('submitting review #%s/%s' % (str(c.number), str(c.revision_number)))
+            # TODO: uncomment submit when we will be ready
 #            gerrit.submit(c.number, c.revision_number)
 
     except Exception as e:
