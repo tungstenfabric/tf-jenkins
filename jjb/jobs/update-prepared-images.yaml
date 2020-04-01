@@ -3,8 +3,8 @@
     description: "update-prepared-images"
     defaults: global
     node: vexxhost
-    triggers:
-      - timed: 'H H(3-4) * * 1'
+#    triggers:
+#      - timed: 'H H(3-4) * * 1'
     scm:
       - tf-jenkins
     wrappers:
