@@ -61,7 +61,8 @@ def main():
         gerrit = gerrit_utils.Gerrit(args.gerrit, args.user, args.password)
         expert = gerrit_utils.Expert(gerrit)
         func = getattr(expert, strategy_hooks[args.strategy])
-        if not func(gerrit.get_current_change(args.review, args.branch)):
+        change = gerrit.get_current_change(args.review, args.branch)
+        if not func(change):
             dbg("Not Ready to {}".format(args.strategy))
             return 1
 

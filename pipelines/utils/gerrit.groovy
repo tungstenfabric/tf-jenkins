@@ -213,6 +213,19 @@ def _has_approvals(strategy) {
   }
 }
 
+def resolve_patchsets() {
+  def url = resolve_gerrit_url()
+  sh """
+    ${WORKSPACE}/tf-jenkins/infra/gerrit/resolve_patchsets.py \
+      --gerrit ${url} \
+      --review ${GERRIT_CHANGE_ID} \
+      --branch ${GERRIT_BRANCH} \
+      --changed_files \
+      --output ${WORKSPACE}/patchsets-info.json
+  """
+  archiveArtifacts(artifacts: 'patchsets-info.json')
+}
+
 def submit_stale_reviews() {
   if (!env.GERRIT_HOST) {
     return

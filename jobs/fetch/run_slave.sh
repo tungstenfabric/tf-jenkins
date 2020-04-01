@@ -34,7 +34,6 @@ function run_dev_env() {
   export OPENSTACK_VERSIONS=queens,rocky
   export CONTRAIL_CONTAINER_TAG=$container_tag
 
-  export GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}
   export GERRIT_URL=${GERRIT_URL}
   export GERRIT_BRANCH=${GERRIT_BRANCH}
 

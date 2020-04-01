@@ -152,6 +152,7 @@ def evaluate_env() {
         echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
         echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
       """
+      gerrit_utils.resolve_patchsets()
     } else if (env.GERRIT_PIPELINE == 'nightly') {
       project_name = "tungstenfabric"
     }

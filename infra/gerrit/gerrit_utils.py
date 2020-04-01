@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
-import argparse
-import collections
-import copy
 import json
 import logging
-import os
 import re
 import requests
+
+
+DEPENDS_RE = re.compile('depends-on:[ ]*[a-zA-Z0-9]+', re.IGNORECASE)
 
 
 def dbg(msg):
@@ -23,6 +22,10 @@ class GerritRequestError(Exception):
 
 
 class InvalidLabelError(Exception):
+    pass
+
+
+class ParentError(Exception):
     pass
 
 
@@ -57,16 +60,42 @@ class Session(object):
 
 
 class Change(object):
-    def __init__(self, data):
+    def __init__(self, data, gerrit):
         self._data = data
+        self._files = None
+        self._gerrit = gerrit
         dbg("Change: %s" % self._data)
+
+    def __hash__(self):
+        return hash(self.change_id)
+
+    def __eq__(self, value):
+        return self.change_id == value.change_id
+
+    def __gt__(self, value):
+        return self.change_id > value.change_id
+
+    def __lt__(self, value):
+        return self.change_id < value.change_id
 
     @property
     def id(self):
         return self._data['id']
 
     @property
-    def short_id(self):
+    def status(self):
+        return self._data['status']
+
+    @property
+    def project(self):
+        return self._data['project']
+
+    @property
+    def branch(self):
+        return self._data['branch']
+
+    @property
+    def change_id(self):
         return self._data['change_id']
 
     @property
@@ -87,6 +116,13 @@ class Change(object):
             '_number', self.ref.split("/")[4])
 
     @property
+    def files(self):
+        return self._files
+
+    def set_files(self, files):
+        self._files = files
+
+    @property
     def labels(self):
         return self._data.get('labels', {})
 
@@ -96,17 +132,35 @@ class Change(object):
 
     @property
     def parent_sha(self):
-        p = self._data['revisions'][self.revision]['commit']['parents']
-        if 1 != len(p):
+        parents = self._data['revisions'][self.revision]['commit']['parents']
+        if len(parents) != 1:
             # let's fail on this case to see if can happens
-            dbg("Parents list has invalid count {} !!!".format(p))
-            sys.exit(1)
+            msg = "Parents list has invalid count {} !!!".format(parents)
+            raise ParentError(msg)
 
-        return p[0]['commit']
+        return parents[0]['commit']
 
     @property
     def is_active(self):
         return 'NEW' == self._data['status']
+
+    @property
+    def depends_on(self):
+        result = []
+        # collect parents by SHA - non-merged review can have only one parent
+        parent = self._gerrit.get_change_by_sha(self.parent_sha)
+        if parent and parent.is_active:
+            result.append(parent.id)
+            result += parent.depends_on
+        # collect Depends-On from commit message 
+        msg = self._data['revisions'][self.revision]['commit']['message']
+        for d in DEPENDS_RE.findall(msg):
+            review_id = d.split(':')[1].strip()
+            change = self._gerrit.get_current_change_smart(review_id, self.branch)
+            if change.is_active:
+                result.append(review_id)
+        dbg("Change: %s: depends_on: %s" % (self._data['change_id'], result))
+        return result
 
 
 class Gerrit(object):
@@ -115,30 +169,47 @@ class Gerrit(object):
         self._session = Session(self._url, user, password)
 
     def _get_current_change(self, review_id, branch):
-        params='q=change:%s' % review_id
+        params = 'q=change:%s+status:open' % review_id
         if branch:
-            params+=' branch:%s' % branch
-        params+='&o=CURRENT_COMMIT&o=CURRENT_REVISION&o=DETAILED_LABELS'
+            params += ' branch:%s' % branch
+        params += '&o=CURRENT_COMMIT&o=CURRENT_REVISION&o=DETAILED_LABELS'
         return self._session.get('/changes/', params=params)
 
-    def get_current_change(self, review_id, branch=None):
-        res = self._get_current_change(review_id, branch)
-        if len(res) == 0:
-            msg = "Review %s (branch=%s) not found" % (review_id, branch)
-            raise GerritRequestError(msg)
-        return Change(res[0])
+    def get_changed_files(self, change):
+        raw = self._session.get("/changes/%s/revisions/%s/files" %
+            (change.id, change.revision_number))
+        res = list()
+        for k, _ in raw.items():
+            if k != "/COMMIT_MSG":
+                res.append(k)
+        return res
 
-    def get_that_change(self, sha_):
-        q = 'q=commit:%s&o=CURRENT_COMMIT&o=CURRENT_REVISION&o=DETAILED_LABELS' % sha_
-        m = self._session.get('/changes/', params=q)
-        if 1 == len(m):
+    def get_current_change(self, review_id, branch):
+        # request all branches for review_id to
+        # allow cross branches dependencies between projects
+        res = self._get_current_change(review_id, None)
+        if len(res) == 1:
+            # there is no ambiguite, so return the found change 
+            return Change(res[0], self)
+        # there is ambiquity - try to resolve it by branch
+        branches = {i.get('branch'): i for i in res}
+        if branch in branches:
+            return Change(branches[branch], self)
+        # same branch is not found
+        # TODO: choose DEFAULT_OPENSTACK_BRANCH if present, then latest openstack branch, then master
+        raise GerritRequestError("Review {} (branch={}) not found. Count of result is {}".format(
+            review_id, branch, len(res)))
+
+    def get_change_by_sha(self, sha):
+        params = 'q=commit:%s&o=CURRENT_COMMIT&o=CURRENT_REVISION&o=DETAILED_LABELS' % sha
+        res = self._session.get('/changes/', params=params)
+        if len(res) == 1:
             # there is no ambiguity, so return the found change 
-            return Change(m[0])
-        elif 0 == len(m):
-            dbg("Cannot find a change for SHA %s" % sha_)
+            return Change(res[0], self)
+        elif len(res) == 0:
+            dbg("Cannot find a change for SHA %s" % sha)
             return None
-
-        raise GerritRequestError("Search for SHA %s has too many results" % sha_)
+        raise GerritRequestError("Search for SHA %s has too many results" % sha)
 
     def list_active_changes(self, branch_ = None):
         spin = True
@@ -174,7 +245,6 @@ class Gerrit(object):
 
 
 class Expert(object):
-    DEPENDS_RE = re.compile('depends-on:[ ]*[a-zA-Z0-9]+', re.IGNORECASE)
 
     def __init__(self, gerrit_):
         self.m_gerrit = gerrit_
@@ -213,21 +283,7 @@ class Expert(object):
         return True
 
     def has_unmerged_parents(self, change_):
-        parents = []
-        # collect parents by SHA - non-merged review can have only one parent
-        parent = self.m_gerrit.get_that_change(change_.parent_sha)
-        if parent and parent.is_active:
-            parents.append(parent.id)
-
-        # collect Depends-On from commit message 
-        for d in Expert.DEPENDS_RE.findall(change_.commit_message):
-            review_id = d.split(':')[1].strip()
-            parent = self.m_gerrit.get_current_change(review_id)
-            if parent.is_active:
-                parents.append(review_id)
-
-        dbg("Change: %s: depends_on: %s" % (change_.short_id, parents))
-        return 0 < len(parents)
+        return 0 < len(change_.depends_on)
 
     def __is_eligible_general_test(self, change_):
         if not change_:
