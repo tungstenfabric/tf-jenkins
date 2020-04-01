@@ -58,7 +58,6 @@ def save_base_builds(){
 // or -1 if build fails
 def _wait_for_chain_calculated(build_id){
   def base_id_list = "-1"
-
   waitUntil {
     def build = _get_build_by_id(build_id)
     base_id_list = _find_base_list(build)
@@ -125,7 +124,22 @@ def _get_build_by_id(build_id){
 // Return true if NOT meet failure build and chain
 // and false if meet some failures
 def _check_base_chain_is_not_failed(base_chain){
-  return true
+  if(base_chain == "")
+    return true
+  def is_some_fails = false
+  def arr_chain = base_chain.split(",")
+  arr_chain.any { build_id ->
+    def build = _get_build_by_id(build_id)
+    if(build.getResult() == null) // is not finished yes - skip the build
+      return false
+    if(check_build_is_not_failed(build_id))
+      return false
+    else{
+      is_some_fails = true
+      return true
+    }
+  }
+  return is_some_fails
 }
 
 // Function return ordered map with builds with data needed for find
