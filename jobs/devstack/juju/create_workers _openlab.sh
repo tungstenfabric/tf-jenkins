@@ -6,8 +6,6 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-if [[ "$CLOUD" == 'maas' ]] ; then
-    "$my_dir/create_workers_openlab.sh"
-else
-    "$my_dir/create_workers_slave.sh"
-fi
+source "$my_dir/definitions"
+
+exit 1
