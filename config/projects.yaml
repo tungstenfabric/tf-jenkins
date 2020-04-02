@@ -17,6 +17,8 @@
           voting: false
         helm-os:
           voting: false
+        juju-os-maas:
+          voting: false
       templates:
         - build-r1912
         - test-unit
@@ -27,7 +29,8 @@
         - helm-k8s
         - helm-os
         - juju-k8s
-        - juju-os        
+        - juju-os
+        - juju-os-maas
         - rhosp
         - cleanup
       jobs:
