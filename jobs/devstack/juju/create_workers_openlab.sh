@@ -23,6 +23,7 @@ virsh destroy vm-maas || /bin/true
 virsh undefine vm-maas || /bin/true
 rm -f vm-maas || /bin/true
 virt-clone --original ubuntu18 --name vm-maas --auto-clone --file vm-maas
+virsh start vm-maas
 sleep 30
 echo "VM is spinned"
 EOF
