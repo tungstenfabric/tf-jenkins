@@ -7,7 +7,7 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 #source "$my_dir/definitions"
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS -p 30002 -i ${OPENLAB2_SSH_KEY} ${OPENLAB2_USER_NAME}@openlab.tf-jenkins.progmaticlab.com || res=1
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS -p 30002 -i ${OPENLAB2_SSH_KEY} jenkins@openlab.tf-jenkins.progmaticlab.com || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export BUILD_TAG=$BUILD_TAG
 export PATH=\$PATH:/usr/sbin
