@@ -351,3 +351,18 @@
         - ansible-k8s
         - ansible-os
         - cleanup
+
+- project:
+    name: tungstenfabric/tf-dev-env
+    check:
+      templates:
+        - test-unit-ui
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - test-unit-ui
+        - ansible-k8s
+        - ansible-os
+        - cleanup
