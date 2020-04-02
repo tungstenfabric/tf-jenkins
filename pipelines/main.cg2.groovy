@@ -80,6 +80,7 @@ timestamps {
               if(gate_utils.is_normal_project()) // Run immediately if normal projest
                 jobs_utils.run_jobs(jobs)
               else{ // Wait for the same project pipeline is finishes
+                gate_utils.save_pachset_info(base_build_no)
                 gate_utils.wait_until_project_pipeline()
                 jobs_utils.run_jobs(jobs)
               }

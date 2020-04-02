@@ -1,9 +1,12 @@
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
 
 // Constants
 GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
 // TODO Fill up the normal projectls list
 NORMAL_PROJECTS = ['Juniper/contrail-ansible-deployer',
                    'Juniper/contrail-container-builder']
+PATCHSETS_INFO_FILE = "${WORKSPACE}/patchsets-info.json"
 
 // Function find base build fits to be the base build
 // get its base builds list if any, and then iterate over the list
@@ -294,5 +297,40 @@ def wait_until_project_pipeline(){
       build = _get_build_by_id(same_project_build)
       return ! (build.getResult() == null)
     }
+  }
+}
+
+// function read patchset_info artiface from base build if exists
+// read pachset_info of current build
+// union all patchset_info in one array
+// and write all info to patchset_info artifact of corrent build
+def save_pachset_info(base_build_no){
+
+  def base_patchset_info = ""
+
+  base_build = _get_build_by_id(base_build_no)
+  def artifactManager =  base_build.getArtifactManager()
+  if (artifactManager.root().isDirectory()) {
+    def fileList = artifactManager.root().list()
+    fileList.any {
+      def file = it
+      if(file.toString().contains('patchsets-info.json')) {
+        // extract global.env artifact for each build if exists
+        base_patchset_info = it.open().getText()
+        return true
+      }
+    }
+  }
+
+  def jsonSlurper = new JsonSlurper()
+  def old_patchset_info = jsonSlurper.parseText(base_patchset_info)
+  if( old_patchset_info instanceof java.util.ArrayList ){
+    // If something looks like array found in patchset info of base build
+    // Read current patchset and parse JSON
+    def patchset_info_file
+    def new_patchset_info = jsonSlurper.parseText(readFile("${WORKSPACE}/patchsets-info.json"))
+    def result_patchset_info = old_patchset_info + new_patchset_info
+    writeFile(file: PATCHSETS_INFO_FILE, text: JsonOutput.toJson(result_patchset_info))
+    archiveArtifacts(artifacts: PATCHSETS_INFO_FILE)
   }
 }
