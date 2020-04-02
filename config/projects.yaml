@@ -20,18 +20,18 @@
         juju-os-maas:
           voting: false
       templates:
-        - build-r1912
-        - test-unit
-        - test-unit-ui
-        - k8s-manifests
-        - ansible-k8s
-        - ansible-os
-        - helm-k8s
-        - helm-os
-        - juju-k8s
-        - juju-os
+#        - build-r1912
+#        - test-unit
+#        - test-unit-ui
+#        - k8s-manifests
+#        - ansible-k8s
+#        - ansible-os
+#        - helm-k8s
+#        - helm-os
+#        - juju-k8s
+#        - juju-os
         - juju-os-maas
-        - rhosp
+#        - rhosp
         - cleanup
       jobs:
         publish-centos-nightly:
