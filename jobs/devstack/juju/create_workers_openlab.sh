@@ -7,6 +7,14 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 #source "$my_dir/definitions"
+
+ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
+touch "$ENV_FILE"
+echo "export ENVIRONMENT_OS=ubuntu18" >> "$ENV_FILE"
+echo "export IMAGE_SSH_USER=jenkins" >> "$ENV_FILE"
+echo "export instance_ip=10.0.0.34" >> "$ENV_FILE"
+echo "export SSH_EXTRA_OPTIONS=$SSH_EXTRA_OPTIONS" >> "$ENV_FILE"
+
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS -p 30002 -i ${OPENLAB2_SSH_KEY} jenkins@openlab.tf-jenkins.progmaticlab.com || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export BUILD_TAG=$BUILD_TAG
@@ -19,4 +27,5 @@ sleep 30
 echo "VM is spinned"
 EOF
 # exit $res
-exit 1
+
+
