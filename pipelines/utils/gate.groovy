@@ -327,7 +327,6 @@ def save_pachset_info(base_build_no){
   if( old_patchset_info instanceof java.util.ArrayList ){
     // If something looks like array found in patchset info of base build
     // Read current patchset and parse JSON
-    def patchset_info_file
     def new_patchset_info = jsonSlurper.parseText(readFile("${WORKSPACE}/patchsets-info.json"))
     def result_patchset_info = old_patchset_info + new_patchset_info
     writeFile(file: PATCHSETS_INFO_FILE, text: JsonOutput.toJson(result_patchset_info))

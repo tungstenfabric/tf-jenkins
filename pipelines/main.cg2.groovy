@@ -16,7 +16,7 @@ OPENSTACK_VERSION="queens"
 // base url for all jobs
 logs_url = ""
 logs_path = ""
-// set of result for each job 
+// set of result for each job
 job_results = [:]
 
 rnd = new Random()
@@ -242,7 +242,7 @@ def save_pipeline_output_to_logs() {
       sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
     sh """#!/bin/bash -e
       set -x
-      curl ${BUILD_URL}consoleText > pipelinelog.txt 
+      curl ${BUILD_URL}consoleText > pipelinelog.txt
       ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
       rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path} 
     """
