@@ -84,7 +84,7 @@ timestamps {
                 gate_utils.wait_until_project_pipeline()
                 jobs_utils.run_jobs(jobs)
               }
-            }catch{
+            }catch(Exception ex){
               println("DEBUG: Something fails ${ex}")
               if (! gate_utils.check_build_is_not_failed(BUILD_ID)){
                 // If build has been failed - throw exection
