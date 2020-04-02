@@ -312,6 +312,51 @@
           - test-sanity-juju-os
 
 - template:
+    name: juju-maas-os
+    parents:
+      - build-centos
+    streams:
+      juju-maas-os:
+    jobs:
+      deploy-platform-juju-maas-os:
+        stream: juju-maas-os
+        vars:
+          CLOUD: maas
+          SSH_EXTRA_OPTIONS: >-
+            -o ProxyCommand="ssh
+            -o UserKnownHostsFile=/dev/null
+            -o StrictHostKeyChecking=no
+            -W %h:%p
+            -i $OPENLAB2_SSH_KEY
+            -l $OPENLAB2_USER_NAME
+            -p 30002
+            openlab.tf-jenkins.progmaticlab.com"
+      deploy-tf-juju-maas-os:
+        stream: juju-maas-os
+        depends-on:
+          - build-centos
+          - deploy-platform-juju-maas-os
+        vars:
+          CLOUD: maas
+      test-sanity-juju-maas-os:
+        job-name: test-sanity
+        stream: juju-maas-os
+        depends-on:
+          - deploy-tf-juju-maas-os
+        vars:
+          CLOUD: maas
+      collect-logs-and-cleanup-juju-os:
+        job-name: collect-logs-and-cleanup
+        stream: juju-maas-os
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-juju-maas-os
+          - deploy-tf-juju-maas-os
+          - test-sanity-juju-maas-os
+        vars:
+          CLOUD: maas
+
+- template:
     name: rhosp
     parents:
       - build-rhel

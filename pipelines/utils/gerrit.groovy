@@ -131,7 +131,8 @@ def _notify_gerrit(msg, verified=0, submit=false) {
   println("Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}")
   if (!env.GERRIT_HOST) {
     if (env.GERRIT_PIPELINE == 'nightly') {
-      emailext body: msg, subject: '[TF-JENKINS] Nightly build report', to: '$DEFAULT_RECIPIENTS'
+      println('Temporarily disabled')
+      // emailext body: msg, subject: '[TF-JENKINS] Nightly build report', to: '$DEFAULT_RECIPIENTS'
     }
     return
   }

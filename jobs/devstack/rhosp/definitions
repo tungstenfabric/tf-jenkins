@@ -2,4 +2,4 @@
 export vm_type='v2-standard-4'
 export key_name='worker'
 
-export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $SSH_EXTRA_OPTIONS"
