@@ -336,3 +336,18 @@
       templates:
         - build-centos
         - cleanup
+
+# infra projects
+
+- project:
+    name: tungstenfabric/tf-test
+    check:
+      templates:
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - ansible-k8s
+        - ansible-os
+        - cleanup
