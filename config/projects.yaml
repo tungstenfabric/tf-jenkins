@@ -81,12 +81,10 @@
     name: Juniper/contrail-kolla-ansible
     check:
       templates:
-        - ansible-k8s
         - ansible-os
         - cleanup
     gate:
       templates:
-        - ansible-k8s
         - ansible-os
         - cleanup
 
