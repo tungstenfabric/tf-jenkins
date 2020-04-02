@@ -159,9 +159,9 @@ def _prepare_builds_map(){
     def build_status = build.getResult().toString()
     def build_env = build.getEnvironment()
 
-    builds_map[build_id] = {'status' : build_status ,
+    builds_map[build_id] = ['status' : build_status ,
                             'branch' : build_env['GERRIT_BRANCH'],
-                            'project' : build_env['GERRIT_PROJECT']}
+                            'project' : build_env['GERRIT_PROJECT']]
   }
 
   return builds_map
