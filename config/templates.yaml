@@ -312,14 +312,14 @@
           - test-sanity-juju-os
 
 - template:
-    name: juju-os-maas
+    name: juju-maas-os
     parents:
       - build-centos
     streams:
-      juju-os-maas:
+      juju-maas-os:
     jobs:
-      deploy-platform-juju-os-maas:
-        stream: juju-os-maas
+      deploy-platform-juju-maas-os:
+        stream: juju-maas-os
         vars:
           CLOUD: maas
           SSH_EXTRA_OPTIONS: >-
@@ -331,11 +331,11 @@
             -l $OPENLAB2_USER_NAME
             -p 30002
             openlab.tf-jenkins.progmaticlab.com"
-      deploy-tf-juju-os-maas:
-        stream: juju-os-maas
+      deploy-tf-juju-maas-os:
+        stream: juju-maas-os
         depends-on:
           - build-centos
-          - deploy-platform-juju-os-maas
+          - deploy-platform-juju-maas-os
         vars:
           CLOUD: maas
           SSH_EXTRA_OPTIONS: >-
@@ -347,11 +347,11 @@
             -l $OPENLAB2_USER_NAME
             -p 30002
             openlab.tf-jenkins.progmaticlab.com"
-      test-sanity-juju-os-maas:
+      test-sanity-juju-maas-os:
         job-name: test-sanity
-        stream: juju-os-maas
+        stream: juju-maas-os
         depends-on:
-          - deploy-tf-juju-os-maas
+          - deploy-tf-juju-maas-os
         vars:
           CLOUD: maas
           SSH_EXTRA_OPTIONS: >-
@@ -365,12 +365,12 @@
             openlab.tf-jenkins.progmaticlab.com"
       collect-logs-and-cleanup-juju-os:
         job-name: collect-logs-and-cleanup
-        stream: juju-os-maas
+        stream: juju-maas-os
         type: stream-post-hook
         depends-on:
-          - deploy-platform-juju-os-maas
-          - deploy-tf-juju-os-maas
-          - test-sanity-juju-os-maas
+          - deploy-platform-juju-maas-os
+          - deploy-tf-juju-maas-os
+          - test-sanity-juju-maas-os
         vars:
           CLOUD: maas
           SSH_EXTRA_OPTIONS: >-

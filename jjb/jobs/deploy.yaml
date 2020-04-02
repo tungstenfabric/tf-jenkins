@@ -316,7 +316,7 @@
           environment_os: ubuntu18
           deployer: juju
           orchestrator: openstack
-      - juju-os-maas:
+      - juju-maas-os:
           environment_os: ubuntu18
           deployer: juju
           orchestrator: openstack
