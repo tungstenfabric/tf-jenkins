@@ -33,23 +33,23 @@
         - juju-os-maas
 #        - rhosp
         - cleanup
-      jobs:
-        publish-centos-nightly:
-          job-name: publish
-          depends-on:
-            - build-centos
-        aquascan-rhel-nightly:
-          job-name: aquascan
-          depends-on:
-            - build-rhel
-          vars:
-            TAG_SUFFIX: -rhel7
-      post-jobs:
-        publish-centos-stable:
-          job-name: publish
-        cleanup-pipeline-workers:
-          depends-on:
-            - publish-centos-stable
+#      jobs:
+#        publish-centos-nightly:
+#          job-name: publish
+#          depends-on:
+#            - build-centos
+#        aquascan-rhel-nightly:
+#          job-name: aquascan
+#          depends-on:
+#            - build-rhel
+#          vars:
+#            TAG_SUFFIX: -rhel7
+#      post-jobs:
+#        publish-centos-stable:
+#          job-name: publish
+#        cleanup-pipeline-workers:
+#          depends-on:
+#            - publish-centos-stable
 
 - project:
     name: Juniper/contrail-vnc
