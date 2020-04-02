@@ -333,3 +333,5 @@ def save_pachset_info(base_build_no){
     archiveArtifacts(artifacts: PATCHSETS_INFO_FILE)
   }
 }
+
+return this
