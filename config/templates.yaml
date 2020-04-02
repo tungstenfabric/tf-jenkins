@@ -312,40 +312,40 @@
           - test-sanity-juju-os
 
 - template:
-  name: juju-os-maas
-  parents:
-    - build-centos
-  streams:
-    juju-os-maas:
-  jobs:
-    deploy-platform-juju-os-maas:
-      stream: juju-os-maas
-      vars:
-        CLOUD: maas
-    deploy-tf-juju-os-maas:
-      stream: juju-os-maas
-      depends-on:
-        - build-centos
-        - deploy-platform-juju-os-maas
-      vars:
-        CLOUD: maas
-    test-sanity-juju-os-maas:
-      job-name: test-sanity
-      stream: juju-os-maas
-      depends-on:
-        - deploy-tf-juju-os-maas
-      vars:
-        CLOUD: maas
-    collect-logs-and-cleanup-juju-os:
-      job-name: collect-logs-and-cleanup
-      stream: juju-os-maas
-      type: stream-post-hook
-      depends-on:
-        - deploy-platform-juju-os-maas
-        - deploy-tf-juju-os-maas
-        - test-sanity-juju-os-maas
-      vars:
-        CLOUD: maas
+    name: juju-os-maas
+    parents:
+      - build-centos
+    streams:
+      juju-os-maas:
+    jobs:
+      deploy-platform-juju-os-maas:
+        stream: juju-os-maas
+        vars:
+          CLOUD: maas
+      deploy-tf-juju-os-maas:
+        stream: juju-os-maas
+        depends-on:
+          - build-centos
+          - deploy-platform-juju-os-maas
+        vars:
+          CLOUD: maas
+      test-sanity-juju-os-maas:
+        job-name: test-sanity
+        stream: juju-os-maas
+        depends-on:
+          - deploy-tf-juju-os-maas
+        vars:
+          CLOUD: maas
+      collect-logs-and-cleanup-juju-os:
+        job-name: collect-logs-and-cleanup
+        stream: juju-os-maas
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-juju-os-maas
+          - deploy-tf-juju-os-maas
+          - test-sanity-juju-os-maas
+        vars:
+          CLOUD: maas
 
 - template:
     name: rhosp

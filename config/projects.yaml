@@ -11,12 +11,12 @@
     name: tungstenfabric
     nightly:
       streams:
-        juju-k8s:
-          voting: false
-        rhosp:
-          voting: false
-        helm-os:
-          voting: false
+#        juju-k8s:
+#          voting: false
+#        rhosp:
+#          voting: false
+#        helm-os:
+#          voting: false
         juju-os-maas:
           voting: false
       templates:
