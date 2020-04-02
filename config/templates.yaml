@@ -338,15 +338,6 @@
           - deploy-platform-juju-maas-os
         vars:
           CLOUD: maas
-          SSH_EXTRA_OPTIONS: >-
-            -o ProxyCommand="ssh
-            -o UserKnownHostsFile=/dev/null
-            -o StrictHostKeyChecking=no
-            -W %h:%p
-            -i $OPENLAB2_SSH_KEY
-            -l $OPENLAB2_USER_NAME
-            -p 30002
-            openlab.tf-jenkins.progmaticlab.com"
       test-sanity-juju-maas-os:
         job-name: test-sanity
         stream: juju-maas-os
@@ -354,15 +345,6 @@
           - deploy-tf-juju-maas-os
         vars:
           CLOUD: maas
-          SSH_EXTRA_OPTIONS: >-
-            -o ProxyCommand="ssh
-            -o UserKnownHostsFile=/dev/null
-            -o StrictHostKeyChecking=no
-            -W %h:%p
-            -i $OPENLAB2_SSH_KEY
-            -l $OPENLAB2_USER_NAME
-            -p 30002
-            openlab.tf-jenkins.progmaticlab.com"
       collect-logs-and-cleanup-juju-os:
         job-name: collect-logs-and-cleanup
         stream: juju-maas-os
@@ -373,15 +355,6 @@
           - test-sanity-juju-maas-os
         vars:
           CLOUD: maas
-          SSH_EXTRA_OPTIONS: >-
-            -o ProxyCommand="ssh
-            -o UserKnownHostsFile=/dev/null
-            -o StrictHostKeyChecking=no
-            -W %h:%p
-            -i $OPENLAB2_SSH_KEY
-            -l $OPENLAB2_USER_NAME
-            -p 30002
-            openlab.tf-jenkins.progmaticlab.com"
 
 - template:
     name: rhosp
