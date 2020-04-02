@@ -26,6 +26,6 @@ virt-clone --original ubuntu18 --name vm-maas --auto-clone --file vm-maas
 sleep 30
 echo "VM is spinned"
 EOF
-# exit $res
+exit $res
 
 
