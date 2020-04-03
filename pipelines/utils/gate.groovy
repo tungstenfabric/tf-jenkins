@@ -200,6 +200,9 @@ def is_normal_project(){
 // Otherwise return false
 def _is_branch_fit(build_id){
   def build = _get_build_by_id(build_id)
+
+  println("DEBUG: check _is_branch_fit for build ${build}")
+
   if(is_normal_project()){
     // Project has contrail releases structure
     // Branch of the base build must be the same
