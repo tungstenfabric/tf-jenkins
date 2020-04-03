@@ -93,9 +93,9 @@ def _wait_for_chain_calculated(build_id){
     if(build.getResult() != null && base_id_list == "-1"){
       // build finishes but no base_id_list was found
       println("DEBUG: build finishes but no base_id_list was found")
-      return false
+      return true
     }
-    return base_id_list == '-1'
+    return base_id_list != '-1'
   }
 
   println("DEBUG: We found base_id_lis = ${base_id_list}")
