@@ -33,6 +33,7 @@ def save_base_builds(){
           return true
         } // else just skip the build
       }else{ // build is running
+        println("DEBUG: Found runnig build looks like a base")
         // Wait for build chain will be prepared
         def base_chain = _wait_for_chain_calculated(build_id)
         if(base_chain == "-1"){ // build fails before can calculate BASE_BUILD_ID_LIST
