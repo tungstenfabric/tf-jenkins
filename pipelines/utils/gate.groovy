@@ -336,8 +336,8 @@ def wait_until_project_pipeline(){
 // and write all info to patchset_info artifact of corrent build
 def save_pachset_info(base_build_no){
   print("DEBUG: Try to read at begin of function")
-  def textFromFile = readFile("patchsets-info.json")
-  print("DEBUG: Text from file readed = ${textFromFile}")
+  def textFile = readFile("patchsets-info.json")
+  print("DEBUG: Text from file readed = ${textFile}")
 
   def base_patchset_info = ""
 
