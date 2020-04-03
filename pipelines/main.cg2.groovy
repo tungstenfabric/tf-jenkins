@@ -44,10 +44,10 @@ timestamps {
         jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
       }
       // TODO: remove comment here when gating is ready
-      if (env.GERRIT_PIPELINE == 'gate') { // && !gerrit_utils.has_gate_approvals()) {
-            println("There is no gate approvals.. skip gate")
-            return
-      }
+ //     if (env.GERRIT_PIPELINE == 'gate') { // && !gerrit_utils.has_gate_approvals()) {
+ //           println("There is no gate approvals.. skip gate")
+ //           return
+ //     }
 
       def streams = [:]
       def jobs = [:]
