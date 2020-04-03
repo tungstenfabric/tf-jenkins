@@ -50,6 +50,7 @@ def save_base_builds(){
           println("DEBUG: base_chain is empty, add the only this build to chain")
           base_chain = build_id.toString()
         }
+        println("DEBUG: Base build found. Base build = ${build_id} base_chain = ${base_chain}")
         // We found base build! Save base_chain in global.vars
         base_build_no = build_id
         sh """#!/bin/bash -e
