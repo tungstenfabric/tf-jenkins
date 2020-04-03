@@ -338,6 +338,21 @@ def wait_until_project_pipeline(){
 def save_pachset_info(base_build_no){
   if(!(base_build_no && base_build_no.isInteger()))
     return
+
+  def res_json = get_result_patchset(base_build_no)
+  println("DEBUG: Return patchset info is ${res_json}")
+  sh """#!/bin/bash -e
+    cat <<EOF > patchsets-info.json
+    ${json_result_patchset_info}
+    EOF
+  """
+  // writeFile(file: 'patchsets-info.json', text: json_result_patchset_info)
+  println("DEBUG: Successfully saved patchset info")
+  archiveArtifacts(artifacts: "patchsets-info.json")
+}
+
+// all JSON calsulate to separate function
+def get_result_patchset(base_build_no){
   println("DEBUG: start save_pachset_info")
   def new_patchset_info_text = readFile("patchsets-info.json")
   println("DEBUG: read text from file: ${new_patchset_info_text}")
@@ -376,15 +391,10 @@ def save_pachset_info(base_build_no){
     println("DEBUG: Result patchset info before save is ${result_patchset_info}")
     def json_result_patchset_info = JsonOutput.toJson(result_patchset_info)
     println("DEBUG: JSON text = ${json_result_patchset_info}  class is ${json_result_patchset_info.class}")
-    sh """#!/bin/bash -e
-      cat <<EOF > patchsets-info.json
-      ${json_result_patchset_info}
-      EOF
-    """
-    // writeFile(file: 'patchsets-info.json', text: json_result_patchset_info)
-    println("DEBUG: Successfully saved patchset info")
-    archiveArtifacts(artifacts: "patchsets-info.json")
+    return json_result_patchset_info
   }
+
+  return false
 
 }
 
