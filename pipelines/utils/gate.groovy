@@ -22,11 +22,14 @@ def save_base_builds(){
   builds_map.any { build_id, build_map ->
     if(_is_branch_fit(build_id)){
       // Skip current or started later builds
-      if(build_id.toInteger() >= BUILD_ID.toInteger())
+      if(build_id.toInteger() >= BUILD_ID.toInteger()){
+        println("DEBUG: Skip current or started later builds")
         return false
+      }
 
       if(build_map['status'] != 'null'){ // build has been finished
         if(check_build_is_not_failed(build_id)){ // We not need base build!
+          println("DEBUG: We not need base build!")
           return true
         } // else just skip the build
       }else{ // build is running
@@ -44,6 +47,7 @@ def save_base_builds(){
           }
           base_chain = "${build_id}," + base_chain
         }else{ // base_chain is empty, add the only this build to chain
+          println("DEBUG: base_chain is empty, add the only this build to chain")
           base_chain = build_id.toString()
         }
         // We found base build! Save base_chain in global.vars
