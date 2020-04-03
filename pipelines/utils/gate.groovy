@@ -330,6 +330,7 @@ def save_pachset_info(base_build_no){
 
   def base_patchset_info = ""
 
+  println("DEBUG: Get patchset info from build ${base_build_no} before save")
   base_build = _get_build_by_id(base_build_no)
   def artifactManager =  base_build.getArtifactManager()
   if (artifactManager.root().isDirectory()) {
@@ -343,6 +344,7 @@ def save_pachset_info(base_build_no){
       }
     }
   }
+  println("DEBUG: Found base patchset info in old build is ${base_patchset_info}")
 
   def jsonSlurper = new JsonSlurper()
   def old_patchset_info = jsonSlurper.parseText(base_patchset_info)
@@ -351,9 +353,12 @@ def save_pachset_info(base_build_no){
     // Read current patchset and parse JSON
     def new_patchset_info = jsonSlurper.parseText(readFile("${WORKSPACE}/patchsets-info.json"))
     def result_patchset_info = old_patchset_info + new_patchset_info
+    println("DEBUG: Resurl patchset info before save is ${result_patchset_info}")
     writeFile(file: PATCHSETS_INFO_FILE, text: JsonOutput.toJson(result_patchset_info))
+    println("DEBUG: Successfully saved patchset info")
     archiveArtifacts(artifacts: PATCHSETS_INFO_FILE)
   }
+
 }
 
 return this
