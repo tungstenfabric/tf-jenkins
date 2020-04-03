@@ -383,7 +383,7 @@ def save_pachset_info(base_build_no){
     """
     // writeFile(file: 'patchsets-info.json', text: json_result_patchset_info)
     println("DEBUG: Successfully saved patchset info")
-    archiveArtifacts(artifacts: PATCHSETS_INFO_FILE)
+    archiveArtifacts(artifacts: "patchsets-info.json")
   }
 
 }
