@@ -341,14 +341,14 @@ def save_pachset_info(base_build_no){
 
   def res_json = get_result_patchset(base_build_no)
   println("DEBUG: Return patchset info is ${res_json}")
-  sh """#!/bin/bash -e
-    cat <<EOF > patchsets-info.json
-    ${json_result_patchset_info}
-    EOF
-  """
+  //sh """#!/bin/bash -e
+  //  cat <<EOF > patchsets-info.json
+  //  ${json_result_patchset_info}
+  //  EOF
+  //"""
   // writeFile(file: 'patchsets-info.json', text: json_result_patchset_info)
   println("DEBUG: Successfully saved patchset info")
-  archiveArtifacts(artifacts: "patchsets-info.json")
+  //archiveArtifacts(artifacts: "patchsets-info.json")
 }
 
 // all JSON calsulate to separate function
