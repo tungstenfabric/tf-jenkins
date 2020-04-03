@@ -9,10 +9,9 @@ my_dir="$(dirname $my_file)"
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
 echo "export ENVIRONMENT_OS=ubuntu18" >> "$ENV_FILE"
-IMAGE_SSH_USER=jenkins
 echo "export IMAGE_SSH_USER=jenkins" >> "$ENV_FILE"
-instance_ip=192.168.51.5
 echo "export instance_ip=192.168.51.5" >> "$ENV_FILE"
+echo "export SSH_EXTRA_OPTIONS=\"-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -i \$OPENLAB2_SSH_KEY -l \$OPENLAB2_USER_NAME -p 30002 openlab.tf-jenkins.progmaticlab.com\\\"\"" >> "$ENV_FILE"
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS -p 30002 -i $OPENLAB2_SSH_KEY jenkins@openlab.tf-jenkins.progmaticlab.com
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -26,7 +25,7 @@ virsh start vm-maas
 echo "VM is spinned"
 EOF
 
-echo "export SSH_EXTRA_OPTIONS=\"-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -i \$OPENLAB2_SSH_KEY -l \$OPENLAB2_USER_NAME -p 30002 openlab.tf-jenkins.progmaticlab.com\\\"\"" >> "$ENV_FILE"
+source "$ENV_FILE"
 
 timeout 300 bash -c "\
 while /bin/true ; do \
