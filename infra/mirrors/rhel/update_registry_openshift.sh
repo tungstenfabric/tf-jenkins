@@ -5,17 +5,18 @@ my_dir="$(dirname $my_file)"
 
 source $my_dir/common.sh
 
-[ -f $my_dir/rhel_account ] && source $my_dir/rhel_account
+[ -f $my_dir/rhel_account ] && source $my_dir/rhel-account
 
 MIRROR_REGISTRY="rhel-mirrors.tf-jenkins.progmaticlab.com:5000"
 REDHAT_REGISTRY="registry.redhat.io"
 
 RHEL_NAMESPACE="rhel7"
 OPENSHIFT_NAMESPACE="openshift3"
+TAG='v3.11'
 
 #rhel
 rhel_containers=( \
-  etcd \
+  etcd:3.2.22 \
 )
 
 #openshift
@@ -33,6 +34,7 @@ openshift_containers=( \
   node \
   openvswitch \
   ose \
+  ose-cluster-monitoring-operator \
   ose-control-plane \
   ose-deployer \
   ose-docker-builder \
@@ -48,9 +50,9 @@ openshift_containers=( \
 function sync_container() {
   local s=$REDHAT_REGISTRY/$c
   local d=$MIRROR_REGISTRY/$c
-  sudo docker pull $s
-  sudo docker tag $s $d
-  sudo docker push $d
+  sudo docker pull $s && \
+    sudo docker tag $s $d && \
+    sudo docker push $d
 }
 
 if [[ -n "$RHEL_USER" && "$RHEL_PASSWORD" ]] ; then
@@ -60,7 +62,7 @@ if [[ -n "$RHEL_USER" && "$RHEL_PASSWORD" ]] ; then
 fi
 
 all_containers=$(printf "${RHEL_NAMESPACE}/%s " "${rhel_containers[@]}")
-all_containers+=$(printf "${OPENSHIFT_NAMESPACE}/%s " "${openshift_containers[@]}")
+all_containers+=$(printf "${OPENSHIFT_NAMESPACE}/%s:$TAG " "${openshift_containers[@]}")
 jobs=""
 for c in ${all_containers} ; do  
   echo "INFO: start sync $c"
