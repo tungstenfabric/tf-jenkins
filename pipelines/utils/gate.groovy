@@ -181,12 +181,12 @@ def _is_branch_fit(build_id){
   if(is_normal_project()){
     // Project has contrail releases structure
     // Branch of the base build must be the same
-    if(GERRIT_BRANCH != build_id.getEnvironment()['GERRIT_BRANCH'])
+    if(GERRIT_BRANCH != build.getEnvironment()['GERRIT_BRANCH'])
       return false
   }else{
     // Project has its own releases structure
     // Branch of the base build must be master
-    if(build_id.getEnvironment()['GERRIT_BRANCH'] != 'master')
+    if(build.getEnvironment()['GERRIT_BRANCH'] != 'master')
       return false
   }
   return true
