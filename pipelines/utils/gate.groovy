@@ -19,10 +19,11 @@ def save_base_builds(){
 
   def base_build_no = false
 
+  println("DEBUG: Builds map prepared : ${builds_map}")
   builds_map.any { build_id, build_map ->
 
     println("DEBUG: Check for fit to base build no ${build_id}")
-    if(build_id && _is_branch_fit(build_id)){
+    if(_is_branch_fit(build_id)){
       // Skip current or started later builds
       if(build_id.toInteger() >= BUILD_ID.toInteger()){
         println("DEBUG: Skip current or started later builds")
