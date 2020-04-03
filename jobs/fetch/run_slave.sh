@@ -37,7 +37,7 @@ function run_dev_env() {
   # disable build dev-env
   export BUILD_DEV_ENV=$build_dev_env
   export BUILD_DEV_ENV_ON_PULL_FAIL=0
-  export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
+  export IMAGE=$CONTAINER_REGISTRY/tf-developer-sandbox
 
   cd $WORKSPACE/src/tungstenfabric/tf-dev-env
   ./run.sh $stage
@@ -46,7 +46,7 @@ function run_dev_env() {
 function push_dev_env() {
   local tag=$1
   local commit_name="tf-developer-sandbox-$tag"
-  local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
+  local target_tag="$CONTAINER_REGISTRY/tf-developer-sandbox:$tag"
 
   echo "INFO: Save tf-sandbox started: $target_tag"
   echo "INFO: stop tf-developer-sandbox container"
@@ -79,7 +79,7 @@ if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   cp ${my_dir}/../../infra/mirrors/mirror-pip.conf $etc_dir/pip.conf
 fi
 
-if ! sudo docker pull "$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$DEVENVTAG" ; then
+if [[ $BUILD_DEV_ENV == 1 ]] || ! sudo docker pull "$CONTAINER_REGISTRY/tf-developer-sandbox:$DEVENVTAG" ; then
   if ! run_dev_env none 1 ; then
     echo "ERROR: Sync failed"
     exit 1

@@ -46,11 +46,11 @@ export GERRIT_BRANCH=${GERRIT_BRANCH}
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
-export BUILD_DEV_ENV=0
-export BUILD_DEV_ENV_ON_PULL_FAIL=$build_dev_env
+export BUILD_DEV_ENV=$build_dev_env
+export BUILD_DEV_ENV_ON_PULL_FAIL=0
 export LINUX_DISTR=$linux_distr
 export TF_DEVENV_CONTAINER_NAME=$TF_DEVENV_CONTAINER_NAME
-export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
+export IMAGE=$CONTAINER_REGISTRY/tf-developer-sandbox
 export DEVENVTAG=$DEVENVTAG
 
 cd src/tungstenfabric/tf-dev-env
@@ -89,7 +89,7 @@ EOF
 
 function push_dev_env() {
   local tag=$1
-  local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
+  local target_tag="$CONTAINER_REGISTRY/tf-developer-sandbox:$tag"
   local res=0
   local commit_name="tf-developer-sandbox-$DEVENVTAG"
   echo "INFO: Save container $target_tag"
@@ -115,10 +115,12 @@ EOF
 
 # build stable
 if [[ $res == 0 ]] ; then
-  if run_dev_env none 1 ; then
-    push_dev_env $DEVENVTAG || res=1
-  else
-    res=1
+  if [[ $BUILD_DEV_ENV == 1 ]] || ! ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip sudo docker pull "$CONTAINER_REGISTRY/tf-developer-sandbox:$DEVENVTAG" ; then
+    if run_dev_env none 1 ; then
+      push_dev_env $DEVENVTAG || res=1
+    else
+      res=1
+    fi
   fi
 fi
 

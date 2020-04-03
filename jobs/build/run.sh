@@ -34,7 +34,7 @@ export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
-export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
+export IMAGE=$CONTAINER_REGISTRY/tf-developer-sandbox
 # devenftag is passed from parent fetch-sources job
 export DEVENVTAG=$DEVENVTAG
 export CONTRAIL_KEEP_LOG_FILES=true

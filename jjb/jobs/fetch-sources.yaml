@@ -98,6 +98,7 @@
           # special case for fetch-sources - if we have changes in tf-dev-env then we should rebuild it
           if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
             export DEVENVTAG=sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
+            export BUILD_DEV_ENV=1
             if docker images -a | grep $TF_DEVENV_CONTAINER_NAME ; then
               IMAGES_TO_DELETE="$(docker image inspect "$TF_DEVENV_CONTAINER_NAME" --format {{.RepoTags}} | tr -d '[]')"
               if [[ -n "$IMAGES_TO_DELETE" ]]; then
