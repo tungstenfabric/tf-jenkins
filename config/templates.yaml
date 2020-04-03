@@ -322,15 +322,6 @@
         stream: juju-maas-os
         vars:
           CLOUD: maas
-          SSH_EXTRA_OPTIONS: >-
-            -o ProxyCommand="ssh
-            -o UserKnownHostsFile=/dev/null
-            -o StrictHostKeyChecking=no
-            -W %h:%p
-            -i $OPENLAB2_SSH_KEY
-            -l $OPENLAB2_USER_NAME
-            -p 30002
-            openlab.tf-jenkins.progmaticlab.com"
       deploy-tf-juju-maas-os:
         stream: juju-maas-os
         depends-on:
@@ -407,6 +398,7 @@
         vars:
           ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: -rhel7
+          RHEL_OPENSHIFT_REGISTRY: rhel-mirrors.tf-jenkins.progmaticlab.com:5000
       deploy-tf-openshift:
         stream: openshift
         depends-on:
@@ -414,6 +406,7 @@
           - deploy-platform-openshift
         vars:
           TAG_SUFFIX: -rhel7
+          RHEL_OPENSHIFT_REGISTRY: rhel-mirrors.tf-jenkins.progmaticlab.com:5000
       test-sanity-openshift:
         job-name: test-sanity
         stream: openshift
