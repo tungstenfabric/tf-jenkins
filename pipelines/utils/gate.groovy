@@ -358,11 +358,15 @@ def save_pachset_info(base_build_no){
   def old_patchset_info = jsonSlurper.parseText(base_patchset_info)
   println("DEBUG: JSON has been parsed : ${old_patchset_info}")
   if( old_patchset_info instanceof java.util.ArrayList ){
+    println("DEBUG: old_patchset_info is instance of java.util.ArrayList")
     // If something looks like array found in patchset info of base build
     // Read current patchset and parse JSON
-    def new_patchset_info = jsonSlurper.parseText(readFile("${WORKSPACE}/patchsets-info.json"))
+    def textFromFile = readFile("${WORKSPACE}/patchsets-info.json")
+    println("DEBUG: We can read text from file = ${textFromFile}")
+    def new_patchset_info = jsonSlurper.parseText()
+    println("DEBUG: We can parse current patchset info ${new_patchset_info}")
     def result_patchset_info = old_patchset_info + new_patchset_info
-    println("DEBUG: Resurl patchset info before save is ${result_patchset_info}")
+    println("DEBUG: Result patchset info before save is ${result_patchset_info}")
     writeFile(file: PATCHSETS_INFO_FILE, text: JsonOutput.toJson(result_patchset_info))
     println("DEBUG: Successfully saved patchset info")
     archiveArtifacts(artifacts: PATCHSETS_INFO_FILE)
