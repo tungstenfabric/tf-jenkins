@@ -399,6 +399,7 @@
           ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: -rhel7
           RHEL_OPENSHIFT_REGISTRY: rhel-mirrors.tf-jenkins.progmaticlab.com:5000
+          RHEL_OPENSHIFT_REGISTRY_URL: http://rhel-mirrors.tf-jenkins.progmaticlab.com:5000
       deploy-tf-openshift:
         stream: openshift
         depends-on:
@@ -407,6 +408,7 @@
         vars:
           TAG_SUFFIX: -rhel7
           RHEL_OPENSHIFT_REGISTRY: rhel-mirrors.tf-jenkins.progmaticlab.com:5000
+          RHEL_OPENSHIFT_REGISTRY_URL: http://rhel-mirrors.tf-jenkins.progmaticlab.com:5000
       test-sanity-openshift:
         job-name: test-sanity
         stream: openshift
