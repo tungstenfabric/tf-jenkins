@@ -337,12 +337,14 @@ def wait_until_project_pipeline(){
 // union all patchset_info in one array
 // and write all info to patchset_info artifact of corrent build
 def save_pachset_info(base_build_no){
+  if(!(base_build_no && base_build_no.isInteger()))
+    return
   println("DEBUG: start save_pachset_info")
   def new_patchset_info_text = readFile("patchsets-info.json")
   println("DEBUG: read text from file: ${new_patchset_info_text}")
   def sl = new JsonSlurper()
   def new_patchset_info = sl.parseText(new_patchset_info_text)
-  println("DEBUG: parsed first JSON: new_patchset_info")
+  println("DEBUG: parsed first JSON: ${new_patchset_info}")
 
   def base_patchset_info = ""
 
