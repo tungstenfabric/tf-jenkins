@@ -109,7 +109,7 @@ def clone_self() {
 def evaluate_logs_params() {
   // evaluate logs params
   if (env.GERRIT_CHANGE_ID) {
-    contrail_container_tag = env.GERRIT_BRANCH.split('/')[-1]
+    contrail_container_tag = env.GERRIT_BRANCH.split('/')[-1].toLowerCase()
     // we have to avoid presense of 19xx, 20xx, ... in tag - apply some hack here to indicate current patchset and avoid those strings
     contrail_container_tag += '-' + env.GERRIT_CHANGE_NUMBER.split('').join('.')
     contrail_container_tag += '-' + env.GERRIT_PATCHSET_NUMBER.split('').join('.')
