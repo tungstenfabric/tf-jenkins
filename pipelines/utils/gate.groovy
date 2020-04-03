@@ -375,7 +375,7 @@ def save_pachset_info(base_build_no){
     def result_patchset_info = old_patchset_info + new_patchset_info
     println("DEBUG: Result patchset info before save is ${result_patchset_info}")
     def json_result_patchset_info = JsonOutput.toJson(result_patchset_info)
-    println("DEBUG: JSON text = ${json_result_patchset_info}")
+    println("DEBUG: JSON text = ${json_result_patchset_info}  class is ${json_result_patchset_info.class}")
     sh """#!/bin/bash -e
       cat <<EOF > patchsets-info.json
       ${json_result_patchset_info}
