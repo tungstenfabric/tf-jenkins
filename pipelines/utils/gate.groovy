@@ -23,7 +23,7 @@ def save_base_builds(){
   builds_map.any { build_id, build_map ->
 
     println("DEBUG: Check for fit to base build no ${build_id}")
-    if(build_id && _is_branch_fit(build_id)){
+    if( build_id && _is_branch_fit(build_id) ){
       // Skip current or started later builds
       if(build_id.toInteger() >= BUILD_ID.toInteger()){
         println("DEBUG: Skip current or started later builds")
@@ -99,7 +99,7 @@ def _wait_for_chain_calculated(build_id){
   }
 
   println("DEBUG: We found base_id_lis = ${base_id_list}")
-
+  return base_id_list
 }
 
 // Function get global.env artifact and find there BASE_BUILD_ID_LIST
