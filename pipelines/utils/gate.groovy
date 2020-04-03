@@ -62,6 +62,15 @@ def save_base_builds(){
     }
   }
 
+  // If a base build not found save BASE_BUILD_ID_LIST anyway, because it needs
+  // to detect if process of the base build search is finished
+  if(! base_build_no){
+        sh """#!/bin/bash -e
+        echo "export BASE_BUILD_ID_LIST=" >> global.env
+        """
+        archiveArtifacts(artifacts: 'global.env')
+  }
+
   return base_build_no
 }
 
