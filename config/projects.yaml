@@ -356,13 +356,13 @@
     name: tungstenfabric/tf-dev-env
     check:
       templates:
-        - build-thel
+        - build-rhel
         - build-centos
         - test-unit-ui
         - cleanup
     gate:
       templates:
-        - build-thel
+        - build-rhel
         - build-centos
         - test-unit-ui
         - cleanup
