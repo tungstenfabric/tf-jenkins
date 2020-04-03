@@ -20,6 +20,8 @@ def save_base_builds(){
   def base_build_no = false
 
   builds_map.any { build_id, build_map ->
+
+    println("DEBUG: Check for fit to base build no ${build_id}")
     if(_is_branch_fit(build_id)){
       // Skip current or started later builds
       if(build_id.toInteger() >= BUILD_ID.toInteger()){
@@ -27,7 +29,8 @@ def save_base_builds(){
         return false
       }
 
-      if(build_map['status'] != 'null'){ // build has been finished
+      if(build_map['status'] != 'null'){
+        println("DEBUG: found finished build") // build has been finished
         if(check_build_is_not_failed(build_id)){ // We not need base build!
           println("DEBUG: We not need base build!")
           return true
