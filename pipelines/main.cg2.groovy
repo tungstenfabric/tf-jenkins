@@ -42,6 +42,7 @@ timestamps {
         gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
         config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
         jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
+        gate_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gate.groovy")
       }
       // TODO: remove comment here when gating is ready
  //     if (env.GERRIT_PIPELINE == 'gate') { // && !gerrit_utils.has_gate_approvals()) {
