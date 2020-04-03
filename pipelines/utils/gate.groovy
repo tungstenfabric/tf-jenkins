@@ -335,9 +335,8 @@ def wait_until_project_pipeline(){
 // union all patchset_info in one array
 // and write all info to patchset_info artifact of corrent build
 def save_pachset_info(base_build_no){
-  print("DEBUG: Try to read at begin of function")
-  def textFile = readFile("patchsets-info.json")
-  print("DEBUG: Text from file readed = ${textFile}")
+  def sl = new JsonSlurper()
+  def new_patchset_info = sl.parseText(readFile("patchsets-info.json"))
 
   def base_patchset_info = ""
 
@@ -357,17 +356,14 @@ def save_pachset_info(base_build_no){
   }
   println("DEBUG: Found base patchset info in old build is ${base_patchset_info}")
 
-  def jsonSlurper = new JsonSlurper()
+  def sl2 = new JsonSlurper()
   println("DEBUG: JSON Slurper created")
-  def old_patchset_info = jsonSlurper.parseText(base_patchset_info)
+  def old_patchset_info = sl2.parseText(base_patchset_info)
   println("DEBUG: JSON has been parsed : ${old_patchset_info}")
   if( old_patchset_info instanceof java.util.ArrayList ){
     println("DEBUG: old_patchset_info is instance of java.util.ArrayList")
     // If something looks like array found in patchset info of base build
     // Read current patchset and parse JSON
-    def textFromFile = readFile("patchsets-info.json")
-    println("DEBUG: We can read text from file = ${textFromFile}")
-    def new_patchset_info = jsonSlurper.parseText()
     println("DEBUG: We can parse current patchset info ${new_patchset_info}")
     def result_patchset_info = old_patchset_info + new_patchset_info
     println("DEBUG: Result patchset info before save is ${result_patchset_info}")
