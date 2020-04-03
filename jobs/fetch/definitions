@@ -1,4 +1,4 @@
-SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $SSH_EXTRA_OPTIONS"
+SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 declare -A TARGET_LINUX_DISTR=( \
   ['centos7']='centos' \
