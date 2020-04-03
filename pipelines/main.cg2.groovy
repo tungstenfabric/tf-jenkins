@@ -78,9 +78,14 @@ timestamps {
             def base_build_no = gate_utils.save_base_builds()
             gate_utils.save_pachset_info(base_build_no)
             try{
-              if(gate_utils.is_normal_project()) // Run immediately if normal projest
+              if(gate_utils.is_normal_project()){
+                // Run immediately if normal projest
+                println("DEBUG: Normal run jobs")
                 jobs_utils.run_jobs(jobs)
-              else{ // Wait for the same project pipeline is finishes
+              }
+              else{
+                // Wait for the same project pipeline is finishes
+                println("DEBUG: Wait until finishes previous pipeline")
                 gate_utils.wait_until_project_pipeline()
                 jobs_utils.run_jobs(jobs)
               }
@@ -88,7 +93,10 @@ timestamps {
               println("DEBUG: Something fails ${ex}")
               if (! gate_utils.check_build_is_not_failed(BUILD_ID)){
                 // If build has been failed - throw exection
+                println("DEBUG: Build has been realy failed")
                 throw new Exception(ex)
+              }else{
+                println("DEBUG: Build was not failed - try again")
               }
             }finally{
               if(base_build_no){
