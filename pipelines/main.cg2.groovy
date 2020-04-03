@@ -16,7 +16,7 @@ OPENSTACK_VERSION="queens"
 // base url for all jobs
 logs_url = ""
 logs_path = ""
-// set of result for each job
+// set of result for each job 
 job_results = [:]
 
 rnd = new Random()
@@ -42,13 +42,12 @@ timestamps {
         gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
         config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
         jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
-        gate_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gate.groovy")
       }
       // TODO: remove comment here when gating is ready
-      //if (env.GERRIT_PIPELINE == 'gate') { // && !gerrit_utils.has_gate_approvals()) {
-      //      println("There is no gate approvals.. skip gate")
-      //      return
-      //}
+      if (env.GERRIT_PIPELINE == 'gate') { // && !gerrit_utils.has_gate_approvals()) {
+            println("There is no gate approvals.. skip gate")
+            return
+      }
 
       def streams = [:]
       def jobs = [:]
@@ -112,6 +111,8 @@ timestamps {
           }
           // jobs_utils.run_jobs(jobs)
         }
+
+       
       } finally {
         println(job_results)
         stage('gerrit vote') {
@@ -130,6 +131,7 @@ timestamps {
     }
   }
 }
+
 
 def clone_self() {
   checkout([
@@ -192,6 +194,7 @@ def evaluate_env() {
         echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
         echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
       """
+      gerrit_utils.resolve_patchsets()
     } else if (env.GERRIT_PIPELINE == 'nightly') {
       project_name = "tungstenfabric"
     }
@@ -242,7 +245,7 @@ def save_pipeline_output_to_logs() {
       sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
     sh """#!/bin/bash -e
       set -x
-      curl ${BUILD_URL}consoleText > pipelinelog.txt
+      curl ${BUILD_URL}consoleText > pipelinelog.txt 
       ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
       rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path} 
     """
