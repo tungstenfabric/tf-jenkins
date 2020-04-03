@@ -28,6 +28,7 @@ pipeline{
               sh """
                 export SLAVE="aws"
                 $WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/cleanup_stalled_workers.sh
+                docker container prune -y
               """
             }
           }
@@ -53,6 +54,7 @@ pipeline{
               sh """
                 export SLAVE="vexxhost"
                 $WORKSPACE/src/progmaticlab/tf-jenkins/infra/vexxhost/cleanup_stalled_workers.sh
+                docker container prune -y
               """
               }
           }
