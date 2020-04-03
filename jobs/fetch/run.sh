@@ -13,6 +13,8 @@ if [ -e $WORKSPACE/patchsets-info.json ]; then
   cp -f $WORKSPACE/patchsets-info.json $WORKSPACE/src/tungstenfabric/tf-dev-env/
 fi
 
+export DEVENVTAG=${DEVENVTAG:-stable${TAG_SUFFIX}}
+
 ${my_dir}/run_${BUILD_WORKER["${ENVIRONMENT_OS^^}"]}.sh
 
 # save DEVENVTAG that was pushed by this job

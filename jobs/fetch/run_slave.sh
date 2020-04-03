@@ -9,8 +9,6 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 export TF_DEVENV_CONTAINER_NAME="tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}"
-devenvtag=${DEVENVTAG:-stable${TAG_SUFFIX}}
-container_tag=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
 function run_dev_env() {
   local stage=$1
@@ -30,7 +28,7 @@ function run_dev_env() {
   export SITE_MIRROR=http://${REGISTRY_IP}/repository
 
   export OPENSTACK_VERSIONS=queens,rocky
-  export CONTRAIL_CONTAINER_TAG=$container_tag
+  export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
   export GERRIT_URL=${GERRIT_URL}
   export GERRIT_BRANCH=${GERRIT_BRANCH}
@@ -42,7 +40,6 @@ function run_dev_env() {
   export BUILD_DEV_ENV=$build_dev_env
   export BUILD_DEV_ENV_ON_PULL_FAIL=0
   export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
-  export DEVENVTAG=$devenvtag
 
   cd $WORKSPACE/src/tungstenfabric/tf-dev-env
   ./run.sh $stage
@@ -84,12 +81,12 @@ if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   cp ${my_dir}/../../infra/mirrors/mirror-pip.conf $etc_dir/pip.conf
 fi
 
-if ! sudo docker pull "$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$devenvtag" ; then
+if ! sudo docker pull "$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$DEVENVTAG" ; then
   if ! run_dev_env none 1 ; then
     echo "ERROR: Sync failed"
     exit 1
   fi
-  if ! push_dev_env $devenvtag ; then
+  if ! push_dev_env $DEVENVTAG ; then
     echo "ERROR: Save tf-sandbox failed"
     exit 1
   fi
@@ -101,7 +98,7 @@ if ! run_dev_env "" 0 ; then
   echo "ERROR: Sync failed"
   exit 1
 fi
-if ! push_dev_env $container_tag ; then
+if ! push_dev_env $CONTRAIL_CONTAINER_TAG$TAG_SUFFIX ; then
   echo "ERROR: Save tf-sandbox failed"
   exit 1
 fi

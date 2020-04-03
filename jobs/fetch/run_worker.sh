@@ -10,7 +10,6 @@ source "$my_dir/definitions"
 
 linux_distr=${TARGET_LINUX_DISTR["$ENVIRONMENT_OS"]}
 tf_devenv_container_name="tf-developer-sandbox-${PIPELINE_BUILD_TAG}"
-devenvtag=${DEVENVTAG:-stable${TAG_SUFFIX}}
 #TODO: Rebuild be done only for review for dev-env,
 # re-tagging for stable will be done only after successful tests
 $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/create_workers.sh
@@ -40,7 +39,7 @@ export REGISTRY_PORT=$REGISTRY_PORT
 export SITE_MIRROR=http://${REGISTRY_IP}/repository
 
 export OPENSTACK_VERSIONS=queens,rocky
-export CONTRAIL_CONTAINER_TAG=$container_tag
+export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
 export GERRIT_URL=${GERRIT_URL}
 export GERRIT_BRANCH=${GERRIT_BRANCH}
@@ -53,7 +52,7 @@ export BUILD_DEV_ENV_ON_PULL_FAIL=$build_dev_env
 export LINUX_DISTR=$linux_distr
 export TF_DEVENV_CONTAINER_NAME=$tf_devenv_container_name
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
-export DEVENVTAG=$devenvtag
+export DEVENVTAG=$DEVENVTAG
 
 cd src/tungstenfabric/tf-dev-env
 
@@ -93,7 +92,7 @@ function push_dev_env() {
   local tag=$1
   local target_tag="$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox:$tag"
   local res=0
-  local commit_name="tf-developer-sandbox-$devenvtag"
+  local commit_name="tf-developer-sandbox-$DEVENVTAG"
   echo "INFO: Save container $target_tag"
   cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -118,7 +117,7 @@ EOF
 # build stable
 if [[ $res == 0 ]] ; then
   if run_dev_env none 1 ; then
-    push_dev_env $devenvtag || res=1
+    push_dev_env $DEVENVTAG || res=1
   else
     res=1
   fi
