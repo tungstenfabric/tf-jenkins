@@ -8,8 +8,6 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-export TF_DEVENV_CONTAINER_NAME="tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}"
-
 function run_dev_env() {
   local stage=$1
   local build_dev_env=$2

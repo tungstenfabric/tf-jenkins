@@ -9,7 +9,6 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 linux_distr=${TARGET_LINUX_DISTR["$ENVIRONMENT_OS"]}
-tf_devenv_container_name="tf-developer-sandbox-${PIPELINE_BUILD_TAG}"
 #TODO: Rebuild be done only for review for dev-env,
 # re-tagging for stable will be done only after successful tests
 $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/create_workers.sh
@@ -50,7 +49,7 @@ export CONTRAIL_DIR=""
 export BUILD_DEV_ENV=0
 export BUILD_DEV_ENV_ON_PULL_FAIL=$build_dev_env
 export LINUX_DISTR=$linux_distr
-export TF_DEVENV_CONTAINER_NAME=$tf_devenv_container_name
+export TF_DEVENV_CONTAINER_NAME=$TF_DEVENV_CONTAINER_NAME
 export IMAGE=$REGISTRY_IP:$REGISTRY_PORT/tf-developer-sandbox
 export DEVENVTAG=$DEVENVTAG
 
@@ -98,11 +97,11 @@ function push_dev_env() {
 [ "${DEBUG,,}" == "true" ] && set -x
 set -eo pipefail
 
-echo "INFO: stop $tf_devenv_container_name container"
-sudo docker stop $tf_devenv_container_name || true
+echo "INFO: stop $TF_DEVENV_CONTAINER_NAME container"
+sudo docker stop $TF_DEVENV_CONTAINER_NAME || true
 
-echo "INFO: commit $tf_devenv_container_name container as $commit_name"
-sudo docker commit $tf_devenv_container_name $commit_name
+echo "INFO: commit $TF_DEVENV_CONTAINER_NAME container as $commit_name"
+sudo docker commit $TF_DEVENV_CONTAINER_NAME $commit_name
 
 echo "INFO: tag $commit_name container as $target_tag"
 sudo docker tag $commit_name $target_tag
