@@ -29,6 +29,6 @@ source "$ENV_FILE"
 
 timeout 300 bash -c "\
 while /bin/true ; do \
-  ssh -i $OPENLAB2_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
+  ssh -i $OPENLAB2_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
   sleep 10 ; \
 done"
