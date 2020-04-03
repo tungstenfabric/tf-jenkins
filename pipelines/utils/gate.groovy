@@ -170,6 +170,10 @@ def _prepare_builds_map(){
 // function return true if project has contrail releases/branches structure
 // otherwise return false
 def is_normal_project(){
+  println("DEBUG: NORMAL_PROJECTS = ${NORMAL_PROJECTS}")
+  println("DEBUG: class of NORMAL_PROJECTS is ${NORMAL_PROJECTS.class}")
+  println("DEBUG: GERRIT_PROJECT is ${GERRIT_PROJECT}")
+  println("DEBUG: class of GERRIT_PROJECT = ${GERRIT_PROJECT.class}")
   return NORMAL_PROJECTS.containsValue(GERRIT_PROJECT)
 }
 
