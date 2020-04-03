@@ -85,6 +85,7 @@ def save_base_builds(){
 // or -1 if build fails
 def _wait_for_chain_calculated(build_id){
   def base_id_list = "-1"
+  println("DEBUG: Try to wait if base chain calculates for ${build_id}")
   waitUntil {
     def build = _get_build_by_id(build_id)
     base_id_list = _find_base_list(build)
@@ -93,8 +94,11 @@ def _wait_for_chain_calculated(build_id){
       println("DEBUG: build finishes but no base_id_list was found")
       return false
     }
-    return _find_base_list(build) == '-1'
+    return base_id_list == '-1'
   }
+
+  println("DEBUG: We found base_id_lis = ${base_id_list}")
+
 }
 
 // Function get global.env artifact and find there BASE_BUILD_ID_LIST
@@ -126,7 +130,7 @@ def _find_base_list(build){
       }
     }
   }
-
+  println("DEBUG: Found base id list = ${base_id_list}")
   return base_id_list
 }
 
