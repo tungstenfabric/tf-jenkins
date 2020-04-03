@@ -6,7 +6,6 @@ GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
 // TODO Fill up the normal projectls list
 NORMAL_PROJECTS = ['Juniper/contrail-ansible-deployer',
                    'Juniper/contrail-container-builder']
-PATCHSETS_INFO_FILE = "${WORKSPACE}/patchsets-info.json"
 
 // Function find base build fits to be the base build
 // get its base builds list if any, and then iterate over the list
@@ -375,7 +374,9 @@ def save_pachset_info(base_build_no){
     println("DEBUG: We can parse current patchset info ${new_patchset_info}")
     def result_patchset_info = old_patchset_info + new_patchset_info
     println("DEBUG: Result patchset info before save is ${result_patchset_info}")
-    writeFile(file: PATCHSETS_INFO_FILE, text: JsonOutput.toJson(result_patchset_info))
+    def json_result_patchset_info = JsonOutput.toJson(result_patchset_info)
+    println("DEBUG: JSON text = ${json_result_patchset_info}")
+    writeFile(file: 'patchsets-info.json', text: json_result_patchset_info)
     println("DEBUG: Successfully saved patchset info")
     archiveArtifacts(artifacts: PATCHSETS_INFO_FILE)
   }
