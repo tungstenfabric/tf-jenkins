@@ -356,13 +356,13 @@
     name: tungstenfabric/tf-dev-env
     check:
       templates:
+        - build-thel
+        - build-centos
         - test-unit-ui
-        - ansible-k8s
-        - ansible-os
         - cleanup
     gate:
       templates:
+        - build-thel
+        - build-centos
         - test-unit-ui
-        - ansible-k8s
-        - ansible-os
         - cleanup
