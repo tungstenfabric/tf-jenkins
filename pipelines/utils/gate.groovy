@@ -21,6 +21,10 @@ def save_base_builds(){
 
   builds_map.any { build_id, build_map ->
     if(_is_branch_fit(build_id)){
+      // Skip current build
+      if(build_id.toInteger() == BUILD_ID.toInteger())
+        return false
+
       if(build_map['status'] != 'null'){ // build has been finished
         if(check_build_is_not_failed(build_id)){ // We not need base build!
           return true
