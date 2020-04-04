@@ -39,6 +39,9 @@ function run_dev_env() {
   export BUILD_DEV_ENV_ON_PULL_FAIL=0
   export IMAGE=$CONTAINER_REGISTRY/tf-developer-sandbox
 
+  # use root user because slave is ubuntu but build machine is centos
+  # and they have different users
+  export DEVENV_USER=root
   cd $WORKSPACE/src/tungstenfabric/tf-dev-env
   ./run.sh $stage
 }
