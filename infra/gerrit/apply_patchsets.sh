@@ -1,12 +1,12 @@
 #!/bin/bash -e
 
+if [ ! -e $3 ]; then
+  exit
+fi
+
 src_dir="$(readlink -e $1)"
 project_fqdn="$2"
 patchsets_info_file="$(readlink -e $3)"
-
-if [ ! -e $patchsets_info_file ]; then
-  exit
-fi
 
 git config --get user.name >/dev/null  2>&1 || git config --global user.name "tf-jenkins"
 git config --get user.email >/dev/null 2>&1 || git config --global user.email "tf-jenkins@tf"
