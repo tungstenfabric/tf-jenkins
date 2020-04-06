@@ -285,7 +285,8 @@ def wait_until_project_pipeline(){
   def builds_map = _prepare_builds_map()
   def same_project_build = false
   builds_map.any { build_id, build_map ->
-    if(build_map['project'] == GERRIT_PROJECT && build_map['status'] == 'null'){
+    if(build_map['project'] == GERRIT_PROJECT && build_map['status'] == 'null' &&
+       build_id.toInteger() < BUILD_ID.toInteger()){
       same_project_build = build_id
       return true
     }
