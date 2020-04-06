@@ -13,7 +13,7 @@ echo "export IMAGE_SSH_USER=jenkins" >> "$ENV_FILE"
 echo "export instance_ip=192.168.51.5" >> "$ENV_FILE"
 echo "export SSH_EXTRA_OPTIONS=\"-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -i \$OPENLAB2_SSH_KEY -l jenkins -p 30002 openlab.tf-jenkins.progmaticlab.com\\\"\"" >> "$ENV_FILE"
 
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS -p 30002 -i $OPENLAB2_SSH_KEY jenkins@openlab.tf-jenkins.progmaticlab.com
+cat <<EOF | ssh -i $OPENLAB2_SSH_KEY $SSH_OPTIONS -p 30002 jenkins@openlab.tf-jenkins.progmaticlab.com
 [ "${DEBUG,,}" == "true" ] && set -x
 export BUILD_TAG=$BUILD_TAG
 export PATH=\$PATH:/usr/sbin
