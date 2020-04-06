@@ -10,7 +10,9 @@ if (env.GERRIT_PIPELINE == 'nightly') {
   REGISTRY_PORT = "5002"
 }
 // this is default LTS release for all deployers
-OPENSTACK_VERSION="queens"
+DEFAULT_OPENSTACK_VERSION="queens"
+
+OPENSTACK_VERSIONS = ['ocata', 'pike', 'queens', 'rocky', 'stein', 'train', 'ussuri', 'victoria']
 
 // pipeline flow variables
 // base url for all jobs
@@ -111,6 +113,9 @@ def evaluate_common_params() {
   branch = 'master'
   if (env.GERRIT_BRANCH)
     branch = env.GERRIT_BRANCH.split('/')[-1].toLowerCase()
+  openstack_version = DEFAULT_OPENSTACK_VERSION
+  if (branch in OPENSTACK_VERSIONS)
+    openstack_version = branch
   if (env.GERRIT_CHANGE_ID) {
     contrail_container_tag = branch
     // we have to avoid presense of 19xx, 20xx, ... in tag - apply some hack here to indicate current patchset and avoid those strings
@@ -143,7 +148,7 @@ def evaluate_env() {
       # store default registry params. jobs can redefine them if needed in own config (VARS).
       echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
       echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
-      echo "export OPENSTACK_VERSION=${OPENSTACK_VERSION}" >> global.env
+      echo "export OPENSTACK_VERSION=${openstack_version}" >> global.env
       echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
     """
@@ -161,6 +166,9 @@ def evaluate_env() {
       gerrit_utils.resolve_patchsets()
     } else if (env.GERRIT_PIPELINE == 'nightly') {
       project_name = "tungstenfabric"
+      sh """#!/bin/bash -e
+        echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
+      """
     }
     archiveArtifacts(artifacts: 'global.env')
 
