@@ -138,7 +138,7 @@ def _find_base_list(build){
 // otherwise return false
 def _get_build_by_id(build_no){
   if(build_no instanceof java.lang.Boolean)
-    retirn false
+    return false
   if(! build_no.isInteger())
     return false
   def gate_pipeline = jenkins.model.Jenkins.instance.getItem(GATING_PIPELINE)
