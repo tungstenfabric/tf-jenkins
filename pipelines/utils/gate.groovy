@@ -46,20 +46,23 @@ def save_base_builds(){
         sh """#!/bin/bash -e
           echo "export BASE_BUILD_ID_LIST=${base_chain}" >> global.env
         """
-        archiveArtifacts(artifacts: 'global.env')
         return true
       }
     }
   }
 
-  // If a base build not found save BASE_BUILD_ID_LIST anyway, because it needs
-  // to detect if process of the base build search is finished
-  if(! base_build_no){
-        sh """#!/bin/bash -e
-        echo "export BASE_BUILD_ID_LIST=" >> global.env
-        """
-        archiveArtifacts(artifacts: 'global.env')
+  if(base_build_no){
+    // Add base patchset info to the build
+    gate_utils.save_pachset_info(base_build_no)
+  }else{
+    // If a base build not found save BASE_BUILD_ID_LIST anyway, because it needs
+    // to detect if process of the base build search is finished
+    sh """#!/bin/bash -e
+      echo "export BASE_BUILD_ID_LIST=" >> global.env
+    """
   }
+
+  archiveArtifacts(artifacts: 'global.env')
 
   return base_build_no
 }
@@ -339,6 +342,22 @@ def get_result_patchset(base_build_no){
     return json_result_patchset_info
   }
   return false
+}
+
+// Function read global.env line by len and if met the line
+// with BASE_BUILD_ID_LIST remove it from file
+def cleanup_globalenv_vars(){
+
+  def new_patchset_info_text = readFile("global.env")
+  new_patchset_info_text.eachLine{ line ->
+    if(! line.contains('BASE_BUILD_ID_LIST')){
+      sh """#!/bin/bash -e
+          echo "${line}" >> global.env
+        """
+    }
+  }
+
+  archiveArtifacts(artifacts: 'global.env')
 }
 
 return this

@@ -74,9 +74,22 @@ timestamps {
         if (env.GERRIT_PIPELINE == 'gate'){
           println("DEBUG: Welcome to gate pipeline!!!")
 
+          def restart_pipeline = false
+
           while(true){
+            // Cleanup global.env vars if pipeline restarted
+            if(restart_pipeline){
+              // Delete BASE_BUILD_ID_LIST from global.env
+              gate_utils.cleanup_globalenv_vars()
+              // reset_patchset_info to start state
+              gerrit_utils.resolve_patchsets()
+            }
+
             def base_build_no = gate_utils.save_base_builds()
-            gate_utils.save_pachset_info(base_build_no)
+
+            // TODO move this function into save base build
+            //  gate_utils.save_pachset_info(base_build_no)
+
             try{
               if(gate_utils.is_normal_project()){
                 // Run immediately if normal projest
@@ -117,6 +130,8 @@ timestamps {
                 println("DEBUG: We are NOT have base pipeline")
                 break
               }
+              // mark pipeline as restarted for cleanup vars in global.env
+              restart_pipeline = true
             }
           }
           // jobs_utils.run_jobs(jobs)
