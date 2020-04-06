@@ -260,7 +260,6 @@ def _gate_get_build_state(build){
 def wait_pipeline_finished(build_no){
   waitUntil {
     def res = _get_pipeline_result(build_no)
-    println = "DEBUG: _get_pipeline_result is ${res}"
     return ! res
   }
 }
@@ -290,8 +289,6 @@ def wait_until_project_pipeline(){
       return true
     }
   }
-
-  println("DEBUG: same_project_build = ${same_project_build}")
 
   if(same_project_build){
     waitUntil {
