@@ -348,7 +348,7 @@ def save_pachset_info(base_build_no){
   //  ${json_result_patchset_info}
   //  EOF
   //"""
-  writeFile(file: 'patchsets-info.json', text: json_result_patchset_info)
+  writeFile(file: 'patchsets-info.json', text: res_json)
   println("DEBUG: Successfully saved patchset info")
   //archiveArtifacts(artifacts: "patchsets-info.json")
 }
