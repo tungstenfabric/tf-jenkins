@@ -4,8 +4,7 @@ import groovy.json.JsonOutput
 // Constants
 GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
 // TODO Fill up the NOT normal projectls list
-NOT_NORMAL_PROJECTS = ['Juniper/contrail-ansible-deployer',
-                   'Juniper/contrail-container-builder']
+NOT_NORMAL_PROJECTS = []
 
 // Function find base build fits to be the base build
 // get its base builds list if any, and then iterate over the list
