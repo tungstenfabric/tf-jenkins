@@ -359,11 +359,11 @@ def get_result_patchset(base_build_no){
   def sl = new JsonSlurper()
   def new_patchset_info = sl.parseText(new_patchset_info_text)
   println("DEBUG: parsed first JSON: ${new_patchset_info}")
-  return true
   def base_patchset_info = ""
 
   println("DEBUG: Get patchset info from build ${base_build_no} before save")
   base_build = _get_build_by_id(base_build_no)
+  return true
   def artifactManager =  base_build.getArtifactManager()
   if (artifactManager.root().isDirectory()) {
     def fileList = artifactManager.root().list()
