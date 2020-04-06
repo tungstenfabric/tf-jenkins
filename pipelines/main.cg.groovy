@@ -397,6 +397,7 @@ def wait_pipeline_finished(build_no){
     println("DEBUG: waitUntil get_pipeline_result is ${res}")
     return ! res
   }
+  println("DEBUG: Base pipeline has been finished")
 }
 
 // Put all this staff in separate function due to Serialisation under waitUntil
