@@ -22,7 +22,6 @@ def save_base_builds(){
       if(build_id.toInteger() >= BUILD_ID.toInteger()){
         return false
       }
-
       if(build_map['status'] != 'null'){
         // build has been finished
         if(check_build_is_not_failed(build_id)){ // We not need base build!
@@ -72,6 +71,10 @@ def save_base_builds(){
 // return value of BASE_BUILD_ID_LIST if it has been found
 // or -1 if build fails
 def _wait_for_chain_calculated(build_id){
+  waitUntil {
+    return _is_base_patchset_calc_flag_set(build_id)
+  }
+
   def base_id_list = "-1"
   waitUntil {
     def build = _get_build_by_id(build_id)
@@ -314,7 +317,6 @@ def save_pachset_info(base_build_no){
 
 // all JSON calsulate to separate function
 def get_result_patchset(base_build_no){
-
   def new_patchset_info_text = readFile("patchsets-info.json")
   def sl = new JsonSlurper()
   def new_patchset_info = sl.parseText(new_patchset_info_text)
@@ -342,5 +344,14 @@ def get_result_patchset(base_build_no){
   }
   return false
 }
+
+// Function check if BASE_PATCHSET_CALCULATED flag is set for
+// target build
+def _is_base_patchset_calc_flag_set(build_no){
+  def build = _get_build_by_id(build_no)
+  def flag = buil.getEnvironment()['BASE_PATCHSET_CALCULATED']
+  return flag == 'true'
+}
+
 
 return this
