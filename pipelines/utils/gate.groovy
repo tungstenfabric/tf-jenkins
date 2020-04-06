@@ -356,11 +356,10 @@ def get_result_patchset(base_build_no){
   println("DEBUG: start save_pachset_info")
   def new_patchset_info_text = readFile("patchsets-info.json")
   println("DEBUG: read text from file: ${new_patchset_info_text}")
-  return true
   def sl = new JsonSlurper()
   def new_patchset_info = sl.parseText(new_patchset_info_text)
   println("DEBUG: parsed first JSON: ${new_patchset_info}")
-
+  return true
   def base_patchset_info = ""
 
   println("DEBUG: Get patchset info from build ${base_build_no} before save")
