@@ -105,7 +105,6 @@
     name: Juniper/contrail-container-builder
     check:
       templates:
-        - k8s-manifests
         - ansible-k8s
         - ansible-os
         - cleanup

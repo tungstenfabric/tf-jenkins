@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+if [ ! -e $3 ]; then
+  exit
+fi
+
 src_dir="$(readlink -e $1)"
 project_fqdn="$2"
 patchsets_info_file="$(readlink -e $3)"

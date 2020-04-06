@@ -94,7 +94,7 @@
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
 
           # definitions ONLY for this job
-          export TF_DEVENV_CONTAINER_NAME="tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}"
+          export TF_DEVENV_CONTAINER_NAME="tf-developer-sandbox-${PIPELINE_BUILD_TAG}-${BRANCH}${TAG_SUFFIX}"
           # special case for fetch-sources - if we have changes in tf-dev-env then we should rebuild it
           if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
             export DEVENVTAG=sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
@@ -133,7 +133,7 @@
                         source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 
                         # definitions ONLY for this job
-                        export TF_DEVENV_CONTAINER_NAME="tf-developer-sandbox-${PIPELINE_BUILD_TAG}${TAG_SUFFIX}"
+                        export TF_DEVENV_CONTAINER_NAME="tf-developer-sandbox-${PIPELINE_BUILD_TAG}-${BRANCH}${TAG_SUFFIX}"
                         # special case for fetch-sources - if we have changes in tf-dev-env then we should rebuild it
                         if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
                           export DEVENVTAG=sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX

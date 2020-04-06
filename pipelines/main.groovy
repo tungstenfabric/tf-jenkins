@@ -56,7 +56,7 @@ timestamps {
       try {
         time_start = (new Date()).getTime()
         stage('Pre-build') {
-          evaluate_logs_params()
+          evaluate_common_params()
           terminate_previous_runs()
           (streams, jobs, post_jobs) = evaluate_env()
           gerrit_utils.gerrit_build_started()
@@ -106,10 +106,13 @@ def clone_self() {
   ])
 }
 
-def evaluate_logs_params() {
+def evaluate_common_params() {
   // evaluate logs params
+  branch = 'master'
+  if (env.GERRIT_BRANCH)
+    branch = env.GERRIT_BRANCH.split('/')[-1].toLowerCase()
   if (env.GERRIT_CHANGE_ID) {
-    contrail_container_tag = env.GERRIT_BRANCH.split('/')[-1].toLowerCase()
+    contrail_container_tag = branch
     // we have to avoid presense of 19xx, 20xx, ... in tag - apply some hack here to indicate current patchset and avoid those strings
     contrail_container_tag += '-' + env.GERRIT_CHANGE_NUMBER.split('').join('.')
     contrail_container_tag += '-' + env.GERRIT_PATCHSET_NUMBER.split('').join('.')
@@ -117,7 +120,7 @@ def evaluate_logs_params() {
     logs_path = "${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
     logs_url = "${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
   } else if (env.GERRIT_PIPELINE == 'nightly') {
-    contrail_container_tag = 'nightly'
+    contrail_container_tag = "nightly-${branch}"
     logs_path = "${LOGS_BASE_PATH}/nightly/pipeline_${BUILD_NUMBER}"
     logs_url = "${LOGS_BASE_URL}/nightly/pipeline_${BUILD_NUMBER}"
   } else {
