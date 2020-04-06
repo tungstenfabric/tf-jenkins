@@ -342,6 +342,8 @@ def save_pachset_info(base_build_no){
   if(!(base_build_no && base_build_no.isInteger()))
     return
   def res_json = get_result_patchset(base_build_no)
+  if(!res_json)
+    return false
   println("DEBUG: Return patchset info is ${res_json}")
   //sh """#!/bin/bash -e
   //  cat <<EOF > patchsets-info.json
@@ -355,14 +357,12 @@ def save_pachset_info(base_build_no){
 
 // all JSON calsulate to separate function
 def get_result_patchset(base_build_no){
-  println("DEBUG: start save_pachset_info")
+
   def new_patchset_info_text = readFile("patchsets-info.json")
-  println("DEBUG: read text from file: ${new_patchset_info_text}")
   def sl = new JsonSlurper()
   def new_patchset_info = sl.parseText(new_patchset_info_text)
-  println("DEBUG: parsed first JSON: ${new_patchset_info}")
   def base_patchset_info = ""
-  println("DEBUG: Get patchset info from build ${base_build_no} before save")
+  // Read patchsets-info from base build
   def base_build = _get_build_by_id(base_build_no)
   def artifactManager =  base_build.getArtifactManager()
   if (artifactManager.root().isDirectory()) {
@@ -376,26 +376,14 @@ def get_result_patchset(base_build_no){
       }
     }
   }
-  println("DEBUG: Found base patchset info in old build is ${base_patchset_info}")
-
   def sl2 = new JsonSlurper()
-  println("DEBUG: JSON Slurper created")
   def old_patchset_info = sl2.parseText(base_patchset_info)
-  println("DEBUG: JSON has been parsed : ${old_patchset_info}")
   if( old_patchset_info instanceof java.util.ArrayList ){
-    println("DEBUG: old_patchset_info is instance of java.util.ArrayList")
-    // If something looks like array found in patchset info of base build
-    // Read current patchset and parse JSON
-    println("DEBUG: We can parse current patchset info ${new_patchset_info}")
     def result_patchset_info = old_patchset_info + new_patchset_info
-    println("DEBUG: Result patchset info before save is ${result_patchset_info}")
     def json_result_patchset_info = JsonOutput.toJson(result_patchset_info)
-    println("DEBUG: JSON text = ${json_result_patchset_info}  class is ${json_result_patchset_info.class}")
     return json_result_patchset_info
   }
-
   return false
-
 }
 
 return this
