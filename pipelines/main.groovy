@@ -167,7 +167,7 @@ def evaluate_env() {
     } else if (env.GERRIT_PIPELINE == 'nightly') {
       project_name = "tungstenfabric"
       sh """#!/bin/bash -e
-        echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
+        echo "export GERRIT_BRANCH=master" >> global.env
       """
     }
     archiveArtifacts(artifacts: 'global.env')
