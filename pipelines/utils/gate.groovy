@@ -17,44 +17,33 @@ def save_base_builds(){
   def builds_map = _prepare_builds_map()
 
   def base_build_no = false
-
-  println("DEBUG: Builds map prepared : ${builds_map}")
   builds_map.any { build_id, build_map ->
-
-    println("DEBUG: Check for fit to base build no ${build_id}")
     if( build_id && _is_branch_fit(build_id) ){
       // Skip current or started later builds
       if(build_id.toInteger() >= BUILD_ID.toInteger()){
-        println("DEBUG: Skip current or started later builds")
         return false
       }
 
       if(build_map['status'] != 'null'){
-        println("DEBUG: found finished build") // build has been finished
+        // build has been finished
         if(check_build_is_not_failed(build_id)){ // We not need base build!
-          println("DEBUG: We not need base build!")
           return true
         } // else just skip the build
       }else{ // build is running
-        println("DEBUG: Found runnig build looks like a base")
         // Wait for build chain will be prepared
         def base_chain = _wait_for_chain_calculated(build_id)
         if(base_chain == "-1"){ // build fails before can calculate BASE_BUILD_ID_LIST
-          println("DEBUG: Build failed before BASE_BUILD_ID_LIST has been calculated")
           return false
         }
         if(base_chain){ // base_chain is not empty string
           base_chain = _check_base_chain_is_not_failed(base_chain)
           if(base_chain == false){ // Some of base builds fails
-            println("DEBUG: Some of base build fails")
             return false
           }
           base_chain = "${build_id}," + base_chain
         }else{ // base_chain is empty, add the only this build to chain
-          println("DEBUG: base_chain is empty, add the only this build to chain")
           base_chain = build_id.toString()
         }
-        println("DEBUG: Base build found. Base build = ${build_id} base_chain = ${base_chain}")
         // We found base build! Save base_chain in global.vars
         base_build_no = build_id
         sh """#!/bin/bash -e
@@ -85,19 +74,15 @@ def save_base_builds(){
 // or -1 if build fails
 def _wait_for_chain_calculated(build_id){
   def base_id_list = "-1"
-  println("DEBUG: Try to wait if base chain calculates for ${build_id}")
   waitUntil {
     def build = _get_build_by_id(build_id)
     base_id_list = _find_base_list(build)
     if(build.getResult() != null && base_id_list == "-1"){
       // build finishes but no base_id_list was found
-      println("DEBUG: build finishes but no base_id_list was found")
       return true
     }
     return base_id_list != '-1'
   }
-
-  println("DEBUG: We found base_id_lis = ${base_id_list}")
   return base_id_list
 }
 
@@ -130,7 +115,6 @@ def _find_base_list(build){
       }
     }
   }
-  println("DEBUG: Found base id list = ${base_id_list}")
   return base_id_list
 }
 
@@ -209,9 +193,6 @@ def is_normal_project(){
 // Otherwise return false
 def _is_branch_fit(build_id){
   def build = _get_build_by_id(build_id)
-
-  println("DEBUG: check _is_branch_fit for build ${build}")
-
   if(is_normal_project()){
     // Project has contrail releases structure
     // Branch of the base build must be the same
@@ -228,28 +209,21 @@ def _is_branch_fit(build_id){
 
 // Function check build using build_no is failed
 def check_build_is_not_failed(build_no){
-  println("DEBUG: check build ${build_no} is failure")
-
   // Get the build
   def gate_pipeline = jenkins.model.Jenkins.instance.getItem(GATING_PIPELINE)
   def build = null
 
   gate_pipeline.getBuilds().any {
-    println("DEBUG: check if ${it.getEnvVars().BUILD_ID.toInteger()} == ${build_no.toInteger()}")
     if (it.getEnvVars().BUILD_ID.toInteger() == build_no.toInteger()){
       build = it
       return true
     }
   }
-  println("DEBUG: build for check found: ${build}")
-  println("DEBUG: Result of build is ${build.getResult()}")
   if(build.getResult() != null){
       // Skip the build if it fails
       if(_gate_get_build_state(build) == 'FAILURE'){
-        println ("DEBUG: Build ${build} fails")
         return false
       }else{
-        println ("DEBUG: Build ${build} is not fails")
       }
     }
   return true
@@ -261,23 +235,17 @@ def check_build_is_not_failed(build_no){
 // !!! Works only if build has been finished! Check getResult() before call this function
 def _gate_get_build_state(build){
     def result = "FAILURE"
-    println("DEBUG: Check build here: gate_get_build_state")
     def artifactManager =  build.getArtifactManager()
     if (artifactManager.root().isDirectory()) {
-      println("DEBUG: Artifact directory found")
       def fileList = artifactManager.root().list()
-      println("DUBUG: filelist = ${fileList}")
       fileList.each {
         def file = it
-        println("DEBUG: found file: ${file}")
         if(file.toString().contains('global.env')) {
           // extract global.env artifact for each build if exists
           def fileText = it.open().getText()
-          println("DEBUG: content of global.env is : ${fileText}")
           fileText.split("\n").each {
             def line = it
             if(line.contains('VERIFIED')) {
-              println("DEBUG: found VERIFIED line is ${line}")
               def verified = line.split('=')[1].trim()
               if(verified.isInteger() && verified.toInteger() > 0)
                 result = "SUCCESS"
@@ -285,10 +253,7 @@ def _gate_get_build_state(build){
           }
         }
       }
-    }else{
-      println("DEBUG: Not found artifact directory - suppose build fails")
     }
-  println("DEBUG: Build is ${result}")
   return result
 }
 
@@ -296,7 +261,6 @@ def _gate_get_build_state(build){
 def wait_pipeline_finished(build_no){
   waitUntil {
     def res = _get_pipeline_result(build_no)
-    println("DEBUG: waitUntil get_pipeline_result is ${res}")
     return res
   }
 }
@@ -344,14 +308,7 @@ def save_pachset_info(base_build_no){
   def res_json = get_result_patchset(base_build_no)
   if(!res_json)
     return false
-  println("DEBUG: Return patchset info is ${res_json}")
-  //sh """#!/bin/bash -e
-  //  cat <<EOF > patchsets-info.json
-  //  ${json_result_patchset_info}
-  //  EOF
-  //"""
   writeFile(file: 'patchsets-info.json', text: res_json)
-  println("DEBUG: Successfully saved patchset info")
   archiveArtifacts(artifacts: "patchsets-info.json")
 }
 
