@@ -313,6 +313,10 @@ def save_pachset_info(base_build_no){
     return false
   writeFile(file: 'patchsets-info.json', text: res_json)
   archiveArtifacts(artifacts: "patchsets-info.json")
+  sh """#!/bin/bash -e
+    echo "export BASE_PATCHSET_CALCULATED=true" >> global.env
+  """
+  archiveArtifacts(artifacts: 'global.env')
 }
 
 // all JSON calsulate to separate function
