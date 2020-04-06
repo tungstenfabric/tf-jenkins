@@ -336,6 +336,8 @@ def wait_until_project_pipeline(){
 // union all patchset_info in one array
 // and write all info to patchset_info artifact of corrent build
 def save_pachset_info(base_build_no){
+  // Temp return
+  return
   if(!(base_build_no && base_build_no.isInteger()))
     return
 
