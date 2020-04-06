@@ -141,9 +141,10 @@ def _get_build_by_id(build_no){
     return false
   def gate_pipeline = jenkins.model.Jenkins.instance.getItem(GATING_PIPELINE)
   def build = false
-  gate_pipeline.getBuilds().any {
-    println("DEBUG: check if ${it.getId().toInteger()} == ${build_no.toInteger()}")
-    if (it.getId().toInteger() == build_no.toInteger()){
+  def builds = gate_pipeline.getBuilds()
+
+  for(def i =0; i<builds.size(); i++){
+      if (builds[i].getId().toInteger() == build_no.toInteger()){
       build = it
       return true
     }
