@@ -297,8 +297,6 @@ def wait_until_project_pipeline(){
   if(same_project_build){
     waitUntil {
       def build = _get_build_by_id(same_project_build)
-      def checker = (build.getResult() == null)
-      println("DEBUG: checker is ${checker}")
       return ! (build.getResult() == null)
     }
   }
