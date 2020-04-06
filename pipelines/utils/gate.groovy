@@ -350,6 +350,7 @@ def get_result_patchset(base_build_no){
 def _is_base_patchset_calc_flag_set(build_no){
   def build = _get_build_by_id(build_no)
   def flag = buil.getEnvironment()['BASE_PATCHSET_CALCULATED']
+  println("DEBUG: check if flag BASE_PATCHSET_CALCULATED is set. Flag = ${flag}")
   return flag == 'true'
 }
 
