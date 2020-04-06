@@ -14,6 +14,7 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/
 
 cat <<EOF | ssh -v -i $WORKER_SSH_KEY $SSH_OPTIONS "$SSH_EXTRA_OPTIONS" $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
+set +x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export OPENSTACK_VERSION=$OPENSTACK_VERSION
