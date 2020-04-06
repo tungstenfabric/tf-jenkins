@@ -342,6 +342,8 @@ def save_pachset_info(base_build_no){
   if(!(base_build_no && base_build_no.isInteger()))
     return
 
+  def base_json = _get_base_patchset_info_json(base_build_no)
+
   def res_json = get_result_patchset(base_build_no)
   println("DEBUG: Return patchset info is ${res_json}")
   //sh """#!/bin/bash -e
