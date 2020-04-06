@@ -86,7 +86,7 @@ timestamps {
               else{
                 // Wait for the same project pipeline is finishes
                 println("DEBUG: Wait until finishes previous pipeline")
-                // gate_utils.wait_until_project_pipeline()
+                gate_utils.wait_until_project_pipeline()
                 println("DEBUG: NOT Normal run jobs")
                 jobs_utils.run_jobs(jobs)
               }
