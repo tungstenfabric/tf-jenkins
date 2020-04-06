@@ -121,8 +121,6 @@ timestamps {
           }
           // jobs_utils.run_jobs(jobs)
         }
-
-       
       } finally {
         println(job_results)
         stage('gerrit vote') {

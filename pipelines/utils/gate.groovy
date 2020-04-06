@@ -3,8 +3,8 @@ import groovy.json.JsonOutput
 
 // Constants
 GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
-// TODO Fill up the normal projectls list
-NORMAL_PROJECTS = ['Juniper/contrail-ansible-deployer',
+// TODO Fill up the NOT normal projectls list
+NOT_NORMAL_PROJECTS = ['Juniper/contrail-ansible-deployer',
                    'Juniper/contrail-container-builder']
 
 // Function find base build fits to be the base build
@@ -185,7 +185,7 @@ def _prepare_builds_map(){
 // function return true if project has contrail releases/branches structure
 // otherwise return false
 def is_normal_project(){
-  return NORMAL_PROJECTS.contains(GERRIT_PROJECT)
+  return ! NOT_NORMAL_PROJECTS.contains(GERRIT_PROJECT)
 }
 
 // Function check if build's branch fit to current project branch
