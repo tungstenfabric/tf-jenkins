@@ -292,7 +292,7 @@ def wait_until_project_pipeline(){
   }
 
   println("DEBUG: same_project_build = ${same_project_build}")
-  return
+
   if(same_project_build){
     waitUntil {
       def build = _get_build_by_id(same_project_build)
