@@ -76,6 +76,8 @@ timestamps {
 
           while(true){
             def base_build_no = gate_utils.save_base_builds()
+            println("DEBUG: Class of base_build_no is ${base_build_no.class} base_build_no is ${base_build_no}")
+            def base_json = gate_utils._get_base_patchset_info_json(base_build_no)
             gate_utils.save_pachset_info(base_build_no)
             try{
               if(gate_utils.is_normal_project()){
