@@ -63,6 +63,7 @@
         job-name: fetch-sources
         vars:
           GERRIT_BRANCH: R1912
+          TAG_SUFFIX: -r1912
 
 - template:
     name: build-r1912
@@ -75,6 +76,7 @@
           - fetch-sources-r1912
         vars:
           GERRIT_BRANCH: R1912
+          TAG_SUFFIX: -r1912
 
 - template:
     name: test-unit
