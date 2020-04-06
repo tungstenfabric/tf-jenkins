@@ -12,7 +12,7 @@ echo "INFO: Deploy platform for $JOB_NAME"
 echo "$SSH_EXTRA_OPTIONS"
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip << EOF || res=1
+command "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip" << EOF || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
