@@ -11,28 +11,28 @@
     name: tungstenfabric
     nightly:
       streams:
-        juju-k8s:
-          voting: false
-        rhosp:
-          voting: false
-        helm-os:
-          voting: false
-#        juju-maas-os:
+#        juju-k8s:
 #          voting: false
+#        rhosp:
+#          voting: false
+#        helm-os:
+#          voting: false
+        juju-maas-os:
+          voting: false
       templates:
-        - build-r1912
-        - test-unit
-        - test-unit-ui
-        - k8s-manifests
-        - ansible-k8s
-        - ansible-os
-        - helm-k8s
-        - helm-os
-        - juju-k8s
-        - juju-os
-#        - juju-maas-os
-        - rhosp
-        - cleanup
+#        - build-r1912
+#        - test-unit
+#        - test-unit-ui
+#        - k8s-manifests
+#        - ansible-k8s
+#        - ansible-os
+#        - helm-k8s
+#        - helm-os
+#        - juju-k8s
+#        - juju-os
+        - juju-maas-os
+#        - rhosp
+#        - cleanup
       jobs:
         publish-centos-nightly:
           job-name: publish
