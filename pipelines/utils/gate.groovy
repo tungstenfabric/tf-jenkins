@@ -71,10 +71,6 @@ def save_base_builds(){
 // return value of BASE_BUILD_ID_LIST if it has been found
 // or -1 if build fails
 def _wait_for_chain_calculated(build_id){
-  waitUntil {
-    return _is_base_patchset_calc_flag_set(build_id)
-  }
-
   def base_id_list = "-1"
   waitUntil {
     def build = _get_build_by_id(build_id)
@@ -85,6 +81,7 @@ def _wait_for_chain_calculated(build_id){
     }
     return base_id_list != '-1'
   }
+
   return base_id_list
 }
 
@@ -313,10 +310,6 @@ def save_pachset_info(base_build_no){
     return false
   writeFile(file: 'patchsets-info.json', text: res_json)
   archiveArtifacts(artifacts: "patchsets-info.json")
-  sh """#!/bin/bash -e
-    echo "export BASE_PATCHSET_CALCULATED=true" >> global.env
-  """
-  archiveArtifacts(artifacts: 'global.env')
 }
 
 // all JSON calsulate to separate function
@@ -347,15 +340,6 @@ def get_result_patchset(base_build_no){
     return json_result_patchset_info
   }
   return false
-}
-
-// Function check if BASE_PATCHSET_CALCULATED flag is set for
-// target build
-def _is_base_patchset_calc_flag_set(build_no){
-  def build = _get_build_by_id(build_no)
-  def flag = build.getEnvironment()['BASE_PATCHSET_CALCULATED']
-  println("DEBUG: check if flag BASE_PATCHSET_CALCULATED is set. Flag = ${flag}")
-  return flag == 'true'
 }
 
 return this
