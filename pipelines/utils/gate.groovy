@@ -146,7 +146,7 @@ def _get_build_by_id(build_no){
   for(def i =0; i<builds.size(); i++){
       if (builds[i].getId().toInteger() == build_no.toInteger()){
       build = builds[i]
-      return true
+      break
     }
   }
   return build
