@@ -411,7 +411,7 @@ def _get_base_patchset_info_json(base_build_no){
 
   println("DEBUG: Get patchset info from build ${base_build_no} before save")
   return
-  base_build = _get_build_by_id(base_build_no)
+  def base_build = _get_build_by_id(base_build_no)
   println("DEBUG: Base build = ${base_build}")
   def artifactManager =  base_build.getArtifactManager()
   if (artifactManager.root().isDirectory()) {
