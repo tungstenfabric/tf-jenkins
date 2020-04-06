@@ -81,13 +81,14 @@ timestamps {
               if(gate_utils.is_normal_project()){
                 // Run immediately if normal projest
                 println("DEBUG: Normal run jobs")
-                jobs_utils.run_jobs(jobs)
+                // jobs_utils.run_jobs(jobs)
               }
               else{
                 // Wait for the same project pipeline is finishes
                 println("DEBUG: Wait until finishes previous pipeline")
                 gate_utils.wait_until_project_pipeline()
-                jobs_utils.run_jobs(jobs)
+                println("DEBUG: NOT Normal run jobs")
+                // jobs_utils.run_jobs(jobs)
               }
             }catch(Exception ex){
               println("DEBUG: Something fails ${ex}")
