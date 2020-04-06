@@ -341,9 +341,6 @@ def wait_until_project_pipeline(){
 def save_pachset_info(base_build_no){
   if(!(base_build_no && base_build_no.isInteger()))
     return
-
-  def base_json = _get_base_patchset_info_json(base_build_no)
-
   def res_json = get_result_patchset(base_build_no)
   println("DEBUG: Return patchset info is ${res_json}")
   //sh """#!/bin/bash -e
@@ -364,13 +361,9 @@ def get_result_patchset(base_build_no){
   def sl = new JsonSlurper()
   def new_patchset_info = sl.parseText(new_patchset_info_text)
   println("DEBUG: parsed first JSON: ${new_patchset_info}")
-
-  return true
   def base_patchset_info = ""
-
   println("DEBUG: Get patchset info from build ${base_build_no} before save")
-
-  base_build = _get_build_by_id(base_build_no)
+  def base_build = _get_build_by_id(base_build_no)
   def artifactManager =  base_build.getArtifactManager()
   if (artifactManager.root().isDirectory()) {
     def fileList = artifactManager.root().list()
@@ -403,28 +396,6 @@ def get_result_patchset(base_build_no){
 
   return false
 
-}
-
-// Function extract patchset_info text from base build
-def _get_base_patchset_info_json(base_build_no){
-  def base_patchset_info = ""
-
-  println("DEBUG: Get patchset info from build ${base_build_no} before save")
-  def base_build = _get_build_by_id(base_build_no)
-  println("DEBUG: Base build = ${base_build}")
-  def artifactManager =  base_build.getArtifactManager()
-  if (artifactManager.root().isDirectory()) {
-    def fileList = artifactManager.root().list()
-    fileList.any {
-      def file = it
-      if(file.toString().contains('patchsets-info.json')) {
-        // extract global.env artifact for each build if exists
-        base_patchset_info = it.open().getText()
-        return true
-      }
-    }
-  }
-  println("DEBUG: Found base patchset info in old build is ${base_patchset_info}")
 }
 
 return this
