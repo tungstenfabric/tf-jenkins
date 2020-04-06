@@ -352,7 +352,7 @@ def save_pachset_info(base_build_no){
   //"""
   writeFile(file: 'patchsets-info.json', text: res_json)
   println("DEBUG: Successfully saved patchset info")
-  //archiveArtifacts(artifacts: "patchsets-info.json")
+  archiveArtifacts(artifacts: "patchsets-info.json")
 }
 
 // all JSON calsulate to separate function
