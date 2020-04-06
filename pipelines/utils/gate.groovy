@@ -144,7 +144,7 @@ def _get_build_by_id(build_no){
 def _check_base_chain_is_not_failed(base_chain){
   if(base_chain == "")
     return true
-  def is_some_fails = false
+  def is_not_failed = true
   def arr_chain = base_chain.split(",")
   arr_chain.any { build_id ->
     def build = _get_build_by_id(build_id)
@@ -153,11 +153,11 @@ def _check_base_chain_is_not_failed(base_chain){
     if(check_build_is_not_failed(build_id))
       return false
     else{
-      is_some_fails = true
+      is_not_failed = false
       return true
     }
   }
-  return is_some_fails
+  return is_not_failed
 }
 
 // Function return ordered map with builds with data needed for find
