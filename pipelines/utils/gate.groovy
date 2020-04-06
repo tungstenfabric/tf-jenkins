@@ -34,8 +34,7 @@ def save_base_builds(){
           return false
         }
         if(base_chain){ // base_chain is not empty string
-          base_chain = _check_base_chain_is_not_failed(base_chain)
-          if(base_chain == false){ // Some of base builds fails
+          if(_check_base_chain_is_not_failed(base_chain) == false){ // Some of base builds fails
             return false
           }
           base_chain = "${build_id}," + base_chain
