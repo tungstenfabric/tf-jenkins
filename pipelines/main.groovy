@@ -44,6 +44,7 @@ timestamps {
         gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
         config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
         jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
+        gate_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gate.groovy")
       }
       // TODO: remove comment here when gating is ready
       if (env.GERRIT_PIPELINE == 'gate') { // && !gerrit_utils.has_gate_approvals()) {
@@ -72,7 +73,10 @@ timestamps {
           pre_build_done = true
         }
 
-        jobs_utils.run_jobs(jobs)
+        if (env.GERRIT_PIPELINE != 'gate')
+          jobs_utils.run_jobs(jobs)
+        else
+          jobs_utils.run_gating(jobs, gate_utils, gerrit_utils)
       } finally {
         println(job_results)
         stage('gerrit vote') {

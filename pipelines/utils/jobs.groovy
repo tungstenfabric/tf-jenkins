@@ -1,5 +1,70 @@
 // jobs utils
 
+def run_gating(def job_set, def gate_utils, def gerrit_utils) {
+  println("DEBUG: Welcome to gate pipeline!!!")
+
+  def restart_pipeline = false
+  while (true) {
+    // Cleanup global.env vars if pipeline restarted
+    if (restart_pipeline) {
+      // Delete BASE_BUILD_ID_LIST from global.env
+      gate_utils.cleanup_globalenv_vars()
+      // reset_patchset_info to start state
+      gerrit_utils.resolve_patchsets()
+    }
+
+    def base_build_no = gate_utils.save_base_builds()
+
+    try {
+      if (gate_utils.is_concurrent_project()) {
+        // Run immediately if projest can be run concurrently
+        println("DEBUG: Normal run jobs")
+        jobs_utils.run_jobs(jobs)
+      } else {
+        // Wait for the same project pipeline is finishes
+        println("DEBUG: Wait until finishes previous pipeline")
+        gate_utils.wait_until_project_pipeline()
+        println("DEBUG: NOT Normal run jobs")
+        jobs_utils.run_jobs(jobs)
+      }
+    } catch(Exception ex) {
+      println("DEBUG: Something fails ${ex}")
+      if (! gate_utils.check_build_is_not_failed(BUILD_ID)){
+        // If build has been failed - throw exection
+        println("DEBUG: Build has been realy failed")
+        throw e
+      } else {
+        println("DEBUG: Build was not failed - try again")
+      }
+    } finally {
+      // Finish the loop if pipeline was aborted
+      def curr_build = gate_utils._get_build_by_id(BUILD_ID)
+      if(curr_build.getResult().toString() == "ABORTED")
+        break
+
+      if (base_build_no) {
+        println("DEBUG: We are found base pipeline ${base_build_no} and waiting when base pipeline will finished")
+        gate_utils.wait_pipeline_finished(base_build_no)
+        println("DEBUG: Base pipeline has been finished")
+        if(gate_utils.check_build_is_not_failed(base_build_no)){
+          // Finish the pipeline if base build finished successfully
+          // else try to find new base build
+          println("DEBUG: Base pipeline has been verified")
+          break
+        } else {
+          println("DEBUG: Base pipeline has been NOT verified run build again")
+        }
+      } else {
+        // we not have base build - Just finish the job
+        println("DEBUG: We are NOT have base pipeline")
+        break
+      }
+      // mark pipeline as restarted for cleanup vars in global.env
+      restart_pipeline = true
+    }
+  }
+}
+
 def run_jobs(def job_set) {
   def jobs_code = [:]
   job_set.keySet().each { name ->
