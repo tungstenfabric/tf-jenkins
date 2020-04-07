@@ -57,7 +57,7 @@ def main():
     try:
         gerrit = gerrit_utils.Gerrit(args.gerrit, args.user, args.password)
         # NOTE: will fail if this change is closed already
-        change = gerrit.get_current_change(args.review, args.branch)
+        change = gerrit.get_current_change(args.review, args.branch, opened_only=False)
         labels = parse_labels(args.labels)
         gerrit.push_message(change, args.message, args.patchset, labels=labels)
         if args.submit:

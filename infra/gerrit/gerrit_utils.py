@@ -157,7 +157,7 @@ class Change(object):
         for d in DEPENDS_RE.findall(msg):
             review_id = d.split(':')[1].strip()
             change = self._gerrit.get_current_change(review_id, self.branch)
-            if change.is_active:
+            if change and change.is_active:
                 result.append(review_id)
         dbg("Change: %s: depends_on: %s" % (self._data['change_id'], result))
         return result
@@ -168,10 +168,10 @@ class Gerrit(object):
         self._url = gerrit_url.rstrip('/')
         self._session = Session(self._url, user, password)
 
-    def _get_current_change(self, review_id, branch):
-        params = 'q=change:%s+status:open' % review_id
-        if branch:
-            params += ' branch:%s' % branch
+    def _get_current_change(self, review_id, opened_only):
+        params = 'q=change:%s' % review_id
+        if opened_only:
+            params += '+status:open'
         params += '&o=CURRENT_COMMIT&o=CURRENT_REVISION&o=DETAILED_LABELS'
         return self._session.get('/changes/', params=params)
 
@@ -184,10 +184,13 @@ class Gerrit(object):
                 res.append(k)
         return res
 
-    def get_current_change(self, review_id, branch):
+    def get_current_change(self, review_id, branch, opened_only=True):
         # request all branches for review_id to
         # allow cross branches dependencies between projects
-        res = self._get_current_change(review_id, None)
+        res = self._get_current_change(review_id, opened_only)
+        if len(res) == 0:
+            # there is no active reviews
+            return None
         if len(res) == 1:
             # there is no ambiguite, so return the found change 
             return Change(res[0], self)

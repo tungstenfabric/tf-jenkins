@@ -34,7 +34,8 @@ def resolve_dependencies(gerrit, change, parent_ids=[]):
                 % (i, parent_ids)
             )
         cc = gerrit.get_current_change(i, change.branch)
-        result += resolve_dependencies(gerrit, cc, copy.deepcopy(parent_ids))
+        if cc:
+            result += resolve_dependencies(gerrit, cc, copy.deepcopy(parent_ids))
     return result            
 
 
@@ -77,12 +78,15 @@ def main():
     try:
         gerrit = gerrit_utils.Gerrit(args.gerrit)
         change = gerrit.get_current_change(args.review, args.branch)
-        changes_list = resolve_dependencies(gerrit, change)
-        changes_list.reverse()
-        changes_list = collections.OrderedDict.fromkeys(changes_list)
-        if args.changed_files:
-            changes_list = resolve_files(gerrit, changes_list)
-        result = format_result(changes_list)
+        if not change:
+            result = []
+        else:
+            changes_list = resolve_dependencies(gerrit, change)
+            changes_list.reverse()
+            changes_list = collections.OrderedDict.fromkeys(changes_list)
+            if args.changed_files:
+                changes_list = resolve_files(gerrit, changes_list)
+            result = format_result(changes_list)
         if args.output:
             with open(args.output, "w") as f:
                 json.dump(result, f)
