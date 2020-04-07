@@ -94,7 +94,7 @@ fi
 all_containers+=$(printf "%s " "${docker_containers[@]}")
 all_containers+=$(printf "${RHEL_NAMESPACE}/%s " "${rhel_containers[@]}")
 all_containers+=$(printf "${OPENSHIFT_NAMESPACE}/%s:$TAG " "${openshift_containers[@]}")
-all_containers+=$(printf "${RHEL_NAMESPACE}/%s " "${openshift_containers_2[@]}")
+all_containers+=$(printf "${OPENSHIFT_NAMESPACE}/%s " "${openshift_containers_2[@]}")
 
 # jobs=""
 res=0
