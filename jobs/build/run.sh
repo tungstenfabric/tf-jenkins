@@ -28,7 +28,7 @@ export REGISTRY_IP=$REGISTRY_IP
 export REGISTRY_PORT=$REGISTRY_PORT
 export SITE_MIRROR=http://${REGISTRY_IP}/repository
 
-export OPENSTACK_VERSIONS=queens,rocky
+export OPENSTACK_VERSIONS=queens,$OPENSTACK_VERSION
 export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
 # to not to bind contrail sources to container
