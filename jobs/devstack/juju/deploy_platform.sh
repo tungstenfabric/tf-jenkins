@@ -11,15 +11,15 @@ source "$my_dir/definitions"
 echo "INFO: Deploy platform for $JOB_NAME"
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-ssh -v -i $WORKER_SSH_KEY $SSH_OPTIONS "$SSH_EXTRA_OPTIONS" $IMAGE_SSH_USER@$instance_ip \
-    export WORKSPACE=\$HOME; \
-    export DEBUG=$DEBUG; \
-    export OPENSTACK_VERSION=$OPENSTACK_VERSION; \
-    export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"; \
-    export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"; \
-    export PATH=\$PATH:/usr/sbin; \
-    cd src/tungstenfabric/tf-devstack/juju; \
-    "ORCHESTRATOR=$ORCHESTRATOR CLOUD=local ./run.sh platform" || res=1
+ssh -v -i $WORKER_SSH_KEY $SSH_OPTIONS "$SSH_EXTRA_OPTIONS" $IMAGE_SSH_USER@$instance_ip env #\
+#    export WORKSPACE=\$HOME; \
+#    export DEBUG=$DEBUG; \
+#    export OPENSTACK_VERSION=$OPENSTACK_VERSION; \
+#    export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"; \
+#    export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"; \
+#    export PATH=\$PATH:/usr/sbin; \
+#    cd src/tungstenfabric/tf-devstack/juju; \
+#    "ORCHESTRATOR=$ORCHESTRATOR CLOUD=local ./run.sh platform" || res=1
 
 #cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 #[ "${DEBUG,,}" == "true" ] && set -x
