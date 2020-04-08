@@ -18,7 +18,7 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_US
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
-if [[ "$CLOUD" == maas ]] ; then
+if [ "$CLOUD" == "maas" ]; then
 cd \$HOME/src/tungstenfabric/tf-devstack/common
 IPMI_IPS='192.168.51.20 192.168.51.21 192.168.51.22 192.168.51.23 192.168.51.24' ./deploy_maas.sh | grep ^export > \$HOME/maas.vars
 source \$HOME/maas.vars
@@ -26,9 +26,10 @@ fi
 export OPENSTACK_VERSION=$OPENSTACK_VERSION
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
+export CLOUD=$CLOUD
 export PATH=\$PATH:/usr/sbin
 cd \$HOME/src/tungstenfabric/tf-devstack/juju
-ORCHESTRATOR=$ORCHESTRATOR CLOUD=$CLOUD ./run.sh platform
+ORCHESTRATOR=$ORCHESTRATOR ./run.sh platform
 EOF" || res=1
 
 echo "INFO: Deploy platform finished"
