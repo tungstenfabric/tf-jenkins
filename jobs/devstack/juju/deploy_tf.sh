@@ -10,8 +10,10 @@ source "$my_dir/definitions"
 
 echo 'INFO: Deploy TF with juju'
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
+CLOUD=${CLOUD:-"local"}
 
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
+bash -c "\
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
@@ -23,6 +25,5 @@ export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=$ORCHESTRATOR CLOUD=local ./run.sh
 EOF
-
 echo "INFO: Deploy platform finished"
-exit $res
+exit $res"
