@@ -16,9 +16,11 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || 
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
+export RHEL_OPENSHIFT_REGISTRY=$RHEL_OPENSHIFT_REGISTRY
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export PATH=\$PATH:/usr/sbin
+sudo setenforce 0
 cd src/tungstenfabric/tf-devstack/openshift
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh
 EOF
