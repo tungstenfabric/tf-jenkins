@@ -20,7 +20,7 @@ export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 if [[ "$CLOUD" == maas ]] ; then
 cd \$HOME/src/tungstenfabric/tf-devstack/common
-IPMI_IPS='192.168.51.20 192.168.51.21 192.168.51.22 192.168.51.23 192.168.51.24' ./deploy_maas.sh
+eval "$(IPMI_IPS='192.168.51.20 192.168.51.21 192.168.51.22 192.168.51.23 192.168.51.24' ./deploy_maas.sh | grep ^export)"
 fi
 export OPENSTACK_VERSION=$OPENSTACK_VERSION
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
