@@ -21,7 +21,7 @@ ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance
     export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"; \
     export PATH=\$PATH:/usr/sbin; \
     cd src/tungstenfabric/tf-devstack/ansible; \
-    ORCHESTRATOR=$ORCHESTRATOR ; \
+    ORCHESTRATOR=$ORCHESTRATOR; \
     "./run.sh platform" || res=1
 
 #cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
