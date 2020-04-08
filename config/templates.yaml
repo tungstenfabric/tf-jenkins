@@ -322,6 +322,15 @@
         stream: juju-maas-os
         vars:
           CLOUD: maas
+          SSH_EXTRA_OPTIONS: >-
+            -o ProxyCommand="ssh
+            -o UserKnownHostsFile=/dev/null
+            -o StrictHostKeyChecking=no
+            -W %h:%p
+            -i $OPENLAB2_SSH_KEY
+            -l jenkins
+            -p 30002
+            openlab.tf-jenkins.progmaticlab.com"
       deploy-tf-juju-maas-os:
         stream: juju-maas-os
         depends-on:
