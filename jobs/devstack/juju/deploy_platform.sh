@@ -18,8 +18,8 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_US
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
-if [[ "$CLOUD" == 'maas' ]] ; then
-cd \$WORKSPACE/src/tungstenfabric/tf-devstack/common
+if [[ "$CLOUD" == maas ]] ; then
+cd \$HOME/src/tungstenfabric/tf-devstack/common
 IPMI_IPS='192.168.51.20 192.168.51.21 192.168.51.22 192.168.51.23 192.168.51.24' ./deploy_maas.sh
 fi
 export OPENSTACK_VERSION=$OPENSTACK_VERSION
