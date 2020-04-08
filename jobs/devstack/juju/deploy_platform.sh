@@ -13,7 +13,9 @@ echo "$RSYNC_EXTRA_OPTIONS"
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $RSYNC_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 echo "$SSH_EXTRA_OPTIONS"
 
-ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip hostname
+SSH_EXTRA=("$SSH_EXTRA_OPTION")
+echo ${SSH_EXTRA[@]}
+ssh -i $WORKER_SSH_KEY $SSH_OPTIONS ${SSH_EXTRA[@]} $IMAGE_SSH_USER@$instance_ip 'hostname'
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
