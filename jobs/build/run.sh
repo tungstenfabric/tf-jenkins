@@ -14,6 +14,12 @@ linux_distr=${TARGET_LINUX_DISTR["${ENVIRONMENT_OS}"]}
 
 echo "INFO: Build started"
 
+# build queens for test container always and add OPENSTACK_VERSION if it's different
+openstack_versions='queens'
+if [[ "$OPENSTACK_VERSION" != 'queens' ]]; then
+  openstack_versions+=",$OPENSTACK_VERSION"
+fi
+
 res=0
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -28,7 +34,8 @@ export REGISTRY_IP=$REGISTRY_IP
 export REGISTRY_PORT=$REGISTRY_PORT
 export SITE_MIRROR=http://${REGISTRY_IP}/repository
 
-export OPENSTACK_VERSIONS=queens,$OPENSTACK_VERSION
+if [[ "$OPENSTACK_VERSION" == 'queens' ]]
+export OPENSTACK_VERSIONS=$openstack_versions
 export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
 # to not to bind contrail sources to container
