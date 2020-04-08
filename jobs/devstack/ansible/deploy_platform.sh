@@ -2,7 +2,7 @@
 set -o pipefail
 
 [ "${DEBUG,,}" == "true" ] && set -x
-
+set -x
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
@@ -12,7 +12,7 @@ echo "INFO: Deploy platform for $JOB_NAME"
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip \
+ssh -v -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip \
     [ "${DEBUG,,}" == "true" ] && set -x; \
     export WORKSPACE=\$HOME; \
     export DEBUG=$DEBUG; \
