@@ -25,7 +25,6 @@ function run_dev_env() {
   export REGISTRY_PORT=$REGISTRY_PORT
   export SITE_MIRROR=http://${REGISTRY_IP}/repository
 
-  export OPENSTACK_VERSIONS=queens,rocky
   export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
   export GERRIT_URL=${GERRIT_URL}
