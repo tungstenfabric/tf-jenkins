@@ -14,7 +14,7 @@ CLOUD=${CLOUD:-"local"}
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 bash -c "\
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
@@ -24,6 +24,7 @@ export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=$ORCHESTRATOR CLOUD=$CLOUD ./run.sh
-EOF
+EOF" || res=1
+
 echo "INFO: Deploy platform finished"
 exit $res"
