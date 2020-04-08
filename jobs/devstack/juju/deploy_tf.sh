@@ -24,7 +24,5 @@ export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=$ORCHESTRATOR CLOUD=$CLOUD ./run.sh
-EOF" || res=1
-
-echo "INFO: Deploy platform finished"
-exit $res"
+EOF
+echo "INFO: Deploy platform finished""
