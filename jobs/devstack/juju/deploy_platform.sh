@@ -8,6 +8,8 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+CLOUD=${CLOUD:-"local"}
+
 echo "INFO: Deploy platform for $JOB_NAME"
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
@@ -21,7 +23,7 @@ export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export PATH=\$PATH:/usr/sbin
 cd src/tungstenfabric/tf-devstack/juju
-ORCHESTRATOR=$ORCHESTRATOR CLOUD=local ./run.sh platform
+ORCHESTRATOR=$ORCHESTRATOR CLOUD=$CLOUD ./run.sh platform
 EOF" || res=1
 
 echo "INFO: Deploy platform finished"
