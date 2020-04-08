@@ -31,7 +31,5 @@ export PATH=\$PATH:/usr/sbin
 cd \$HOME/src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh platform
 EOF
-" || res=1
-
-echo "INFO: Deploy platform finished"
+echo "INFO: Deploy platform finished"" || res=1
 exit $res"
