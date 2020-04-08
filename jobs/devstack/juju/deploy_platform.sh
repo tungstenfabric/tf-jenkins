@@ -27,7 +27,7 @@ export OPENSTACK_VERSION=$OPENSTACK_VERSION
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export PATH=\$PATH:/usr/sbin
-cd \$WORKSPACE/src/tungstenfabric/tf-devstack/juju
+cd \$HOME/src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=$ORCHESTRATOR CLOUD=$CLOUD ./run.sh platform
 EOF" || res=1
 
