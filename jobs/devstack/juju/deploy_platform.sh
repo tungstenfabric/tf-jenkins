@@ -11,7 +11,7 @@ source "$my_dir/definitions"
 echo "INFO: Deploy platform for $JOB_NAME"
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-ssh -v -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip \
+ssh -v -i $WORKER_SSH_KEY $SSH_OPTIONS "$SSH_EXTRA_OPTIONS" $IMAGE_SSH_USER@$instance_ip \
     export WORKSPACE=\$HOME; \
     export DEBUG=$DEBUG; \
     export OPENSTACK_VERSION=$OPENSTACK_VERSION; \
