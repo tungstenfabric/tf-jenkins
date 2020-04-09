@@ -1,7 +1,11 @@
 #!/bin/bash -ex
 
-
 # this scripts is for manual update of contrail tpc on nexus agains public juniper tpc
+
+[ -z "$nexus_admin_password" ] && {
+  echo "ERROR: provide nexus_admin_password"
+  exit -1
+}
 
 # make disabled tpc poiting to juniper
 cat << EOF | sudo tee /etc/yum.repos.d/external-tpc.repo 
@@ -18,7 +22,7 @@ pushd $stor
 yumdownloader --disablerepo=* --enablerepo="external-tpc" *
 
 for f in $(find . -type f -name "*.rpm" | sed 's/^\.\///g'); do 
-  curl -s -u admin:bluemoonbigsun --upload-file $f http://pnexus.sytes.net/repository/yum-tpc-source/$f
+  curl -s -u admin:$nexus_admin_password --upload-file $f http://pnexus.sytes.net/repository/yum-tpc-source/$f
 done
 
 popd
