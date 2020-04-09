@@ -22,7 +22,7 @@
       script-path: pipelines/main.groovy
       lightweight-checkout: true
     triggers:
-      - timed: "@midnight"
+      - timed: "* 22 * * *"
       - gerrit:
           server-name: review.opencontrail.org
           skip-vote:
