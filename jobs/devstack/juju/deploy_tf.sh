@@ -22,8 +22,10 @@ export OPENSTACK_VERSION=$OPENSTACK_VERSION
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export PATH=\$PATH:/usr/sbin
+export CLOUD=$CLOUD
+[ "$CLOUD" != "local" ] && source \$HOME/$CLOUD.vars
 cd src/tungstenfabric/tf-devstack/juju
-ORCHESTRATOR=$ORCHESTRATOR CLOUD=$CLOUD ./run.sh || ret=1
+ORCHESTRATOR=$ORCHESTRATOR ./run.sh || ret=1
 echo "INFO: Deploy tf finished"
 exit \$ret
 EOF

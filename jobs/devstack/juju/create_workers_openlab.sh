@@ -32,3 +32,10 @@ while /bin/true ; do \
   ssh -i $OPENLAB2_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
   sleep 10 ; \
 done"
+
+if [ "$CLOUD" == "maas" ]; then
+  bash -c "\
+  ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip \
+  "IPMI_IPS='192.168.51.20 192.168.51.21 192.168.51.22 192.168.51.23 192.168.51.24' ./deploy_maas.sh | grep ^export > \$HOME/maas.vars"
+  "
+fi
