@@ -11,7 +11,7 @@ touch "$ENV_FILE"
 echo "export ENVIRONMENT_OS=ubuntu18" >> "$ENV_FILE"
 echo "export IMAGE_SSH_USER=jenkins" >> "$ENV_FILE"
 echo "export instance_ip=192.168.51.5" >> "$ENV_FILE"
-#echo "export RSYNC_EXTRA_OPTIONS=\"-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -i \$OPENLAB2_SSH_KEY -l jenkins -p 30002 openlab.tf-jenkins.progmaticlab.com\\\"\"" >> "$ENV_FILE"
+echo "export SSH_EXTRA_OPTIONS=\"-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -i \$OPENLAB2_SSH_KEY -l jenkins -p 30002 openlab.tf-jenkins.progmaticlab.com\\\"\"" >> "$ENV_FILE"
 
 cat <<EOF | ssh -i $OPENLAB2_SSH_KEY $SSH_OPTIONS -p 30002 jenkins@openlab.tf-jenkins.progmaticlab.com
 [ "${DEBUG,,}" == "true" ] && set -x
