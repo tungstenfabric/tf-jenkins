@@ -11,45 +11,45 @@
     name: tungstenfabric
     nightly:
       streams:
-#        juju-k8s:
-#          voting: false
-#        rhosp:
-#          voting: false
-#        helm-os:
-#          voting: false
+        juju-k8s:
+          voting: false
+        rhosp:
+          voting: false
+        helm-os:
+          voting: false
         juju-maas-os:
           voting: false
       templates:
-#        - build-r1912
-#        - test-unit
-#        - test-unit-ui
-#        - k8s-manifests
-#        - ansible-k8s
-#        - ansible-os
-#        - helm-k8s
-#        - helm-os
-#        - juju-k8s
-#        - juju-os
+        - build-r1912
+        - test-unit
+        - test-unit-ui
+        - k8s-manifests
+        - ansible-k8s
+        - ansible-os
+        - helm-k8s
+        - helm-os
+        - juju-k8s
+        - juju-os
         - juju-maas-os
-#        - rhosp
+        - rhosp
         - cleanup
-#      jobs:
-#        publish-centos-nightly:
-#          job-name: publish
-#          depends-on:
-#            - build-centos
-#        aquascan-rhel-nightly:
-#          job-name: aquascan
-#          depends-on:
-#            - build-rhel
-#          vars:
-#            TAG_SUFFIX: -rhel7
-#      post-jobs:
-#        publish-centos-stable:
-#          job-name: publish
-#        cleanup-pipeline-workers:
-#          depends-on:
-#            - publish-centos-stable
+      jobs:
+        publish-centos-nightly:
+          job-name: publish
+          depends-on:
+            - build-centos
+        aquascan-rhel-nightly:
+          job-name: aquascan
+          depends-on:
+            - build-rhel
+          vars:
+            TAG_SUFFIX: -rhel7
+      post-jobs:
+        publish-centos-stable:
+          job-name: publish
+        cleanup-pipeline-workers:
+          depends-on:
+            - publish-centos-stable
 
 - project:
     name: Juniper/contrail-vnc
