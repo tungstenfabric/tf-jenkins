@@ -13,6 +13,18 @@ echo 'INFO: Deploy TF with juju'
 CLOUD=${CLOUD:-"local"}
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
+
+if [ "$CLOUD" == "maas" ]; then
+bash -c "\
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip
+[ "${DEBUG,,}" == "true" ] && set -x
+export IPMI_IPS='192.168.51.20 192.168.51.21 192.168.51.22 192.168.51.23 192.168.51.24'
+cd \$HOME/src/tungstenfabric/tf-devstack/common
+./deploy_maas.sh | grep ^export > \$HOME/maas.vars
+EOF
+"
+fi
+
 bash -c "\
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
