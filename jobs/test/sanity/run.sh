@@ -22,7 +22,7 @@ export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 cd src/tungstenfabric/tf-test/contrail-sanity
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh || res=1
-echo 'INFO: Test sanity finished'
+echo "INFO - Test sanity finished"
 exit \$res
 EOF
 "

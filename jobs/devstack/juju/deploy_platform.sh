@@ -24,7 +24,7 @@ source \$HOME/$CLOUD.vars || /bin/true
 export PATH=\$PATH:/usr/sbin
 cd \$HOME/src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh platform || ret=1
-echo "INFO: Deploy platform finished"
+echo "INFO - Deploy platform finished"
 exit \$ret
 EOF
 "

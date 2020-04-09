@@ -27,7 +27,7 @@ export CLOUD=$CLOUD
 source \$HOME/$CLOUD.vars || /bin/true
 cd src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh || ret=1
-echo "INFO: Deploy tf finished"
+echo "INFO - Deploy tf finished"
 exit \$ret
 EOF
 "

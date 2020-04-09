@@ -33,7 +33,7 @@ export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 cd src/tungstenfabric/tf-test/smoke-test
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh || res=1
-echo "INFO: Test smoke finished"
+echo "INFO - Test smoke finished"
 exit \$res
 EOF
 "
