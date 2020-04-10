@@ -20,18 +20,18 @@ log "Scan TF containers"
 
 [ -e $my_dir/scan.env ] && source $my_dir/scan.env
 
-[ -z "$CONTRAIL_REGISTRY" ] && { err "empty CONTRAIL_REGISTRY" && exit -1; }
+[ -z "$CONTAINER_REGISTRY" ] && { err "empty CONTAINER_REGISTRY" && exit -1; }
 [ -z "$CONTAINER_TAG" ] && { err "empty CONTAINER_TAG" && exit -1; }
 [ -z "${SCAN_REPORTS_STASH}" ] && { err "empty SCAN_REPORTS_STASH" && exit -1; }
 
-CONTRAIL_REGISTRY_INSECURE=${CONTRAIL_REGISTRY_INSECURE:-"true"}
+CONTAINER_REGISTRY_INSECURE=${CONTAINER_REGISTRY_INSECURE:-"true"}
 AQUASEC_REGISTRY=registry.aquasec.com
 SCAN_INCLUDE_REGEXP=${SCAN_INCLUDE_REGEXP:-"contrail-\|tf-"}
 SCAN_EXCLUDE_REGEXP=${SCAN_EXCLUDE_REGEXP:-"base\|contrail-third-party-packages\|tf-developer-sandbox\|-src"}
 SCAN_CONTAINERS_LIST=${SCAN_CONTAINERS_LIST:-'auto'}
 
-log_msg="\n CONTRAIL_REGISTRY=$CONTRAIL_REGISTRY"
-log_msg+="\n CONTRAIL_REGISTRY_INSECURE=$CONTRAIL_REGISTRY_INSECURE"
+log_msg="\n CONTAINER_REGISTRY=$CONTAINER_REGISTRY"
+log_msg+="\n CONTAINER_REGISTRY_INSECURE=$CONTAINER_REGISTRY_INSECURE"
 log_msg+="\n SCAN_INCLUDE_REGEXP=${SCAN_INCLUDE_REGEXP}"
 log_msg+="\n SCAN_EXCLUDE_REGEXP=${SCAN_EXCLUDE_REGEXP}"
 log "Options:$log_msg"
@@ -59,19 +59,19 @@ function run_with_retry() {
   return 1
 }
 
-if [[ "$CONTRAIL_REGISTRY_INSECURE" == 'true' ]]; then
+if [[ "$CONTAINER_REGISTRY_INSECURE" == 'true' ]]; then
   src_scheme="http"
-  echo $(jq '. + {"insecure-registries" : ["'${CONTRAIL_REGISTRY}'"]}' /etc/docker/daemon.json) > /etc/docker/daemon.json
+  echo $(jq '. + {"insecure-registries" : ["'${CONTAINER_REGISTRY}'"]}' /etc/docker/daemon.json) > /etc/docker/daemon.json
   systemctl reload docker
 else
   src_scheme="https"
 fi
-contrail_registry_url="${src_scheme}://${CONTRAIL_REGISTRY}"
+container_registry_url="${src_scheme}://${CONTAINER_REGISTRY}"
 
 if [[ "${SCAN_CONTAINERS_LIST}" == 'auto' ]] ; then
   log "Query containers to scan"
-  if ! raw_repos=$(run_with_retry curl -s --show-error ${contrail_registry_url}/v2/_catalog) ; then
-    err "Failed to request repo list from docker registry ${CONTRAIL_REGISTRY}"
+  if ! raw_repos=$(run_with_retry curl -s --show-error ${container_registry_url}/v2/_catalog) ; then
+    err "Failed to request repo list from docker registry ${CONTAINER_REGISTRY}"
     exit -1
   fi
 
@@ -87,7 +87,7 @@ fi
 
 function pull_eligible_image_names() {
 	local r=$1
-	curl -s -k ${contrail_registry_url}/v2/$r/tags/list | jq -c -r "select(.tags[] | inside(\"${CONTAINER_TAG}\")) | .name" | sort | uniq
+	curl -s -k ${container_registry_url}/v2/$r/tags/list | jq -c -r "select(.tags[] | inside(\"${CONTAINER_TAG}\")) | .name" | sort | uniq
 }
 
 function parse_scan_results() {
@@ -105,7 +105,7 @@ function do_scan() {
 	local a=$AQUASEC_HOST_IP
 
 	for n in $(pull_eligible_image_names $r); do
-		local i="${CONTRAIL_REGISTRY}/$n:${CONTAINER_TAG}"
+		local i="${CONTAINER_REGISTRY}/$n:${CONTAINER_TAG}"
     log "Process image ${i}"
 		if ! docker pull $i >/dev/null ; then
       log "Image ${i} is unavailable."

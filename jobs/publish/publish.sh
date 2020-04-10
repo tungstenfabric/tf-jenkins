@@ -18,11 +18,11 @@ function err(){
 
 log "Publish TF container"
 
-[ -z "$CONTRAIL_REGISTRY" ] && { err "empty CONTRAIL_REGISTRY" && exit -1; }
+[ -z "$CONTAINER_REGISTRY" ] && { err "empty CONTAINER_REGISTRY" && exit -1; }
 [ -z "$CONTAINER_TAG" ] && { err "empty CONTAINER_TAG" && exit -1; }
 [ -z "$PUBLISH_TAGS" ] && { err "empty PUBLISH_TAGS" && exit -1; }
 
-CONTRAIL_REGISTRY_INSECURE=${CONTRAIL_REGISTRY_INSECURE:-"true"}
+CONTAINER_REGISTRY_INSECURE=${CONTAINER_REGISTRY_INSECURE:-"true"}
 PUBLISH_REGISTRY=${PUBLISH_REGISTRY:-}
 PUBLISH_REGISTRY_USER=${PUBLISH_REGISTRY_USER:-}
 PUBLISH_REGISTRY_PASSWORD=${PUBLISH_REGISTRY_PASSWORD:-}
@@ -30,8 +30,8 @@ PUBLISH_INCLUDE_REGEXP=${PUBLISH_INCLUDE_REGEXP:-"contrail-\|tf-"}
 PUBLISH_EXCLUDE_REGEXP=${PUBLISH_EXCLUDE_REGEXP:-"base\|contrail-third-party-packages\|tf-developer-sandbox"}
 PUBLISH_CONTAINERS_LIST=${PUBLISH_CONTAINERS_LIST:-'auto'}
 
-log_msg="\n CONTRAIL_REGISTRY=$CONTRAIL_REGISTRY"
-log_msg+="\n CONTRAIL_REGISTRY_INSECURE=$CONTRAIL_REGISTRY_INSECURE"
+log_msg="\n CONTAINER_REGISTRY=$CONTAINER_REGISTRY"
+log_msg+="\n CONTAINER_REGISTRY_INSECURE=$CONTAINER_REGISTRY_INSECURE"
 log_msg+="\n PUBLISH_REGISTRY=${PUBLISH_REGISTRY}"
 log_msg+="\n PUBLISH_REGISTRY_USER=${PUBLISH_REGISTRY_USER}"
 log_msg+="\n PUBLISH_INCLUDE_REGEXP=${PUBLISH_INCLUDE_REGEXP}"
@@ -58,13 +58,13 @@ function run_with_retry() {
 }
 
 src_scheme="http"
-[[ "$CONTRAIL_REGISTRY_INSECURE" != 'true' ]] && src_scheme="https"
-contrail_registry_url="${src_scheme}://${CONTRAIL_REGISTRY}"
+[[ "$CONTAINER_REGISTRY_INSECURE" != 'true' ]] && src_scheme="https"
+container_registry_url="${src_scheme}://${CONTAINER_REGISTRY}"
 
 if [[ "${PUBLISH_CONTAINERS_LIST}" == 'auto' ]] ; then
   log "Request containers for publishing"
-  if ! raw_repos=$(run_with_retry curl -s --show-error ${contrail_registry_url}/v2/_catalog) ; then
-    err "Failed to request repo list from docker registry ${CONTRAIL_REGISTRY}"
+  if ! raw_repos=$(run_with_retry curl -s --show-error ${container_registry_url}/v2/_catalog) ; then
+    err "Failed to request repo list from docker registry ${CONTAINER_REGISTRY}"
     exit -1
   fi
 
@@ -87,11 +87,11 @@ function get_container_full_name_list() {
   local full_names=$container
   if [ -z "$name" ] ; then
     # just short name, loopup the tag
-    local tags=$(run_with_retry curl -s --show-error ${contrail_registry_url}/v2/$container/tags/list | jq -c -r '.tags[]')
+    local tags=$(run_with_retry curl -s --show-error ${container_registry_url}/v2/$container/tags/list | jq -c -r '.tags[]')
     if echo "$tags" | grep -q "^$lookup_tag\$" ; then
-      full_names="${CONTRAIL_REGISTRY}/${container}:${lookup_tag}"
+      full_names="${CONTAINER_REGISTRY}/${container}:${lookup_tag}"
     elif echo "$tags" | grep -q "^\(\(queens\)\|\(rocky\)\|\(stein\)\)-$lookup_tag\$" ; then
-      full_names=$(echo "$tags" | awk "/^(queens|rocky|stein)-$lookup_tag\$/{print(\"${CONTRAIL_REGISTRY}/${container}:\"\$0)}")
+      full_names=$(echo "$tags" | awk "/^(queens|rocky|stein)-$lookup_tag\$/{print(\"${CONTAINER_REGISTRY}/${container}:\"\$0)}")
     else 
       warn "No requested tag $lookup_tag in available tags for $container , available tags: "$tags
       return 1
