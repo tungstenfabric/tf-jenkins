@@ -8,7 +8,8 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
+cat << EOF > $WORKSPACE/run_collect_logs.sh
+#!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
@@ -17,7 +18,11 @@ cd src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh logs
 EOF
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/run_collect_logs.sh $IMAGE_SSH_USER@$instance_ip:./
+
+bash -c "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip 'bash ./run_collect_logs.sh'" || ret=1
+
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
 
 pushd $WORKSPACE
 tar -xzf logs.tgz
