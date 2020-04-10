@@ -28,7 +28,7 @@ EOF
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" {$WORKSPACE/src,deploy_platform.sh} $IMAGE_SSH_USER@$instance_ip:./
 
-bash -c "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip deploy_platform.sh" || ret=1
+bash -c "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip ./deploy_platform.sh" || ret=1
 
 echo "INFO Deploy platform finished"
 exit $ret
