@@ -11,8 +11,8 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 echo "INFO: Deploy platform for $JOB_NAME"
-deploy_platform.sh <<EOF
-#!/bin/bash
+cat << EOF >  $WORKSPACE/deploy_platform.sh
+#!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
@@ -28,7 +28,7 @@ echo "INFO Deploy platform finished"
 exit \$ret
 EOF
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" {$WORKSPACE/src,deploy_platform.sh} $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" {$WORKSPACE/src,$WORKSPACE/deploy_platform.sh} $IMAGE_SSH_USER@$instance_ip:./
 
 bash -c "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip 'bash ./deploy_platform.sh' || ret=1
 
