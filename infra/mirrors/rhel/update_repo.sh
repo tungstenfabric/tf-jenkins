@@ -5,5 +5,5 @@ my_dir="$(dirname $my_file)"
 
 source $my_dir/common.sh
 
-repos="rhel-7-server-rpms rhel-7-server-extras-rpms rhel-7-server-optional-rpms"
+repos="rhel-7-server-rpms rhel-7-server-extras-rpms rhel-7-server-optional-rpms rhel-server-rhscl-7-rpms"
 update_repos $repos
