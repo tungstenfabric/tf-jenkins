@@ -313,8 +313,8 @@
 
 - template:
     name: juju-maas-os
-#    parents:
-#      - build-centos
+    parents:
+      - build-centos
     streams:
       juju-maas-os:
     jobs:
@@ -325,7 +325,7 @@
       deploy-tf-juju-maas-os:
         stream: juju-maas-os
         depends-on:
-#          - build-centos
+          - build-centos
           - deploy-platform-juju-maas-os
         vars:
           CLOUD: maas
