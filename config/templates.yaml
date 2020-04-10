@@ -313,8 +313,8 @@
 
 - template:
     name: juju-maas-os
-    parents:
-      - build-centos
+#    parents:
+#      - build-centos
     streams:
       juju-maas-os:
     jobs:
