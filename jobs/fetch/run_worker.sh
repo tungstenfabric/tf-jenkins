@@ -66,6 +66,7 @@ case "${ENVIRONMENT_OS}" in
     # TODO: now no way to pu gpg keys into containers for repo mirrors
     # disable gpgcheck as keys are not available inside the contianers
     find ./config/etc/yum.repos.d/ -name "*.repo" -exec sed -i 's/^gpgcheck.*/gpgcheck=0/g' {} + ;
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
     ;;
   "centos7")
     # TODO: think how to copy only required repos and disable default repos
@@ -115,9 +116,16 @@ EOF
   return $res
 }
 
+function has_image() {
+  local tags=$(curl -s --show-error http://${CONTAINER_REGISTRY}/v2/tf-developer-sandbox/tags/list | jq -c -r '.tags[]')
+  echo "INFO: found tags for $tf-developer-sandbox:"
+  echo "$tags" | sort
+  echo "$tags" | grep -q "^${DEVENVTAG}\$"
+}
+
 # build stable
 if [[ $res == 0 ]] ; then
-  if [[ $BUILD_DEV_ENV == 1 ]] || ! ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip sudo docker pull "$CONTAINER_REGISTRY/tf-developer-sandbox:$DEVENVTAG" ; then
+  if [[ $BUILD_DEV_ENV == 1 ]] || ! has_image ; then
     if run_dev_env none 1 ; then
       push_dev_env $DEVENVTAG || res=1
     else

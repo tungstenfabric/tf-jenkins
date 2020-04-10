@@ -73,12 +73,12 @@ function push_dev_env() {
   fi
 }
 
+etc_dir="$WORKSPACE/src/tungstenfabric/tf-dev-env/config/etc"
+mkdir -p $etc_dir/yum.repos.d
+cp ${my_dir}/../../infra/mirrors/mirror-pip.conf $etc_dir/pip.conf
 if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
-  etc_dir="$WORKSPACE/src/tungstenfabric/tf-dev-env/config/etc"
-  mkdir -p $etc_dir/yum.repos.d
   cp ${my_dir}/../../infra/mirrors/mirror-base.repo $etc_dir/yum.repos.d/
   cp ${my_dir}/../../infra/mirrors/mirror-epel.repo $etc_dir/yum.repos.d/
-  cp ${my_dir}/../../infra/mirrors/mirror-pip.conf $etc_dir/pip.conf
 fi
 
 if [[ $BUILD_DEV_ENV == 1 ]] || ! sudo docker pull "$CONTAINER_REGISTRY/tf-developer-sandbox:$DEVENVTAG" ; then

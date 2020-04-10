@@ -62,6 +62,8 @@ case "${ENVIRONMENT_OS}" in
     # TODO: now no way to pu gpg keys into containers for repo mirrors
     # disable gpgcheck as keys are not available inside the contianers
     find ./config/etc/yum.repos.d/ -name "*.repo" -exec sed -i 's/^gpgcheck.*/gpgcheck=0/g' {} + ;
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-google-chrome.repo ./config/etc/yum.repos.d/
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
     ;;
   "centos7")
     # TODO: think how to copy only required repos

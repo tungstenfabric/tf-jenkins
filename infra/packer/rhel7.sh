@@ -2,6 +2,14 @@
 set -o pipefail
 
 cat << EOF > local.repo
+
+# epel mirror disabled by default it is enabled explicitly only in tf-dev-env
+[epel]
+name=added from: http://pnexus.sytes.net/repository/epel
+baseurl=http://pnexus.sytes.net/repository/epel
+enabled=0
+gpgcheck=0
+
 [local-rhel-7-server-rpms]
 name = Red Hat Enterprise Linux 7 Server (RPMs) local
 baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-rpms
@@ -54,6 +62,13 @@ gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 [local-rhel-7-fast-datapath-rpms]
 name = Red Hat Fast Datapath for RHEL 7 (RPMs) local
 baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-fast-datapath-rpms
+enabled = 1
+gpgcheck = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+[local-rhel-server-rhscl-7-rpms]
+name = Red Hat Software collections 7 (RPMs) local
+baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-server-rhscl-7-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
