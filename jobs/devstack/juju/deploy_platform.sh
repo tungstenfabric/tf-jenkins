@@ -1,6 +1,8 @@
 #!/bin/bash -eE
 set -o pipefail
 
+DEBUG=true
+
 [ "${DEBUG,,}" == "true" ] && set -x
 
 my_file="$(readlink -e "$0")"
