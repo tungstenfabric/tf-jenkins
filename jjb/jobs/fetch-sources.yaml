@@ -126,6 +126,7 @@
                     - UNSTABLE
                 build-steps:
                     - shell: |
+                        set +e
                         set -o pipefail
                         source "$WORKSPACE/global.env"
                         source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
@@ -158,12 +159,12 @@
                           docker rm $TF_DEVENV_CONTAINER_NAME
                         fi
                         for name in "tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX" $TF_DEVENV_CONTAINER_NAME ; do
-                          if docker images -a | grep $name ; then
-                            IMAGES_TO_DELETE="$(docker image inspect "$name" --format {{.RepoTags}} | tr -d '[]')"
+                          for image in $(docker images -a | grep "$name" | awk '{print $3}') ; do
+                            IMAGES_TO_DELETE="$(docker image inspect "$image" --format {{.RepoTags}} | tr -d '[]')"
                             if [[ -n "$IMAGES_TO_DELETE" ]]; then
                               docker rmi $IMAGES_TO_DELETE
                             fi
-                          fi
+                          done
                         done
         - archive:
             artifacts: '*.env'
