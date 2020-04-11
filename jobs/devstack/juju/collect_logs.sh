@@ -19,7 +19,8 @@ EOF
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 rsync -a -e $ssh_cmd $WORKSPACE/run_collect_logs.sh $IMAGE_SSH_USER@$instance_ip:./
-$ssh_cmd $IMAGE_SSH_USER@$instance_ip 'bash -e ./run_collect_logs.sh' || ret=1
+# run this via eval due to special symbols in ssh_cmd
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip 'bash -e ./run_collect_logs.sh' || ret=1
 rsync -a -e $ssh_cmd $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
 
 pushd $WORKSPACE

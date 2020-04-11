@@ -26,7 +26,8 @@ EOF
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/run_deploy_tf.sh} $IMAGE_SSH_USER@$instance_ip:./
-$ssh_cmd $IMAGE_SSH_USER@$instance_ip 'bash -e ./run_deploy_tf.sh' || res=1
+# run this via eval due to special symbols in ssh_cmd
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip 'bash -e ./run_deploy_tf.sh' || res=1
 
 echo "INFO: Deploy tf finished"
 exit $res

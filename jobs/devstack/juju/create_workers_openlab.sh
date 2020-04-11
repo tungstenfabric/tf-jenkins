@@ -33,17 +33,15 @@ while /bin/true ; do \
   sleep 10 ; \
 done"
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
+ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
+rsync -a -e "$ssh_cmd" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-if [ "$CLOUD" == "maas" ]; then
-cat << EOF > $WORKSPACE/run_deploy_maas.sh
-#!/bin/bash -e
+cat <<EOF > $WORKSPACE/run_deploy_maas.sh
 [ "${DEBUG,,}" == "true" ] && set -x
 export IPMI_IPS='192.168.51.20 192.168.51.21 192.168.51.22 192.168.51.23 192.168.51.24'
 cd \$HOME/src/tungstenfabric/tf-devstack/common
 ./deploy_maas.sh \$HOME/maas.vars
 EOF
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/run_deploy_maas.sh $IMAGE_SSH_USER@$instance_ip:./
-bash -c "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip 'bash ./run_deploy_maas.sh'"
-fi
+rsync -a -e "$ssh_cmd" $WORKSPACE/run_deploy_maas.sh $IMAGE_SSH_USER@$instance_ip:./
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip 'bash -e ./run_deploy_maas.sh'
