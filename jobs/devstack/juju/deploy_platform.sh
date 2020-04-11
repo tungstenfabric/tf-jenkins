@@ -1,4 +1,4 @@
-#!/bin/bash -eE
+#!/bin/bash -e
 set -o pipefail
 
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -8,26 +8,13 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-echo "INFO: Deploy platform for $JOB_NAME"
-
-cat <<EOF > $WORKSPACE/run_deploy_platform.sh
-[ "${DEBUG,,}" == "true" ] && set -x
-export WORKSPACE=\$HOME
-export DEBUG=$DEBUG
-export OPENSTACK_VERSION=$OPENSTACK_VERSION
-export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
-export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
-export PATH=\$PATH:/usr/sbin
+function add_deployrc() {
+  local file=$1
+  cat <<EOF >> $file
 export CLOUD=${CLOUD:-"local"}
 source \$HOME/$CLOUD.vars || /bin/true
-cd src/tungstenfabric/tf-devstack/juju
-ORCHESTRATOR=$ORCHESTRATOR ./run.sh platform
 EOF
+}
+export -f add_deployrc
 
-ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
-rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/run_deploy_platform.sh} $IMAGE_SSH_USER@$instance_ip:./
-# run this via eval due to special symbols in ssh_cmd
-eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip 'bash -e ./run_deploy_platform.sh' || res=1
-
-echo "INFO: Deploy platform finished"
-exit $res
+${my_dir}/../common/deploy_platform.sh juju

@@ -269,6 +269,7 @@
           filter: "global.env,*.$JOB_RND.env"
           which-build: upstream-build
       - shell: |
+          source "$WORKSPACE/global.env"
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}  Stream: ${STREAM}"
           desc+="<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
           echo "DESCRIPTION $desc"

@@ -8,22 +8,22 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
-
 echo "INFO: Test sanity started"
 
-cat << EOF > $WORKSPACE/run_sanity_tests.sh
+cat << EOF > $WORKSPACE/deployrc
 [ "${DEBUG,,}" == "true" ] && set -x
-export DEBUG=$DEBUG
-export PATH=\$PATH:/usr/sbin
 export WORKSPACE=\$HOME
+export DEBUG=$DEBUG
+export ORCHESTRATOR=$ORCHESTRATOR
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
-cd src/tungstenfabric/tf-test/contrail-sanity
-ORCHESTRATOR=$ORCHESTRATOR ./run.sh
+export PATH=\$PATH:/usr/sbin
 EOF
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" $WORKSPACE/run_sanity_tests.sh $IMAGE_SSH_USER@$instance_ip:./
-bash -c "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip 'bash ./run_sanity_tests.sh'" || res=1
+ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
+rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/deployrc} $IMAGE_SSH_USER@$instance_ip:./
+# run this via eval due to special symbols in ssh_cmd
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip 'source deployrc ; src/tungstenfabric/tf-test/contrail-sanity/run.sh' || res=1
+
 echo "INFO: Test sanity finished"
 exit $res
