@@ -6,6 +6,7 @@ deployer=$1
 [ "${DEBUG,,}" == "true" ] && set -x
 
 cat <<EOF > $WORKSPACE/collect_logs.sh
+#!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
