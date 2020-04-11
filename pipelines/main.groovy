@@ -144,6 +144,7 @@ def evaluate_env() {
   try {
     sh """#!/bin/bash -e
       rm -rf global.env
+      echo "export DEBUG=true" >> global.env
       echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
       echo "export SLAVE=${SLAVE}" >> global.env
       echo "export LOGS_HOST=${LOGS_HOST}" >> global.env

@@ -16,7 +16,7 @@ EOF
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 rsync -a -e $ssh_cmd $WORKSPACE/deployrc $IMAGE_SSH_USER@$instance_ip:./
 # run this via eval due to special symbols in ssh_cmd
-eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip "source deployrc ; src/tungstenfabric/tf-devstack/${deployer}/run.sh logs" || res=1
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip "cat deployrc ; source deployrc ; src/tungstenfabric/tf-devstack/${deployer}/run.sh logs" || res=1
 rsync -a -e $ssh_cmd $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
 
 pushd $WORKSPACE

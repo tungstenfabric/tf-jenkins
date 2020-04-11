@@ -25,7 +25,7 @@ fi
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/deployrc} $IMAGE_SSH_USER@$instance_ip:./
 # run this via eval due to special symbols in ssh_cmd
-eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip "source deployrc ; src/tungstenfabric/tf-devstack/${deployer}/run.sh" || res=1
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip "cat deployrc ; source deployrc ; src/tungstenfabric/tf-devstack/${deployer}/run.sh" || res=1
 
 echo "INFO: Deploy TF finished"
 exit $res
