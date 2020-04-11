@@ -19,7 +19,7 @@ export PATH=\$PATH:/usr/sbin
 EOF
 
 if declare -f -F add_deployrc &>/dev/null ; then
-  add_deployrc
+  add_deployrc $WORKSPACE/deployrc
 fi
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"

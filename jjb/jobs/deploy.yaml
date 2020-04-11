@@ -95,6 +95,7 @@
           echo "export DEPLOYER={deployer}" >> "$ENV_FILE"
           echo "export JOB_LOGS_PATH=${{STREAM}}" >> "$ENV_FILE"
       - shell: |
+          export DEBUG=true
           set +e
           set -o pipefail
           export ORCHESTRATOR={orchestrator}
@@ -184,6 +185,7 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
+          export DEBUG=true
           set +e
           set -o pipefail
           source "$WORKSPACE/global.env"
@@ -276,6 +278,7 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
+          export DEBUG=true
           set +e
           set -o allexport
           source "$WORKSPACE/global.env"

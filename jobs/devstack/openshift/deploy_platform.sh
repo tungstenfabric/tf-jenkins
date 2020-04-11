@@ -9,8 +9,8 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 function add_deployrc() {
-  local file=$1
-  cat <<EOF >> $file
+  local file="$1"
+  cat <<EOF >> "$file"
 export RHEL_OPENSHIFT_REGISTRY=$RHEL_OPENSHIFT_REGISTRY
 sudo setenforce 0
 EOF
