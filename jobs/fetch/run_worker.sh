@@ -118,7 +118,7 @@ EOF
 
 function has_image() {
   local tags=$(curl -s --show-error http://${CONTAINER_REGISTRY}/v2/tf-developer-sandbox/tags/list | jq -c -r '.tags[]')
-  echo "INFO: found tags for $tf-developer-sandbox:"
+  echo "INFO: looking for a tag $DEVENVTAG in found tags for tf-developer-sandbox:"
   echo "$tags" | sort
   echo "$tags" | grep -q "^${DEVENVTAG}\$"
 }
