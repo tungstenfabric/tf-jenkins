@@ -322,6 +322,7 @@
         stream: juju-maas-os
         vars:
           CLOUD: maas
+          DEBUG: true
       deploy-tf-juju-maas-os:
         stream: juju-maas-os
         depends-on:
@@ -329,6 +330,7 @@
           - deploy-platform-juju-maas-os
         vars:
           CLOUD: maas
+          DEBUG: true
       test-sanity-juju-maas-os:
         job-name: test-sanity
         stream: juju-maas-os

@@ -9,8 +9,8 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 echo 'INFO: Deploy TF with juju'
-cat << EOF > $WORKSPACE/run_deploy_tf.sh
-#!/bin/bash -e
+
+cat <<EOF > $WORKSPACE/run_deploy_tf.sh
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
@@ -24,9 +24,9 @@ cd src/tungstenfabric/tf-devstack/juju
 ORCHESTRATOR=$ORCHESTRATOR ./run.sh
 EOF
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" {$WORKSPACE/src,$WORKSPACE/run_deploy_tf.sh} $IMAGE_SSH_USER@$instance_ip:./
-
-bash -c "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip 'bash ./run_deploy_tf.sh'" || ret=1
+ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
+rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/run_deploy_tf.sh} $IMAGE_SSH_USER@$instance_ip:./
+$ssh_cmd $IMAGE_SSH_USER@$instance_ip 'bash -e ./run_deploy_tf.sh' || res=1
 
 echo "INFO: Deploy tf finished"
-exit $ret
+exit $res

@@ -9,26 +9,24 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 echo "INFO: Deploy platform for $JOB_NAME"
-cat << EOF > $WORKSPACE/run_deploy_platform.sh
-#!/bin/bash -e
+
+cat <<EOF > $WORKSPACE/run_deploy_platform.sh
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export OPENSTACK_VERSION=$OPENSTACK_VERSION
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
+export PATH=\$PATH:/usr/sbin
 export CLOUD=${CLOUD:-"local"}
 source \$HOME/$CLOUD.vars || /bin/true
-export PATH=\$PATH:/usr/sbin
-cd \$HOME/src/tungstenfabric/tf-devstack/juju
-ORCHESTRATOR=$ORCHESTRATOR ./run.sh platform || ret=1
-echo "INFO Deploy platform finished"
-exit \$ret
+cd src/tungstenfabric/tf-devstack/juju
+ORCHESTRATOR=$ORCHESTRATOR ./run.sh platform
 EOF
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS" {$WORKSPACE/src,$WORKSPACE/run_deploy_platform.sh} $IMAGE_SSH_USER@$instance_ip:./
-
-bash -c "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip 'bash ./run_deploy_platform.sh'" || ret=1
+ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
+rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/run_deploy_platform.sh} $IMAGE_SSH_USER@$instance_ip:./
+$ssh_cmd $IMAGE_SSH_USER@$instance_ip 'bash -e ./run_deploy_platform.sh' || res=1
 
 echo "INFO: Deploy platform finished"
-exit $ret
+exit $res
