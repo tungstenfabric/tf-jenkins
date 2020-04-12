@@ -37,11 +37,14 @@ ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 rsync -a -e "$ssh_cmd" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 cat <<EOF > $WORKSPACE/run_deploy_maas.sh
+#!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
 export IPMI_IPS='192.168.51.20 192.168.51.21 192.168.51.22 192.168.51.23 192.168.51.24'
 cd \$HOME/src/tungstenfabric/tf-devstack/common
 ./deploy_maas.sh \$HOME/maas.vars
 EOF
+chmod a+x $WORKSPACE/run_deploy_maas.sh
 
 rsync -a -e "$ssh_cmd" $WORKSPACE/run_deploy_maas.sh $IMAGE_SSH_USER@$instance_ip:./
-eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip 'bash -e ./run_deploy_maas.sh'
+# run this via eval due to special symbols in ssh_cmd
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./run_deploy_maas.sh
