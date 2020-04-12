@@ -8,6 +8,11 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+# transfer patchsets info into sandbox
+if [ -e $WORKSPACE/patchsets-info.json ]; then
+  cp -f $WORKSPACE/patchsets-info.json $WORKSPACE/src/tungstenfabric/tf-dev-env/
+fi
+
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 linux_distr=${TARGET_LINUX_DISTR["${ENVIRONMENT_OS}"]}
