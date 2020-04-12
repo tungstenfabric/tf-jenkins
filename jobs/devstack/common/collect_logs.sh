@@ -18,10 +18,10 @@ EOF
 chmod a+x $WORKSPACE/collect_logs.sh
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
-rsync -a -e $ssh_cmd $WORKSPACE/collect_logs.sh $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "$ssh_cmd" $WORKSPACE/collect_logs.sh $IMAGE_SSH_USER@$instance_ip:./
 # run this via eval due to special symbols in ssh_cmd
 eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./collect_logs.sh || res=1
-rsync -a -e $ssh_cmd $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
+rsync -a -e "$ssh_cmd" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
 
 pushd $WORKSPACE
 tar -xzf logs.tgz
