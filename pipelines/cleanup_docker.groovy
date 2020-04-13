@@ -14,10 +14,10 @@ pipeline{
           docker container prune -f
           docker rmi $(docker images -f "dangling=true" -q) || /bin/true
           images=$(docker images --format '{{.Repository}}:{{.Tag}}' | \
-          grep -v -F -x -e 'pnexus.sytes.net:5002/tf-developer-sandbox:stable' \
+              grep -v -F -x -e 'pnexus.sytes.net:5002/tf-developer-sandbox:stable' \
                         -e 'pnexus.sytes.net:5001/tf-developer-sandbox:stable' \
                         -e 'pnexus.sytes.net:5002/tf-developer-sandbox:stable-r1912' \
-                        -e 'tf-developer-sandbox-stable:latest')
+                        -e 'tf-developer-sandbox-stable:latest' || /bin/true )
           if [[ -n "$images" ]]; then
             for image in $images; do
               docker rmi $image || /bin/true
@@ -36,7 +36,7 @@ pipeline{
           grep -v -F -x -e 'pnexus.sytes.net:5002/tf-developer-sandbox:stable' \
                         -e 'pnexus.sytes.net:5001/tf-developer-sandbox:stable' \
                         -e 'pnexus.sytes.net:5002/tf-developer-sandbox:stable-r1912' \
-                        -e 'tf-developer-sandbox-stable:latest')
+                        -e 'tf-developer-sandbox-stable:latest' || /bin/true )
           if [[ -n "$images" ]]; then
             for image in $images; do
               docker rmi $image || /bin/true
