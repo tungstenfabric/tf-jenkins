@@ -73,6 +73,13 @@ enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
+[local-rhel-ha-for-rhel-7-server-rpms]
+name = Red Hat HA for RHEL 7 (RPMs) local
+baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-ha-for-rhel-7-server-rpms
+enabled = 1
+gpgcheck = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
 EOF
 
 sudo mv local.repo /etc/yum.repos.d/

@@ -6,9 +6,9 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
+source "$WORKSPACE/global.env"
 source "$my_dir/../../../infra/${SLAVE}/definitions"
 source "$my_dir/definitions"
-source "$WORKSPACE/global.env"
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
