@@ -1,0 +1,14 @@
+---
+
+- job:
+    name: cleanup-docker
+    description: cleanup-sdocker
+    project-type: pipeline
+    concurrent: false
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: pipelines/cleanup_docker.groovy
+      lightweight-checkout: true
+    triggers:
+      - timed: '* 21 * * *'
