@@ -20,7 +20,7 @@ export PATH=\$PATH:/usr/sbin
 EOF
 
 if declare -f -F add_deployrc &>/dev/null ; then
-  add_deployrc $WORKSPACE/deployrc
+  add_deployrc $WORKSPACE/deploy_tf.sh
 fi
 
 echo "src/tungstenfabric/tf-devstack/${deployer}/run.sh" >> $WORKSPACE/deploy_tf.sh
