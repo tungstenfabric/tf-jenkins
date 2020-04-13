@@ -7,7 +7,7 @@
       - timed: '* 21 * * *'
     parameters:
       - node:
-          name: name: SLAVE_NAME
+          name: SLAVE_NAME
           description: "Select slave"
           default-slaves:
             - slave1-aws
