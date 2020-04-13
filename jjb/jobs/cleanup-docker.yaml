@@ -12,7 +12,6 @@
           default-slaves:
             - slave1-aws
             - slave3-vexxhost
-          allowed-slaves:
           ignore-offline-nodes: true
           allowed-multiselect: true
     builders:
