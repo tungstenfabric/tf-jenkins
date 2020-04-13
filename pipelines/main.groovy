@@ -90,7 +90,7 @@ timestamps {
         if (pre_build_done)
           jobs_utils.run_jobs(post_jobs)
 
-        save_pipeline_output_to_logs()
+        save_pipeline_artifacts_to_logs()
       }
     }
   }
@@ -214,7 +214,7 @@ def terminate_previous_runs() {
   }
 }
 
-def save_pipeline_output_to_logs() {
+def save_pipeline_artifacts_to_logs() {
   println("BUILD_URL = ${BUILD_URL}consoleText")
   withCredentials(
     bindings: [
@@ -222,8 +222,9 @@ def save_pipeline_output_to_logs() {
     sh """#!/bin/bash -e
       set -x
       curl ${BUILD_URL}consoleText > pipelinelog.txt 
-      ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
-      rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path} 
+      ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}/artifacts"
+      rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}
+      rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" * --exclude '*/' --exclude 'pipelinelog.txt' ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/artifacts
     """
   }
   archiveArtifacts artifacts: "pipelinelog.txt"
