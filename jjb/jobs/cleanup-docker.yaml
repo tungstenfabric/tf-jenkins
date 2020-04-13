@@ -28,5 +28,7 @@
                             -e 'pnexus.sytes.net:5002/tf-developer-sandbox:stable-r1912' \
                             -e 'tf-developer-sandbox-stable:latest' )
           if [[ -n "$images" ]]; then
-            docker rmi $image
+            for image in $images; do
+              docker rmi $image || /bin/true
+            done
           fi
