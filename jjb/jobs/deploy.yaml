@@ -204,6 +204,9 @@
     name: collect-logs-and-cleanup
     description: "collect all logs for {project}"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 80
     parameters:
       - label:
           name: NODE_NAME
