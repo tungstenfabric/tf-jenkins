@@ -334,7 +334,7 @@
         stream: juju-maas-os
         depends-on:
           - deploy-tf-juju-maas-os
-      collect-logs-and-cleanup-juju-os:
+      collect-logs-and-cleanup-juju-maas-os:
         job-name: collect-logs-and-cleanup
         stream: juju-maas-os
         type: stream-post-hook
