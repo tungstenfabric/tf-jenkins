@@ -11,9 +11,8 @@ source "$my_dir/definitions"
 
 echo "INFO: Deploy platform for $JOB_NAME"
 
-ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $ENV_FILE $IMAGE_SSH_USER@$mgmt_ip:./
-
+create_env_file="stackrc.$JOB_NAME.env"
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/$create_env_file $IMAGE_SSH_USER@$mgmt_ip:./
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$mgmt_ip:./
 
 #Copy ssh key to undercloud
@@ -31,7 +30,7 @@ export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export ENABLE_RHEL_REGISTRATION='false'
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
-source $ENV_FILE
+source $create_env_file
 cd src/tungstenfabric/tf-devstack/rhosp
 ./run.sh platform
 EOF
