@@ -21,14 +21,14 @@ ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip 'ssh-keygen -y -f .
 ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip chmod 600 .ssh/id_rsa*
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip || res=1
-export WORKSPACE=\$HOME
-export DEBUG=$DEBUG
 export RHEL_USER=$RHEL_USER
 export RHEL_PASSWORD=$RHEL_PASSWORD
+[ "${DEBUG,,}" == "true" ] && set -x
+export WORKSPACE=\$HOME
+export DEBUG=$DEBUG
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export ENABLE_RHEL_REGISTRATION='false'
-[ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
 source $create_env_file
 cd src/tungstenfabric/tf-devstack/rhosp
