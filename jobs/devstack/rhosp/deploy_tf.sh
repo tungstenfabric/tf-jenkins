@@ -10,6 +10,8 @@ source "$my_dir/definitions"
 
 echo 'INFO: Deploy RHOSP overcloud'
 
+ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $ENV_FILE $IMAGE_SSH_USER@$mgmt_ip:./
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$mgmt_ip:./
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip || res=1
@@ -21,6 +23,7 @@ export RHEL_PASSWORD=$RHEL_PASSWORD
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export PATH=\$PATH:/usr/sbin
+source $ENV_FILE
 cd src/tungstenfabric/tf-devstack/rhosp
 ./run.sh
 EOF

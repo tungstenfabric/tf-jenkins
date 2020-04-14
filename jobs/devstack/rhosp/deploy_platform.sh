@@ -6,11 +6,15 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
+
 source "$my_dir/definitions"
 
 echo "INFO: Deploy platform for $JOB_NAME"
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src/tungstenfabric/tf-devstack $IMAGE_SSH_USER@$mgmt_ip:./
+ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $ENV_FILE $IMAGE_SSH_USER@$mgmt_ip:./
+
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$mgmt_ip:./
 
 #Copy ssh key to undercloud
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKER_SSH_KEY $IMAGE_SSH_USER@$mgmt_ip:.ssh/id_rsa
@@ -27,7 +31,8 @@ export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export ENABLE_RHEL_REGISTRATION='false'
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
-cd tf-devstack/rhosp
+source $ENV_FILE
+cd src/tungstenfabric/tf-devstack/rhosp
 ./run.sh platform
 EOF
 
