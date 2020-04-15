@@ -216,8 +216,8 @@ def terminate_previous_runs() {
 
 def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
   println("BUILD_URL = ${BUILD_URL}consoleText")
-  ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
   withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
+    ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     sh """#!/bin/bash
       rm -rf artefacfs
       mkdir -p artefacts
