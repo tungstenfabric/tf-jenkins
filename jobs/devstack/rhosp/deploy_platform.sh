@@ -8,10 +8,10 @@ my_dir="$(dirname $my_file)"
 
 
 source "$my_dir/definitions"
+create_env_file="stackrc.$JOB_NAME.env"
+source $create_env_file
 
 echo "INFO: Deploy platform for $JOB_NAME"
-
-create_env_file="stackrc.$JOB_NAME.env"
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/$create_env_file $IMAGE_SSH_USER@$mgmt_ip:./
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$mgmt_ip:./
 
