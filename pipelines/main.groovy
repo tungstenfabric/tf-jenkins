@@ -90,7 +90,7 @@ timestamps {
         if (pre_build_done)
           jobs_utils.run_jobs(post_jobs)
 
-        save_pipeline_artifacts_to_logs()
+        save_pipeline_artifacts_to_logs(jobs, post_jobs)
       }
     }
   }
@@ -214,20 +214,29 @@ def terminate_previous_runs() {
   }
 }
 
-def save_pipeline_artifacts_to_logs() {
+def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
   println("BUILD_URL = ${BUILD_URL}consoleText")
-  println(pipeline_jobs)
-  withCredentials(
-    bindings: [
-      sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
-    sh """#!/bin/bash -e
-      set -x
-      curl ${BUILD_URL}consoleText > pipelinelog.txt 
-      ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}/artifacts"
-      rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" pipelinelog.txt ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}
-      rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" * --exclude '*/' --exclude 'pipelinelog.txt' ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/artifacts
+  ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+  withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
+    sh """#!/bin/bash
+      rm -rf artefacfs
+      mkdir -p artefacts
+      curl ${BUILD_URL}consoleText > artefacts/pipelinelog.txt 
+    """
+    for (name in jobs.keySet()) {
+      def job_number = job_results.get(name).get('number')
+      if (job_number < 0)
+        continue
+      def stream = jobs[name].get('stream', name)
+      def job_name = jobs[name].get('job-name', name) 
+      sh """#!/bin/bash
+        mkdir -p artefacts/${stream}
+        curl ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > artefacts/${stream}/output-${job_name}.txt
+      """
+    }
+    sh """#!/bin/bash
+      rsync -a -e "${ssh_cmd}" ./artefacts/ ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}
     """
   }
-  archiveArtifacts artifacts: "pipelinelog.txt"
   echo "Output logs saved at ${logs_url}/pipelinelog.txt"
 }
