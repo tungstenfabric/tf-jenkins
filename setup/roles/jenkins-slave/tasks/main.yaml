@@ -71,7 +71,7 @@
 - name: Add user "ansibleuser" to sudo
   lineinfile:
     path: /etc/sudoers.d/91-jenkins
-    line: 'jenkins ALL=(ALL) NOPASSWD: ALL'
+    line: 'jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker'
     state: present
     mode: 0440
     create: yes
