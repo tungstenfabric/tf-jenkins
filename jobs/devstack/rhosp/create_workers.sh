@@ -15,6 +15,7 @@ echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$create_env_file"
 
 IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
 echo "export SSH_USER=$IMAGE_SSH_USER" >> "$create_env_file"
+echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$create_env_file"
 
 # wait for free resource
 while true; do
