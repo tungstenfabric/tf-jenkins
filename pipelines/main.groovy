@@ -236,7 +236,7 @@ def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
       """
     }
     sh """#!/bin/bash
-      mkdir -p ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}
+      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
       rsync -a -e "${ssh_cmd}" ./artefacts/ ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}
     """
   }
