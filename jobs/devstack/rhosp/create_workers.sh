@@ -10,12 +10,11 @@ source "$WORKSPACE/global.env"
 source "$my_dir/../../../infra/${SLAVE}/definitions"
 source "$my_dir/definitions"
 
-ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-touch "$ENV_FILE"
-echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$ENV_FILE"
+create_env_file="$WORKSPACE/stackrc.$JOB_NAME.env"
+echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$create_env_file"
 
 IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
-echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
+echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$create_env_file"
 
 # wait for free resource
 while true; do
@@ -30,4 +29,4 @@ done
 
 
 cd src/tungstenfabric/tf-devstack/rhosp
-vexxrc="$ENV_FILE" ./providers/vexx/create_env.sh
+vexxrc="$create_env_file" ./providers/vexx/create_env.sh
