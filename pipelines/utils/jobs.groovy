@@ -219,7 +219,6 @@ def _run_job(job_set, name) {
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]
     println("JOB ${name}: Starting job: ${job_name}  rnd: #${job_rnd}")
     def job = build(job: job_name, parameters: params)
-    pipeline_jobs << job.getAbsoluteUrl() 
     job_number = job.getNumber()
     job_results[name]['number'] = job_number
     job_results[name]['duration'] = job.getDuration()

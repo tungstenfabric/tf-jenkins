@@ -20,8 +20,6 @@ logs_url = ""
 logs_path = ""
 // set of result for each job 
 job_results = [:]
-// collect running job
-pipeline_jobs = []
 
 rnd = new Random()
 
