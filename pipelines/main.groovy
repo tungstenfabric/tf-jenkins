@@ -216,6 +216,7 @@ def terminate_previous_runs() {
 
 def save_pipeline_artifacts_to_logs() {
   println("BUILD_URL = ${BUILD_URL}consoleText")
+  println(pipeline_jobs)
   withCredentials(
     bindings: [
       sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
