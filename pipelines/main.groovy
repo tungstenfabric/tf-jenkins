@@ -223,18 +223,20 @@ def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
       mkdir -p artefacts
       curl ${BUILD_URL}consoleText > artefacts/pipelinelog.txt 
     """
-    for (name in jobs.keySet()) {
+    def all_jobs = jobs + post_jobs
+    for (name in all_jobs.keySet()) {
       def job_number = job_results.get(name).get('number')
       if (job_number < 0)
         continue
-      def stream = jobs[name].get('stream', name)
-      def job_name = jobs[name].get('job-name', name) 
+      def stream = all_jobs[name].get('stream', name)
+      def job_name = all_jobs[name].get('job-name', name) 
       sh """#!/bin/bash
         mkdir -p artefacts/${stream}
         curl ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > artefacts/${stream}/output-${job_name}.txt
       """
     }
     sh """#!/bin/bash
+      mkdir -p ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}
       rsync -a -e "${ssh_cmd}" ./artefacts/ ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}
     """
   }
