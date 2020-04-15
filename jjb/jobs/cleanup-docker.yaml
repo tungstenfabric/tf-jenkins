@@ -4,7 +4,7 @@
     defaults: global
     concurrent: true
     triggers:
-      - timed: '* 21 * * *'
+      - timed: '0 21 * * *'
     parameters:
       - node:
           name: SLAVE_NAME
@@ -41,7 +41,7 @@
           if [[ -n "$dangling_images" ]]; then
             docker rmi $dangling_images
           fi
-          
+
           # Remove unused images
           images="$(docker images --format '{{.Repository}}:{{.Tag}}' | \
               grep -v -F -x -e 'pnexus.sytes.net:5002/tf-developer-sandbox:stable' \
