@@ -8,6 +8,4 @@ export mgmt_net_cleanup=false
 export provision_network_name=data
 export prov_net_cleanup=false
 
-export rhosp_id=$GERRIT_CHANGE_NUMBER
-
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
