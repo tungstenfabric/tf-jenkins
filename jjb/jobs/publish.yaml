@@ -100,10 +100,8 @@
           if (( VERIFIED > 0 )); then
             export STABLE=true
           fi
-          ./src/progmaticlab/tf-jenkins/jobs/publish/run.sh |& tee ${WORKSPACE}/output.log || res=1
+          ./src/progmaticlab/tf-jenkins/jobs/publish/run.sh || res=1
           # collect logs
-          ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
-          rsync -a -e "ssh -i ${LOGS_HOST_SSH_KEY} ${SSH_OPTIONS}" ${WORKSPACE}/output.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${FULL_LOGS_PATH}
           ./src/progmaticlab/tf-jenkins/jobs/publish/collect_logs.sh
           exit $res
     publishers:

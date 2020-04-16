@@ -224,7 +224,7 @@ def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
     sh """#!/bin/bash
       rm -rf artefacfs
       mkdir -p artefacts
-      curl ${BUILD_URL}consoleText > artefacts/pipelinelog.txt 
+      curl ${BUILD_URL}consoleText > artefacts/pipelinelog.log
     """
     def all_jobs = jobs + post_jobs
     for (name in all_jobs.keySet()) {
@@ -235,7 +235,7 @@ def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
       def job_name = all_jobs[name].get('job-name', name) 
       sh """#!/bin/bash
         mkdir -p artefacts/${stream}
-        curl ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > artefacts/${stream}/output-${job_name}.txt
+        curl ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > artefacts/${stream}/output-${job_name}.log
       """
     }
     sh """#!/bin/bash
