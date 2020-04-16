@@ -88,7 +88,10 @@ timestamps {
           archiveArtifacts(artifacts: 'global.env')
         }
         if (pre_build_done)
-          jobs_utils.run_jobs(post_jobs)
+          try {
+            jobs_utils.run_jobs(post_jobs)
+          } catch (err) {
+          }
 
         save_pipeline_artifacts_to_logs(jobs, post_jobs)
       }
