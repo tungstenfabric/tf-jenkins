@@ -10,9 +10,7 @@ source "$WORKSPACE/global.env"
 source "$my_dir/../../../infra/${SLAVE}/definitions"
 source "$my_dir/definitions"
 
-create_env_file="$WORKSPACE/stackrc.$JOB_NAME.env"
 echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$create_env_file"
-
 IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
 echo "export SSH_USER=$IMAGE_SSH_USER" >> "$create_env_file"
 echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$create_env_file"
