@@ -10,4 +10,4 @@ export prov_net_cleanup=false
 
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
-export create_env_file="$WORKSPACE/stackrc.$BUILD_TAG.env"
+export create_env_file="stackrc.$BUILD_TAG.env"
