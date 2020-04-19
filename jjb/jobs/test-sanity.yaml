@@ -69,6 +69,8 @@
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
+          echo "INFO: wait 120s before tests run - give some time to cluster"
+          sleep 120
           ./src/progmaticlab/tf-jenkins/jobs/test/sanity/run.sh || res=1
           exit $res
     publishers:
