@@ -9,8 +9,8 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 # stackrc file is prepared by pipeline based on 
 # previous job's artefacts
-stackrc_file="deps.${{JOB_NAME}}.${{JOB_RND}}.env"
-source "${{WORKSPACE}}/$stackrc_file"
+stackrc_file="deps.${JOB_NAME}.${JOB_RND}.env"
+source "${WORKSPACE}/$stackrc_file"
 
 echo 'INFO: Deploy RHOSP overcloud'
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/$stackrc_file $IMAGE_SSH_USER@$mgmt_ip:./
