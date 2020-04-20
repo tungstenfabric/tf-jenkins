@@ -62,6 +62,7 @@ timestamps {
           evaluate_common_params()
           terminate_previous_runs()
           if (env.GERRIT_CHANGE_ID) {
+            println('Try stop dependet builds')
             terminate_dependencies_runs(env.GERRIT_CHANGE_ID)
           }
           (streams, jobs, post_jobs) = evaluate_env()
@@ -249,7 +250,7 @@ def terminate_dependency(change_id) {
         def d_branch = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_BRANCH").value
         dependent_changes << d_change
         rb.doStop()
-        def msg = "Build has been aborted when a new upstream pipeline is started"
+        def msg = "Build ${build} has been aborted when a new upstream pipeline is started"
         _notify_gerrit(msg, verified=0, submit=false, GERRIT_CHANGE_ID=d_change, GERRIT_PATCHSET_NUMBER=d_patchset, GERRIT_BRANCH=d_branch)
       }
     }
@@ -258,6 +259,7 @@ def terminate_dependency(change_id) {
 }
 
 def terminate_dependencies_runs(gerrit_change) {
+  println('Search for dependent builds')
   def change_ids = terminate_dependency(gerrit_change)
   if ( change_ids.size() > 0 ) {
     for (change_id in change_ids) {
