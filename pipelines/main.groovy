@@ -252,7 +252,9 @@ def terminate_dependency(change_id) {
         // rb.doStop()
         try {
           def msg = """Dependent build was started (${env.GERRIT_PIPELINE}) ${BUILD_URL}. This build has been aborted"""
-          _notify_gerrit(msg)
+          println("d_change" + " " + "d_patchset" + " " + "d_branch")
+          println(msg)
+          //_notify_gerrit(msg)
         } catch (err) {
           println("Failed to provide comment to gerrit")
           def msg = err.getMessage()
