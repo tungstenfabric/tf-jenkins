@@ -61,6 +61,7 @@ timestamps {
         stage('Pre-build') {
           evaluate_common_params()
           terminate_previous_runs()
+          terminate_dependencies_runs(env.GERRIT_CHANGE_ID)
           (streams, jobs, post_jobs) = evaluate_env()
           gerrit_utils.gerrit_build_started()
 
@@ -213,6 +214,55 @@ def terminate_previous_runs() {
     if (GERRIT_CHANGE_NUMBER.toInteger() == change_num && GERRIT_PATCHSET_NUMBER.toInteger() > patchset_num) {
       build.doStop()
       println "Build ${build} has been aborted when a new patchset is created"
+    }
+  }
+}
+
+def get_commit_dependencies(commit_message) {
+  def commit_dependencies = []
+  try {
+    def exp = /(?mi)^depends-on:.*$/
+    def m = commit_message =~ exp
+    while (m.find()) {
+      commit_dependencies.add(m.group().split(":")[1].trim());
+    }
+  } catch(Exception ex) {
+    println('Unable to parse dependency string')
+  }
+  return commit_dependencies
+}
+
+def terminate_dependency(change_id) {
+  def instance = Jenkins.getInstanceOrNull()
+  def runningBuilds = instance.getView('All').getBuilds().findAll() { it.getResult().equals(null) }
+  def dependent_changes = []
+  for (rb in runningBuilds) {
+     if (rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE") != null ) {
+      def encoded_byte_array = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE").value.decodeBase64();
+      String commit_message = new String(encoded_byte_array);
+      def commit_dependencies = get_commit_dependencies(commit_message)
+      if (commit_dependencies.contains(change_id)) {
+        def d_change = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_ID").value
+        def d_patchset = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_PATCHSET_NUMBER").value
+        def d_branch = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_BRANCH").value
+        dependent_changes << d_change
+        rb.doStop()
+        def msg = "Build has been aborted when a new upstream pipeline is started"
+        _notify_gerrit(msg, verified=0, submit=false, GERRIT_CHANGE_ID=d_change, GERRIT_PATCHSET_NUMBER=d_patchset, GERRIT_BRANCH=d_branch)
+      }
+    }
+  }
+  return dependent_changes
+}
+
+def terminate_dependencies_runs(gerrit_change) {
+  if (gerrit_change == null) {
+    return
+  }
+  def change_ids = terminate_dependency(gerrit_change)
+  if ( change_ids.size() > 0 ) {
+    for (change_id in change_ids) {
+      terminate_dependencies_runs(change_id)
     }
   }
 }
