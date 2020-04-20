@@ -250,9 +250,6 @@ def terminate_dependency(change_id) {
         def d_branch = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_BRANCH").value
         dependent_changes << d_change
         rb.doStop()
-        println('Try send msg')
-        def msg = "Build has been aborted when a new upstream pipeline is started"
-        _notify_gerrit(msg, verified=0, submit=false, GERRIT_CHANGE_ID=d_change, GERRIT_PATCHSET_NUMBER=d_patchset, GERRIT_BRANCH=d_branch)
       }
     }
   }
