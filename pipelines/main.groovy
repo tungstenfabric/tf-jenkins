@@ -61,10 +61,6 @@ timestamps {
         stage('Pre-build') {
           evaluate_common_params()
           terminate_previous_runs()
-          if (env.GERRIT_CHANGE_ID) {
-            println('Try stop dependet builds')
-            terminate_dependencies_runs(env.GERRIT_CHANGE_ID)
-          }
           (streams, jobs, post_jobs) = evaluate_env()
           gerrit_utils.gerrit_build_started()
 
@@ -256,7 +252,7 @@ def terminate_dependency(change_id) {
           println(d_patchset)
           println(d_branch)
           println(msg)
-          //_notify_gerrit(msg)
+          gerrit_utils._notify_gerrit(msg, GERRIT_CHANGE_ID=d_change, GERRIT_PATCHSET_NUMBER=d_patchset)
         } catch (err) {
           println("Failed to provide comment to gerrit")
           def msg = err.getMessage()
