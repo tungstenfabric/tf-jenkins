@@ -251,8 +251,10 @@ def terminate_dependency(change_id) {
         dependent_changes << d_change
         // rb.doStop()
         try {
-          def msg = """Dependent build was started (${env.GERRIT_PIPELINE}) ${BUILD_URL}. This build has been aborted"""
-          println("d_change" + " " + "d_patchset" + " " + "d_branch")
+          def msg = """Dependent build was started ${BUILD_URL}. This build has been aborted"""
+          println(d_change)
+          println(d_patchset)
+          println(d_branch)
           println(msg)
           //_notify_gerrit(msg)
         } catch (err) {
