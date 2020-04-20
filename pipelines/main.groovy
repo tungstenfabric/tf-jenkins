@@ -249,7 +249,17 @@ def terminate_dependency(change_id) {
         def d_patchset = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_PATCHSET_NUMBER").value
         def d_branch = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_BRANCH").value
         dependent_changes << d_change
-        rb.doStop()
+        // rb.doStop()
+        try {
+          def msg = """Dependent build was started (${env.GERRIT_PIPELINE}) ${BUILD_URL}. This build has been aborted"""
+          _notify_gerrit(msg, GERRIT_CHANGE_ID=d_change, GERRIT_PATCHSET_NUMBER=d_patchset, GERRIT_BRANCH=d_branch)
+        } catch (err) {
+          println("Failed to provide comment to gerrit")
+          def msg = err.getMessage()
+          if (msg != null) {
+            println(msg)
+          }
+        }
       }
     }
   }
