@@ -9,3 +9,5 @@ export provision_network_name=data
 export prov_net_cleanup=false
 
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+export DEPLOY_COMPACT_AIO=true
