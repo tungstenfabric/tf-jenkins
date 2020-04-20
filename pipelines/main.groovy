@@ -61,7 +61,9 @@ timestamps {
         stage('Pre-build') {
           evaluate_common_params()
           terminate_previous_runs()
-          terminate_dependencies_runs(env.GERRIT_CHANGE_ID)
+          if (env.GERRIT_CHANGE_ID) {
+            terminate_dependencies_runs(env.GERRIT_CHANGE_ID)
+          }
           (streams, jobs, post_jobs) = evaluate_env()
           gerrit_utils.gerrit_build_started()
 
@@ -256,9 +258,6 @@ def terminate_dependency(change_id) {
 }
 
 def terminate_dependencies_runs(gerrit_change) {
-  if (gerrit_change == null) {
-    return
-  }
   def change_ids = terminate_dependency(gerrit_change)
   if ( change_ids.size() > 0 ) {
     for (change_id in change_ids) {
