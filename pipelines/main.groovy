@@ -243,6 +243,7 @@ def terminate_dependency(change_id) {
      if (rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE") != null ) {
       def encoded_byte_array = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE").value.decodeBase64();
       String commit_message = new String(encoded_byte_array);
+      println(commit_message)
       def commit_dependencies = get_commit_dependencies(commit_message)
       if (commit_dependencies.contains(change_id)) {
         def d_change = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_ID").value
