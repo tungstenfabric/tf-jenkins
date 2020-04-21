@@ -61,6 +61,10 @@ timestamps {
         stage('Pre-build') {
           evaluate_common_params()
           terminate_previous_runs()
+          if (env.GERRIT_CHANGE_ID) {	
+            println('Try stop dependet builds')	
+            terminate_dependencies_runs(env.GERRIT_CHANGE_ID)	
+          }
           (streams, jobs, post_jobs) = evaluate_env()
           gerrit_utils.gerrit_build_started()
 
@@ -235,26 +239,26 @@ def terminate_dependency(change_id) {
   def runningBuilds = instance.getView('All').getBuilds().findAll() { it.getResult().equals(null) }
   def dependent_changes = []
   for (rb in runningBuilds) {
-     if (rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE") != null ) {
-      def encoded_byte_array = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE").value.decodeBase64();
-      String commit_message = new String(encoded_byte_array);
-      def commit_dependencies = get_commit_dependencies(commit_message)
-      if (commit_dependencies.contains(change_id)) {
-        def d_change = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_ID").value
-        def d_patchset = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_PATCHSET_NUMBER").value
-        def d_branch = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_BRANCH").value
-        dependent_changes << d_change
-        // rb.doStop()
-        try {
-          def msg = """Dependent build was started ${BUILD_URL}. This build has been aborted"""
-          gerrit_utils.notify_gerrit(msg, GERRIT_CHANGE_ID=d_change, GERRIT_PATCHSET_NUMBER=d_patchset)
-        } catch (err) {
-          println("Failed to provide comment to gerrit")
-          def msg = err.getMessage()
-          if (msg != null) {
-            println(msg)
-          }
-        }
+    if (rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE") != null )
+      continue
+    def encoded_byte_array = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE").value.decodeBase64();
+    String commit_message = new String(encoded_byte_array);
+    def commit_dependencies = get_commit_dependencies(commit_message)
+    if (commit_dependencies.contains(change_id))
+      continue
+    def target_patchset = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_PATCHSET_NUMBER").value
+    def target_change = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_CHANGE_ID").value
+    def target_branch = rb.allActions.find {it in hudson.model.ParametersAction}.getParameter("GERRIT_BRANCH").value
+    dependent_changes += d_change
+    // rb.doStop()
+    try {
+      def msg = """Dependent build was started ${BUILD_URL}. This build has been aborted"""
+      gerrit_utils.notify_gerrit(msg, GERRIT_CHANGE_ID=d_change, GERRIT_PATCHSET_NUMBER=d_patchset)
+    } catch (err) {
+      println("Failed to provide comment to gerrit")
+      def msg = err.getMessage()
+      if (msg != null) {
+        println(msg)
       }
     }
   }
