@@ -258,6 +258,7 @@ def terminate_dependency(change_id) {
       dependent_changes += target_change
       //build.doStop()
       println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
+      build = null
       try {
         println(target_patchset)
         println(target_change)
