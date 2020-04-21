@@ -63,7 +63,7 @@ timestamps {
           terminate_previous_runs()
           if (env.GERRIT_CHANGE_ID) {	
             println('Try stop dependet builds')	
-            terminate_dependencies_runs(env.GERRIT_CHANGE_ID)	
+            //terminate_dependencies_runs(env.GERRIT_CHANGE_ID)	
           }
           (streams, jobs, post_jobs) = evaluate_env()
           gerrit_utils.gerrit_build_started()
