@@ -19,7 +19,7 @@ def resolve_gerrit_url() {
 def gerrit_build_started() {
   try {
     def msg = """Jenkins Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
-    _notify_gerrit(msg)
+    notify_gerrit(msg)
   } catch (err) {
     println("Failed to provide comment to gerrit")
     def msg = err.getMessage()
@@ -34,7 +34,7 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
     if (!pre_build_done) {
       msg = "Jenkins general failure (${env.GERRIT_PIPELINE})\nPlease check pipeline logs:\n"
       msg += "${BUILD_URL}\n${logs_url}\n"
-      _notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
+      notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
       return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
 
@@ -91,7 +91,7 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
       msg = "Jenkins Build ${stopping_cause} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
       verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
-    _notify_gerrit(msg, verified)
+    notify_gerrit(msg, verified)
     return verified
   } catch (err) {
     println("Failed to provide vote to gerrit")
@@ -127,7 +127,7 @@ def _get_duration_string(duration) {
   return String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
 }
 
-def _notify_gerrit(msg, verified=0, submit=false) {
+def notify_gerrit(msg, verified=0, submit=false) {
   println("Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}")
   if (!env.GERRIT_HOST) {
     if (env.GERRIT_PIPELINE == 'nightly') {

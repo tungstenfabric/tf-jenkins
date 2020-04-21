@@ -252,7 +252,7 @@ def terminate_dependency(change_id) {
           println(d_patchset)
           println(d_branch)
           println(msg)
-          gerrit_utils._notify_gerrit(msg, GERRIT_CHANGE_ID=d_change, GERRIT_PATCHSET_NUMBER=d_patchset)
+          gerrit_utils.notify_gerrit(msg, GERRIT_CHANGE_ID=d_change, GERRIT_PATCHSET_NUMBER=d_patchset)
         } catch (err) {
           println("Failed to provide comment to gerrit")
           def msg = err.getMessage()
