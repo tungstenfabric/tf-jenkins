@@ -255,6 +255,8 @@ def terminate_dependency(change_id) {
       def target_change = action.getParameter("GERRIT_CHANGE_ID").value
       def target_branch = action.getParameter("GERRIT_BRANCH").value
       dependent_changes += target_change
+      println('Dependent change:')
+      println(target_change)
       // rb.doStop()
       try {
         def msg = """Dependent build was started ${BUILD_URL}. This build has been aborted"""
