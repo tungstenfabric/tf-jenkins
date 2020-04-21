@@ -220,13 +220,14 @@ def terminate_previous_runs() {
   }
 }
 
-@NonCPS
 def get_commit_dependencies(commit_message) {
   def commit_dependencies = []
   try {
-    commit_message.eachLine {
-    if (it.toLowerCase().startsWith( 'depends-on' ))
-      commit_dependencies += it.split(':')[1].trim()
+    commit_data = commit_message.split('\n')
+    for (commit_str in commit_data) {
+      if (commit_str.toLowerCase().startsWith( 'depends-on' )) {
+        commit_dependencies += commit_str.split(':')[1].trim()
+      }
     }
   } catch(Exception ex) {
     println('Unable to parse dependency string')
@@ -251,15 +252,14 @@ def terminate_dependency(change_id) {
     def encoded_byte_array = gerrit_change_commit_message.value.decodeBase64();
     String commit_message = new String(encoded_byte_array);
     def commit_dependencies = get_commit_dependencies(commit_message)
-    println('Found dependent build:' + " " + commit_dependencies)
+    println('Found dependent build:'commit_dependencies)
     if (commit_dependencies.contains(change_id)){
       def target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
       def target_change = action.getParameter("GERRIT_CHANGE_ID").value
       def target_branch = action.getParameter("GERRIT_BRANCH").value
       dependent_changes += target_change
-      println('Dependent change:')
-      println(target_change)
-      // rb.doStop()
+      println('Dependent change:' + " " + target_change)
+      // build.doStop()
       try {
         def msg = """Dependent build was started ${BUILD_URL}. This build has been aborted"""
         gerrit_utils.notify_gerrit(msg, target_patchset, target_change, target_branch)
