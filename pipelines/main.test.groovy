@@ -247,7 +247,7 @@ def terminate_dependency(change_id) {
     def action = build.allActions.find { it in hudson.model.ParametersAction }
     if (!action)
       continue
-    gerrit_change_commit_message = action.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE")
+    def gerrit_change_commit_message = action.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE")
     if (!gerrit_change_commit_message) {
       continue
     }
@@ -265,7 +265,8 @@ def terminate_dependency(change_id) {
        try {
         println('Message params:' + " " + target_patchset + " " + target_change + " " + target_branch)
         def msg = """Dependent build was started ${BUILD_URL}. This build has been aborted"""
-        gerrit_utils.notify_gerrit(msg)
+        println(msg)
+        gerrit_utils.notify_gerrit(msg, target_patchset, target_change, target_branch)
       } catch (err) {
         println("Failed to provide comment to gerrit")
         def msg = err.getMessage()
