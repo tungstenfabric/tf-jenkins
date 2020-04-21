@@ -221,6 +221,7 @@ def terminate_previous_runs() {
 }
 
 def get_commit_dependencies(commit_message) {
+  println('Commit message:' + " " + commit_message)
   def commit_dependencies = []
   try {
     commit_data = commit_message.split('\n')
@@ -232,6 +233,7 @@ def get_commit_dependencies(commit_message) {
   } catch(Exception ex) {
     println('Unable to parse dependency string')
   }
+  println(commit_dependencies)
   return commit_dependencies
 }
 
