@@ -221,7 +221,6 @@ def terminate_previous_runs() {
 }
 
 def get_commit_dependencies(commit_message) {
-  println('Commit message:' + " " + commit_message)
   def commit_dependencies = []
   try {
     commit_data = commit_message.split('\n')
@@ -233,7 +232,6 @@ def get_commit_dependencies(commit_message) {
   } catch(Exception ex) {
     println('Unable to parse dependency string')
   }
-  println(commit_dependencies)
   return commit_dependencies
 }
 
@@ -243,7 +241,6 @@ def terminate_dependency(change_id) {
     for (def build in builds) {
     if (!build || !build.getResult().equals(null))
       continue
-    println('Running build:' + " " + build)
     def action = build.allActions.find { it in hudson.model.ParametersAction }
     if (!action)
       continue
@@ -254,15 +251,14 @@ def terminate_dependency(change_id) {
     def encoded_byte_array = gerrit_change_commit_message.value.decodeBase64();
     String commit_message = new String(encoded_byte_array);
     def commit_dependencies = get_commit_dependencies(commit_message)
-    println('Depends-On' + " " + commit_dependencies + " " + 'found in build:' + " " + build + " ")
     if (commit_dependencies.contains(change_id)){
       def target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
       def target_change = action.getParameter("GERRIT_CHANGE_ID").value
       def target_branch = action.getParameter("GERRIT_BRANCH").value
-      println('Dependent change:' + " " + target_change)
       dependent_changes += target_change
-      // build.doStop()
-       try {
+      build.doStop()
+      println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
+      try {
         def msg = 'Dependent build was started. This build has been aborted'
         gerrit_utils.notify_gerrit(msg, verified=0, submit=false, target_patchset, target_change, target_branch)
       } catch (err) {
