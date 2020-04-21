@@ -237,6 +237,7 @@ def get_commit_dependencies(commit_message) {
 def terminate_dependency(change_id) {
   def dependent_changes = []
   def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
+  println('Running builds:' + " " + builds)
   for (build in builds) {
     if (!build || !build.getResult().equals(null))
       continue
@@ -249,6 +250,7 @@ def terminate_dependency(change_id) {
     }
     def encoded_byte_array = gerrit_change_commit_message.value.decodeBase64();
     String commit_message = new String(encoded_byte_array);
+    println('Commit message:' + " " + commit_message)
     def commit_dependencies = get_commit_dependencies(commit_message)
     if (commit_dependencies.contains(change_id)){
       def target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
