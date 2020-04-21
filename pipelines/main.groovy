@@ -220,10 +220,9 @@ def terminate_previous_runs() {
 def get_commit_dependencies(commit_message) {
   def commit_dependencies = []
   try {
-    def exp = /(?mi)^depends-on:.*$/
-    def m = commit_message =~ exp
-    while (m.find()) {
-      commit_dependencies.add(m.group().split(":")[1].trim());
+    commit_message.eachLine {
+    if (it.toLowerCase().startsWith( 'depends-on' ))
+      commit_dependencies += it.split(':')[1].trim()
     }
   } catch(Exception ex) {
     println('Unable to parse dependency string')
