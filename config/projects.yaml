@@ -264,7 +264,6 @@
       templates:
         - juju-k8s
         - juju-os
-        - juju-maas-os
         - cleanup
 
 - project:
