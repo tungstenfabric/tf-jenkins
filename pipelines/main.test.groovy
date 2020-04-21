@@ -41,7 +41,7 @@ timestamps {
       stage('init') {
         cleanWs(disableDeferredWipeout: true, notFailBuild: true, deleteDirs: true)
         clone_self()
-        gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
+        gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.test.groovy")
         config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
         jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
         gate_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gate.groovy")
