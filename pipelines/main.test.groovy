@@ -265,7 +265,7 @@ def terminate_dependency(change_id) {
        try {
         println('Message params:' + " " + target_patchset + " " + target_change + " " + target_branch)
         def msg = """Dependent build was started ${BUILD_URL}. This build has been aborted"""
-        gerrit_utils.notify_gerrit(msg, target_patchset, target_change, target_branch)
+        gerrit_utils.notify_gerrit(msg)
       } catch (err) {
         println("Failed to provide comment to gerrit")
         def msg = err.getMessage()
