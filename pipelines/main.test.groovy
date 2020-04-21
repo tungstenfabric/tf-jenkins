@@ -267,6 +267,7 @@ def terminate_dependency(change_id) {
       }
     }
   return dependent_changes
+  }
 }
 
 def terminate_dependencies_runs(gerrit_change) {
