@@ -127,7 +127,7 @@ def _get_duration_string(duration) {
   return String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
 }
 
-def notify_gerrit(msg, verified=0, submit=false) {
+def notify_gerrit(msg, verified=0, submit=false, target_patchset=null, target_change=null, target_branch=null) {
   println("Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}")
   if (!env.GERRIT_HOST) {
     if (env.GERRIT_PIPELINE == 'nightly') {
@@ -156,15 +156,19 @@ def notify_gerrit(msg, verified=0, submit=false) {
       opts += " --submit"
     }
     def url = resolve_gerrit_url()
+    def change_id_sha = target_change ?: env.GERRIT_CHANGE_ID
+    def patchset_number = target_patchset ?: env.GERRIT_PATCHSET_NUMBER
+    def branch_name target_branch ?: env.GERRIT_BRANCH
+
     // TODO: send comment by sha or patchset num
     sh """
       ${WORKSPACE}/tf-jenkins/infra/gerrit/notify.py \
         --gerrit ${url} \
         --user ${GERRIT_API_USER} \
         --password ${GERRIT_API_PASSWORD} \
-        --review ${GERRIT_CHANGE_ID} \
-        --patchset ${GERRIT_PATCHSET_NUMBER} \
-        --branch ${GERRIT_BRANCH} \
+        --review ${change_id_sha} \
+        --patchset ${patchset_number} \
+        --branch ${branch_name} \
         --message "${msg}" \
         ${opts}
     """
