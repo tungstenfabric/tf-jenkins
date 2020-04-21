@@ -223,7 +223,7 @@ def terminate_previous_runs() {
 def get_commit_dependencies(commit_message) {
   def commit_dependencies = []
   try {
-    commit_data = commit_message.split('\n')
+    def commit_data = commit_message.split('\n')
     for (commit_str in commit_data) {
       if (commit_str.toLowerCase().startsWith( 'depends-on' )) {
         commit_dependencies += commit_str.split(':')[1].trim()
