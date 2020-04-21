@@ -28,7 +28,7 @@ export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
-export ENABLE_RHEL_REGISTRATION='false'
+
 export PATH=\$PATH:/usr/sbin
 source $stackrc_file
 cd src/tungstenfabric/tf-devstack/rhosp

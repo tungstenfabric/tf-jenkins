@@ -17,6 +17,7 @@ IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
 echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file"
 echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file"
 echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" >> "$stackrc_file"
+echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file"
 
 # wait for free resource
 while true; do
