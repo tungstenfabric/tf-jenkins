@@ -243,7 +243,7 @@ def terminate_dependency(change_id) {
     for (build in builds) {
     if (!build || !build.getResult().equals(null))
       continue
-    println('Running build:' + " " + builds)
+    println('Running build:' + " " + build)
     def action = build.allActions.find { it in hudson.model.ParametersAction }
     if (!action)
       continue
