@@ -259,6 +259,9 @@ def terminate_dependency(change_id) {
       build.doStop()
       println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
       try {
+        println(target_patchset)
+        println(target_change)
+        println(target_branch)
         def msg = 'Dependent build was started. This build has been aborted'
         gerrit_utils.notify_gerrit(msg, verified=0, submit=false, target_patchset, target_change, target_branch)
       } catch (err) {
