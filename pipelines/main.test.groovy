@@ -257,13 +257,13 @@ def terminate_dependency(change_id) {
     println('Depends-On' + " " + commit_dependencies + " " + 'found in build:' + " " + build + " ")
     if (commit_dependencies.contains(change_id)){
       println('assert condition')
-/*      def target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
+     def target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
       def target_change = action.getParameter("GERRIT_CHANGE_ID").value
       def target_branch = action.getParameter("GERRIT_BRANCH").value
       println('Dependent change:' + " " + target_change)
       dependent_changes += target_change
       // build.doStop()
-      try {
+/*       try {
         def msg = """Dependent build was started ${BUILD_URL}. This build has been aborted"""
         gerrit_utils.notify_gerrit(msg, target_patchset, target_change, target_branch)
       } catch (err) {
