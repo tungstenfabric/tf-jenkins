@@ -158,7 +158,7 @@ def notify_gerrit(msg, verified=0, submit=false, target_patchset=null, target_ch
     def url = resolve_gerrit_url()
     def change_id_sha = target_change ?: env.GERRIT_CHANGE_ID
     def patchset_number = target_patchset ?: env.GERRIT_PATCHSET_NUMBER
-    def branch_name target_branch ?: env.GERRIT_BRANCH
+    def branch_name = target_branch ?: env.GERRIT_BRANCH
 
     // TODO: send comment by sha or patchset num
     sh """
