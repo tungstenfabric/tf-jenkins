@@ -256,7 +256,8 @@ def terminate_dependency(change_id) {
     def commit_dependencies = get_commit_dependencies(commit_message)
     println('Depends-On' + " " + commit_dependencies + " " + 'found in build:' + " " + build + " ")
     if (commit_dependencies.contains(change_id)){
-      def target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
+      println('assert condition')
+/*      def target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
       def target_change = action.getParameter("GERRIT_CHANGE_ID").value
       def target_branch = action.getParameter("GERRIT_BRANCH").value
       println('Dependent change:' + " " + target_change)
@@ -271,7 +272,7 @@ def terminate_dependency(change_id) {
         if (msg != null) {
           println(msg)
         }
-      }
+      } */
     }
   }
   return dependent_changes
