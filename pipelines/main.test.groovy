@@ -286,7 +286,7 @@ def terminate_dependency(change_id) {
 def terminate_dependencies_runs(gerrit_change) {
   println('Search for dependent builds')
   def change_ids = terminate_dependency(gerrit_change)
-  if (change_ids != null) {
+  if (change_ids .size() > 0) {
     for (change_id in change_ids) {
         terminate_dependencies_runs(change_id)
     }
