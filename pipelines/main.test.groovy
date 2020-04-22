@@ -236,7 +236,7 @@ def get_commit_dependencies(commit_message) {
   return commit_dependencies
 }
 
-def terminate_dependency(def change_id) {
+def terminate_dependency(change_id) {
   def dependent_changes = []
   def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
   println builds.getClass()
@@ -260,19 +260,19 @@ def terminate_dependency(def change_id) {
         dependent_changes += target_change
         //build.doStop()
         println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
-        try {
-          def msg = """Dependent build was started. This build has been aborted"""
-          gerrit_utils.notify_gerrit(msg)
-        } catch (err) {
-          println("Failed to provide comment to gerrit")
-          def msg = err.getMessage()
-          if (msg != null) {
-            println(msg)
-          }
-        }
       }
     }
   builds = null
+  try {
+    def msg = """Dependent build was started. This build has been aborted"""
+    gerrit_utils.notify_gerrit(msg, verified=0, submit=false, target_patchset=2, target_change=I1698c934950415a2ea5ca60aa91af6b854aaf663, target_branch=master)
+  } catch (err) {
+    println("Failed to provide comment to gerrit")
+    def msg = err.getMessage()
+    if (msg != null) {
+      println(msg)
+    }
+  }
   return dependent_changes
 }
 
