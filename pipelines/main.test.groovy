@@ -255,7 +255,7 @@ def terminate_dependency(change_id) {
         target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
         target_change = action.getParameter("GERRIT_CHANGE_ID").value
         target_branch = action.getParameter("GERRIT_BRANCH").value
-        message_targets += "$target_patchset$target_change$target_branch"
+        message_targets += "$target_patchset, $target_change, $target_branch"
         dependent_changes += target_change
         //build.doStop()
         println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
