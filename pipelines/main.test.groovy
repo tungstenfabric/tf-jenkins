@@ -236,7 +236,7 @@ def get_commit_dependencies(commit_message) {
   return commit_dependencies
 }
 
-def terminate_dependency(change_id) {
+def terminate_dependency(def change_id) {
   def dependent_changes = []
   def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
     for (def build in builds) {
