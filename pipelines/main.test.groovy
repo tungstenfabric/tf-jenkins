@@ -221,7 +221,6 @@ def terminate_previous_runs() {
   }
 }
 
-@NonCPS
 def get_commit_dependencies(commit_message) {
   def commit_dependencies = []
   try {
@@ -237,7 +236,6 @@ def get_commit_dependencies(commit_message) {
   return commit_dependencies
 }
 
-@NonCPS
 def terminate_dependency(def change_id) {
   def dependent_changes = []
   def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
@@ -274,6 +272,7 @@ def terminate_dependency(def change_id) {
         }
       }
     }
+  builds = null
   return dependent_changes
 }
 
