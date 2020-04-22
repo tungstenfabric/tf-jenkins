@@ -221,6 +221,7 @@ def terminate_previous_runs() {
   }
 }
 
+@NonCPS
 def get_commit_dependencies(commit_message) {
   def commit_dependencies = []
   try {
