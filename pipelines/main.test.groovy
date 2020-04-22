@@ -266,8 +266,8 @@ def terminate_dependency(change_id) {
   builds = null
   if (message_targets.size() > 0){
     for (target in message_targets) {
-      def msg = """Dependent build was started. This build has been aborted"""
       try {
+        def msg = """Dependent build was started. This build has been aborted"""
         gerrit_utils.notify_gerrit(msg, verified=0, submit=false, target)
       } catch (err) {
         println("Failed to provide comment to gerrit")
