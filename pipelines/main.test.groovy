@@ -270,10 +270,11 @@ def terminate_dependency(change_id) {
     println("Failed to provide comment to gerrit")
     def msg = err.getMessage()
     if (msg != null) {
-      println(msg)
+      println(msg) 
     }
   }
-  return dependent_changes
+  println(dependent_changes)
+  return
 }
 
 def terminate_dependencies_runs(gerrit_change) {
