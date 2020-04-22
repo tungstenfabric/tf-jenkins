@@ -62,9 +62,7 @@ timestamps {
           evaluate_common_params()
           terminate_previous_runs()
           if (env.GERRIT_CHANGE_ID) {
-            println('Try stop dependet builds')
-            //terminate_dependencies_runs(env.GERRIT_CHANGE_ID)
-            terminate_dependency(env.GERRIT_CHANGE_ID)
+            terminate_dependencies_runs(env.GERRIT_CHANGE_ID)
           }
           (streams, jobs, post_jobs) = evaluate_env()
           gerrit_utils.gerrit_build_started()
@@ -257,7 +255,7 @@ def terminate_dependency(change_id) {
         target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
         target_change = action.getParameter("GERRIT_CHANGE_ID").value
         target_branch = action.getParameter("GERRIT_BRANCH").value
-        message_targets += ["$target_patchset, $target_change, $target_branch"]
+        message_targets += ["$target_patchset,$target_change,$target_branch"]
         dependent_changes += target_change
         //build.doStop()
         println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
@@ -267,7 +265,7 @@ def terminate_dependency(change_id) {
   if (message_targets.size() > 0){
     for (target in message_targets) {
       def params = []
-      params = target.split(', ')
+      params = target.split(',')
       try {
         def msg = """Dependent build was started. This build has been aborted"""
         gerrit_utils.notify_gerrit(msg, verified=0, submit=false, params[0], params[1], params[2])
@@ -280,7 +278,6 @@ def terminate_dependency(change_id) {
       }
     }
   }
-  println(dependent_changes)
   return
 }
 
