@@ -277,6 +277,7 @@ def terminate_dependency(change_id) {
         }
       }
     }
+  }
   println(dependent_changes)
   return
 }
