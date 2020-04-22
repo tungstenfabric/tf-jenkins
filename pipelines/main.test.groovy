@@ -238,11 +238,8 @@ def get_commit_dependencies(commit_message) {
 
 def terminate_dependency(change_id) {
   def dependent_changes = []
-  def target_patchset
-  def target_change
-  def target_branch
+  def message_targets = []
   def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
-  println builds.getClass()
     for (def build in builds) {
       if (!build || !build.getResult().equals(null))
         continue
@@ -260,22 +257,26 @@ def terminate_dependency(change_id) {
         target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
         target_change = action.getParameter("GERRIT_CHANGE_ID").value
         target_branch = action.getParameter("GERRIT_BRANCH").value
+        message_targets += [target_patchset, target_change, target_branch]
         dependent_changes += target_change
         //build.doStop()
         println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
       }
     }
   builds = null
-  try {
-    def msg = """Dependent build was started. This build has been aborted"""
-    gerrit_utils.notify_gerrit(msg, verified=0, submit=false, target_patchset, target_change, target_branch)
-  } catch (err) {
-    println("Failed to provide comment to gerrit")
-    def msg = err.getMessage()
-    if (msg != null) {
-      println(msg) 
+  if (message_targets.size() > 0){
+    for (target in message_targets) {
+      def msg = """Dependent build was started. This build has been aborted"""
+      try {
+        gerrit_utils.notify_gerrit(msg, verified=0, submit=false, target)
+      } catch (err) {
+        println("Failed to provide comment to gerrit")
+        def msg = err.getMessage()
+        if (msg != null) {
+          println(msg) 
+        }
+      }
     }
-  }
   println(dependent_changes)
   return
 }
