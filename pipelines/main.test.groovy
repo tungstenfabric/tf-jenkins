@@ -61,9 +61,10 @@ timestamps {
         stage('Pre-build') {
           evaluate_common_params()
           terminate_previous_runs()
-          if (env.GERRIT_CHANGE_ID) {	
-            println('Try stop dependet builds')	
-            terminate_dependencies_runs(env.GERRIT_CHANGE_ID)	
+          if (env.GERRIT_CHANGE_ID) {
+            println('Try stop dependet builds')
+            //terminate_dependencies_runs(env.GERRIT_CHANGE_ID)
+            terminate_dependency(env.GERRIT_CHANGE_ID)
           }
           (streams, jobs, post_jobs) = evaluate_env()
           gerrit_utils.gerrit_build_started()
@@ -258,7 +259,6 @@ def terminate_dependency(change_id) {
       dependent_changes += target_change
       //build.doStop()
       println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
-      build = null
       try {
         println(target_patchset)
         println(target_change)
