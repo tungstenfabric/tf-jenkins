@@ -237,43 +237,53 @@ def get_commit_dependencies(commit_message) {
 }
 
 def terminate_dependency(def change_id) {
+  println change_id.getClass()
   def dependent_changes = []
   def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
+  println builds.getClass()
     for (def build in builds) {
-    if (!build || !build.getResult().equals(null))
-      continue
-    def action = build.allActions.find { it in hudson.model.ParametersAction }
-    if (!action)
-      continue
-    def gerrit_change_commit_message = action.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE")
-    if (!gerrit_change_commit_message) {
-      continue
-    }
-    def encoded_byte_array = gerrit_change_commit_message.value.decodeBase64();
-    String commit_message = new String(encoded_byte_array);
-    def commit_dependencies = get_commit_dependencies(commit_message)
-    if (commit_dependencies.contains(change_id)){
-      def target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
-      def target_change = action.getParameter("GERRIT_CHANGE_ID").value
-      def target_branch = action.getParameter("GERRIT_BRANCH").value
-      dependent_changes += target_change
-      //build.doStop()
-      println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
-      try {
-        println(target_patchset)
-        println(target_change)
-        println(target_branch)
-        def msg = """Dependent build was started. This build has been aborted"""
-        gerrit_utils.notify_gerrit(msg)
-      } catch (err) {
-        println("Failed to provide comment to gerrit")
-        def msg = err.getMessage()
-        if (msg != null) {
-          println(msg)
+      println build.getClass()
+      if (!build || !build.getResult().equals(null))
+        continue
+      def action = build.allActions.find { it in hudson.model.ParametersAction }
+      println action.getClass()
+      if (!action)
+        continue
+      def gerrit_change_commit_message = action.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE")
+      println gerrit_change_commit_message.getClass()
+      if (!gerrit_change_commit_message) {
+        continue
+      }
+      def encoded_byte_array = gerrit_change_commit_message.value.decodeBase64()
+      println encoded_byte_array.getClass()
+      String commit_message = new String(encoded_byte_array)
+      println commit_message.getClass()
+      def commit_dependencies = get_commit_dependencies(commit_message)
+      println commit_dependencies.getClass()
+      if (commit_dependencies.contains(change_id)){
+        def target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
+        def target_change = action.getParameter("GERRIT_CHANGE_ID").value
+        def target_branch = action.getParameter("GERRIT_BRANCH").value
+        dependent_changes += target_change
+        println dependent_changes.getClass()
+        println target_branch.getClass()
+        //build.doStop()
+        println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
+        try {
+          println(target_patchset)
+          println(target_change)
+          println(target_branch)
+          def msg = """Dependent build was started. This build has been aborted"""
+          gerrit_utils.notify_gerrit(msg)
+        } catch (err) {
+          println("Failed to provide comment to gerrit")
+          def msg = err.getMessage()
+          if (msg != null) {
+            println(msg)
+          }
         }
       }
     }
-  }
   return dependent_changes
 }
 
