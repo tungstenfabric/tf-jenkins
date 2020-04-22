@@ -251,17 +251,7 @@ def terminate_dependency(change_id) {
     }
     def encoded_byte_array = gerrit_change_commit_message.value.decodeBase64();
     String commit_message = new String(encoded_byte_array);
-    def commit_dependencies = []
-    try {
-      def commit_data = commit_message.split('\n')
-      for (commit_str in commit_data) {
-        if (commit_str.toLowerCase().startsWith( 'depends-on' )) {
-          commit_dependencies += commit_str.split(':')[1].trim()
-        }
-      }
-    } catch(Exception ex) {
-      println('Unable to parse dependency string')
-    }
+    def commit_dependencies = get_commit_dependencies(commit_message)
     if (commit_dependencies.contains(change_id)){
       def target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
       def target_change = action.getParameter("GERRIT_CHANGE_ID").value
