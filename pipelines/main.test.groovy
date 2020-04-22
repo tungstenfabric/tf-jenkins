@@ -255,7 +255,7 @@ def terminate_dependency(change_id) {
         target_patchset = action.getParameter("GERRIT_PATCHSET_NUMBER").value
         target_change = action.getParameter("GERRIT_CHANGE_ID").value
         target_branch = action.getParameter("GERRIT_BRANCH").value
-        message_targets += ["$target_patchset,$target_change,$target_branch"]
+        message_targets += "$target_patchset$target_change$target_branch"
         dependent_changes += target_change
         //build.doStop()
         println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
@@ -264,11 +264,9 @@ def terminate_dependency(change_id) {
   builds = null
   if (message_targets.size() > 0){
     for (target in message_targets) {
-      def params = []
-      params = target.split(',')
       try {
         def msg = """Dependent build was started. This build has been aborted"""
-        gerrit_utils.notify_gerrit(msg, verified=0, submit=false, params[0], params[1], params[2])
+        gerrit_utils.notify_gerrit(msg, verified=0, submit=false, target[0], target[1], target[2])
       } catch (err) {
         println("Failed to provide comment to gerrit")
         def msg = err.getMessage()
