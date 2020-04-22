@@ -264,6 +264,7 @@ def terminate_dependency(change_id) {
       }
     }
   builds = null
+  println(message_targets)
   if (message_targets.size() > 0){
     for (target in message_targets) {
       try {
