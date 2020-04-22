@@ -257,18 +257,15 @@ def terminate_dependency(change_id) {
         target_branch = action.getParameter("GERRIT_BRANCH").value
         message_targets += [[target_patchset, target_change, target_branch]]
         dependent_changes += target_change
-        //build.doStop()
+        build.doStop()
         println('Dependent build' + " " + build + " " + 'has been aborted when a new patchset is created')
       }
     }
   builds = null
-  println('Message targets:')
-  println(message_targets)
+  // Object "build" cannot be serialized. Loop to avoid exception
   if (message_targets.size() > 0){
     for (target in message_targets) {
       try {
-        println('Message target:')
-        println(target)
         def msg = """Dependent build was started. This build has been aborted"""
         gerrit_utils.notify_gerrit(msg, verified=0, submit=false, target[0], target[1], target[2])
       } catch (err) {
