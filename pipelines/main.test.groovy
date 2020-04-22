@@ -240,7 +240,7 @@ def terminate_dependency(change_id) {
   def dependent_changes = []
   def target_patchset
   def target_change
-  def dependent_changes
+  def target_branch
   def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
   println builds.getClass()
     for (def build in builds) {
