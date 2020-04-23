@@ -92,13 +92,13 @@
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
 
           # definitions ONLY for this job
-          export TF_DEVENV_CONTAINER_NAME="tf-developer-sandbox-${BUILD_ID}"
+          export DEVENV_CONTAINER_NAME="tf-developer-sandbox-${BUILD_ID}"
           # special case for fetch-sources - if we have changes in tf-dev-env then we should rebuild it
           if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
-            export DEVENVTAG=sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
+            export DEVENV_TAG=sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
             export BUILD_DEV_ENV=1
-            if docker images -a | grep $TF_DEVENV_CONTAINER_NAME ; then
-              IMAGES_TO_DELETE="$(docker image inspect "$TF_DEVENV_CONTAINER_NAME" --format {{.RepoTags}} | tr -d '[]')"
+            if docker images -a | grep $DEVENV_CONTAINER_NAME ; then
+              IMAGES_TO_DELETE="$(docker image inspect "$DEVENV_CONTAINER_NAME" --format {{.RepoTags}} | tr -d '[]')"
               if [[ -n "$IMAGES_TO_DELETE" ]]; then
                 docker rmi $IMAGES_TO_DELETE
               fi
@@ -129,10 +129,10 @@
                         source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 
                         # definitions ONLY for this job
-                        export TF_DEVENV_CONTAINER_NAME="tf-developer-sandbox-${BUILD_ID}"
+                        export DEVENV_CONTAINER_NAME="tf-developer-sandbox-${BUILD_ID}"
                         # special case for fetch-sources - if we have changes in tf-dev-env then we should rebuild it
                         if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
-                          export DEVENVTAG=sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
+                          export DEVENV_TAG=sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
                         fi
 
                         # have to cleanup here for case of 'cancel job'
@@ -147,13 +147,13 @@
                         fi
 
                         # docker cleanup
-                        if docker ps -a --format '{{.Names}}' | grep "$TF_DEVENV_CONTAINER_NAME" ; then 
-                          if [[ "$(docker container inspect $TF_DEVENV_CONTAINER_NAME --format='{{ .State.Status }}')" == 'running' ]] ; then
-                            docker stop $TF_DEVENV_CONTAINER_NAME
+                        if docker ps -a --format '{{.Names}}' | grep "$DEVENV_CONTAINER_NAME" ; then 
+                          if [[ "$(docker container inspect $DEVENV_CONTAINER_NAME --format='{{ .State.Status }}')" == 'running' ]] ; then
+                            docker stop $DEVENV_CONTAINER_NAME
                           fi
-                          docker rm $TF_DEVENV_CONTAINER_NAME
+                          docker rm $DEVENV_CONTAINER_NAME
                         fi
-                        for name in "tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX" $TF_DEVENV_CONTAINER_NAME ; do
+                        for name in "tf-developer-sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX" $DEVENV_CONTAINER_NAME ; do
                           for image in $(docker images -a | grep "$name" | awk '{print $3}') ; do
                             IMAGES_TO_DELETE="$(docker image inspect "$image" --format {{.RepoTags}} | tr -d '[]')"
                             if [[ -n "$IMAGES_TO_DELETE" ]]; then

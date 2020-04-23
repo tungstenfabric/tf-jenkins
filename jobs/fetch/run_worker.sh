@@ -33,9 +33,8 @@ export TF_CONFIG_DIR=\$HOME
 export CONTRAIL_DEPLOY_REGISTRY=0
 export CONTRAIL_DEPLOY_RPM_REPO=0
 
-export REGISTRY_IP=$REGISTRY_IP
-export REGISTRY_PORT=$REGISTRY_PORT
-export SITE_MIRROR=http://${REGISTRY_IP}/repository
+export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
+export SITE_MIRROR=$SITE_MIRROR
 
 export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
@@ -48,9 +47,9 @@ export CONTRAIL_DIR=""
 export BUILD_DEV_ENV=$build_dev_env
 export BUILD_DEV_ENV_ON_PULL_FAIL=0
 export LINUX_DISTR=$linux_distr
-export TF_DEVENV_CONTAINER_NAME=$TF_DEVENV_CONTAINER_NAME
-export IMAGE=$CONTAINER_REGISTRY/tf-developer-sandbox
-export DEVENVTAG=$DEVENVTAG
+export DEVENV_CONTAINER_NAME=$DEVENV_CONTAINER_NAME
+export DEVENV_IMAGE_NAME=$CONTAINER_REGISTRY/tf-developer-sandbox
+export DEVENV_TAG=$DEVENV_TAG
 
 cd src/tungstenfabric/tf-dev-env
 
@@ -94,40 +93,41 @@ function push_dev_env() {
   local tag=$1
   local target_tag="$CONTAINER_REGISTRY/tf-developer-sandbox:$tag"
   local res=0
-  local commit_name="tf-developer-sandbox-$DEVENVTAG"
   echo "INFO: Save container $target_tag"
   cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 set -eo pipefail
 
-echo "INFO: stop $TF_DEVENV_CONTAINER_NAME container"
-sudo docker stop $TF_DEVENV_CONTAINER_NAME || true
+export DEVENV_PUSH_TAG=$tag
+export DEVENV_IMAGE_NAME=tf-developer-sandbox
 
-echo "INFO: commit $TF_DEVENV_CONTAINER_NAME container as $commit_name"
-sudo docker commit $TF_DEVENV_CONTAINER_NAME $commit_name
+export WORKSPACE=\$HOME
+export TF_CONFIG_DIR=\$HOME
 
-echo "INFO: tag $commit_name container as $target_tag"
-sudo docker tag $commit_name $target_tag
+# dont setup own registry & repo
+export CONTRAIL_DEPLOY_REGISTRY=0
+export CONTRAIL_DEPLOY_RPM_REPO=0
 
-echo "INFO: push $target_tag container"
-sudo docker push $target_tag
+export DEVENV_USER=root
+cd src/tungstenfabric/tf-dev-env
+./run.sh upload
 EOF
-  echo "INFO: Save container $target_tag done"
+  echo "INFO: Saving of container $target_tag is done"
   return $res
 }
 
 function has_image() {
   local tags=$(curl -s --show-error http://${CONTAINER_REGISTRY}/v2/tf-developer-sandbox/tags/list | jq -c -r '.tags[]')
-  echo "INFO: looking for a tag $DEVENVTAG in found tags for tf-developer-sandbox:"
+  echo "INFO: looking for a tag $DEVENV_TAG in found tags for tf-developer-sandbox:"
   echo "$tags" | sort
-  echo "$tags" | grep -q "^${DEVENVTAG}\$"
+  echo "$tags" | grep -q "^${DEVENV_TAG}\$"
 }
 
 # build stable
 if [[ $res == 0 ]] ; then
   if [[ $BUILD_DEV_ENV == 1 ]] || ! has_image ; then
     if run_dev_env none 1 ; then
-      push_dev_env $DEVENVTAG || res=1
+      push_dev_env $DEVENV_TAG || res=1
     else
       res=1
     fi

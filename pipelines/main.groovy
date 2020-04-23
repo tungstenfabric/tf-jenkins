@@ -1,13 +1,13 @@
 // constansts
 TIMEOUT_HOURS = 5
-REGISTRY_IP = "pnexus.sytes.net"
-REGISTRY_PORT = "5001"
+CONTAINER_REGISTRY="pnexus.sytes.net:5001"
+SITE_MIRROR="http://pnexus.sytes.net/repository"
 LOGS_HOST = "pnexus.sytes.net"
 LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
 LOGS_BASE_URL = "http://pnexus.sytes.net:8082/jenkins_logs"
 if (env.GERRIT_PIPELINE == 'nightly') {
   TIMEOUT_HOURS = 6
-  REGISTRY_PORT = "5002"
+  CONTAINER_REGISTRY="pnexus.sytes.net:5002"
 }
 // this is default LTS release for all deployers
 DEFAULT_OPENSTACK_VERSION="queens"
@@ -156,10 +156,9 @@ def evaluate_env() {
       echo "export LOGS_PATH=${logs_path}" >> global.env
       echo "export LOGS_URL=${logs_url}" >> global.env
       # store default registry params. jobs can redefine them if needed in own config (VARS).
-      echo "export REGISTRY_IP=${REGISTRY_IP}" >> global.env
-      echo "export REGISTRY_PORT=${REGISTRY_PORT}" >> global.env
       echo "export OPENSTACK_VERSION=${openstack_version}" >> global.env
-      echo "export CONTAINER_REGISTRY=${REGISTRY_IP}:${REGISTRY_PORT}" >> global.env
+      echo "export SITE_MIRROR=${SITE_MIRROR}" >> global.env
+      echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
     """
 

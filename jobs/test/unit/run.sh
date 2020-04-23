@@ -23,18 +23,17 @@ export PATH=\$PATH:/usr/sbin
 # dont setup own registry
 export CONTRAIL_DEPLOY_REGISTRY=0
 
-export REGISTRY_IP=$REGISTRY_IP
-export REGISTRY_PORT=$REGISTRY_PORT
-export SITE_MIRROR=http://${REGISTRY_IP}/repository
+export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
+export SITE_MIRROR=$SITE_MIRROR
 
 export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
-export IMAGE=$CONTAINER_REGISTRY/tf-developer-sandbox
+export DEVENV_IMAGE_NAME=$CONTAINER_REGISTRY/tf-developer-sandbox
 # devenftag is passed from parent fetch-sources job
-export DEVENVTAG=$DEVENVTAG
+export DEVENV_TAG=$DEVENV_TAG
 
 # Some tests (like test.test_flow.FlowQuerierTest.test_1_noarg_query) expect
 # PST timezone, and fail otherwise.

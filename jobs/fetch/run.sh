@@ -13,10 +13,10 @@ if [ -e $WORKSPACE/patchsets-info.json ]; then
   cp -f $WORKSPACE/patchsets-info.json $WORKSPACE/src/tungstenfabric/tf-dev-env/
 fi
 
-export DEVENVTAG=${DEVENVTAG:-stable${TAG_SUFFIX}}
+export DEVENV_TAG=${DEVENV_TAG:-stable${TAG_SUFFIX}}
 
 ${my_dir}/run_${BUILD_WORKER["${ENVIRONMENT_OS^^}"]}.sh
 
-# save DEVENVTAG that was pushed by this job
+# save DEVENV_TAG that was pushed by this job
 # chidlren jobs may have own TAG_SUFFIX and they shouldn't rely on it
-echo "export DEVENVTAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX" > fetch.env
+echo "export DEVENV_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX" > fetch.env

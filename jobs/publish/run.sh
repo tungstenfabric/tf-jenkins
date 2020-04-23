@@ -24,8 +24,7 @@ export WORKSPACE=\$HOME
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
 export DEBUG=$DEBUG
-export REGISTRY_IP=$REGISTRY_IP
-export REGISTRY_PORT=$REGISTRY_PORT
+export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
 ./src/tungstenfabric/tf-dev-env/common/setup_docker.sh
 
 # to get DISTRO env variable
