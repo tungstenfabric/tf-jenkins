@@ -74,24 +74,22 @@
           which-build: upstream-build
           optional: true
       - shell: |
-          set +e
-          set -o pipefail
-          source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-dev-env ./patchsets-info.json
-      - shell: |
           source "$WORKSPACE/global.env"
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
+          set +e -o pipefail
+          source "$WORKSPACE/global.env"
+          ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-dev-env ./patchsets-info.json
+      - shell: |
           source "$WORKSPACE/global.env"
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           ./src/progmaticlab/tf-jenkins/jobs/build/create_workers.sh
       - shell: |
-          set +e
-          set -o pipefail
+          set +e -o pipefail
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true

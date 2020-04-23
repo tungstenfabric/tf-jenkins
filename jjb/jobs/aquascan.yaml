@@ -72,8 +72,7 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          set +e
-          set -o pipefail
+          set +e -o pipefail
           source "$WORKSPACE/global.env"
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           # do it as a latest source to override all exports

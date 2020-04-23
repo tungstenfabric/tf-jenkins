@@ -82,6 +82,10 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
+          set +e -o pipefail
+          source "$WORKSPACE/global.env"
+          ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-devstack ./patchsets-info.json
+      - shell: |
           export ENVIRONMENT_OS={environment_os}
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
@@ -95,8 +99,7 @@
           echo "export DEPLOYER={deployer}" >> "$ENV_FILE"
           echo "export JOB_LOGS_PATH=${{STREAM}}" >> "$ENV_FILE"
       - shell: |
-          set +e
-          set -o pipefail
+          set +e -o pipefail
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
@@ -183,8 +186,11 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          set +e
-          set -o pipefail
+          set +e -o pipefail
+          source "$WORKSPACE/global.env"
+          ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-devstack ./patchsets-info.json
+      - shell: |
+          set +e -o pipefail
           source "$WORKSPACE/global.env"
           source ./src/progmaticlab/tf-jenkins/infra/${{SLAVE}}/definitions
           source "${{WORKSPACE}}/deps.${{JOB_NAME}}.${{JOB_RND}}.env" || /bin/true
@@ -277,8 +283,11 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          set +e
-          set -o allexport
+          set +e -o pipefail
+          source "$WORKSPACE/global.env"
+          ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-devstack ./patchsets-info.json
+      - shell: |
+          set +e -o allexport
           source "$WORKSPACE/global.env"
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           # do it as a latest source to override all exports
