@@ -27,7 +27,7 @@ log "Scan TF containers"
 CONTAINER_REGISTRY_INSECURE=${CONTAINER_REGISTRY_INSECURE:-"true"}
 AQUASEC_REGISTRY=registry.aquasec.com
 SCAN_INCLUDE_REGEXP=${SCAN_INCLUDE_REGEXP:-"contrail-\|tf-"}
-SCAN_EXCLUDE_REGEXP=${SCAN_EXCLUDE_REGEXP:-"base\|contrail-third-party-packages\|tf-developer-sandbox\|-src"}
+SCAN_EXCLUDE_REGEXP=${SCAN_EXCLUDE_REGEXP:-"base\|contrail-third-party-packages\|tf-dev-sandbox\|-src"}
 SCAN_CONTAINERS_LIST=${SCAN_CONTAINERS_LIST:-'auto'}
 
 log_msg="\n CONTAINER_REGISTRY=$CONTAINER_REGISTRY"

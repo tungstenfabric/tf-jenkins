@@ -8,28 +8,30 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+#TODO: move ALL this stuff to tf-dev-env
+
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
 
-sudo docker cp tf-developer-sandbox:/root/contrail/contrail-container-builder/containers .
+sudo docker cp tf-dev-sandbox:/root/contrail/contrail-container-builder/containers .
 sudo find ./containers/ -not -name '*.log' -delete &>/dev/null || /bin/true
 sudo mv containers container-builder
 tar -czf container-builder.tgz container-builder
 sudo rm -rf ./container-builder
 
-sudo docker cp tf-developer-sandbox:/root/contrail/contrail-deployers-containers/containers .
+sudo docker cp tf-dev-sandbox:/root/contrail/contrail-deployers-containers/containers .
 sudo find ./containers/ -not -name '*.log' -delete &>/dev/null || /bin/true
 sudo mv containers deployers-containers
 tar -czf deployers-containers.tgz deployers-containers
 sudo rm -rf ./deployers-containers
 
 mkdir -p contrail-test
-for file in \$(sudo docker exec tf-developer-sandbox ls /root/contrail/third_party/contrail-test/ | grep log$)
+for file in \$(sudo docker exec tf-dev-sandbox ls /root/contrail/third_party/contrail-test/ | grep log$)
 do
-  sudo docker cp tf-developer-sandbox:/root/contrail/third_party/contrail-test/\${file} ./contrail-test
+  sudo docker cp tf-dev-sandbox:/root/contrail/third_party/contrail-test/\${file} ./contrail-test
 done
 tar -czf contrail-test.tgz contrail-test
 sudo rm -rf ./contrail-test
