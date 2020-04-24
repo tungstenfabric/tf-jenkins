@@ -87,12 +87,15 @@
     jobs:
       test-unit-compile:
         job-name: test-unit
+        stream: test-unit
         depends-on:
           - fetch-sources-centos
         vars:
           STAGE: compile
           TARGET: test
+          DEVENV_PUSH_TAG: "-compiled"
       test-unit:
+        stream: test-unit
         depends-on:
           - test-unit-compile
 

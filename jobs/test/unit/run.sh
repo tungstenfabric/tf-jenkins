@@ -36,6 +36,7 @@ export CONTRAIL_DIR=""
 export DEVENV_IMAGE_NAME=$CONTAINER_REGISTRY/tf-developer-sandbox
 # devenftag is passed from parent fetch-sources job
 export DEVENV_TAG=$DEVENV_TAG
+export DEVENV_PUSH_TAG=$DEVENV_TAG$DEVENV_PUSH_TAG
 
 # Some tests (like test.test_flow.FlowQuerierTest.test_1_noarg_query) expect
 # PST timezone, and fail otherwise.
@@ -64,12 +65,22 @@ return $res
 }
 
 if ! run_over_ssh ; then
-  echo "ERROR: UT failed"
+  echo "ERROR: preparation for UT failed"
   exit 1
 fi
 if ! run_over_ssh $STAGE $TARGET ; then
   echo "ERROR: UT failed"
   exit 1
+fi
+
+# DEVENV_PUSH_TAG is a suffix for final tag
+if [[ -n "$DEVENV_PUSH_TAG" ]]; then
+  if ! run_over_ssh upload ; then
+    echo "ERROR: push to registry with tag=$DEVENV_PUSH_TAG failed"
+    exit 1
+  fi
+  # save DEVENV_TAG that is pushed by this job
+  echo "export DEVENV_TAG=$DEVENV_TAG$DEVENV_PUSH_TAG" > testunit.env
 fi
 
 echo "INFO: UT finished successfully"
