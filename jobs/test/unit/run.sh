@@ -8,6 +8,8 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+STAGE=${STAGE:-test}
+
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 echo "INFO: UT started"
@@ -65,7 +67,7 @@ if ! run_over_ssh ; then
   echo "ERROR: UT failed"
   exit 1
 fi
-if ! run_over_ssh test $TARGET ; then
+if ! run_over_ssh $STAGE $TARGET ; then
   echo "ERROR: UT failed"
   exit 1
 fi

@@ -82,10 +82,19 @@
     name: test-unit
     parents:
       - fetch-sources-centos
-    jobs:
+    streams:
       test-unit:
+    jobs:
+      test-unit-compile:
+        job-name: test-unit
         depends-on:
           - fetch-sources-centos
+        vars:
+          STAGE: compile
+          TARGET: test
+      test-unit:
+        depends-on:
+          - test-unit-compile
 
 - template:
     name: test-unit-ui
