@@ -33,7 +33,7 @@ export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
-export DEVENV_IMAGE_NAME=$CONTAINER_REGISTRY/tf-developer-sandbox
+export DEVENV_IMAGE_NAME=$DEVENV_IMAGE_NAME
 # devenftag is passed from parent fetch-sources job
 export DEVENV_TAG=$DEVENV_TAG
 export DEVENV_PUSH_TAG=$DEVENV_TAG$DEVENV_PUSH_TAG
@@ -73,7 +73,7 @@ if ! run_over_ssh $STAGE $TARGET ; then
   exit 1
 fi
 
-# DEVENV_PUSH_TAG is a suffix for final tag
+# DEVENV_PUSH_TAG is just a suffix here for final tag
 if [[ -n "$DEVENV_PUSH_TAG" ]]; then
   if ! run_over_ssh upload ; then
     echo "ERROR: push to registry with tag=$DEVENV_PUSH_TAG failed"

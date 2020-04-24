@@ -28,7 +28,6 @@ function run_dev_env() {
   # disable build dev-env
   export BUILD_DEV_ENV=$build_dev_env
   export BUILD_DEV_ENV_ON_PULL_FAIL=0
-  export DEVENV_IMAGE_NAME=$CONTAINER_REGISTRY/tf-developer-sandbox
 
   # all other variables already exported
 
@@ -41,7 +40,6 @@ function run_dev_env() {
 
 function push_dev_env() {
   export DEVENV_PUSH_TAG=$1
-  export DEVENV_IMAGE_NAME=tf-developer-sandbox
 
   export TF_CONFIG_DIR=$WORKSPACE
   # dont setup own registry
@@ -64,7 +62,7 @@ if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   cp ${my_dir}/../../infra/mirrors/mirror-epel.repo $etc_dir/yum.repos.d/
 fi
 
-if [[ $BUILD_DEV_ENV == 1 ]] || ! sudo docker pull "$CONTAINER_REGISTRY/tf-developer-sandbox:$DEVENV_TAG" ; then
+if [[ $BUILD_DEV_ENV == 1 ]] || ! sudo docker pull "$CONTAINER_REGISTRY/$DEVENV_IMAGE_NAME:$DEVENV_TAG" ; then
   if ! run_dev_env none 1 ; then
     echo "ERROR: Sync failed"
     exit 1

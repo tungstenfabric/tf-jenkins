@@ -48,7 +48,7 @@ export BUILD_DEV_ENV=$build_dev_env
 export BUILD_DEV_ENV_ON_PULL_FAIL=0
 export LINUX_DISTR=$linux_distr
 export DEVENV_CONTAINER_NAME=$DEVENV_CONTAINER_NAME
-export DEVENV_IMAGE_NAME=$CONTAINER_REGISTRY/tf-developer-sandbox
+export DEVENV_IMAGE_NAME=$DEVENV_IMAGE_NAME
 export DEVENV_TAG=$DEVENV_TAG
 
 cd src/tungstenfabric/tf-dev-env
@@ -91,15 +91,14 @@ EOF
 
 function push_dev_env() {
   local tag=$1
-  local target_tag="$CONTAINER_REGISTRY/tf-developer-sandbox:$tag"
   local res=0
-  echo "INFO: Save container $target_tag"
+  echo "INFO: Save container to registry"
   cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
 set -eo pipefail
 
 export DEVENV_PUSH_TAG=$tag
-export DEVENV_IMAGE_NAME=tf-developer-sandbox
+export DEVENV_IMAGE_NAME=$DEVENV_IMAGE_NAME
 export DEVENV_CONTAINER_NAME=$DEVENV_CONTAINER_NAME
 export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
 
@@ -114,12 +113,12 @@ export DEVENV_USER=root
 cd src/tungstenfabric/tf-dev-env
 ./run.sh upload
 EOF
-  echo "INFO: Saving of container $target_tag is done"
+  echo "INFO: Saving of container is done"
   return $res
 }
 
 function has_image() {
-  local tags=$(curl -s --show-error http://${CONTAINER_REGISTRY}/v2/tf-developer-sandbox/tags/list | jq -c -r '.tags[]')
+  local tags=$(curl -s --show-error http://${CONTAINER_REGISTRY}/v2/${DEVENV_IMAGE_NAME}/tags/list | jq -c -r '.tags[]')
   echo "INFO: looking for a tag $DEVENV_TAG in found tags for tf-developer-sandbox:"
   echo "$tags" | sort
   echo "$tags" | grep -q "^${DEVENV_TAG}\$"
