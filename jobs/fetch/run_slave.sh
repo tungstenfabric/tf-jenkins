@@ -17,17 +17,10 @@ function run_dev_env() {
 
   # dont setup own registry
   export CONTRAIL_DEPLOY_REGISTRY=0
-
   # skip rpm repo at fetch stage
   export CONTRAIL_DEPLOY_RPM_REPO=0
 
-  #export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
-  #export SITE_MIRROR=$SITE_MIRROR
-
   export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
-
-  #export GERRIT_URL=${GERRIT_URL}
-  #export GERRIT_BRANCH=${GERRIT_BRANCH}
 
   # to not to bind contrail sources to container
   export CONTRAIL_DIR=""
@@ -36,6 +29,8 @@ function run_dev_env() {
   export BUILD_DEV_ENV=$build_dev_env
   export BUILD_DEV_ENV_ON_PULL_FAIL=0
   export DEVENV_IMAGE_NAME=$CONTAINER_REGISTRY/tf-developer-sandbox
+
+  # all other variables already exported
 
   # use root user because slave is ubuntu but build machine is centos
   # and they have different users
