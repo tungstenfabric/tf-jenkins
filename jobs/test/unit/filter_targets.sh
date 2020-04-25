@@ -12,7 +12,7 @@ source "$my_dir/definitions"
 # empty/absent means early exit with full UNITTEST_TARGETS
 # UNITTEST_TARGETS must be present in env - it's inherited from fetch job
 
-if [[ -z "TARGET_SET" ]]; then
+if [[ -z "$TARGET_SET" ]]; then
   echo "$UNITTEST_TARGETS" | tr ',' '\n' > $WORKSPACE/unittest_targets.lst
   exit
 fi
