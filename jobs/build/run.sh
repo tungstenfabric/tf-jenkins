@@ -10,7 +10,8 @@ source "$my_dir/definitions"
 
 # transfer patchsets info into sandbox
 if [ -e $WORKSPACE/patchsets-info.json ]; then
-  cp -f $WORKSPACE/patchsets-info.json $WORKSPACE/src/tungstenfabric/tf-dev-env/
+  mkdir -p $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
+  cp -f $WORKSPACE/patchsets-info.json $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
 fi
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
@@ -50,7 +51,7 @@ export DEVENV_TAG=$DEVENV_TAG
 export CONTRAIL_KEEP_LOG_FILES=true
 
 export LINUX_DISTR=$linux_distr
-export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}
+export BUILD_CONTRAIL_FROM_SOURCE=${BUILD_CONTRAIL_FROM_SOURCE}
 
 cd src/tungstenfabric/tf-dev-env
 

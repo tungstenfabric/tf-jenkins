@@ -144,6 +144,10 @@ if [[ $res == 0 ]] ; then
   fi
 fi
 
+if [[ $res == 0 ]] ; then
+  rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:contrail/output/unittest_targets.lst $WORKSPACE/unittest_targets.lst || res=1
+fi
+
 # remove worker as soon as possible to free resources
 if ! $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh ; then
   echo "WARNING: failed to delete worker... it be cleanuped by GC tasks later"
