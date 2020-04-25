@@ -74,6 +74,7 @@
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-dev-env ./patchsets-info.json
       - shell: |
+          # here we may have STAGE/TARGET for comilation or TARGET_SET for UT run
           if ! ./src/progmaticlab/tf-jenkins/jobs/test/unit/filter_targets.sh ; then
             echo "INFO: target not found for set $TARGET_SET. do not run this job."
             exit 0
