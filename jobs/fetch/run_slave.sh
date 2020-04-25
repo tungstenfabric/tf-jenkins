@@ -84,7 +84,4 @@ if ! push_dev_env $CONTRAIL_CONTAINER_TAG$TAG_SUFFIX ; then
   exit 1
 fi
 
-# to collect as artefact
-cp -f $WORKSPACE/contrail/output/unittest_targets.lst > $WORKSPACE/unittest_targets.lst
-
 echo "INFO: Fetch done"

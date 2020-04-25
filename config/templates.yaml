@@ -31,7 +31,7 @@
         depends-on:
           - fetch-sources-centos
         vars:
-          BUILD_CONTRAIL_FROM_SOURCE: true
+          CONTRAIL_BUILD_FROM_SOURCE: true
           TAG_SUFFIX: -src
 
 - template:
@@ -94,34 +94,10 @@
           STAGE: compile
           TARGET: test
           DEVENV_PUSH_TAG: "-compiled"
-      test-unit-agent:
-        job-name: test-unit
-        stream: test-unit
-        depends-on:
-          - test-unit-compile
-        vars:
-          TARGET_SET: agent
-      test-unit-opserver:
-        job-name: test-unit
-        stream: test-unit
-        depends-on:
-          - test-unit-compile
-        vars:
-          TARGET_SET: opserver
-      test-unit-bgp:
-        job-name: test-unit
-        stream: test-unit
-        depends-on:
-          - test-unit-compile
-        vars:
-          TARGET_SET: bgp
       test-unit:
-        job-name: test-unit
         stream: test-unit
         depends-on:
           - test-unit-compile
-        vars:
-          TARGET_SET: UNGROUPED
 
 - template:
     name: test-unit-ui

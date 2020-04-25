@@ -8,12 +8,6 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-# transfer unittest targets info into sandbox
-if [ -e $WORKSPACE/unittest_targets.lst ]; then
-  mkdir -p $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
-  cp -f $WORKSPACE/unittest_targets.lst $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
-fi
-
 STAGE=${STAGE:-test}
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
