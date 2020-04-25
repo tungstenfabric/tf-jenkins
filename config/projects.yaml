@@ -122,7 +122,7 @@
           depends-on:
             - fetch-sources-centos
           vars:
-            BUILD_CONTRAIL_FROM_SOURCE: true
+            CONTRAIL_BUILD_FROM_SOURCE: true
 
 - project:
     name: Juniper/contrail-controller
