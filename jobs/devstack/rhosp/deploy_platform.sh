@@ -15,11 +15,6 @@ echo "INFO: Deploy platform for $JOB_NAME"
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/$stackrc_file $IMAGE_SSH_USER@$mgmt_ip:./
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$mgmt_ip:./
 
-#Copy ssh key to undercloud
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKER_SSH_KEY $IMAGE_SSH_USER@$mgmt_ip:.ssh/id_rsa
-ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip 'ssh-keygen -y -f .ssh/id_rsa >.ssh/id_rsa.pub'
-ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip chmod 600 .ssh/id_rsa*
-
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip || res=1
 export RHEL_USER=$RHEL_USER
 export RHEL_PASSWORD=$RHEL_PASSWORD
