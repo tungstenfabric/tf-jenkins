@@ -74,6 +74,11 @@
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-dev-env ./patchsets-info.json
       - shell: |
+          set +e -o pipefail
+          source "$WORKSPACE/global.env"
+          source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
+          source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
+
           # here we may have STAGE/TARGET for comilation or TARGET_SET for UT run
           if ! ./src/progmaticlab/tf-jenkins/jobs/test/unit/filter_targets.sh ; then
             echo "INFO: target not found for set $TARGET_SET. do not run this job."
@@ -81,16 +86,9 @@
           fi
 
           export ENVIRONMENT_OS=centos7
-          source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/jobs/test/unit/create_workers.sh
-
-          set +e -o pipefail
-          source "$WORKSPACE/stackrc.$JOB_NAME.env"
-          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
-          source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
-          # do it as a latest source to override all exports
-          source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
+          ./src/progmaticlab/tf-jenkins/jobs/test/unit/create_workers.sh
+          source "$WORKSPACE/stackrc.$JOB_NAME.env"
           # main run
           ./src/progmaticlab/tf-jenkins/jobs/test/unit/run.sh || res=1
           # collect logs
