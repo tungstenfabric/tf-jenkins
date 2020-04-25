@@ -74,12 +74,16 @@
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-dev-env ./patchsets-info.json
       - shell: |
+          if ! ./src/progmaticlab/tf-jenkins/jobs/test/unit/filter_targets.sh ; then
+            echo "INFO: target not found for set $TARGET_SET. do not run this job."
+            exit 0
+          fi
+
           export ENVIRONMENT_OS=centos7
           source "$WORKSPACE/global.env"
           ./src/progmaticlab/tf-jenkins/jobs/test/unit/create_workers.sh
-      - shell: |
+
           set +e -o pipefail
-          source "$WORKSPACE/global.env"
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
@@ -104,8 +108,13 @@
               build-steps:
                 - shell: |
                     source "$WORKSPACE/global.env"
-                    source "$WORKSPACE/stackrc.$JOB_NAME.env"
-                    ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
+                    if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ]; then
+                      echo "INFO: stackrc file found. remove workers."
+                      source "$WORKSPACE/stackrc.$JOB_NAME.env"
+                      ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
+                    else
+                      echo "INFO: stackrc file could not be found."
+                    fi
                     rm -f "$WORKSPACE/stackrc.$JOB_NAME.env"
       - archive:
           artifacts: '*.env'
