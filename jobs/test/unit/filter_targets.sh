@@ -25,7 +25,7 @@ touch "$targets_file"
 #sets = [
 #  'agent': ['controller/src/agent:test', 'controller/src/cat:test'],
 #  'bgp': ['controller/src/bgp:test'],
-#  'opserver': ['src/contrail-analytics/contrail-collector:test'],
+#  'opserver': ['src/contrail-analytics/contrail-opserver:test'],
 #  'analytics': ['src/contrail-analytics/.*' and not opserver],
 #  'UNGROUPED': all excluding above
 #]
@@ -42,8 +42,8 @@ elif [[ "$TARGET_SET" == "bgp" ]]; then
     echo "controller/src/bgp:test" >> "$targets_file"
   fi
 elif [[ "$TARGET_SET" == "opserver" ]]; then
-  if echo ",$UNITTEST_TARGETS," | grep -q ",src/contrail-analytics/contrail-collector:test," ; then
-    echo "src/contrail-analytics/contrail-collector:test" >> "$targets_file"
+  if echo ",$UNITTEST_TARGETS," | grep -q ",src/contrail-analytics/contrail-opserver:test," ; then
+    echo "src/contrail-analytics/contrail-opserver:test" >> "$targets_file"
   fi
 elif [[ "$TARGET_SET" == "analytics" ]]; then
   for target in $(echo "$UNITTEST_TARGETS" | tr ',' ' ') ; do
