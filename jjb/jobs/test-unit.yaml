@@ -68,6 +68,7 @@
           optional: true
       - shell: |
           source "$WORKSPACE/global.env"
+          source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>"
           if [[ -n "$TARGET_SET" ]]; then desc+="Target set: $TARGET_SET<br>" ; fi
           desc+="Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
