@@ -121,7 +121,7 @@
         depends-on:
           - test-unit-compile
         vars:
-          TARGET_SET: singles
+          TARGET_SET: group_one
       test-unit:
         job-name: test-unit
         stream: test-unit
