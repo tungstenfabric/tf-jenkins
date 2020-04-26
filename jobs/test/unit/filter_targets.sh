@@ -1,7 +1,7 @@
 #!/bin/bash -eE
 set -o pipefail
 
-#[ "${DEBUG,,}" == "true" ] && set -x
+[ "${DEBUG,,}" == "true" ] && set -x
 
 my_dir="$(realpath $(dirname "$0"))"
 
@@ -52,7 +52,7 @@ elif [[ "$TARGET_SET" == "opserver" ]]; then
 elif [[ "$TARGET_SET" == "group_one" ]]; then
   # all analytics except opserver + some targets
   for target in $(echo "$UNITTEST_TARGETS" | tr ',' ' ') ; do
-    if [[ "$target" =~ ^src/contrail-analytics/.*$ && "$target" != "$opserver" ]] ; then
+    if [[ "$target" =~ ^src/contrail-analytics/.*$ && ! "$opserver" =~ "$target" ]] ; then
       echo "$target" >> "$targets_file"
     elif echo ",$group_one," | grep -q ",$target," ; then
       echo "$target" >> "$targets_file"
