@@ -69,7 +69,7 @@
       - shell: |
           source "$WORKSPACE/global.env"
           desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>"
-          if [[ -n "$TARGET_SET" ]]; then desc+="Target set: $TARGET_SET<br>"
+          if [[ -n "$TARGET_SET" ]]; then desc+="Target set: $TARGET_SET<br>" ; fi
           desc+="Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
