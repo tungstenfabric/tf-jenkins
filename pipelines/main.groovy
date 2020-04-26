@@ -20,7 +20,7 @@ OPENSTACK_VERSIONS = ['ocata', 'pike', 'queens', 'rocky', 'stein', 'train', 'uss
 // base url for all jobs
 logs_url = ""
 logs_path = ""
-// set of result for each job 
+// set of result for each job
 job_results = [:]
 
 rnd = new Random()
@@ -205,7 +205,7 @@ def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
     sh """#!/bin/bash
       rm -rf artefacfs
       mkdir -p artefacts
-      curl ${BUILD_URL}consoleText > artefacts/pipelinelog.log
+      curl -s ${BUILD_URL}consoleText > artefacts/pipelinelog.log
     """
     def all_jobs = jobs + post_jobs
     for (name in all_jobs.keySet()) {
@@ -213,10 +213,10 @@ def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
       if (job_number < 0)
         continue
       def stream = all_jobs[name].get('stream', name)
-      def job_name = all_jobs[name].get('job-name', name) 
+      def job_name = all_jobs[name].get('job-name', name)
       sh """#!/bin/bash
         mkdir -p artefacts/${stream}
-        curl ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > artefacts/${stream}/output-${job_name}.log
+        curl -s ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > artefacts/${stream}/output-${name}.log
       """
     }
     sh """#!/bin/bash
