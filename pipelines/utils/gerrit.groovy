@@ -161,7 +161,7 @@ def _notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, p
     if (!branch)
       branch = env.GERRIT_BRANCH
     if (!patchset_number)
-      patchset = env.GERRIT_PATCHSET_NUMBER
+      patchset_number = env.GERRIT_PATCHSET_NUMBER
 
     // TODO: send comment by sha or patchset num
     sh """
