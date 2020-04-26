@@ -19,7 +19,7 @@ def resolve_gerrit_url() {
 def gerrit_build_started() {
   try {
     def msg = """Jenkins Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
-    notify_gerrit(msg)
+    _notify_gerrit(msg)
   } catch (err) {
     println("Failed to provide comment to gerrit")
     def msg = err.getMessage()
@@ -34,7 +34,7 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
     if (!pre_build_done) {
       msg = "Jenkins general failure (${env.GERRIT_PIPELINE})\nPlease check pipeline logs:\n"
       msg += "${BUILD_URL}\n${logs_url}\n"
-      notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
+      _notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
       return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
 
@@ -91,7 +91,7 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
       msg = "Jenkins Build ${stopping_cause} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
       verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
-    notify_gerrit(msg, verified)
+    _notify_gerrit(msg, verified)
     return verified
   } catch (err) {
     println("Failed to provide vote to gerrit")
@@ -127,7 +127,7 @@ def _get_duration_string(duration) {
   return String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
 }
 
-def notify_gerrit(msg, verified=0, submit=false, target_patchset=null, target_change=null, target_branch=null) {
+def _notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, patchset_number=null) {
   println("Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}")
   if (!env.GERRIT_HOST) {
     if (env.GERRIT_PIPELINE == 'nightly') {
@@ -156,9 +156,9 @@ def notify_gerrit(msg, verified=0, submit=false, target_patchset=null, target_ch
       opts += " --submit"
     }
     def url = resolve_gerrit_url()
-    def change_id_sha = target_change ?: env.GERRIT_CHANGE_ID
-    def patchset_number = target_patchset ?: env.GERRIT_PATCHSET_NUMBER
-    def branch_name = target_branch ?: env.GERRIT_BRANCH
+    def change_id = change_id ? change_id : env.GERRIT_CHANGE_ID
+    def branch = branch ? branch : env.GERRIT_BRANCH
+    def patchset_number = patchset ? patchset : env.GERRIT_PATCHSET_NUMBER
 
     // TODO: send comment by sha or patchset num
     sh """
@@ -166,9 +166,9 @@ def notify_gerrit(msg, verified=0, submit=false, target_patchset=null, target_ch
         --gerrit ${url} \
         --user ${GERRIT_API_USER} \
         --password ${GERRIT_API_PASSWORD} \
-        --review ${change_id_sha} \
+        --review ${change_id} \
         --patchset ${patchset_number} \
-        --branch ${branch_name} \
+        --branch ${branch} \
         --message "${msg}" \
         ${opts}
     """
@@ -263,6 +263,111 @@ def has_gate_submits() {
   // TODO: remove return false and uncomment real result when we will be ready for this
   return false
   //return result
+}
+
+// block for termination utils
+
+def terminate_runs_by_review_number() {
+  // terminates pipeline for same review for previous patchset number
+  def check = { action ->
+    gerrit_change_number = action.getParameter("GERRIT_CHANGE_NUMBER")
+    if (gerrit_change_number) {
+      change_num = gerrit_change_number.value.toInteger()
+      patchset_num = action.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger()
+      if (env.GERRIT_CHANGE_NUMBER.toInteger() == change_num && env.GERRIT_PATCHSET_NUMBER.toInteger() > patchset_num)
+        return true
+    }
+    return false
+  }
+
+  terminated = _check_and_stop_builds(check)
+  for (params in terminated) {
+    _notify_terminated(params)
+  }
+}
+
+def terminate_runs_by_depends_on_recursive(def change_id) {
+  // recursive terminating
+  println('Search for dependent builds')
+  def terminated = _terminate_runs_by_depends_on(change_id)
+  for (params in terminated) {
+    _notify_terminated(params)
+    terminate_runs_by_depends_on_recursive(params['change_id'])
+  }
+}
+
+def _terminate_runs_by_depends_on(def change_id) {
+  // terminates builds that have change_id in Depends-On:
+  // returns terminated build's properties
+  def check = { action ->
+    def gerrit_change_commit_message = action.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE")
+    if (gerrit_change_commit_message) {
+      // decodeBase64 return byte array
+      def commit_message = new String(gerrit_change_commit_message.value.decodeBase64())
+      def commit_dependencies = _get_dependencies_for_commit(commit_message)
+      if (commit_dependencies.contains(change_id))
+        return true
+    }
+    return false
+  }
+
+  return _check_and_stop_builds(check)
+}
+
+def _check_and_stop_builds(def check_func) {
+  def terminated = []
+  def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
+  for (def build in builds) {
+    if (!build || !build.getResult().equals(null))
+      continue
+    def action = build.allActions.find { it in hudson.model.ParametersAction }
+    if (!action)
+      continue
+
+    if (!check_func(action))
+      continue
+
+    terminated.add([
+      'patchset_number': action.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger(),
+      'change_id': action.getParameter("GERRIT_CHANGE_ID").value,
+      'branch': action.getParameter("GERRIT_BRANCH").value
+    ])
+
+    build.doStop()
+    println("Build ${build} has been aborted due to new patchset has been created for parent")
+  }
+  return terminated
+}
+
+def _notify_terminated(def params) {
+  try {
+    def msg = """Run has been aborted due to new parent check ${env.GERRIT_CHANGE_ID} has been started."""
+    _notify_gerrit(msg, 0, false, params['change_id'], params['branch'], params['patchset_number'])
+  } catch (err) {
+    println("Failed to provide comment to gerrit")
+    def msg = err.getMessage()
+    if (msg != null) {
+      println(msg) 
+    }
+  }
+}
+
+def _get_dependencies_for_commit(commit_message) {
+  def deps = []
+  try {
+    for (line in commit_message.split('\n')) {
+      if (line.toLowerCase().startsWith('depends-on')) {
+        deps.add(line.split(':')[1].trim())
+      }
+    }
+  } catch(err) {
+    println('WARNING! Unable to parse dependency string')
+    def msg = err.getMessage()
+    if (msg != null) {
+      println(msg) 
+    }
+  }
+  return deps
 }
 
 return this
