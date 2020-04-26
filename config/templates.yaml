@@ -115,13 +115,13 @@
           - test-unit-compile
         vars:
           TARGET_SET: bgp
-      test-unit-analytics:
+      test-unit-fast:
         job-name: test-unit
         stream: test-unit
         depends-on:
           - test-unit-compile
         vars:
-          TARGET_SET: analytics
+          TARGET_SET: singles
       test-unit:
         job-name: test-unit
         stream: test-unit
