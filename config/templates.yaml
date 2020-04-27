@@ -115,7 +115,7 @@
           - test-unit-compile
         vars:
           TARGET_SET: bgp
-      test-unit-fast:
+      test-unit-group-one:
         job-name: test-unit
         stream: test-unit
         depends-on:
