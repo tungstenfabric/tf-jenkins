@@ -1,8 +1,6 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
-// Constants
-GATING_PIPELINE = 'pipeline-gate-opencontrail-c'
 // TODO Fill up list of projects that can't be run in concurrent mode
 SERIAL_PROJECTS = ['Juniper/contrail-kolla-ansible']
 
@@ -17,37 +15,37 @@ def save_base_builds() {
 
   def base_build_no = false
   builds_map.any { build_id, build_map ->
-    if (build_id && _is_branch_fit(build_id) ) {
-      // Skip current or started later builds
-      if (build_id.toInteger() >= BUILD_ID.toInteger()) {
+    if (!build_id || !_is_branch_fit(build_id))
+      continue
+    // Skip current or started later builds
+    if (build_id.toInteger() >= BUILD_ID.toInteger()) {
+      return false
+    }
+    if (build_map['status'] != 'null') {
+      // build has been finished
+      if (check_build_is_not_failed(build_id)) { // We not need base build!
+        return true
+      } // else just skip the build
+    } else { // build is running
+      // Wait for build chain will be prepared
+      def base_chain = _wait_for_chain_calculated(build_id)
+      if (base_chain == "-1") { // build fails before can calculate BASE_BUILD_ID_LIST
         return false
       }
-      if (build_map['status'] != 'null') {
-        // build has been finished
-        if (check_build_is_not_failed(build_id)) { // We not need base build!
-          return true
-        } // else just skip the build
-      } else { // build is running
-        // Wait for build chain will be prepared
-        def base_chain = _wait_for_chain_calculated(build_id)
-        if (base_chain == "-1") { // build fails before can calculate BASE_BUILD_ID_LIST
+      if (base_chain) { // base_chain is not empty string
+        if (_check_base_chain_is_not_failed(base_chain) == false) { // Some of base builds fails
           return false
         }
-        if (base_chain) { // base_chain is not empty string
-          if (_check_base_chain_is_not_failed(base_chain) == false) { // Some of base builds fails
-            return false
-          }
-          base_chain = "${build_id}," + base_chain
-        } else { // base_chain is empty, add the only this build to chain
-          base_chain = build_id.toString()
-        }
-        // We found base build! Save base_chain in global.vars
-        base_build_no = build_id
-        sh """#!/bin/bash -e
-          echo "export BASE_BUILD_ID_LIST=${base_chain}" >> global.env
-        """
-        return true
+        base_chain = "${build_id}," + base_chain
+      } else { // base_chain is empty, add the only this build to chain
+        base_chain = build_id.toString()
       }
+      // We found base build! Save base_chain in global.vars
+      base_build_no = build_id
+      sh """#!/bin/bash -e
+        echo "export BASE_BUILD_ID_LIST=${base_chain}" >> global.env
+      """
+      return true
     }
   }
 
@@ -92,51 +90,54 @@ def _wait_for_chain_calculated(build_id) {
 // Otherwise retirn "-1"
 def _find_base_list(build) {
   def base_id_list = "-1"
-  def artifactManager =  build.getArtifactManager()
-  if (artifactManager.root().isDirectory()) {
-    def fileList = artifactManager.root().list()
-    fileList.any {
-      def file = it
-      if (file.toString().contains('global.env')) {
-        // extract global.env artifact for each build if exists
-        def fileText = it.open().getText()
-        fileText.split("\n").each {
-          def line = it
-          // Check if BASE_BUILD_ID_LIST exists in global.env file
-          if (line.contains('BASE_BUILD_ID_LIST')) {
-            def bil = line.split('=')
-            if (bil.size() == 2) {
-              base_id_list = bil[1].trim()
-            } else { // looks like BASE_BUILD_ID_LIST= empty strinf
-              base_id_list = ""
-            }
-            return true
-          }
+  def artifactManager = build.getArtifactManager()
+  if (!artifactManager.root().isDirectory())
+    return base_id_list
+
+  def fileList = artifactManager.root().list()
+  fileList.any {
+    def file = it
+    if (!file.toString().contains('global.env'))
+      continue
+
+    // extract global.env artifact for each build if exists
+    def fileText = it.open().getText()
+    fileText.split("\n").each {
+      def line = it
+      // Check if BASE_BUILD_ID_LIST exists in global.env file
+      if (line.contains('BASE_BUILD_ID_LIST')) {
+        def bil = line.split('=')
+        if (bil.size() == 2) {
+          base_id_list = bil[1].trim()
+        } else { // looks like BASE_BUILD_ID_LIST= empty string
+          base_id_list = ""
         }
+        return true
       }
     }
   }
   return base_id_list
 }
 
+def get_build_result_by_id(build_id) {
+  def build = _get_build_by_id(build_no)
+  return build ? build.getResult().toString() ? null
+}
+
 // find and return build of gate pipeline using build_id
-// otherwise return false
+// otherwise return null
 def _get_build_by_id(build_no) {
-  if (build_no instanceof java.lang.Boolean)
-    return false
-  if (! build_no.isInteger())
-    return false
-  def gate_pipeline = jenkins.model.Jenkins.instance.getItem(GATING_PIPELINE)
-  def build = false
+  if (!build_no.isInteger())
+    return null
+  def gate_pipeline = jenkins.model.Jenkins.instance.getItem(env.JOB_NAME)
   def builds = gate_pipeline.getBuilds()
 
-  for (def i =0; i<builds.size(); i++) {
-      if (builds[i].getId().toInteger() == build_no.toInteger()) {
-      build = builds[i]
-      break
+  for (def i=0; i<builds.size(); i++) {
+    if (builds[i].getId().toInteger() == build_no.toInteger()) {
+      return builds[i]
     }
   }
-  return build
+  return null
 }
 
 // Function parse base chain and check if all builds is not failed
@@ -150,23 +151,23 @@ def _check_base_chain_is_not_failed(base_chain) {
   def is_not_failed = true
   def arr_chain = base_chain.split(",")
   arr_chain.any { build_id ->
-    def build = _get_build_by_id(build_id)
-    if (build.getResult() == null) // is not finished yes - skip the build
+    if (get_build_result_by_id(build_id) == null) // is not finished yes - skip the build
       return false
-    if (check_build_is_not_failed(build_id))
+    if (check_build_is_not_failed(build_id)) {
       return false
-    else{
+    } else {
       is_not_failed = false
       return true
     }
   }
+
   return is_not_failed
 }
 
 // Function return ordered map with builds with data needed for find
 // and process base build
 def _prepare_builds_map() {
-  def gate_pipeline = jenkins.model.Jenkins.instance.getItem(GATING_PIPELINE)
+  def gate_pipeline = jenkins.model.Jenkins.instance.getItem(env.JOB_NAME)
   def builds_map = [:]
 
   gate_pipeline.builds.each {
@@ -206,13 +207,14 @@ def _is_branch_fit(build_id) {
     if (build.getEnvironment()['GERRIT_BRANCH'] != 'master')
       return false
   }
+
   return true
 }
 
 // Function check build using build_no is failed
 def check_build_is_not_failed(build_no) {
   // Get the build
-  def gate_pipeline = jenkins.model.Jenkins.instance.getItem(GATING_PIPELINE)
+  def gate_pipeline = jenkins.model.Jenkins.instance.getItem(env.JOB_NAME)
   def build = null
 
   gate_pipeline.getBuilds().any {
@@ -221,13 +223,9 @@ def check_build_is_not_failed(build_no) {
       return true
     }
   }
-  if (build.getResult() != null) {
-      // Skip the build if it fails
-      if (_gate_get_build_state(build) == 'FAILURE') {
-        return false
-      } else {
-      }
-    }
+  if (build.getResult() != null && _gate_get_build_state(build) == 'FAILURE') {
+    return false
+  }
   return true
 }
 
@@ -236,26 +234,28 @@ def check_build_is_not_failed(build_no) {
 // and return FAILRUE in another case
 // !!! Works only if build has been finished! Check getResult() before call this function
 def _gate_get_build_state(build) {
-    def result = "FAILURE"
-    def artifactManager =  build.getArtifactManager()
-    if (artifactManager.root().isDirectory()) {
-      def fileList = artifactManager.root().list()
-      fileList.each {
-        def file = it
-        if (file.toString().contains('global.env')) {
-          // extract global.env artifact for each build if exists
-          def fileText = it.open().getText()
-          fileText.split("\n").each {
-            def line = it
-            if (line.contains('VERIFIED')) {
-              def verified = line.split('=')[1].trim()
-              if (verified.isInteger() && verified.toInteger() > 0)
-                result = "SUCCESS"
-            }
-          }
-        }
+  def result = "FAILURE"
+  def artifactManager =  build.getArtifactManager()
+  if (!artifactManager.root().isDirectory())
+    return result
+
+  def fileList = artifactManager.root().list()
+  fileList.each {
+    def file = it
+    if (!file.toString().contains('global.env'))
+      continue
+    // extract global.env artifact for each build if exists
+    def fileText = it.open().getText()
+    fileText.split("\n").each {
+      def line = it
+      if (line.contains('VERIFIED')) {
+        def verified = line.split('=')[1].trim()
+        if (verified.isInteger() && verified.toInteger() > 0)
+          result = "SUCCESS"
       }
     }
+  }
+
   return result
 }
 
@@ -269,15 +269,15 @@ def wait_pipeline_finished(build_no) {
 
 // Put all this staff in separate function due to Serialisation under waitUntil
 def _get_pipeline_result(build_no) {
-  def job = jenkins.model.Jenkins.instance.getItem(GATING_PIPELINE)
-    // Get DEVENV_TAG for build_no pipeline
-    def build = null
-    job.builds.any {
-      if (build_no.toInteger() == it.getEnvVars().BUILD_ID.toInteger()) {
-        build = it
-      }
+  def job = jenkins.model.Jenkins.instance.getItem(env.JOB_NAME)
+  // Get DEVENV_TAG for build_no pipeline
+  def build = null
+  job.builds.any {
+    if (build_no.toInteger() == it.getEnvVars().BUILD_ID.toInteger()) {
+      build = it
     }
-    return build.getResult() == null
+  }
+  return build.getResult() == null
 }
 
 // Check if pipeline with the same GERRIT_PROJECT is running
@@ -295,8 +295,7 @@ def wait_until_project_pipeline() {
 
   if (same_project_build) {
     waitUntil {
-      def build = _get_build_by_id(same_project_build)
-      return ! (build.getResult() == null)
+      return get_build_result_by_id(same_project_build) != null
     }
   }
 }
@@ -348,7 +347,6 @@ def get_result_patchset(base_build_no) {
 // Function read global.env line by len and if met the line
 // with BASE_BUILD_ID_LIST remove it from file
 def cleanup_globalenv_vars() {
-
   def new_patchset_info_text = readFile("global.env")
   new_patchset_info_text.eachLine{ line ->
     if (! line.contains('BASE_BUILD_ID_LIST')) {

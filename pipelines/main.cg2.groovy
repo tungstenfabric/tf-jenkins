@@ -112,7 +112,7 @@ timestamps {
               }else{
                 println("DEBUG: Build was not failed - try again")
               }
-            }finally{
+            } finally {
               // Finish the loop if pipeline was aborted
               def curr_build = gate_utils._get_build_by_id(BUILD_ID)
               if(curr_build.getResult().toString() == "ABORTED")
