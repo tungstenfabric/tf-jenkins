@@ -49,7 +49,7 @@ timestamps {
         gate_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gate.groovy")
       }
       // TODO: remove comment here when gating is ready
-      if (env.GERRIT_PIPELINE == 'gate') { // && !gerrit_utils.has_gate_approvals()) {
+      if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
             println("There is no gate approvals.. skip gate")
             return
       }
