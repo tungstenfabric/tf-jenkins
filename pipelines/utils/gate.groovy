@@ -121,7 +121,7 @@ def _find_base_list(build) {
 
 def get_build_result_by_id(build_id) {
   def build = _get_build_by_id(build_no)
-  return build ? build.getResult().toString() ? null
+  return build ? build.getResult().toString() : null
 }
 
 // find and return build of gate pipeline using build_id
