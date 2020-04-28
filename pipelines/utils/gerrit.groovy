@@ -201,7 +201,7 @@ def _has_approvals(strategy) {
       output = sh(returnStdout: true, script: """
         ${WORKSPACE}/tf-jenkins/infra/gerrit/check_approvals.py \
           --debug \
-          --strategy ${strategy}
+          --strategy ${strategy} \
           --gerrit ${url} \
           --user ${GERRIT_API_USER} \
           --password ${GERRIT_API_PASSWORD} \
