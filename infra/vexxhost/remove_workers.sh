@@ -12,7 +12,18 @@ source "$my_dir/definitions"
 source "$my_dir/functions.sh"
 source "$WORKSPACE/global.env"
 
-if nova show "$instance_id" | grep 'locked' | grep 'False'; then
-  down_instances $instance_id
-  nova delete "$instance_id"
+
+if [[ -n $WORKER_NAME_PREFIX ]] ; then
+  PREFIX="${WORKER_NAME_PREFIX}_"
+else
+  PREFIX=''
 fi
+job_tag="JobTag=${PREFIX}${BUILD_TAG}"
+instance_ids="$( list_instances ${job_tag} )"
+
+for instance_id in $instance_ids ; do
+  if nova show "$instance_id" | grep 'locked' | grep 'False'; then
+    down_instances $instance_id
+    nova delete "$instance_id"
+  fi
+done
