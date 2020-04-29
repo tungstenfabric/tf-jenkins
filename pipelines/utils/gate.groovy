@@ -306,7 +306,7 @@ def get_result_patchset(Integer base_build_id) {
 def cleanup_globalenv_vars() {
   def new_patchset_info_text = readFile("global.env")
   new_patchset_info_text.eachLine { line ->
-    if (! line.contains('BASE_BUILD_ID_LIST')) {
+    if (!line.contains('BASE_BUILD_ID_LIST')) {
       sh """#!/bin/bash -e
           echo "${line}" >> global.env
         """
