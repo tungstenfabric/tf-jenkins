@@ -11,4 +11,5 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 source "$my_dir/functions.sh"
 
-terminate_instances $instance_id
+instance_ids=$(echo INSTANCE_IDS | sed 's/,/ /g')
+terminate_instances $instance_ids
