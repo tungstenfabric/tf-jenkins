@@ -190,8 +190,8 @@ def _prepare_builds_map() {
 // it has contrail releases/branches structure
 // otherwise it returns false
 def is_concurrent_project() {
-  // TODO: thin about checking for concurrent project in patchsets_info
-  return !SERIAL_PROJECTS.contains(GERRIT_PROJECT)
+  // TODO: think about checking for concurrent project in patchsets_info
+  return !SERIAL_PROJECTS.contains(env.GERRIT_PROJECT)
 }
 
 // Function check if build's branch fit to current project branch
@@ -218,29 +218,23 @@ def _is_branch_fit(def branch) {
 // and return FAILRUE in another case
 // !!! Works only if build has been finished! Check getResult() before call this function
 def _is_build_successed(build) {
-  def result = false
   def artifactManager =  build.getArtifactManager()
   if (!artifactManager.root().isDirectory())
-    return result
+    return false
 
-  def fileList = artifactManager.root().list()
-  fileList.each {
-    def file = it
+  for (file in artifactManager.root().list()) {
     if (!file.toString().contains('global.env'))
       continue
     // extract global.env artifact for each build if exists
-    def fileText = it.open().getText()
-    fileText.split("\n").each {
-      def line = it
-      if (line.contains('VERIFIED')) {
-        def verified = line.split('=')[1].trim()
-        if (verified.isInteger() && verified.toInteger() > 0)
-          result = "SUCCESS"
-      }
-    }
+    def fileText = file.open().getText()
+    def line = fileText.readLines().find() { item -> item.startsWith('VERIFIED=') }
+    if (!line)
+      return false
+    def verified = line.split('=')[1].trim().toInteger()
+    return verified > 0
   }
 
-  return result
+  return false
 }
 
 // Check if pipeline with the same GERRIT_PROJECT is running
@@ -311,7 +305,7 @@ def get_result_patchset(base_build_id) {
 // with BASE_BUILD_ID_LIST remove it from file
 def cleanup_globalenv_vars() {
   def new_patchset_info_text = readFile("global.env")
-  new_patchset_info_text.eachLine{ line ->
+  new_patchset_info_text.eachLine { line ->
     if (! line.contains('BASE_BUILD_ID_LIST')) {
       sh """#!/bin/bash -e
           echo "${line}" >> global.env
