@@ -11,6 +11,16 @@ function get_instance_ip() {
       --output text
 }
 
+function list_instances() {
+  local job_tag=$1
+  aws ec2 describe-instances \
+      --region $AWS_REGION \
+      --filters \
+      "Name=tag:JobTag,Values=$job_tag" \
+      --query 'Reservations[*].Instances[*].[InstanceId]' \
+      --output text
+}
+
 function get_tag_value() {
   local instance=$1
   local tag=$2
