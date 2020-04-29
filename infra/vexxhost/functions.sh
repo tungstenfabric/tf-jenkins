@@ -11,7 +11,7 @@ function list_instances() {
   if [[ -n "$not_tags" ]] ; then
     opts+=" --not-tags $not_tags"
   fi
-  nova list $opts --minimal | awk '{print $2}' | grep -v ID | grep -v "^$"
+  nova list $opts --minimal | awk '{print $2}' | grep -v ID | grep -v "^$" | tr '\n' ' '
 }
 
 function get_tag_value() {
