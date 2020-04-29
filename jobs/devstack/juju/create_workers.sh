@@ -15,5 +15,5 @@ if [[ "$CLOUD" == 'maas' ]] ; then
   fi
   "$my_dir/create_workers_openlab.sh"
 else
-  "$my_dir/../../../infra/${SLAVE}/create_workers.sh"
+  "$my_dir/../common/create_workers.sh"
 fi
