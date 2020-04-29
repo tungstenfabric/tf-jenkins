@@ -22,19 +22,6 @@
           - fetch-sources-centos
 
 - template:
-    name: build-from-src-centos
-    parents:
-      - fetch-sources-centos
-    jobs:
-      build-from-src-centos:
-        job-name: build
-        depends-on:
-          - fetch-sources-centos
-        vars:
-          CONTRAIL_BUILD_FROM_SOURCE: true
-          TAG_SUFFIX: -src
-
-- template:
     name: fetch-sources-rhel
     jobs:
       fetch-sources-rhel:
