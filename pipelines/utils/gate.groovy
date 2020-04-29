@@ -120,18 +120,18 @@ def _find_base_list(build) {
   return null
 }
 
-// Function find the build with build_no and wait it finishes with any result
-def wait_pipeline_finished(build_no) {
+// Function find the build with build_id and wait it finishes with any result
+def wait_pipeline_finished(build_id) {
   waitUntil {
     // Put all this staff in separate function due to Serialisation under waitUntil
-    return get_build_result_by_id(build_no) != null
+    return get_build_result_by_id(build_id) != null
   }
 }
 
-// Function check build using build_no is failed or not
+// Function check build using build_id is failed or not
 def check_build_is_not_failed(build_id) {
   def build = _get_build_by_id(build_id)
-  return build.getResult() == null || _is_build_successed(build))
+  return build.getResult() == null || _is_build_successed(build)
 }
 
 def get_build_result_by_id(build_id) {
@@ -143,8 +143,8 @@ def get_build_result_by_id(build_id) {
 
 // find and return build of gate pipeline using build_id
 // otherwise return null
-def _get_build_by_id(build_no) {
-  return Jenkins.getInstanceOrNull().getItem(env.JOB_NAME).getBuildByNumber(build_no.toInteger())
+def _get_build_by_id(build_id) {
+  return Jenkins.getInstanceOrNull().getItem(env.JOB_NAME).getBuildByNumber(build_id.toInteger())
 }
 
 // Function parse base chain and check if all builds is not failed
@@ -267,10 +267,10 @@ def wait_until_project_pipeline() {
 // read pachset_info of current build
 // union all patchset_info in one array
 // and write all info to patchset_info artifact of corrent build
-def save_pachset_info(base_build_no) {
-  if (!(base_build_no && base_build_no.isInteger()))
+def save_pachset_info(base_build_id) {
+  if (!(base_build_id && base_build_id.isInteger()))
     return
-  def res_json = get_result_patchset(base_build_no)
+  def res_json = get_result_patchset(base_build_id)
   if (!res_json)
     return false
   writeFile(file: 'patchsets-info.json', text: res_json)
@@ -278,13 +278,13 @@ def save_pachset_info(base_build_no) {
 }
 
 // all JSON calsulate to separate function
-def get_result_patchset(base_build_no) {
+def get_result_patchset(base_build_id) {
   def new_patchset_info_text = readFile("patchsets-info.json")
   def sl = new JsonSlurper()
   def new_patchset_info = sl.parseText(new_patchset_info_text)
   def base_patchset_info = ""
   // Read patchsets-info from base build
-  def base_build = _get_build_by_id(base_build_no)
+  def base_build = _get_build_by_id(base_build_id)
   def artifactManager =  base_build.getArtifactManager()
   if (artifactManager.root().isDirectory()) {
     def fileList = artifactManager.root().list()
