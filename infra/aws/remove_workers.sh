@@ -11,4 +11,7 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 source "$my_dir/functions.sh"
 
-terminate_instances $instance_id
+ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
+instance_ids=`cat $ENV_FILE | grep INSTANCE_IDS | cut -d'=' -f2 | sed 's/,/ /g'`
+
+terminate_instances $instance_ids
