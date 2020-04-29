@@ -206,7 +206,9 @@ def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
     """
     def all_jobs = jobs + post_jobs
     for (name in all_jobs.keySet()) {
-      def job_number = job_results.get(name).get('number')
+      if (!job_results.containsKey(name))
+        continue
+      def job_number = job_results.get(name, []).get('number')
       if (job_number < 0)
         continue
       def stream = all_jobs[name].get('stream', name)
