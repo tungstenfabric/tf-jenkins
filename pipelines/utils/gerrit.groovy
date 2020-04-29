@@ -210,7 +210,7 @@ def _has_approvals(strategy) {
       println(output)
       return true
     } catch (err) {
-      println("Exeption in check_approvals.py")
+      println("check_approvals.py returns non-zero code. It means there is no approvals for now.")
       def msg = err.getMessage()
       if (msg != null) {
         println(msg)
