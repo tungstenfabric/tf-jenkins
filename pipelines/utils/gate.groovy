@@ -18,10 +18,8 @@ def save_base_builds() {
   for (item in builds_map) {
     build_id = item.key
     build_map = item.value
-    if (!build_id || !_is_branch_fit(build_map['branch']))
-      continue
-    // Skip current or started later builds
-    if (build_id.toInteger() >= current_build_id)
+    // Skip current or later builds
+    if (!_is_branch_fit(build_map['branch']) || build_id >= current_build_id)
       continue
 
     if (build_map['status']) {
@@ -50,18 +48,19 @@ def save_base_builds() {
         }
         base_chain = "${build_id}," + base_chain
       }
-      // We found base build! Save base_chain in global.vars
+      // We found base build!
       base_build_id = build_id
-      sh """#!/bin/bash -e
-        echo "export BASE_BUILD_ID_LIST=${base_chain}" >> global.env
-      """
       break
     }
   }
 
   if (base_build_id) {
+      // We found base build! Save base_chain in global.vars
+      sh """#!/bin/bash -e
+        echo "export BASE_BUILD_ID_LIST=${base_chain}" >> global.env
+      """
     // Add base patchset info to the build
-    save_pachset_info(base_build_id)
+    _save_pachset_info(base_build_id)
   } else {
     // If a base build not found save BASE_BUILD_ID_LIST anyway, because it needs
     // to detect if process of the base build search is finished
@@ -144,7 +143,7 @@ def get_build_result_by_id(build_id) {
 // find and return build of gate pipeline using build_id
 // otherwise return null
 def _get_build_by_id(build_id) {
-  return Jenkins.getInstanceOrNull().getItem(env.JOB_NAME).getBuildByNumber(build_id.toInteger())
+  return Jenkins.getInstanceOrNull().getItem(env.JOB_NAME).getBuildByNumber(build_id)
 }
 
 // Function parse base chain and check if all builds is not failed
@@ -170,9 +169,10 @@ def _prepare_builds_map() {
   def gate_pipeline = Jenkins.getInstanceOrNull().getItem(env.JOB_NAME)
   def builds_map = [:]
 
-  gate_pipeline.builds.each {
-    def build = it
-    def build_id = build.getId()
+  for (def build in gate_pipeline.builds) {
+    if (!build || !build.getId())
+      continue
+    def build_id = build.getId().toInteger()
     def result = build.getResult()
     def build_env = build.getEnvironment()
 
@@ -241,10 +241,10 @@ def _is_build_successed(build) {
 // and if it is then wait until finishes
 def wait_until_project_pipeline() {
   def builds_map = _prepare_builds_map()
-  def same_project_build = false
+  def same_project_build = null
   builds_map.any { build_id, build_map ->
     if (build_map['project'] == env.GERRIT_PROJECT && !build_map['status'] &&
-        build_id.toInteger() < env.BUILD_ID.toInteger()) {
+        build_id < env.BUILD_ID.toInteger()) {
       same_project_build = build_id
       return true
     }
@@ -261,8 +261,8 @@ def wait_until_project_pipeline() {
 // read pachset_info of current build
 // union all patchset_info in one array
 // and write all info to patchset_info artifact of corrent build
-def save_pachset_info(base_build_id) {
-  if (!(base_build_id && base_build_id.isInteger()))
+def _save_pachset_info(base_build_id) {
+  if (!base_build_id || !base_build_id.isInteger())
     return
   def res_json = get_result_patchset(base_build_id)
   if (!res_json)

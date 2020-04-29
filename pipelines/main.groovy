@@ -78,10 +78,7 @@ timestamps {
           pre_build_done = true
         }
 
-        if (env.GERRIT_PIPELINE != 'gate')
-          jobs_utils.run_jobs(jobs)
-        else
-          jobs_utils.run_gating(jobs, gate_utils, gerrit_utils)
+        jobs_utils.run(jobs, gate_utils, gerrit_utils)
       } finally {
         println(job_results)
         stage('gerrit vote') {
