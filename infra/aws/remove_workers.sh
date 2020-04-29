@@ -11,4 +11,7 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 source "$my_dir/functions.sh"
 
-terminate_instances $instance_id
+job_tag="${PREFIX}${BUILD_TAG}"
+instance_ids="$(list_instances ${job_tag})"
+
+terminate_instances $instance_ids
