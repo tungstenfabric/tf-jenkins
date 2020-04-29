@@ -24,7 +24,7 @@ def run_gating(def job_set, def gate_utils, def gerrit_utils) {
       }
     } catch(Exception err) {
       println("DEBUG: Something fails ${err}")
-      if (!gate_utils.check_build_is_not_failed(env.BUILD_ID)){
+      if (!gate_utils.check_build_is_not_failed(env.BUILD_ID.toInteger())){
         // If build has been failed - throw exection
         println("DEBUG: Build has been realy failed")
         throw err
@@ -33,7 +33,7 @@ def run_gating(def job_set, def gate_utils, def gerrit_utils) {
       }
     } finally {
       // Finish the loop if pipeline was aborted
-      def result = gate_utils.get_build_result_by_id(env.BUILD_ID)
+      def result = gate_utils.get_build_result_by_id(env.BUILD_ID.toInteger())
       if (result == "ABORTED")
         break
 

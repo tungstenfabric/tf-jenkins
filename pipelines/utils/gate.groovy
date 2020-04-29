@@ -78,7 +78,7 @@ def save_base_builds() {
 // Read global.env and wait until variable BASE_BUILD_ID_LIST will be added there
 // or if build failed.
 // return value of BASE_BUILD_ID_LIST if it was found or null if build fails
-def _wait_for_chain_calculated(build_id) {
+def _wait_for_chain_calculated(Integer build_id) {
   def base_id_list = null
   waitUntil {
     def build = _get_build_by_id(build_id)
@@ -97,7 +97,7 @@ def _wait_for_chain_calculated(build_id) {
 // Function get global.env artifact and find there BASE_BUILD_ID_LIST
 // Return value of BASE_BUILD_ID_LIST of has been found
 // Otherwise return null
-def _find_base_list(build) {
+def _find_base_list(def build) {
   def artifactManager = build.getArtifactManager()
   if (!artifactManager.root().isDirectory())
     return base_id_list
@@ -120,7 +120,7 @@ def _find_base_list(build) {
 }
 
 // Function find the build with build_id and wait it finishes with any result
-def wait_pipeline_finished(build_id) {
+def wait_pipeline_finished(Integer build_id) {
   waitUntil {
     // Put all this staff in separate function due to Serialisation under waitUntil
     return get_build_result_by_id(build_id) != null
@@ -128,12 +128,12 @@ def wait_pipeline_finished(build_id) {
 }
 
 // Function check build using build_id is failed or not
-def check_build_is_not_failed(build_id) {
+def check_build_is_not_failed(Integer build_id) {
   def build = _get_build_by_id(build_id)
   return build.getResult() == null || _is_build_successed(build)
 }
 
-def get_build_result_by_id(build_id) {
+def get_build_result_by_id(Integer build_id) {
   def build = _get_build_by_id(build_id)
   // TODO: think about cases when build is null
   def result = build.getResult()
@@ -142,7 +142,7 @@ def get_build_result_by_id(build_id) {
 
 // find and return build of gate pipeline using build_id
 // otherwise return null
-def _get_build_by_id(build_id) {
+def _get_build_by_id(Integer build_id) {
   return Jenkins.getInstanceOrNull().getItem(env.JOB_NAME).getBuildByNumber(build_id)
 }
 
@@ -217,7 +217,7 @@ def _is_branch_fit(def branch) {
 // and check if it is integer and more than 0 return SUCCESS
 // and return FAILRUE in another case
 // !!! Works only if build has been finished! Check getResult() before call this function
-def _is_build_successed(build) {
+def _is_build_successed(def build) {
   def artifactManager =  build.getArtifactManager()
   if (!artifactManager.root().isDirectory())
     return false
@@ -261,7 +261,7 @@ def wait_until_project_pipeline() {
 // read pachset_info of current build
 // union all patchset_info in one array
 // and write all info to patchset_info artifact of corrent build
-def _save_pachset_info(base_build_id) {
+def _save_pachset_info(Integer base_build_id) {
   if (!base_build_id || !base_build_id.isInteger())
     return
   def res_json = get_result_patchset(base_build_id)
@@ -272,7 +272,7 @@ def _save_pachset_info(base_build_id) {
 }
 
 // all JSON calsulate to separate function
-def get_result_patchset(base_build_id) {
+def get_result_patchset(Integer base_build_id) {
   def new_patchset_info_text = readFile("patchsets-info.json")
   def sl = new JsonSlurper()
   def new_patchset_info = sl.parseText(new_patchset_info_text)
