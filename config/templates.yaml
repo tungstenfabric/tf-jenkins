@@ -6,6 +6,79 @@
       cleanup-pipeline-workers:
 
 - template:
+    name: build-centos-new
+    streams:
+      build-centos-new:
+    jobs:
+      prepare-sandbox:
+        job-name: build-new
+        stream: build-centos-new
+        vars:
+          # stage 'none' creates worker
+          STAGE: none
+          PUBLISH: stabe
+      fetch-sources:
+        job-name: build-new
+        stream: build-centos-new
+        depends-on:
+          - prepare-sandbox
+        vars:
+          STAGE:
+          PUBLISH: build
+      package-deployers:
+        job-name: build-new
+        stream: build-centos-new
+        depends-on:
+          - fetch-sources
+        vars:
+          STAGE: package
+          TARGET: src-containers-only
+      compile:
+        job-name: build-new
+        stream: build-centos-new
+        depends-on:
+          - package-deployers
+        vars:
+          STAGE: compile
+      package-containers:
+        job-name: build-new
+        stream: build-centos-new
+        depends-on:
+          - compile
+        vars:
+          STAGE: package
+          TARGET: containers
+      package-test-containers:
+        job-name: build-new
+        stream: build-centos-new
+        depends-on:
+          - package-containers
+        vars:
+          STAGE: package
+          TARGET: test-containers
+      freeze:
+        job-name: build
+        stream: build-centos-new
+        depends-on:
+          - package-test-containers
+        vars:
+          PIPLINE_FILTER: "gate,nightly"
+          STAGE: freeze
+          PUBLISH: frozen
+      cleanup-build:
+        job-name: build
+        stream: build-centos-new
+        type: stream-post-hook
+        depends-on:
+          - freeze
+        vars:
+          # it doesn't call devenv - it removes worker completly
+          STAGE: cleanup
+      
+
+
+
+- template:
     name: fetch-sources-centos
     jobs:
       fetch-sources-centos:

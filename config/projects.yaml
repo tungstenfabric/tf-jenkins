@@ -359,6 +359,7 @@
       templates:
         - build-rhel
         - build-centos
+        - build-centos-new
         - test-unit-ui
         - cleanup
     gate:

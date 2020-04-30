@@ -145,7 +145,7 @@ if [[ $res == 0 ]] ; then
 fi
 
 if [[ $res == 0 ]] ; then
-  rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:contrail/output/unittest_targets.lst $WORKSPACE/unittest_targets.lst || res=1
+  rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:output/unittest_targets.lst $WORKSPACE/unittest_targets.lst || res=1
 fi
 
 # remove worker as soon as possible to free resources
