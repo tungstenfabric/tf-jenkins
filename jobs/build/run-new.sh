@@ -115,8 +115,12 @@ fi
 
 if [[ -n "$PUBLISH" ]]; then
   tag="$PUBLISH$TAG_SUFFIX"
-  if [[ "$tag" == 'build' ]];
+  if [[ "$tag" == 'stable' ]]; then
+    tag="$DEVENV_TAG"
+  elif [[ "$tag" == 'build' ]]; then
     tag="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
+  elif [[ "$tag" == 'frozen' ]]; then
+    tag="frozen$TAG_SUFFIX"
   fi
   cat <<EOF | $ssh_cmd $IMAGE_SSH_USER@$instance_ip || res=1
 set -eo pipefail
