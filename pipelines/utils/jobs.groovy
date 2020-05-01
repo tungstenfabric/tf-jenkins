@@ -263,9 +263,9 @@ def _run_job(def job_set, def name, def streams) {
       projectName: job_name,
       selector: specific("${job_number}"),
       target: target_dir)
+    println("JOB ${name}: Collected artifacts:")
+    sh("ls -la ${target_dir} || /bin/true") // folder can be absent
   }
-  println("JOB ${name}: Collected artifacts:")
-  sh("ls -la ${target_dir} || /bin/true") // folder can be absent
   // re-throw error
   if (run_err != null)
     throw run_err
