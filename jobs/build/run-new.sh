@@ -34,6 +34,24 @@ if [[ "$OPENSTACK_VERSION" != 'queens' ]]; then
   openstack_versions+=",$OPENSTACK_VERSION"
 fi
 
+mirror_list=""
+case "x$STAGE" in
+  "xnone")
+    # build dev-env
+    mirror_list="mirror-base.repo mirror-epel.repo mirror-docker.repo"
+    ;;
+  "x")
+    # sync sources
+    mirror_list="mirror-base.repo mirror-epel.repo"
+    ;;
+  "xcompile")
+    mirror_list="mirror-base.repo"
+    ;;
+  "xpackage")
+    mirror_list="mirror-base.repo mirror-google-chrome.repo mirror-openstack.repo mirror-epel.repo mirror-docker.repo"
+    ;;
+esac
+
 res=0
 cat <<EOF | $ssh_cmd $IMAGE_SSH_USER@$instance_ip || res=1
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -68,35 +86,29 @@ cd src/tungstenfabric/tf-dev-env
 # TODO: use in future generic mirror approach
 # Copy yum repos for rhel from host to containers to use local mirrors
 
+mkdir -p ./config/etc/yum.repos.d
 case "${ENVIRONMENT_OS}" in
   "rhel7")
     export BASE_EXTRA_RPMS=''
     export RHEL_HOST_REPOS=''
-    mkdir -p ./config/etc
     cp -r /etc/yum.repos.d ./config/etc/
     # TODO: now no way to pu gpg keys into containers for repo mirrors
     # disable gpgcheck as keys are not available inside the contianers
     find ./config/etc/yum.repos.d/ -name "*.repo" -exec sed -i 's/^gpgcheck.*/gpgcheck=0/g' {} + ;
     cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-google-chrome.repo ./config/etc/yum.repos.d/
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
     ;;
   "centos7")
     # TODO: think how to copy only required repos
     # - host has centos7/epel enabled. but we also need to copy chrome/docker/openstack repos
     # but these repos are not needed for rhel
-    mkdir -p ./config/etc/yum.repos.d
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-base.repo ./config/etc/yum.repos.d/
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-google-chrome.repo ./config/etc/yum.repos.d/
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-openstack.repo ./config/etc/yum.repos.d/
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-epel.repo ./config/etc/yum.repos.d/
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
+    for mirror in $mirror_list ; do
+      cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
+    done
     # copy docker repo to local machine
     sudo cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
-    # use root user for because slave is ubuntu but build machine is centos
-    # and they have different users
-    export DEVENV_USER=root
     ;;
 esac
+cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 
 ./run.sh "$STAGE" "$TARGET"
 EOF
