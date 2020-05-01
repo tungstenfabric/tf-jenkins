@@ -88,6 +88,8 @@ def _resolve_templates(def config_data) {
   for (def item in config_data) {
     if (item.containsKey('template')) {
       def template = item['template']
+      if (!template.containsKey('streams'))
+        template['streams'] = [:]
       if (!template.containsKey('jobs'))
         template['jobs'] = [:]
       if (!template.containsKey('post-jobs'))
@@ -110,6 +112,7 @@ def _resolve_templates(def config_data) {
           continue
         }
         parents_resolved = true
+        item.value['streams'] += templates[parent]['streams']
         item.value['jobs'] += templates[parent]['jobs']
         item.value['post-jobs'] += templates[parent]['post-jobs']
       }
