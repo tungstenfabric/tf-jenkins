@@ -57,7 +57,7 @@
           STAGE: package
           TARGET: test-containers
       freeze:
-        job-name: build
+        job-name: build-new
         stream: build-centos-new
         depends-on:
           - package-test-containers
@@ -66,7 +66,7 @@
           STAGE: freeze
           PUBLISH: frozen
       cleanup-build:
-        job-name: build
+        job-name: build-new
         stream: build-centos-new
         type: stream-post-hook
         depends-on:
