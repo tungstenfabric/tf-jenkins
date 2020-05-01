@@ -357,10 +357,10 @@
     name: tungstenfabric/tf-dev-env
     check:
       templates:
-        - build-rhel
-        - build-centos
+        #- build-rhel
+        #- build-centos
         - build-centos-new
-        - test-unit-ui
+        #- test-unit-ui
         - cleanup
     gate:
       templates:
