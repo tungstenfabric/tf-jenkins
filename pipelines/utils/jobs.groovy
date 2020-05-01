@@ -140,7 +140,6 @@ def _job_params_to_file(def job_set, def name, def streams, def env_file) {
     return
 
   def job_name = job_set[name].get('job-name', name)
-  def stream = 
   def env_text = ""
   def vars = job_set[name]['vars']
   if (job_set[name].containsKey('stream')) {
