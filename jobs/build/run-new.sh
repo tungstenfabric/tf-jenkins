@@ -123,7 +123,7 @@ touch build.env
 if [[ -z "$STAGE" ]]; then
   # default stage meams sync sources. after sync we have to copy this file to publish it for UT
   rsync -a -e "$ssh_cmd" $IMAGE_SSH_USER@$instance_ip:output/unittest_targets.lst $WORKSPACE/unittest_targets.lst || res=1
-  echo "export UNITTEST_TARGETS=$(cat $WORKSPACE/unittest_targets.lst | tr '\n' ',')" >> fetch.env
+  echo "export UNITTEST_TARGETS=$(cat $WORKSPACE/unittest_targets.lst | tr '\n' ',')" >> build.env
 fi
 
 if [[ -n "$PUBLISH" ]]; then
