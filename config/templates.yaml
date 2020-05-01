@@ -16,7 +16,7 @@
         vars:
           # stage 'none' creates worker
           STAGE: none
-          PUBLISH: stabe
+          PUBLISH: stable
       fetch-sources:
         job-name: build-new
         stream: build-centos-new

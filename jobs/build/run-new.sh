@@ -127,13 +127,15 @@ if [[ -z "$STAGE" ]]; then
 fi
 
 if [[ -n "$PUBLISH" ]]; then
-  tag="$PUBLISH$TAG_SUFFIX"
-  if [[ "$tag" == 'stable' ]]; then
+  if [[ "$PUBLISH" == 'stable' ]]; then
     tag="$DEVENV_TAG"
-  elif [[ "$tag" == 'build' ]]; then
+  elif [[ "$PUBLISH" == 'build' ]]; then
     tag="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
-  elif [[ "$tag" == 'frozen' ]]; then
+  elif [[ "$PUBLISH" == 'frozen' ]]; then
     tag="frozen$TAG_SUFFIX"
+  else
+    echo "ERROR: unsupported publish type: $"
+    exit 1
   fi
   cat <<EOF | $ssh_cmd $IMAGE_SSH_USER@$instance_ip || res=1
 set -eo pipefail
