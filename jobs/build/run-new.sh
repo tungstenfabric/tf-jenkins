@@ -88,6 +88,7 @@ case "${ENVIRONMENT_OS}" in
     cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-base.repo ./config/etc/yum.repos.d/
     cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-google-chrome.repo ./config/etc/yum.repos.d/
     cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-openstack.repo ./config/etc/yum.repos.d/
+    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-epel.repo ./config/etc/yum.repos.d/
     cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
     # copy docker repo to local machine
     sudo cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
