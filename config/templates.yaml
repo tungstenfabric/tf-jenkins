@@ -23,7 +23,7 @@
         depends-on:
           - prepare-sandbox
         vars:
-          STAGE:
+          STAGE: ""
           PUBLISH: build
       package-deployers:
         job-name: build-new
