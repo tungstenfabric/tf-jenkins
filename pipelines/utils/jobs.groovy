@@ -1,26 +1,26 @@
 // jobs utils
 
-def run(def job_set, def gate_utils, def gerrit_utils) {
+def run(def jobs, def streams, def gate_utils, def gerrit_utils) {
   if (env.GERRIT_PIPELINE == 'gate')
-    run_gating(jobs, gate_utils, gerrit_utils)
+    run_gating(jobs, streams, gate_utils, gerrit_utils)
   else
-    run_jobs(jobs)
+    run_jobs(jobs, streams)
 }
 
-def run_gating(def job_set, def gate_utils, def gerrit_utils) {
+def run_gating(def jobs, def streams, def gate_utils, def gerrit_utils) {
   while (true) {
     def base_build_no = gate_utils.save_base_builds()
     try {
       if (gate_utils.is_concurrent_project()) {
         // Run immediately if projest can be run concurrently
         println("DEBUG: Concurrent project - run jobs")
-        run_jobs(jobs)
+        run_jobs(jobs, streams)
       } else {
         // Wait for the same project pipeline is finishes
         println("DEBUG: Serial run - wait until finishes previous pipeline")
         gate_utils.wait_until_project_pipeline()
         println("DEBUG: Project in serial list - run jobs")
-        run_jobs(jobs)
+        run_jobs(jobs, streams)
       }
     } catch(Exception err) {
       println("DEBUG: Something fails ${err}")
@@ -64,7 +64,7 @@ def run_gating(def job_set, def gate_utils, def gerrit_utils) {
   }
 }
 
-def run_jobs(def job_set) {
+def run_jobs(def job_set, def streams) {
   def jobs_code = [:]
   job_set.keySet().each { name ->
     job_results[name] = [:]
@@ -75,7 +75,7 @@ def run_jobs(def job_set) {
           def result = _wait_for_dependencies(job_set, name)
           if (result) {
             // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
-            _run_job(job_set, name)
+            _run_job(job_set, name, streams)
           } else {
             job_results[name]['number'] = -1
             job_results[name]['duration'] = 0
@@ -135,13 +135,20 @@ def _wait_for_dependencies(job_set, name) {
   return overall_result
 }
 
-def _job_params_to_file(job_set, name, env_file) {
+def _job_params_to_file(def job_set, def name, def streams, def env_file) {
   if (!job_set.containsKey(name) || !job_set[name].containsKey('vars'))
     return
 
   def job_name = job_set[name].get('job-name', name)
+  def stream = 
   def env_text = ""
   def vars = job_set[name]['vars']
+  if (job_set[name].containsKey('stream')) {
+    stream = streams[job_set[name]['stream']]
+    if (stream.containsKey('vars')) {
+      vars += stream['vars']
+    }
+  }
   def vars_keys = vars.keySet() as List
   // simple for-loop to avoid non-Serializable exception
   for (def i = 0; i < vars_keys.size(); ++i) {
@@ -200,7 +207,7 @@ def _get_job_number_from_exception(err) {
   return null
 }
 
-def _run_job(job_set, name) {
+def _run_job(def job_set, def name, def streams) {
   println("JOB ${name}: entering run_job")
   // final cleanup job is not in config
   def job_name = job_set[name].get('job-name', name)
@@ -211,7 +218,7 @@ def _run_job(job_set, name) {
   def job_number = null
   def run_err = null
   try {
-    _job_params_to_file(job_set, name, vars_env_file)
+    _job_params_to_file(job_set, name, streams, vars_env_file)
     _collect_dependent_env_files(job_set, name, deps_env_file)
     def params = [
       string(name: 'STREAM', value: stream),

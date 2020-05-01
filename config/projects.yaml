@@ -37,11 +37,11 @@
         publish-centos-nightly:
           job-name: publish
           depends-on:
-            - build-centos
+            - cleanup-build-centos
         aquascan-rhel-nightly:
           job-name: aquascan
           depends-on:
-            - build-rhel
+            - cleanup-build-rhel
           vars:
             TAG_SUFFIX: -rhel7
       post-jobs:
@@ -112,17 +112,6 @@
       templates:
         - build-centos
         - cleanup
-    experimental:
-      templates:
-        - ansible-os
-        - cleanup
-      jobs:
-        build-centos:
-          job-name: build
-          depends-on:
-            - fetch-sources-centos
-          vars:
-            CONTRAIL_BUILD_FROM_SOURCE: true
 
 - project:
     name: Juniper/contrail-controller
@@ -357,10 +346,9 @@
     name: tungstenfabric/tf-dev-env
     check:
       templates:
-        #- build-rhel
-        #- build-centos
-        - build-centos-new
-        #- test-unit-ui
+        - build-rhel
+        - build-centos
+        - test-unit-ui
         - cleanup
     gate:
       templates:

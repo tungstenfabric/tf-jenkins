@@ -9,8 +9,6 @@ if (env.GERRIT_PIPELINE == 'nightly') {
   TIMEOUT_HOURS = 6
   CONTAINER_REGISTRY="pnexus.sytes.net:5002"
 }
-// I want to redefine this name to be able to work with this name from jenkins - outside of devenv
-DEVENV_IMAGE_NAME = "tf-developer-sandbox"
 // this is default LTS release for all deployers
 DEFAULT_OPENSTACK_VERSION = "queens"
 
@@ -78,7 +76,7 @@ timestamps {
           pre_build_done = true
         }
 
-        jobs_utils.run(jobs, gate_utils, gerrit_utils)
+        jobs_utils.run(jobs, streams, gate_utils, gerrit_utils)
       } finally {
         println(job_results)
         stage('gerrit vote') {
@@ -91,7 +89,7 @@ timestamps {
         }
         if (pre_build_done)
           try {
-            jobs_utils.run_jobs(post_jobs)
+            jobs_utils.run_jobs(post_jobs, streams)
           } catch (err) {
           }
 
@@ -159,7 +157,7 @@ def evaluate_env() {
       echo "export SITE_MIRROR=${SITE_MIRROR}" >> global.env
       echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
-      echo "export DEVENV_IMAGE_NAME=${DEVENV_IMAGE_NAME}" >> global.env
+      echo "export GERRIT_PIPELINE=${env.GERRIT_PIPELINE}" >> global.env
     """
 
     // store gerrit input if present. evaluate jobs

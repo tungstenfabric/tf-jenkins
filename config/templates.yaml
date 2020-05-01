@@ -6,142 +6,152 @@
       cleanup-pipeline-workers:
 
 - template:
-    name: build-centos-new
+    name: build-centos
     streams:
-      build-centos-new:
+      build-centos:
     jobs:
-      prepare-sandbox:
-        job-name: build-new
-        stream: build-centos-new
+      prepare-sandbox-centos:
+        job-name: build
+        stream: build-centos
         vars:
           # stage 'none' creates worker
           STAGE: none
           PUBLISH: stable
-      fetch-sources:
-        job-name: build-new
-        stream: build-centos-new
+      fetch-sources-centos:
+        job-name: build
+        stream: build-centos
         depends-on:
-          - prepare-sandbox
+          - prepare-sandbox-centos
         vars:
           STAGE: ""
           PUBLISH: build
-      package-deployers:
-        job-name: build-new
-        stream: build-centos-new
+      package-deployers-centos:
+        job-name: build
+        stream: build-centos
         depends-on:
-          - fetch-sources
+          - fetch-sources-centos
         vars:
           STAGE: package
           TARGET: src-containers-only
-      compile:
-        job-name: build-new
-        stream: build-centos-new
+      compile-centos:
+        job-name: build
+        stream: build-centos
         depends-on:
-          - package-deployers
+          - package-deployers-centos
         vars:
           STAGE: compile
-      package-containers:
-        job-name: build-new
-        stream: build-centos-new
+      package-containers-centos:
+        job-name: build
+        stream: build-centos
         depends-on:
-          - compile
+          - compile-centos
         vars:
           STAGE: package
           TARGET: containers
-      package-test-containers:
-        job-name: build-new
-        stream: build-centos-new
+      package-test-containers-centos:
+        job-name: build
+        stream: build-centos
         depends-on:
-          - package-containers
+          - package-containers-centos
         vars:
           STAGE: package
           TARGET: test-containers
-      freeze:
-        job-name: build-new
-        stream: build-centos-new
+      freeze-centos:
+        job-name: build
+        stream: build-centos
         depends-on:
-          - package-test-containers
+          - package-test-containers-centos
         vars:
           PIPLINE_FILTER: "gate,nightly"
           STAGE: freeze
           PUBLISH: frozen
-      cleanup-build:
-        job-name: build-new
-        stream: build-centos-new
+      cleanup-build-centos:
+        job-name: build
+        stream: build-centos
         type: stream-post-hook
         depends-on:
-          - freeze
+          - freeze-centos
         vars:
           # it doesn't call devenv - it removes worker completly
           STAGE: cleanup
-      
-
-
-
-- template:
-    name: fetch-sources-centos
-    jobs:
-      fetch-sources-centos:
-        job-name: fetch-sources
-
-- template:
-    name: build-centos
-    parents:
-      - fetch-sources-centos
-    jobs:
-      build-centos:
-        job-name: build
-        depends-on:
-          - fetch-sources-centos
-
-- template:
-    name: fetch-sources-rhel
-    jobs:
-      fetch-sources-rhel:
-        job-name: fetch-sources
-        vars:
-          ENVIRONMENT_OS: rhel7
-          TAG_SUFFIX: -rhel7
 
 - template:
     name: build-rhel
-    parents:
-      - fetch-sources-rhel
-    jobs:
+    streams:
       build-rhel:
-        job-name: build
-        depends-on:
-          - fetch-sources-rhel
         vars:
           ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: -rhel7
-
-- template:
-    name: fetch-sources-r1912
     jobs:
-      fetch-sources-r1912:
-        job-name: fetch-sources
-        vars:
-          GERRIT_BRANCH: R1912
-          TAG_SUFFIX: -r1912
-
-- template:
-    name: build-r1912
-    parents:
-      - fetch-sources-r1912
-    jobs:
-      build-r1912:
+      prepare-sandbox-rhel:
         job-name: build
-        depends-on:
-          - fetch-sources-r1912
+        stream: build-rhel
         vars:
-          GERRIT_BRANCH: R1912
-          TAG_SUFFIX: -r1912
+          # stage 'none' creates worker
+          STAGE: none
+          PUBLISH: stable
+      fetch-sources-rhel:
+        job-name: build
+        stream: build-rhel
+        depends-on:
+          - prepare-sandbox-rhel
+        vars:
+          STAGE: ""
+          PUBLISH: build
+      package-deployers-rhel:
+        job-name: build
+        stream: build-rhel
+        depends-on:
+          - fetch-sources-rhel
+        vars:
+          STAGE: package
+          TARGET: src-containers-only
+      compile-rhel:
+        job-name: build
+        stream: build-rhel
+        depends-on:
+          - package-deployers-rhel
+        vars:
+          STAGE: compile
+      package-containers-rhel:
+        job-name: build
+        stream: build-rhel
+        depends-on:
+          - compile-rhel
+        vars:
+          STAGE: package
+          TARGET: containers
+      package-test-containers-rhel:
+        job-name: build
+        stream: build-rhel
+        depends-on:
+          - package-containers-rhel
+        vars:
+          STAGE: package
+          TARGET: test-containers
+      freeze-rhel:
+        job-name: build
+        stream: build-rhel
+        depends-on:
+          - package-test-containers-rhel
+        vars:
+          PIPLINE_FILTER: "gate,nightly"
+          STAGE: freeze
+          PUBLISH: frozen
+      cleanup-build-rhel:
+        job-name: build
+        stream: build-rhel
+        type: stream-post-hook
+        depends-on:
+          - freeze-rhel
+        vars:
+          # it doesn't call devenv - it removes worker completly
+          STAGE: cleanup
 
 - template:
     name: test-unit
     parents:
-      - fetch-sources-centos
+      - build-centos
     streams:
       test-unit:
     jobs:
@@ -193,7 +203,7 @@
 - template:
     name: test-unit-ui
     parents:
-      - fetch-sources-centos
+      - build-centos
     jobs:
       test-unit-ui:
         job-name: test-unit
@@ -215,14 +225,13 @@
       deploy-tf-k8s-manifests:
         stream: k8s-manifests
         depends-on:
-          - build-centos
+          - package-containers-centos
           - deploy-platform-k8s-manifests
-        vars:
-          DEBUG: true
       test-sanity-k8s-manifests:
         job-name: test-sanity
         stream: k8s-manifests
         depends-on:
+          - package-test-containers-centos
           - deploy-tf-k8s-manifests
       test-smoke-k8s-manifests:
         job-name: test-smoke
@@ -252,16 +261,18 @@
       deploy-platform-ansible-k8s:
         stream: ansible-k8s
         depends-on:
-          # temporary solution while we don't have container with ansible-deployer before build
-          - build-centos
+          # temporary solution
+          - compile-centos
       deploy-tf-ansible-k8s:
         stream: ansible-k8s
         depends-on:
+          - package-containers-centos
           - deploy-platform-ansible-k8s
       test-sanity-ansible-k8s:
         job-name: test-sanity
         stream: ansible-k8s
         depends-on:
+          - package-test-containers-centos
           - deploy-tf-ansible-k8s
       collect-logs-and-cleanup-ansible-k8s:
         job-name: collect-logs-and-cleanup
@@ -282,16 +293,18 @@
       deploy-platform-ansible-os:
         stream: ansible-os
         depends-on:
-          # temporary solution while we don't have container with ansible-deployer before build
-          - build-centos
+          # temporary solution
+          - compile-centos
       deploy-tf-ansible-os:
         stream: ansible-os
         depends-on:
+          - package-containers-centos
           - deploy-platform-ansible-os
       test-sanity-ansible-os:
         job-name: test-sanity
         stream: ansible-os
         depends-on:
+          - package-test-containers-centos
           - deploy-tf-ansible-os
       collect-logs-and-cleanup-ansible-os:
         job-name: collect-logs-and-cleanup
@@ -314,12 +327,13 @@
       deploy-tf-helm-k8s:
         stream: helm-k8s
         depends-on:
-          - build-centos
+          - package-containers-centos
           - deploy-platform-helm-k8s
       test-sanity-helm-k8s:
         job-name: test-sanity
         stream: helm-k8s
         depends-on:
+          - package-test-containers-centos
           - deploy-tf-helm-k8s
       collect-logs-and-cleanup-helm-k8s:
         job-name: collect-logs-and-cleanup
@@ -342,12 +356,13 @@
       deploy-tf-helm-os:
         stream: helm-os
         depends-on:
-          - build-centos
+          - package-containers-centos
           - deploy-platform-helm-os
       test-sanity-helm-os:
         job-name: test-sanity
         stream: helm-os
         depends-on:
+          - package-test-containers-centos
           - deploy-tf-helm-os
       collect-logs-and-cleanup-helm-os:
         job-name: collect-logs-and-cleanup
@@ -370,12 +385,13 @@
       deploy-tf-juju-k8s:
         stream: juju-k8s
         depends-on:
-          - build-centos
+          - package-containers-centos
           - deploy-platform-juju-k8s
       test-sanity-juju-k8s:
         job-name: test-sanity
         stream: juju-k8s
         depends-on:
+          - package-test-containers-centos
           - deploy-tf-juju-k8s
       collect-logs-and-cleanup-juju-k8s:
         job-name: collect-logs-and-cleanup
@@ -398,12 +414,13 @@
       deploy-tf-juju-os:
         stream: juju-os
         depends-on:
-          - build-centos
+          - package-containers-centos
           - deploy-platform-juju-os
       test-sanity-juju-os:
         job-name: test-sanity
         stream: juju-os
         depends-on:
+          - package-test-containers-centos
           - deploy-tf-juju-os
       collect-logs-and-cleanup-juju-os:
         job-name: collect-logs-and-cleanup
@@ -428,7 +445,7 @@
       deploy-tf-juju-maas-os:
         stream: juju-maas-os
         depends-on:
-          - build-centos
+          - package-containers-centos
           - deploy-platform-juju-maas-os
         vars:
           CLOUD: maas
@@ -436,6 +453,7 @@
         job-name: test-sanity
         stream: juju-maas-os
         depends-on:
+          - package-test-containers-centos
           - deploy-tf-juju-maas-os
       collect-logs-and-cleanup-juju-maas-os:
         job-name: collect-logs-and-cleanup
@@ -461,7 +479,7 @@
       deploy-tf-rhosp:
         stream: rhosp
         depends-on:
-          - build-rhel
+          - package-containers-rhel
           - deploy-platform-rhosp
         vars:
           TAG_SUFFIX: -rhel7
@@ -469,6 +487,7 @@
         job-name: test-sanity
         stream: rhosp
         depends-on:
+          - package-test-containers-rhel
           - deploy-tf-rhosp
         vars:
           TAG_SUFFIX: -rhel7
@@ -501,7 +520,7 @@
       deploy-tf-openshift:
         stream: openshift
         depends-on:
-          - build-rhel
+          - package-containers-rhel
           - deploy-platform-openshift
         vars:
           TAG_SUFFIX: -rhel7
@@ -510,6 +529,7 @@
         job-name: test-sanity
         stream: openshift
         depends-on:
+          - package-test-containers-rhel
           - deploy-tf-openshift
         vars:
           TAG_SUFFIX: -rhel7

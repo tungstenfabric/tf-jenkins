@@ -39,7 +39,6 @@ export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
-export DEVENV_IMAGE_NAME=$DEVENV_IMAGE_NAME
 # devenftag is passed from parent fetch-sources job
 export DEVENV_TAG=$DEVENV_TAG
 export DEVENV_PUSH_TAG=$DEVENV_TAG$DEVENV_PUSH_TAG
