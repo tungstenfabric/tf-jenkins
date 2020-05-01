@@ -152,7 +152,7 @@ EOF
 
   # save DEVENV_TAG that was pushed by this job
   # chidlren jobs may have own TAG_SUFFIX and they shouldn't rely on it
-  echo "export DEVENV_TAG=$tag" > build.env
+  echo "export DEVENV_TAG=$tag" >> build.env
 fi
 
 echo "INFO: Build finished successfully"
