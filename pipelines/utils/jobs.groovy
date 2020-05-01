@@ -167,7 +167,10 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
       def files = findFiles(glob: "${job_name}-${job_rnd}/*.env")
       for (def j = 0; j < files.size(); ++j) {
         data = readFile(files[j].getPath())
-        raw_data.addAll(data.split('\n'))
+        if (files[j].getName().startsWith("deps."))
+          raw_data.addAll(0, data.split('\n'))
+        else
+          raw_data.addAll(data.split('\n'))
       }
     }
   }
