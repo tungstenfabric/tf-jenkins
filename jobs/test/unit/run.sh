@@ -60,9 +60,6 @@ if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-openstack.repo ./config/etc/yum.repos.d/
   # copy docker repo to local machine
   sudo cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
-  # use root user for because slave is ubuntu but build machine is centos
-  # and they have different users
-  export DEVENV_USER=root
 fi
 ./run.sh $@
 EOF
