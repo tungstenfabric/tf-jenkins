@@ -7,8 +7,6 @@
 
 - template:
     name: build-centos
-    streams:
-      build-centos:
     jobs:
       prepare-sandbox-centos:
         job-name: build
@@ -152,8 +150,6 @@
     name: test-unit
     parents:
       - build-centos
-    streams:
-      test-unit:
     jobs:
       test-unit-compile:
         job-name: test-unit
@@ -255,8 +251,6 @@
     name: ansible-k8s
     parents:
       - build-centos
-    streams:
-      ansible-k8s:
     jobs:
       deploy-platform-ansible-k8s:
         stream: ansible-k8s
@@ -287,8 +281,6 @@
     name: ansible-os
     parents:
       - build-centos
-    streams:
-      ansible-os:
     jobs:
       deploy-platform-ansible-os:
         stream: ansible-os
@@ -319,8 +311,6 @@
     name: helm-k8s
     parents:
       - build-centos
-    streams:
-      helm-k8s:
     jobs:
       deploy-platform-helm-k8s:
         stream: helm-k8s
@@ -348,8 +338,6 @@
     name: helm-os
     parents:
       - build-centos
-    streams:
-      helm-os:
     jobs:
       deploy-platform-helm-os:
         stream: helm-os
@@ -377,8 +365,6 @@
     name: juju-k8s
     parents:
       - build-centos
-    streams:
-      juju-k8s:
     jobs:
       deploy-platform-juju-k8s:
         stream: juju-k8s
@@ -406,8 +392,6 @@
     name: juju-os
     parents:
       - build-centos
-    streams:
-      juju-os:
     jobs:
       deploy-platform-juju-os:
         stream: juju-os
@@ -435,8 +419,6 @@
     name: juju-maas-os
     parents:
       - build-centos
-    streams:
-      juju-maas-os:
     jobs:
       deploy-platform-juju-maas-os:
         stream: juju-maas-os
@@ -468,8 +450,6 @@
     name: rhosp
     parents:
       - build-rhel
-    streams:
-      rhosp:
     jobs:
       deploy-platform-rhosp:
         stream: rhosp
@@ -506,8 +486,6 @@
     name: openshift
     parents:
       - build-rhel
-    streams:
-      openshift:
     jobs:
       deploy-platform-openshift:
         stream: openshift

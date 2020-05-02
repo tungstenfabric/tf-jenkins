@@ -248,8 +248,6 @@
       streams:
         juju-k8s:
           voting: false
-        juju-maas-os:
-          voting: false
       templates:
         - juju-k8s
         - juju-os
