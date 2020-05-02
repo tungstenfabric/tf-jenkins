@@ -22,8 +22,6 @@
       - string:
           name: PIPELINE_NUMBER
     wrappers:
-      - timeout:
-          timeout: 120
       - workspace-cleanup:
           disable-deferred-wipeout: true
       - timestamps
