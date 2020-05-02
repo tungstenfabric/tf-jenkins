@@ -52,7 +52,8 @@ case "x$STAGE" in
     mirror_list="mirror-base.repo"
     ;;
   "xpackage")
-    mirror_list="mirror-base.repo mirror-google-chrome.repo mirror-openstack.repo mirror-epel.repo mirror-docker.repo"
+    # epel must not be there - it cause incorrect installs and fails at runtime
+    mirror_list="mirror-base.repo mirror-google-chrome.repo mirror-openstack.repo mirror-docker.repo"
     ;;
 esac
 
