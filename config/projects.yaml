@@ -37,11 +37,11 @@
         publish-centos-nightly:
           job-name: publish
           depends-on:
-            - cleanup-build-centos
+            - package-test-containers-centos
         aquascan-rhel-nightly:
           job-name: aquascan
           depends-on:
-            - cleanup-build-rhel
+            - package-test-containers-rhel
           vars:
             TAG_SUFFIX: -rhel7
       post-jobs:
