@@ -81,9 +81,8 @@ export OPENSTACK_VERSIONS=$openstack_versions
 export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}
 export CONTRAIL_KEEP_LOG_FILES=true
 
-# for the first stage prepare-stable
-export BUILD_DEV_ENV=1
-export BUILD_DEV_ENV_ON_PULL_FAIL=0
+export BUILD_DEV_ENV=0
+export BUILD_DEV_ENV_ON_PULL_FAIL=1
 
 cd src/tungstenfabric/tf-dev-env
 
