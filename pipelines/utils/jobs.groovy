@@ -277,8 +277,8 @@ def _save_job_output(name, job_name, stream, job_number) {
     ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     sh """#!/bin/bash
       curl -s ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > output-${name}.log
-      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}/artefacts/${stream}/"
-      rsync -a -e "${ssh_cmd}" output-${name}.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/artefacts/${stream}/
+      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}/${stream}/"
+      rsync -a -e "${ssh_cmd}" output-${name}.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/${stream}/
     """
   }
 }

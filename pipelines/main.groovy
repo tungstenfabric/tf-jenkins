@@ -199,8 +199,8 @@ def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
     ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     sh """#!/bin/bash
       curl -s ${BUILD_URL}consoleText > pipelinelog.log
-      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}/artefacts"
-      rsync -a -e "${ssh_cmd}" pipelinelog.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/artefacts/
+      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
+      rsync -a -e "${ssh_cmd}" pipelinelog.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/
     """
   }
   echo "Output logs saved at ${logs_url}/pipelinelog.txt"
