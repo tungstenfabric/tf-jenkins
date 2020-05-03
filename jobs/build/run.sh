@@ -42,18 +42,30 @@ mirror_list=""
 case "x$STAGE" in
   "xnone")
     # build dev-env
-    mirror_list="mirror-base.repo mirror-epel.repo mirror-docker.repo mirror-google-chrome.repo"
+    if [[ ${ENVIRONMENT_OS} == 'rhel7' ]]; then
+      mirror_list="mirror-epel.repo mirror-google-chrome.repo"
+    elif [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
+      mirror_list="mirror-base.repo mirror-epel.repo mirror-docker.repo mirror-google-chrome.repo"
+    fi
     ;;
   "x")
     # sync sources
-    mirror_list="mirror-base.repo mirror-epel.repo"
+    if [[ ${ENVIRONMENT_OS} == 'rhel7' ]]; then
+      mirror_list="mirror-epel.repo"
+    elif [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
+      mirror_list="mirror-base.repo mirror-epel.repo"
+    fi
     ;;
   "xcompile")
-    mirror_list="mirror-base.repo"
+    if [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
+      mirror_list="mirror-base.repo"
+    fi
     ;;
   "xpackage")
     # epel must not be there - it cause incorrect installs and fails at runtime
-    mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo"
+    if [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
+      mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo"
+    fi
     ;;
 esac
 
@@ -94,22 +106,18 @@ case "${ENVIRONMENT_OS}" in
   "rhel7")
     export RHEL_HOST_REPOS=''
     cp -r /etc/yum.repos.d ./config/etc/
-    # TODO: now no way to pu gpg keys into containers for repo mirrors
+    # TODO: now no way to put gpg keys into containers for repo mirrors
     # disable gpgcheck as keys are not available inside the contianers
     find ./config/etc/yum.repos.d/ -name "*.repo" -exec sed -i 's/^gpgcheck.*/gpgcheck=0/g' {} + ;
-    cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-google-chrome.repo ./config/etc/yum.repos.d/
     ;;
   "centos7")
-    # TODO: think how to copy only required repos
-    # - host has centos7/epel enabled. but we also need to copy chrome/docker/openstack repos
-    # but these repos are not needed for rhel
-    for mirror in $mirror_list ; do
-      cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
-    done
     # copy docker repo to local machine
     sudo cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
     ;;
 esac
+for mirror in $mirror_list ; do
+  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
+done
 cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 
 ./run.sh "$STAGE" "$TARGET"
