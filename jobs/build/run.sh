@@ -42,7 +42,7 @@ mirror_list=""
 case "x$STAGE" in
   "xnone")
     # build dev-env
-    mirror_list="mirror-base.repo mirror-epel.repo mirror-docker.repo"
+    mirror_list="mirror-base.repo mirror-epel.repo mirror-docker.repo mirror-google-chrome.repo"
     ;;
   "x")
     # sync sources
@@ -53,7 +53,7 @@ case "x$STAGE" in
     ;;
   "xpackage")
     # epel must not be there - it cause incorrect installs and fails at runtime
-    mirror_list="mirror-base.repo mirror-google-chrome.repo mirror-openstack.repo mirror-docker.repo"
+    mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo"
     ;;
 esac
 
