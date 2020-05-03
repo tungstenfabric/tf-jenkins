@@ -347,6 +347,7 @@
         - build-rhel
         - build-centos
         - test-unit-ui
+        - ansible-k8s
         - cleanup
     gate:
       templates:
