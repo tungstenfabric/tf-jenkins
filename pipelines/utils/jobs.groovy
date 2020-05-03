@@ -265,10 +265,22 @@ def _run_job(def job_set, def name, def streams) {
       target: target_dir)
     println("JOB ${name}: Collected artifacts:")
     sh("ls -la ${target_dir} || /bin/true") // folder can be absent
+    _save_job_output(name, job_name, stream, job_number)
   }
   // re-throw error
   if (run_err != null)
     throw run_err
+}
+
+def _save_job_output(name, job_name, stream, job_number) {
+  withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
+    ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    sh """#!/bin/bash
+      curl -s ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > output-${name}.log
+      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}/artefacts/${stream}/"
+      rsync -a -e "${ssh_cmd}" output-${name}.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/artefacts/${stream}/
+    """
+  }
 }
 
 return this
