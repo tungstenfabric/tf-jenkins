@@ -88,6 +88,7 @@ cd src/tungstenfabric/tf-dev-env
 # Copy yum repos for rhel from host to containers to use local mirrors
 
 export BASE_EXTRA_RPMS=''
+rm -rf ./config/etc
 mkdir -p ./config/etc/yum.repos.d
 case "${ENVIRONMENT_OS}" in
   "rhel7")
