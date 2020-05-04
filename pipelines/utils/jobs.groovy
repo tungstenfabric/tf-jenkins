@@ -107,8 +107,8 @@ def _wait_for_dependencies(job_set, name) {
   def overall_result = true
   waitUntil(initialRecurrencePeriod: 15000) {
     def result_map = [:]
-    for (def i = 0; i < deps.size(); ++i) {
-      dep_name = deps[i]
+    for (def item in deps) {
+      def dep_name = item instanceof String ? item : item.keySet().toArray()[0]
       result_map[dep_name] = job_results.containsKey(dep_name) ? job_results[dep_name].get('result') : null
     }
     println("JOB ${name}: waiting for dependecy ${result_map}")
@@ -163,20 +163,27 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
   def deps = job_set[name].get('depends-on')
   if (deps == null || deps.size() == 0)
     return
+  def stream = job_set[name].get('stream')
   println("JOB ${name}: deps: ${deps}")
   def raw_data = []
-  // simple for-loop to avoid non-Serializable exception
-  for (def i = 0; i < deps.size(); ++i) {
-    def job_name = job_set[deps[i]].get('job-name', deps[i])
-    def job_rnd = job_results[deps[i]]['job-rnd']
+  for (def item in deps) {
+    def dep_name = item instanceof String ? item : item.keySet().toArray()[0]
+    def dep_data = item instanceof String ? [:] : item[dep_name]
+    def dep_stream = job_set[dep_name].get('stream')
+    def dep_job_name = job_set[dep_name].get('job-name', dep_name)
+    def dep_job_rnd = job_results[dep_name]['job-rnd']
     dir("${WORKSPACE}") {
-      def files = findFiles(glob: "${job_name}-${job_rnd}/*.env")
+      def files = findFiles(glob: "${dep_job_name}-${dep_job_rnd}/*.env")
       for (def j = 0; j < files.size(); ++j) {
-        data = readFile(files[j].getPath())
+        data = readFile(files[j].getPath()).split('\n')
+        if (stream == null || dep_stream == null || stream != dep_stream) {
+          keys = dep_data.get('inherit-keys', [])
+          data = data.findAll() { it.split('=')[0] in keys }
+        }
         if (files[j].getName().startsWith("deps."))
-          raw_data.addAll(0, data.split('\n'))
+          raw_data.addAll(0, data)
         else
-          raw_data.addAll(data.split('\n'))
+          raw_data.addAll(data)
       }
     }
   }

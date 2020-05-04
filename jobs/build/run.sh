@@ -144,7 +144,7 @@ if [[ -n "$PUBLISH" ]]; then
   elif [[ "$PUBLISH" == 'frozen' ]]; then
     tag="frozen$TAG_SUFFIX"
   else
-    echo "ERROR: unsupported publish type: $"
+    echo "ERROR: unsupported publish type: $PUBLISH"
     exit 1
   fi
   cat <<EOF | $ssh_cmd $IMAGE_SSH_USER@$instance_ip || res=1

@@ -1,5 +1,19 @@
 ---
 
+# job keys:
+#   job-name - name of real job in jjb(jenkins) to execute. to be able to have several
+#              jobs with different parameters we have to to define job with unique name
+#              and define real job name as a parameter.
+#   stream - identifier to group several jobs as one. it influences to logs colelcting,
+#            cleanup jobs (as a stream post hook), inheritance of env vars
+#   vars - map of a key:value elements to use them as env vars in the job
+#   depends-on - list of jobs that should be finished successfully to run this job.
+#                may have inherit-keys list of keys of env vars that can be inherited
+#                from non-self stream. by default inheritance of env vars is prohibited
+#                for different streams.
+#   type - type of the job. possible values: stream-post-hook
+
+
 - template:
     name: cleanup
     post-jobs:
@@ -155,7 +169,10 @@
         job-name: test-unit
         stream: test-unit
         depends-on:
-          - fetch-sources-centos
+          - fetch-sources-centos:
+              inherit-keys:
+                - DEVENV_TAG
+                - UNITTEST_TARGETS
         vars:
           STAGE: compile
           TARGET: test
@@ -204,7 +221,9 @@
       test-unit-ui:
         job-name: test-unit
         depends-on:
-          - fetch-sources-centos
+          - fetch-sources-centos:
+              inherit-keys:
+                - DEVENV_TAG
         vars:
           TARGET: ui
 

@@ -76,7 +76,8 @@ def _check_dependencies(def jobs) {
     def deps = item.value.get('depends-on')
     if (deps == null || deps.size() == 0)
       continue
-    for (def dep_name in deps) {
+    for (def item in deps) {
+      def dep_name = item instanceof String ? item : item.keySet().toArray()[0]
       if (!jobs.containsKey(dep_name))
         throw new Exception("Item ${item.key} has unknown dependency ${dep_name}")
     }
