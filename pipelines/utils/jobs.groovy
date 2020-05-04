@@ -178,7 +178,7 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
         data = readFile(files[j].getPath()).split('\n')
         if (stream == null || dep_stream == null || stream != dep_stream) {
           keys = dep_data.get('inherit-keys', [])
-          data = data.findAll() { it.split('=')[0] in keys }
+          data = data.findAll() { it.split('=')[0].split(' ')[-1] in keys }
         }
         if (files[j].getName().startsWith("deps."))
           raw_data.addAll(0, data)
