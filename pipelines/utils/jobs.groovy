@@ -107,8 +107,8 @@ def _wait_for_dependencies(job_set, name) {
   def overall_result = true
   waitUntil(initialRecurrencePeriod: 15000) {
     def result_map = [:]
-    for (def item in deps) {
-      def dep_name = item instanceof String ? item : item.keySet().toArray()[0]
+    for (def dep in deps) {
+      def dep_name = dep instanceof String ? dep : dep.keySet().toArray()[0]
       result_map[dep_name] = job_results.containsKey(dep_name) ? job_results[dep_name].get('result') : null
     }
     println("JOB ${name}: waiting for dependecy ${result_map}")
@@ -166,9 +166,9 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
   def stream = job_set[name].get('stream')
   println("JOB ${name}: deps: ${deps}")
   def raw_data = []
-  for (def item in deps) {
-    def dep_name = item instanceof String ? item : item.keySet().toArray()[0]
-    def dep_data = item instanceof String ? [:] : item[dep_name]
+  for (def dep in deps) {
+    def dep_name = dep instanceof String ? dep : dep.keySet().toArray()[0]
+    def dep_data = dep instanceof String ? [:] : dep[dep_name]
     def dep_stream = job_set[dep_name].get('stream')
     def dep_job_name = job_set[dep_name].get('job-name', dep_name)
     def dep_job_rnd = job_results[dep_name]['job-rnd']
