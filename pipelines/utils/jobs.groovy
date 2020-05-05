@@ -167,32 +167,42 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
   println("JOB ${name}: deps: ${deps}")
   def raw_data = []
   for (def dep in deps) {
+    println("JOB ${name}: DEBUG: _collect_dependent_env_files 1")
     def dep_name = dep instanceof String ? dep : dep.keySet().toArray()[0]
     def dep_data = dep instanceof String ? [:] : dep[dep_name]
     def dep_stream = job_set[dep_name].get('stream')
     def dep_job_name = job_set[dep_name].get('job-name', dep_name)
     def dep_job_rnd = job_results[dep_name]['job-rnd']
+    println("JOB ${name}: DEBUG: _collect_dependent_env_files 2")
     dir("${WORKSPACE}") {
+      println("JOB ${name}: DEBUG: _collect_dependent_env_files 3")
       def files = findFiles(glob: "${dep_job_name}-${dep_job_rnd}/*.env")
+      println("JOB ${name}: DEBUG: _collect_dependent_env_files 4")
       for (def j = 0; j < files.size(); ++j) {
+        println("JOB ${name}: DEBUG: _collect_dependent_env_files 5")
         data = readFile(files[j].getPath()).split('\n')
+        println("JOB ${name}: DEBUG: _collect_dependent_env_files 6")
         if (stream == null || dep_stream == null || stream != dep_stream) {
           keys = dep_data.get('inherit-keys', [])
           data = data.findAll() { it.split('=')[0].split(' ')[-1] in keys }
         }
+        println("JOB ${name}: DEBUG: _collect_dependent_env_files 7")
         if (files[j].getName().startsWith("deps."))
           raw_data.addAll(0, data)
         else
           raw_data.addAll(data)
+        println("JOB ${name}: DEBUG: _collect_dependent_env_files 8")
       }
     }
   }
+  println("JOB ${name}: DEBUG: _collect_dependent_env_files 9")
   def lines = []
   for (def i = 0; i < raw_data.size(); ++i) {
     def line = raw_data[i]
     if (line.size() > 0 && !lines.contains(line))
       lines += line
   }
+  println("JOB ${name}: DEBUG: _collect_dependent_env_files 10")
   if (lines.size() == 0) {
     println("JOB ${name}: content of deps file is empty")
     return
