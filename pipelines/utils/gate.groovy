@@ -18,10 +18,9 @@ def save_base_builds() {
 
   def current_build_id = env.BUILD_ID.toInteger()
   def base_build_id = null
-  def ids = build_map.keySet().sort()
-  for (i=ids.size()-1; i>=0; --i) {
-    def build_id = ids[i]
-    def build_data = build_map[id]
+  for (item in build_map) {
+    def build_id = item.key
+    def build_data = item.value
     println("DEBUG: Parse build ${build_id}")
     // Skip current or later builds
     if (!_is_branch_fit(build_data['branch']) || build_id >= current_build_id) {
@@ -256,12 +255,17 @@ def wait_until_project_pipeline() {
   for (item in build_map) {
     def build_id = item.key
     def build_data = item.value
-    if (build_data['project'] == env.GERRIT_PROJECT && !build_data['status'] && build_id < env.BUILD_ID.toInteger()) {
-      println("DEBUG: waiting for build to finish - ${build_id} ${build_data}")
+    if (build_data['project'] != env.GERRIT_PROJECT || build_id >= env.BUILD_ID.toInteger())
+      continue
+
+    println("DEBUG: waiting for build to finish - ${build_id} ${build_data}")
+    if (build_data['status'] == null) {
       waitUntil(initialRecurrencePeriod: 15000) {
         return get_build_result_by_id(build_id) != null
       }
     }
+    // build has reversed order - if latest build finished then it's enough
+    break
   }
 }
 
