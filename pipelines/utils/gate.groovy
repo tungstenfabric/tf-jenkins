@@ -19,7 +19,7 @@ def save_base_builds() {
   def current_build_id = env.BUILD_ID.toInteger()
   def base_build_id = null
   def ids = build_map.keySet().sort()
-  for (i=ids.size()-1; i>=0; --i)
+  for (i=ids.size()-1; i>=0; --i) {
     def build_id = ids[i]
     def build_data = build_map[id]
     println("DEBUG: Parse build ${build_id}")
