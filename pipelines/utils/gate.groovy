@@ -2,7 +2,9 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 // TODO Fill up list of projects that can't be run in concurrent mode
-SERIAL_PROJECTS = ['Juniper/contrail-kolla-ansible']
+SERIAL_PROJECTS = [
+  'Juniper/contrail-kolla-ansible',
+]
 
 // Function find base build fits to be the base build
 // get its base builds list if any, and then iterate over the list
@@ -11,30 +13,39 @@ SERIAL_PROJECTS = ['Juniper/contrail-kolla-ansible']
 // return false if base build not found or build_id if foundпше
 // save BASE_BUILD_ID_LIST sting including base builds chain like "23,22,20"
 def save_base_builds() {
-  def builds_map = _prepare_builds_map()
+  def build_map = _prepare_build_map()
+  println("DEBUG: build_map = ${build_map}")
 
   def current_build_id = env.BUILD_ID.toInteger()
   def base_build_id = null
-  for (item in builds_map) {
-    build_id = item.key
-    build_map = item.value
+  def ids = build_map.keySet().sort()
+  for (i=ids.size()-1; i>=0; --i)
+    def build_id = ids[i]
+    def build_data = build_map[id]
+    println("DEBUG: Parse build ${build_id}")
     // Skip current or later builds
-    if (!_is_branch_fit(build_map['branch']) || build_id >= current_build_id)
+    if (!_is_branch_fit(build_data['branch']) || build_id >= current_build_id) {
+      println("DEBUG: build skipped")
       continue
+    }
 
-    if (build_map['status']) {
+    if (build_data['status']) {
       // build has been finished
       if (check_build_is_not_failed(build_id)) {
         // We do not need base build!
+        println("DEBUG: previous build is finished. Stop searching. Base build was not found. Just run.")
         break
       }
       // else just skip the build
+      println("DEBUG: build skipped")
     } else {
       // build is running
       // Wait for build chain will be prepared
+      println("DEBUG: calculate chain")
       def base_chain = _wait_for_chain_calculated(build_id)
       if (base_chain == null) {
         // build fails before can calculate BASE_BUILD_ID_LIST
+        println("DEBUG: calculation failed. build skipped")
         continue
       }
       if (base_chain.length() == 0) {
@@ -44,11 +55,14 @@ def save_base_builds() {
         // base_chain is not empty string
         if (!_check_base_chain_is_not_failed(base_chain)) {
           // Some of base builds fails
+          println("DEBUG: Something failed. build skipped")
           continue
         }
         base_chain = "${build_id}," + base_chain
       }
+      println("DEBUG: base_chain = ${base_chain}")
       // We found base build!
+      println("DEBUG: base build found")
       base_build_id = build_id
       break
     }
@@ -62,7 +76,7 @@ def save_base_builds() {
     // Add base patchset info to the build
     _save_pachset_info(base_build_id)
   } else {
-    // If a base build not found save BASE_BUILD_ID_LIST anyway, because it needs
+    // If a base build not found save BASE_BUILD_ID_LIST anyway, because it requires
     // to detect if process of the base build search is finished
     sh """#!/bin/bash -e
       echo "export BASE_BUILD_ID_LIST=" >> global.env
@@ -165,25 +179,23 @@ def _check_base_chain_is_not_failed(base_chain) {
 
 // Function return ordered map with builds with data needed for find
 // and process base build
-def _prepare_builds_map() {
-  def gate_pipeline = Jenkins.getInstanceOrNull().getItem(env.JOB_NAME)
-  def builds_map = [:]
-
-  for (def build in gate_pipeline.builds) {
+def _prepare_build_map() {
+  def build_map = [:]
+  for (def build in Jenkins.getInstanceOrNull().getItem(env.JOB_NAME).builds) {
     if (!build || !build.getId())
       continue
     def build_id = build.getId().toInteger()
     def result = build.getResult()
     def build_env = build.getEnvironment()
 
-    builds_map[build_id] = [
+    build_map[build_id] = [
       'status' : result ? result.toString() : null ,
       'branch' : build_env['GERRIT_BRANCH'],
       'project' : build_env['GERRIT_PROJECT']
     ]
   }
 
-  return builds_map
+  return build_map
 }
 
 // function return true if project can be run concurrently -
@@ -240,19 +252,15 @@ def _is_build_successed(def build) {
 // Check if pipeline with the same GERRIT_PROJECT is running
 // and if it is then wait until finishes
 def wait_until_project_pipeline() {
-  def builds_map = _prepare_builds_map()
-  def same_project_build = null
-  builds_map.any { build_id, build_map ->
-    if (build_map['project'] == env.GERRIT_PROJECT && !build_map['status'] &&
-        build_id < env.BUILD_ID.toInteger()) {
-      same_project_build = build_id
-      return true
-    }
-  }
-
-  if (same_project_build) {
-    waitUntil {
-      return get_build_result_by_id(same_project_build) != null
+  def build_map = _prepare_build_map()
+  for (item in build_map) {
+    def build_id = item.key
+    def build_data = item.value
+    if (build_data['project'] == env.GERRIT_PROJECT && !build_data['status'] && build_id < env.BUILD_ID.toInteger()) {
+      println("DEBUG: waiting for build to finish - ${build_id} ${build_data}")
+      waitUntil(initialRecurrencePeriod: 15000) {
+        return get_build_result_by_id(build_id) != null
+      }
     }
   }
 }
@@ -264,7 +272,7 @@ def wait_until_project_pipeline() {
 def _save_pachset_info(Integer base_build_id) {
   if (!base_build_id || !base_build_id.isInteger())
     return
-  def res_json = get_result_patchset(base_build_id)
+  def res_json = _get_result_patchset(base_build_id)
   if (!res_json)
     return false
   writeFile(file: 'patchsets-info.json', text: res_json)
@@ -272,7 +280,7 @@ def _save_pachset_info(Integer base_build_id) {
 }
 
 // all JSON calsulate to separate function
-def get_result_patchset(Integer base_build_id) {
+def _get_result_patchset(Integer base_build_id) {
   def new_patchset_info_text = readFile("patchsets-info.json")
   def sl = new JsonSlurper()
   def new_patchset_info = sl.parseText(new_patchset_info_text)

@@ -9,7 +9,7 @@ def run(def jobs, def streams, def gate_utils, def gerrit_utils) {
 
 def run_gating(def jobs, def streams, def gate_utils, def gerrit_utils) {
   while (true) {
-    def base_build_no = gate_utils.save_base_builds()
+    def base_build_id = gate_utils.save_base_builds()
     try {
       if (gate_utils.is_concurrent_project()) {
         // Run immediately if projest can be run concurrently
@@ -37,16 +37,16 @@ def run_gating(def jobs, def streams, def gate_utils, def gerrit_utils) {
       if (result == "ABORTED")
         break
 
-      if (!base_build_no) {
+      if (!base_build_id) {
         // we do not have base build - Just finish the job
         println("DEBUG: We do NOT have base pipeline. Finishing...")
         break
       }
 
-      println("DEBUG: We found base pipeline ${base_build_no} and are waiting for base pipeline")
-      gate_utils.wait_pipeline_finished(base_build_no)
+      println("DEBUG: We found base pipeline ${base_build_id} and are waiting for base pipeline")
+      gate_utils.wait_pipeline_finished(base_build_id)
       println("DEBUG: Base pipeline has been finished")
-      if (gate_utils.check_build_is_not_failed(base_build_no)) {
+      if (gate_utils.check_build_is_not_failed(base_build_id)) {
         // Finish the pipeline if base build finished successfully
         // else try to find new base build
         println("DEBUG: Base pipeline has been verified")
