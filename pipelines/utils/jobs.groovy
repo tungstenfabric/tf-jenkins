@@ -157,8 +157,6 @@ def _job_params_to_file(def job_set, def name, def streams, def env_file) {
   archiveArtifacts(artifacts: env_file)
 }
 
-// I don't know what causes NotSerializable exception here...
-@NonCPS
 def _collect_dependent_env_files(job_set, name, deps_env_file) {
   if (!job_set.containsKey(name) || !job_set[name].containsKey('depends-on'))
     return
