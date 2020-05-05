@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
-// TODO Fill up list of projects that can't be run in concurrent mode
+// TODO: Fill up list of projects that can't be run in concurrent mode
 SERIAL_PROJECTS = [
   'Juniper/contrail-kolla-ansible',
 ]
@@ -94,13 +94,9 @@ def save_base_builds() {
 def _wait_for_chain_calculated(Integer build_id) {
   def base_id_list = null
   waitUntil {
-    def build = _get_build_by_id(build_id)
-    base_id_list = _find_base_list(build)
-    build_finished = build.getResult() != null
-    // clear build var to prevent non Serializable exception
-    build = null
+    (build_finished, base_id_list) = _find_base_list_by_id(build)
     if (build_finished && base_id_list == null) {
-      // build finishes but no base_id_list was found
+      // build finished but no base_id_list was found
       return true
     }
     // returns boolean explicetly
@@ -111,12 +107,15 @@ def _wait_for_chain_calculated(Integer build_id) {
 }
 
 // Function get global.env artifact and find there BASE_BUILD_ID_LIST
-// Return value of BASE_BUILD_ID_LIST of has been found
+// Returns value of BASE_BUILD_ID_LIST of has been found
 // Otherwise return null
-def _find_base_list(def build) {
+@NonCPS
+def _find_base_list_by_id(def build_id) {
+  def build = _get_build_by_id(build_id)
+  def build_finished = build.getResult() != null
   def artifactManager = build.getArtifactManager()
   if (!artifactManager.root().isDirectory())
-    return base_id_list
+    return [build_finished, null]
 
   for (file in artifactManager.root().list()) {
     if (!file.toString().contains('global.env'))
@@ -129,10 +128,10 @@ def _find_base_list(def build) {
     if (!line)
       continue
 
-    return line.split('=')[1].trim()
+    return [build_finished, line.split('=')[1].trim()]
   }
 
-  return null
+  return [build_finished, null]
 }
 
 // Function find the build with build_id and wait it finishes with any result
@@ -144,11 +143,13 @@ def wait_pipeline_finished(Integer build_id) {
 }
 
 // Function check build using build_id is failed or not
+@NonCPS
 def check_build_is_not_failed(Integer build_id) {
   def build = _get_build_by_id(build_id)
   return build.getResult() == null || _is_build_successed(build)
 }
 
+@NonCPS
 def get_build_result_by_id(Integer build_id) {
   def build = _get_build_by_id(build_id)
   // TODO: think about cases when build is null
@@ -158,6 +159,7 @@ def get_build_result_by_id(Integer build_id) {
 
 // find and return build of gate pipeline using build_id
 // otherwise return null
+@NonCPS
 def _get_build_by_id(Integer build_id) {
   return Jenkins.getInstanceOrNull().getItem(env.JOB_NAME).getBuildByNumber(build_id)
 }
@@ -186,8 +188,12 @@ def _prepare_build_map() {
   for (def build in Jenkins.getInstanceOrNull().getItem(env.JOB_NAME).builds) {
     if (!build || !build.getId())
       continue
-    def build_id = build.getId().toInteger()
     def result = build.getResult()
+    if (result && result.toString() == 'UNSTABLE') {
+      // skip 'not ready to gate' builds
+      continue
+    }
+    def build_id = build.getId().toInteger()
     def build_env = build.getEnvironment()
 
     build_map[build_id] = [
@@ -231,8 +237,9 @@ def _is_branch_fit(def branch) {
 // and check if it is integer and more than 0 return SUCCESS
 // and return FAILRUE in another case
 // !!! Works only if build has been finished! Check getResult() before call this function
+@NonCPS
 def _is_build_successed(def build) {
-  def artifactManager =  build.getArtifactManager()
+  def artifactManager = build.getArtifactManager()
   if (!artifactManager.root().isDirectory())
     return false
 
@@ -287,6 +294,7 @@ def _save_pachset_info(Integer base_build_id) {
 }
 
 // all JSON calsulate to separate function
+@NonCPS
 def _get_result_patchset(Integer base_build_id) {
   def new_patchset_info_text = readFile("patchsets-info.json")
   def sl = new JsonSlurper()
@@ -294,7 +302,7 @@ def _get_result_patchset(Integer base_build_id) {
   def base_patchset_info = ""
   // Read patchsets-info from base build
   def base_build = _get_build_by_id(base_build_id)
-  def artifactManager =  base_build.getArtifactManager()
+  def artifactManager = base_build.getArtifactManager()
   if (artifactManager.root().isDirectory()) {
     def fileList = artifactManager.root().list()
     fileList.any {
@@ -308,7 +316,7 @@ def _get_result_patchset(Integer base_build_id) {
   }
   def sl2 = new JsonSlurper()
   def old_patchset_info = sl2.parseText(base_patchset_info)
-  if (old_patchset_info instanceof java.util.ArrayList ) {
+  if (old_patchset_info instanceof java.util.ArrayList) {
     def result_patchset_info = old_patchset_info + new_patchset_info
     def json_result_patchset_info = JsonOutput.toJson(result_patchset_info)
     return json_result_patchset_info
