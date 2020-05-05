@@ -96,7 +96,10 @@ def _wait_for_chain_calculated(Integer build_id) {
   waitUntil {
     def build = _get_build_by_id(build_id)
     base_id_list = _find_base_list(build)
-    if (build.getResult() != null && base_id_list == null) {
+    build_finished = build.getResult() != null
+    // clear build var to prevent non Serializable exception
+    build = null
+    if (build_finished && base_id_list == null) {
       // build finishes but no base_id_list was found
       return true
     }
