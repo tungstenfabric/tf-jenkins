@@ -18,9 +18,8 @@ def save_base_builds() {
 
   def current_build_id = env.BUILD_ID.toInteger()
   def base_build_id = null
-  for (item in build_map) {
-    def build_id = item.key
-    def build_data = item.value
+  for (build_id in build_map.keySet()) {
+    def build_data = build_map[build_id]
     println("DEBUG: Parse build ${build_id}")
     // Skip current or later builds
     if (!_is_branch_fit(build_data['branch']) || build_id >= current_build_id) {
@@ -172,7 +171,7 @@ def _get_build_by_id(Integer build_id) {
 def _check_base_chain_is_not_failed(base_chain) {
   if (base_chain.length() == 0)
     return true
-  for (build_id in base_chain.split(",")) {
+  for (def build_id in base_chain.split(",")) {
     // is not finished yes - skip the build
     if (get_build_result_by_id(build_id) != null && !check_build_is_not_failed(build_id))
       return false
@@ -262,9 +261,8 @@ def _is_build_successed(def build) {
 // and if it is then wait until finishes
 def wait_until_project_pipeline() {
   def build_map = _prepare_build_map()
-  for (item in build_map) {
-    def build_id = item.key
-    def build_data = item.value
+  for (build_id in build_map.keySet()) {
+    def build_data = build_map[build_id]
     if (build_data['project'] != env.GERRIT_PROJECT || build_id >= env.BUILD_ID.toInteger())
       continue
 
