@@ -93,7 +93,7 @@ def save_base_builds() {
 def _wait_for_chain_calculated(Integer build_id) {
   def base_id_list = null
   waitUntil {
-    (build_finished, base_id_list) = _find_base_list_by_id(build)
+    (build_finished, base_id_list) = _find_base_list_by_id(build_id)
     if (build_finished && base_id_list == null) {
       // build finished but no base_id_list was found
       return true
@@ -109,7 +109,7 @@ def _wait_for_chain_calculated(Integer build_id) {
 // Returns value of BASE_BUILD_ID_LIST of has been found
 // Otherwise return null
 @NonCPS
-def _find_base_list_by_id(def build_id) {
+def _find_base_list_by_id(Integer build_id) {
   def build = _get_build_by_id(build_id)
   def build_finished = build.getResult() != null
   def artifactManager = build.getArtifactManager()
