@@ -38,36 +38,17 @@ if [[ "$OPENSTACK_VERSION" != 'queens' ]]; then
   openstack_versions+=",$OPENSTACK_VERSION"
 fi
 
+if [[ ${ENVIRONMENT_OS} == 'rhel7' ]]; then
+  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo"
+elif [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
+  mirror_list_for_build="mirror-base.repo mirror-epel.repo mirror-docker.repo mirror-google-chrome.repo"
+fi
+
 mirror_list=""
-case "x$STAGE" in
-  "xnone")
-    # build dev-env
-    if [[ ${ENVIRONMENT_OS} == 'rhel7' ]]; then
-      mirror_list="mirror-epel.repo mirror-google-chrome.repo"
-    elif [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
-      mirror_list="mirror-base.repo mirror-epel.repo mirror-docker.repo mirror-google-chrome.repo"
-    fi
-    ;;
-  "x")
-    # sync sources
-    if [[ ${ENVIRONMENT_OS} == 'rhel7' ]]; then
-      mirror_list="mirror-epel.repo"
-    elif [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
-      mirror_list="mirror-base.repo mirror-epel.repo"
-    fi
-    ;;
-  "xcompile")
-    if [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
-      mirror_list="mirror-base.repo"
-    fi
-    ;;
-  "xpackage")
-    # epel must not be there - it cause incorrect installs and fails at runtime
-    if [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
-      mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo"
-    fi
-    ;;
-esac
+# epel must not be there - it cause incorrect installs and fails at runtime
+if [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
+  mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo"
+fi
 
 res=0
 cat <<EOF | $ssh_cmd $IMAGE_SSH_USER@$instance_ip || res=1
@@ -115,6 +96,9 @@ case "${ENVIRONMENT_OS}" in
     sudo cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
     ;;
 esac
+for mirror in $mirror_list_for_build ; do
+  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/\$mirror ./container/
+done
 for mirror in $mirror_list ; do
   cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
 done
