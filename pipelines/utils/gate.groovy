@@ -190,7 +190,7 @@ def _prepare_build_map() {
     if (!build || !build.getId())
       continue
     def result = build.getResult()
-    if (result && result.toString() == 'UNSTABLE') {
+    if (result && result.toString() in ['UNSTABLE', 'ABORTED']) {
       // skip 'not ready to gate' builds
       continue
     }
