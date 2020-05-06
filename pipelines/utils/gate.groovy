@@ -288,14 +288,13 @@ def _save_pachset_info(Integer base_build_id) {
   def res_json = _get_result_patchset(base_build_id)
   if (!res_json) {
     println("DEBUG: _get_result_patchset returned null... looks like it's an error.")
-    return
+    throw("_get_result_patchset returned null")
   }
   writeFile(file: 'patchsets-info.json', text: res_json)
   archiveArtifacts(artifacts: "patchsets-info.json")
 }
 
 // all JSON calsulate to separate function
-@NonCPS
 def _get_result_patchset(Integer base_build_id) {
   def new_patchset_info_text = readFile("patchsets-info.json")
   def sl = new JsonSlurper()
