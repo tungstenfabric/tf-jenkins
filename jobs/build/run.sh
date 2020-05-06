@@ -86,10 +86,13 @@ mkdir -p ./config/etc/yum.repos.d
 case "${ENVIRONMENT_OS}" in
   "rhel7")
     export RHEL_HOST_REPOS=''
-    cp -r /etc/yum.repos.d ./config/etc/
     # TODO: now no way to put gpg keys into containers for repo mirrors
     # disable gpgcheck as keys are not available inside the contianers
-    find ./config/etc/yum.repos.d/ -name "*.repo" -exec sed -i 's/^gpgcheck.*/gpgcheck=0/g' {} + ;
+    for frepo in \$(find /etc/yum.repos.d/ -name "*.repo" -printf "%P\\n") ; do
+      cp -f /etc/yum.repos.d/\$frepo ./config/etc/
+      sed -i 's/^gpgcheck.*/gpgcheck=0/g' ./config/etc/\$frepo
+      cp -f ./config/etc/\$frepo ./container/\$frepo
+    done
     ;;
   "centos7")
     # copy docker repo to local machine
