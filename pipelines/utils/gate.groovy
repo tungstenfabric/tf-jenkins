@@ -285,11 +285,11 @@ def wait_until_project_pipeline() {
 // union all patchset_info in one array
 // and write all info to patchset_info artifact of corrent build
 def _save_pachset_info(Integer base_build_id) {
-  if (!base_build_id || !base_build_id.isInteger())
-    return
   def res_json = _get_result_patchset(base_build_id)
-  if (!res_json)
-    return false
+  if (!res_json) {
+    println("DEBUG: _get_result_patchset returned null... looks like it's an error.")
+    return
+  }
   writeFile(file: 'patchsets-info.json', text: res_json)
   archiveArtifacts(artifacts: "patchsets-info.json")
 }
