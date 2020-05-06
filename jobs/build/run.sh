@@ -89,7 +89,7 @@ case "${ENVIRONMENT_OS}" in
     # TODO: now no way to put gpg keys into containers for repo mirrors
     # disable gpgcheck as keys are not available inside the contianers
     for frepo in \$(find /etc/yum.repos.d/ -name "*.repo" -printf "%P\\n") ; do
-      cp -f /etc/yum.repos.d/\$frepo ./config/etc/
+      cp -f /etc/yum.repos.d/\$frepo ./config/etc/yum.repos.d/
       sed -i 's/^gpgcheck.*/gpgcheck=0/g' ./config/etc/\$frepo
       cp -f ./config/etc/\$frepo ./container/\$frepo
     done
