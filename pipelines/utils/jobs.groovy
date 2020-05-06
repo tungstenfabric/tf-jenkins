@@ -166,11 +166,11 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
   def stream = job_set[name].get('stream')
   println("JOB ${name}: deps: ${deps}")
   def raw_data = []
-  // simple for loop to avoid java.io.NotSerializableException: org.codehaus.groovy.util.ArrayIterator
+  // simple loop to avoid java.io.NotSerializableException: org.codehaus.groovy.util.ArrayIterator
   for (def i = 0; i < deps.size(); ++i) {
     def dep = deps[i]
     def dep_name = dep instanceof String ? dep : dep.keySet().toArray()[0]
-    def dep_data = dep instanceof String ? [:] : dep[dep_name]
+    def dep_keys = dep instanceof String ? [] : dep[dep_name].get('inherit-keys', [])
     def dep_stream = job_set[dep_name].get('stream')
     def dep_job_name = job_set[dep_name].get('job-name', dep_name)
     def dep_job_rnd = job_results[dep_name]['job-rnd']
@@ -179,8 +179,13 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
       for (def j = 0; j < files.size(); ++j) {
         data = readFile(files[j].getPath()).split('\n')
         if (stream == null || dep_stream == null || stream != dep_stream) {
-          keys = dep_data.get('inherit-keys', [])
-          data = data.findAll() { it.split('=')[0].split(' ')[-1] in keys }
+          // simple loop to avoid java.io.NotSerializableException: org.codehaus.groovy.util.ArrayIterator
+          // https://issues.jenkins-ci.org/browse/JENKINS-47730
+          def filtered_data = []
+          for (def k = 0; k < data.size(); ++k)
+            if (data[k].split('=')[0].split(' ')[-1] in dep_keys)
+              filtered_data += data[k]
+          data = filtered_data
         }
         if (files[j].getName().startsWith("deps."))
           raw_data.addAll(0, data)
