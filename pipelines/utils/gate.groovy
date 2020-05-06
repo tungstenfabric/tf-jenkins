@@ -123,11 +123,13 @@ def _find_base_list_by_id(Integer build_id) {
     // extract global.env artifact for each build if exists
     def fileText = file.open().getText()
     // Check if BASE_BUILD_ID_LIST exists in global.env file
-    def line = fileText.readLines().find() { item -> item.startsWith('BASE_BUILD_ID_LIST=') }
+    def line = fileText.readLines().find() { item -> item.split('=')[0].split()[-1] == 'BASE_BUILD_ID_LIST' }
     if (!line)
       continue
 
-    return [build_finished, line.split('=')[1].trim()]
+    def parts = line.split('=')
+    def result = parts.size() > 1 ? parts[1].trim() : ''
+    return [build_finished, result]
   }
 
   return [build_finished, null]
@@ -247,10 +249,10 @@ def _is_build_successed(def build) {
       continue
     // extract global.env artifact for each build if exists
     def fileText = file.open().getText()
-    def line = fileText.readLines().find() { item -> item.startsWith('VERIFIED=') }
+    def line = fileText.readLines().find() { item -> item.split('=')[0].split()[-1] == 'VERIFIED' }
     if (!line)
       return false
-    def verified = line.split('=')[1].trim().toInteger()
+    def verified = line.split('=').size() > 1 ? line.split('=')[1].trim().toInteger() : 0
     return verified > 0
   }
 
