@@ -121,7 +121,7 @@ def _find_base_list_by_id(Integer build_id) {
       continue
 
     // extract global.env artifact for each build if exists
-    def fileText = it.open().getText()
+    def fileText = file.open().getText()
     // Check if BASE_BUILD_ID_LIST exists in global.env file
     def line = fileText.readLines().find() { item -> item.startsWith('BASE_BUILD_ID_LIST=') }
     if (!line)
