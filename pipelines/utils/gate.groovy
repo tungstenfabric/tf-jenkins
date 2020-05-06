@@ -176,7 +176,7 @@ def _check_base_chain_is_not_failed(base_chain) {
     return true
   for (def build_id in base_chain.split(",")) {
     // is not finished yes - skip the build
-    if (get_build_result_by_id(build_id) != null && !check_build_is_not_failed(build_id))
+    if (get_build_result_by_id(build_id.toInteger()) != null && !check_build_is_not_failed(build_id.toInteger()))
       return false
   }
 
