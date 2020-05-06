@@ -147,7 +147,7 @@ def wait_pipeline_finished(Integer build_id) {
 @NonCPS
 def check_build_is_not_failed(Integer build_id) {
   def build = _get_build_by_id(build_id)
-  return build.getResult() == null || _is_build_successed(build)
+  return build.getResult() == null && _is_build_successed(build)
 }
 
 @NonCPS
