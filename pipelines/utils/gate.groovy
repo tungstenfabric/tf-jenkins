@@ -18,6 +18,7 @@ def save_base_builds() {
 
   def current_build_id = env.BUILD_ID.toInteger()
   def base_build_id = null
+  def base_chain = null
   for (build_id in build_map.keySet()) {
     def build_data = build_map[build_id]
     println("DEBUG: Parse build ${build_id}")
@@ -40,7 +41,7 @@ def save_base_builds() {
       // build is running
       // Wait for build chain will be prepared
       println("DEBUG: calculate chain")
-      def base_chain = _wait_for_chain_calculated(build_id)
+      base_chain = _wait_for_chain_calculated(build_id)
       if (base_chain == null) {
         // build fails before can calculate BASE_BUILD_ID_LIST
         println("DEBUG: calculation failed. build skipped")
