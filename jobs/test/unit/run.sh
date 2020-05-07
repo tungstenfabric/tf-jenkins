@@ -66,16 +66,13 @@ EOF
 return $res
 }
 
-if ! run_over_ssh ; then
-  echo "ERROR: preparation for UT failed"
-  exit 1
-fi
 if ! run_over_ssh $STAGE $TARGET ; then
   echo "ERROR: UT failed"
   exit 1
 fi
 
 # DEVENV_PUSH_TAG is just a suffix here for final tag
+# it was used for 'compile' job that is not present now
 if [[ -n "$DEVENV_PUSH_TAG" ]]; then
   if ! run_over_ssh upload ; then
     echo "ERROR: push to registry with tag=$DEVENV_PUSH_TAG failed"
