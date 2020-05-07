@@ -23,69 +23,53 @@
     name: build-centos
     jobs:
       prepare-sandbox-centos:
-        job-name: build
+        # it creates worker
+        job-name: build-prepare-sandbox
         stream: build-centos
         vars:
-          # stage 'none' creates worker
-          STAGE: none
-          PUBLISH: stable
+          PUBLISH_TYPE: stable
       fetch-sources-centos:
-        job-name: build
+        job-name: build-fetch-sources
         stream: build-centos
         depends-on:
           - prepare-sandbox-centos
         vars:
-          STAGE: ""
-          PUBLISH: build
+          PUBLISH_TYPE: build
       package-deployers-centos:
-        job-name: build
+        job-name: build-package-deployers
         stream: build-centos
         depends-on:
           - fetch-sources-centos
-        vars:
-          STAGE: package
-          TARGET: src-containers-only
       compile-centos:
-        job-name: build
+        job-name: build-compile
         stream: build-centos
         depends-on:
           - package-deployers-centos
-        vars:
-          STAGE: compile
       package-containers-centos:
-        job-name: build
+        job-name: build-package-containers
         stream: build-centos
         depends-on:
           - compile-centos
-        vars:
-          STAGE: package
-          TARGET: containers
       package-test-containers-centos:
-        job-name: build
+        job-name: build-package-test-containers
         stream: build-centos
         depends-on:
           - package-containers-centos
-        vars:
-          STAGE: package
-          TARGET: test-containers
       freeze-centos:
-        job-name: build
+        job-name: build-freeze
         stream: build-centos
         depends-on:
           - package-test-containers-centos
         vars:
           PIPLINE_FILTER: "gate,nightly"
-          STAGE: freeze
-          PUBLISH: frozen
-      cleanup-build-centos:
-        job-name: build
+          PUBLISH_TYPE: frozen
+      cleanup-centos:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
         stream: build-centos
         type: stream-post-hook
         depends-on:
           - freeze-centos
-        vars:
-          # it doesn't call devenv - it removes worker completly
-          STAGE: cleanup
 
 - template:
     name: build-rhel
@@ -96,69 +80,53 @@
           TAG_SUFFIX: -rhel7
     jobs:
       prepare-sandbox-rhel:
-        job-name: build
+        # it creates worker
+        job-name: build-prepare-sandbox
         stream: build-rhel
         vars:
-          # stage 'none' creates worker
-          STAGE: none
-          PUBLISH: stable
+          PUBLISH_TYPE: stable
       fetch-sources-rhel:
-        job-name: build
+        job-name: build-fetch-sources
         stream: build-rhel
         depends-on:
           - prepare-sandbox-rhel
         vars:
-          STAGE: ""
-          PUBLISH: build
+          PUBLISH_TYPE: build
       package-deployers-rhel:
-        job-name: build
+        job-name: build-package-deployers
         stream: build-rhel
         depends-on:
           - fetch-sources-rhel
-        vars:
-          STAGE: package
-          TARGET: src-containers-only
       compile-rhel:
-        job-name: build
+        job-name: build-compile
         stream: build-rhel
         depends-on:
           - package-deployers-rhel
-        vars:
-          STAGE: compile
       package-containers-rhel:
-        job-name: build
+        job-name: build-package-containers
         stream: build-rhel
         depends-on:
           - compile-rhel
-        vars:
-          STAGE: package
-          TARGET: containers
       package-test-containers-rhel:
-        job-name: build
+        job-name: build-package-test-containers
         stream: build-rhel
         depends-on:
           - package-containers-rhel
-        vars:
-          STAGE: package
-          TARGET: test-containers
       freeze-rhel:
-        job-name: build
+        job-name: build-freeze
         stream: build-rhel
         depends-on:
           - package-test-containers-rhel
         vars:
           PIPLINE_FILTER: "gate,nightly"
-          STAGE: freeze
-          PUBLISH: frozen
-      cleanup-build-rhel:
-        job-name: build
+          PUBLISH_TYPE: frozen
+      cleanup-rhel:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
         stream: build-rhel
         type: stream-post-hook
         depends-on:
           - freeze-rhel
-        vars:
-          # it doesn't call devenv - it removes worker completly
-          STAGE: cleanup
 
 - template:
     name: test-unit
@@ -166,7 +134,6 @@
       - build-centos
     jobs:
       test-unit-agent:
-        job-name: test-unit
         stream: test-unit
         depends-on:
           - fetch-sources-centos:
@@ -174,7 +141,6 @@
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-opserver:
-        job-name: test-unit
         stream: test-unit
         depends-on:
           - fetch-sources-centos:
@@ -182,7 +148,6 @@
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-bgp:
-        job-name: test-unit
         stream: test-unit
         depends-on:
           - fetch-sources-centos:
@@ -190,7 +155,6 @@
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-group-one:
-        job-name: test-unit
         stream: test-unit
         depends-on:
           - fetch-sources-centos:
@@ -198,7 +162,6 @@
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-ungrouped:
-        job-name: test-unit
         stream: test-unit
         depends-on:
           - fetch-sources-centos:

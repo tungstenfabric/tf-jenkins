@@ -123,15 +123,15 @@ if [[ -z "$STAGE" ]]; then
   echo "export UNITTEST_TARGETS=$(cat $WORKSPACE/unittest_targets.lst | tr '\n' ',')" >> build.env
 fi
 
-if [[ -n "$PUBLISH" ]]; then
-  if [[ "$PUBLISH" == 'stable' ]]; then
+if [[ -n "$PUBLISH_TYPE" ]]; then
+  if [[ "$PUBLISH_TYPE" == 'stable' ]]; then
     tag="$DEVENV_TAG"
-  elif [[ "$PUBLISH" == 'build' ]]; then
+  elif [[ "$PUBLISH_TYPE" == 'build' ]]; then
     tag="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
-  elif [[ "$PUBLISH" == 'frozen' ]]; then
+  elif [[ "$PUBLISH_TYPE" == 'frozen' ]]; then
     tag="frozen$TAG_SUFFIX"
   else
-    echo "ERROR: unsupported publish type: $PUBLISH"
+    echo "ERROR: unsupported publish type: $PUBLISH_TYPE"
     exit 1
   fi
   cat <<EOF | $ssh_cmd $IMAGE_SSH_USER@$instance_ip || res=1

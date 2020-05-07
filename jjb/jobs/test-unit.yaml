@@ -1,12 +1,9 @@
 ---
 
 - job-template:
-    name: "{project}"
-    description: "unit tests"
+    name: "test-unit-{target_set}"
+    description: "unit tests of {target_set}"
     defaults: global
-    properties:
-      - build-discarder:
-          num-to-keep: 100
     scm:
       - tf-jenkins
       - tf-dev-env
@@ -126,16 +123,11 @@
 
 - project:
     name: test-unit
-    project:
-      - test-unit-agent:
-          target_set: agent
-      - test-unit-bgp:
-          target_set: bgp
-      - test-unit-opserver:
-          target_set: opserver
-      - test-unit-group-one:
-          target_set: group_one
-      - test-unit-ungrouped:
-          target_set: ungrouped
+    target_set:
+      - agent
+      - bgp
+      - opserver
+      - group-one
+      - ungrouped
     jobs:
-      - '{project}'
+      - 'test-unit-{target_set}'

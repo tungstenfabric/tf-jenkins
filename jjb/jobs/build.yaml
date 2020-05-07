@@ -1,10 +1,9 @@
-- job:
-    name: "build"
-    description: "build"
+---
+
+- job-template:
+    name: "build-{build_job}"
+    description: "{build_job}"
     defaults: global
-    properties:
-      - build-discarder:
-          num-to-keep: 100
     scm:
       - tf-jenkins
       - tf-dev-env
@@ -69,17 +68,17 @@
               username-variable: LOGS_HOST_USERNAME
     builders:
       - copyartifact:
-          project: ${PIPELINE_NAME}
+          project: ${{PIPELINE_NAME}}
           filter: "global.env,*.$JOB_RND.env,patchsets-info.json"
           which-build: upstream-build
           optional: true
       - shell: |
           source "$WORKSPACE/global.env"
-          source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
-          source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>"
-          desc+="Stage: $STAGE  Target: $TARGET<br>"
-          dsec+="Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
+          source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
+          source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
+          desc="Pipeline: $PIPELINE_NAME-$PIPELINE_NUMBER  Random: $JOB_RND<br>"
+          desc+="Stage: {stage}  Target: {target}<br>"
+          dsec+="Job logs: <a href=\"$LOGS_URL/$STREAM\">$LOGS_URL/$STREAM</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -89,21 +88,23 @@
           ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-dev-env ./patchsets-info.json
       - shell: |
           set +e -o pipefail
+          export STAGE={stage}
+          export TARGET={target}
           source "$WORKSPACE/global.env"
-          source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
-          source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
+          source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
+          source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
 
           if [[ "$STAGE" == 'none' ]]; then
             ./src/progmaticlab/tf-jenkins/jobs/build/create_workers.sh
             # stackrc is present only in this run. next build jobs will inherit this ENV via deps.XXX file
             source "$WORKSPACE/stackrc.$JOB_NAME.env"
           elif [[ "$STAGE" == 'cleanup' ]]; then
-            ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
+            ./src/progmaticlab/tf-jenkins/infra/$SLAVE/remove_workers.sh
             exit
           fi
 
-          source ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/definitions
-          export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
+          source ./src/progmaticlab/tf-jenkins/infra/$SLAVE/definitions
+          export FULL_LOGS_PATH="$LOGS_PATH/$STREAM"
           # main run
           ./src/progmaticlab/tf-jenkins/jobs/build/run.sh || res=1
           ./src/progmaticlab/tf-jenkins/jobs/build/collect_logs.sh
@@ -121,9 +122,39 @@
                   - shell: |
                       source "$WORKSPACE/global.env"
                       source "$WORKSPACE/stackrc.$JOB_NAME.env" || /bin/true
-                      source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
-                      source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
-                      ./src/progmaticlab/tf-jenkins/infra/${SLAVE}/remove_workers.sh
+                      source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
+                      source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
+                      ./src/progmaticlab/tf-jenkins/infra/$SLAVE/remove_workers.sh
                       rm -f "$WORKSPACE/stackrc.$JOB_NAME.env"
       - archive:
           artifacts: '*.env'
+
+- project:
+    name: build
+    build_job:
+      - prepare-sandbox:
+          stage: none
+          target: ""
+      - fetch-sources:
+          stage: ""
+          target: ""
+      - package-deployers:
+          stage: package
+          target: src-containers-only
+      - compile:
+          stage: compile
+          target: ""
+      - package-containers:
+          stage: package
+          target: containers
+      - package-test-containers:
+          stage: package
+          target: test-containers
+      - freeze:
+          stage: freeze
+          target: ""
+      - cleanup:
+          stage: cleanup
+          target: ""
+    jobs:
+      - 'build-{build_job}'

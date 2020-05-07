@@ -39,7 +39,7 @@ elif [[ "$TARGET_SET" == "opserver" ]]; then
       echo "$target" >> "$targets_file"
     fi
   done
-elif [[ "$TARGET_SET" == "group_one" ]]; then
+elif [[ "$TARGET_SET" == "group-one" ]]; then
   # all analytics except opserver + some targets
   for target in $(echo "$UNITTEST_TARGETS" | tr ',' ' ') ; do
     if [[ "$target" =~ ^src/contrail-analytics/.*$ && ! "$opserver" =~ "$target" ]] ; then
