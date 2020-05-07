@@ -137,3 +137,5 @@
           target_set: group_one
       - test-unit-ungrouped:
           target_set: ungrouped
+    jobs:
+      - 'test-unit-{target_set}'
