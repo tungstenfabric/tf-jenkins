@@ -211,8 +211,8 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
 
 // this method uses regexp search that is no serializable - thus apply NonCPS
 @NonCPS
-def _get_job_number_from_exception(err) {
-  def causes = err.getCauses()
+def _get_job_number_from_exception(def run_err) {
+  def causes = run_err.getCauses()
   if (causes == null || causes.size() == 0)
     return null
   def cause_msg = causes[0].getShortDescription()
