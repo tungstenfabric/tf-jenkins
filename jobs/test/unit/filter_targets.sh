@@ -7,16 +7,6 @@ my_dir="$(realpath $(dirname "$0"))"
 
 source "$my_dir/definitions"
 
-# TARGET_SET is a parameter for this job
-# can be name of set or UNGROUPED for targets not in sets but in ci_unittest.json or empty
-# empty/absent means early exit with full UNITTEST_TARGETS
-# UNITTEST_TARGETS must be present in env - it's inherited from fetch job
-
-if [[ -z "$TARGET_SET" ]]; then
-  echo "$UNITTEST_TARGETS" | tr ',' '\n' > $WORKSPACE/unittest_targets.lst
-  exit
-fi
-
 targets_file="$WORKSPACE/unittest_targets.lst"
 rm -f "$targets_file"
 touch "$targets_file"
@@ -58,7 +48,7 @@ elif [[ "$TARGET_SET" == "group_one" ]]; then
       echo "$target" >> "$targets_file"
     fi
   done
-elif [[ "$TARGET_SET" == "UNGROUPED" ]]; then
+elif [[ "$TARGET_SET" == "ungrouped" ]]; then
   excludes="${agent}${bgp}${opserver}${group_one}"
   for target in $(echo "$UNITTEST_TARGETS" | tr ',' ' ') ; do
     if [[ ! "$target" =~ ^src/contrail-analytics/.*$ ]] && ! echo "$excludes" | grep -q ",$target," ; then

@@ -165,7 +165,7 @@
     parents:
       - build-centos
     jobs:
-      test-unit-compile:
+      test-unit-agent:
         job-name: test-unit
         stream: test-unit
         depends-on:
@@ -173,45 +173,38 @@
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
-        vars:
-          STAGE: compile
-          TARGET: test
-          DEVENV_PUSH_TAG: "-compiled"
-      test-unit-agent:
-        job-name: test-unit
-        stream: test-unit
-        depends-on:
-          - test-unit-compile
-        vars:
-          TARGET_SET: agent
       test-unit-opserver:
         job-name: test-unit
         stream: test-unit
         depends-on:
-          - test-unit-compile
-        vars:
-          TARGET_SET: opserver
+          - fetch-sources-centos:
+              inherit-keys:
+                - DEVENV_TAG
+                - UNITTEST_TARGETS
       test-unit-bgp:
         job-name: test-unit
         stream: test-unit
         depends-on:
-          - test-unit-compile
-        vars:
-          TARGET_SET: bgp
+          - fetch-sources-centos:
+              inherit-keys:
+                - DEVENV_TAG
+                - UNITTEST_TARGETS
       test-unit-group-one:
         job-name: test-unit
         stream: test-unit
         depends-on:
-          - test-unit-compile
-        vars:
-          TARGET_SET: group_one
-      test-unit:
+          - fetch-sources-centos:
+              inherit-keys:
+                - DEVENV_TAG
+                - UNITTEST_TARGETS
+      test-unit-ungrouped:
         job-name: test-unit
         stream: test-unit
         depends-on:
-          - test-unit-compile
-        vars:
-          TARGET_SET: UNGROUPED
+          - fetch-sources-centos:
+              inherit-keys:
+                - DEVENV_TAG
+                - UNITTEST_TARGETS
 
 - template:
     name: test-unit-ui
