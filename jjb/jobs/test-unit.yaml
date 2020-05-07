@@ -1,7 +1,7 @@
 ---
 
 - job-template:
-    name: "test-unit-{target_set}"
+    name: "{project}"
     description: "unit tests"
     defaults: global
     properties:
@@ -138,4 +138,4 @@
       - test-unit-ungrouped:
           target_set: ungrouped
     jobs:
-      - 'test-unit-{target_set}'
+      - '{project}'
