@@ -183,7 +183,7 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
           // https://issues.jenkins-ci.org/browse/JENKINS-47730
           def filtered_data = []
           for (def k = 0; k < data.size(); ++k)
-            if (data[k].split('=')[0].split(' ')[-1] in dep_keys)
+            if (data[k] && data[k].split('=')[0].split(' ')[-1] in dep_keys)
               filtered_data += data[k]
           data = filtered_data
         }
