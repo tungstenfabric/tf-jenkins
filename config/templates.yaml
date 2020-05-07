@@ -464,8 +464,6 @@
     jobs:
       deploy-platform-openshift:
         stream: openshift
-        depends-on:
-          - build-rhel
         vars:
           ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: -rhel7
@@ -473,8 +471,8 @@
       deploy-tf-openshift:
         stream: openshift
         depends-on:
-          - package-containers-rhel
           - deploy-platform-openshift
+          - package-containers-rhel
         vars:
           TAG_SUFFIX: -rhel7
           RHEL_OPENSHIFT_REGISTRY: rhel-mirrors.tf-jenkins.progmaticlab.com:5000
