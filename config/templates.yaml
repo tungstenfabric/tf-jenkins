@@ -175,7 +175,6 @@
       - build-centos
     jobs:
       test-unit-ui:
-        job-name: test-unit
         depends-on:
           - fetch-sources-centos:
               inherit-keys:
