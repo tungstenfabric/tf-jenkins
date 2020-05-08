@@ -136,12 +136,12 @@ def _wait_for_dependencies(job_set, name) {
 }
 
 def _job_params_to_file(def job_set, def name, def streams, def env_file) {
-  if (!job_set.containsKey(name) || !job_set[name].containsKey('vars'))
+  if (!job_set.containsKey(name))
     return
 
   def job_name = job_set[name].get('job-name', name)
   def env_text = ""
-  def vars = job_set[name]['vars']
+  def vars = job_set[name].get('vars', [])
   if (job_set[name].containsKey('stream')) {
     stream = streams.get(job_set[name]['stream'])
     if (stream && stream.containsKey('vars')) {
