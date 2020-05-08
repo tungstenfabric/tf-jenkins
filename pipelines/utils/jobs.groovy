@@ -149,6 +149,10 @@ def _job_params_to_file(def job_set, def name, def streams, def env_file) {
     }
   }
   def vars_keys = vars.keySet() as List
+  if (vars_keys.size() == 0) {
+    println("JOB ${name}: vars empty. do not store vars file.")
+    return
+  }
   // simple for-loop to avoid non-Serializable exception
   for (def i = 0; i < vars_keys.size(); ++i) {
     env_text += "export ${vars_keys[i]}='${vars[vars_keys[i]]}'\n"
