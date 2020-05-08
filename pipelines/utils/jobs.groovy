@@ -176,8 +176,10 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
     def dep_job_rnd = job_results[dep_name]['job-rnd']
     dir("${WORKSPACE}") {
       def files = findFiles(glob: "${dep_job_name}-${dep_job_rnd}/*.env")
+      println("JOB ${name}: files found = ${files.size()}")
       for (def j = 0; j < files.size(); ++j) {
-        data = readFile(files[j].getPath()).split('\n')
+        println("JOB ${name}: file #${j} with path ${files[j].getPath()}")
+        def data = readFile(files[j].getPath()).split('\n')
         if (stream == null || dep_stream == null || stream != dep_stream) {
           // simple loop to avoid java.io.NotSerializableException: org.codehaus.groovy.util.ArrayIterator
           // https://issues.jenkins-ci.org/browse/JENKINS-47730
