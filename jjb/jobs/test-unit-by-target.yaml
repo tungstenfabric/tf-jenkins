@@ -117,7 +117,7 @@
           artifacts: '*.env'
 
 - project:
-    name: test-unit
+    name: test-unit-by-target
     target:
       - ui
       - vcenter
