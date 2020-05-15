@@ -8,8 +8,8 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-if [[ -n "$PIPLINE_FILTER" && ! ",$PIPLINE_FILTER," =~ ",$GERRIT_PIPELINE," ]]; then
-  echo "INFO: Pipeline filter is not empty ($PIPLINE_FILTER) and doesn't contain current pipeline '$GERRIT_PIPELINE'"
+if [[ -n "$PIPELINE_FILTER" && ! ",$PIPELINE_FILTER," =~ ",$GERRIT_PIPELINE," ]]; then
+  echo "INFO: Pipeline filter is not empty ($PIPELINE_FILTER) and doesn't contain current pipeline '$GERRIT_PIPELINE'"
   exit
 fi
 

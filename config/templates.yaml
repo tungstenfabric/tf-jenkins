@@ -61,7 +61,7 @@
         depends-on:
           - package-test-containers-centos
         vars:
-          PIPLINE_FILTER: "gate,nightly"
+          PIPELINE_FILTER: "gate,nightly"
           PUBLISH_TYPE: frozen
       cleanup-centos:
         # it doesn't call devenv - it removes worker completly
@@ -118,7 +118,7 @@
         depends-on:
           - package-test-containers-rhel
         vars:
-          PIPLINE_FILTER: "gate,nightly"
+          PIPELINE_FILTER: "gate,nightly"
           PUBLISH_TYPE: frozen
       cleanup-rhel:
         # it doesn't call devenv - it removes worker completly
