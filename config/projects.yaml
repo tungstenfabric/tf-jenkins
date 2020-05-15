@@ -89,7 +89,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-deployers-containers
+    name: tungstenfabric/tf-deployers-containers
     check:
       templates:
         - ansible-k8s
