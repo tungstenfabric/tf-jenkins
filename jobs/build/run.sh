@@ -8,8 +8,8 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-if [[ -n "$PIPELINE_FILTER" && ! ",$PIPELINE_FILTER," =~ ",$GERRIT_PIPELINE," ]]; then
-  echo "INFO: Pipeline filter is not empty ($PIPELINE_FILTER) and doesn't contain current pipeline '$GERRIT_PIPELINE'"
+if [[ "$STAGE" == 'freeze' ]] && [[ "$GERRIT_PIPELINE" != 'gate' || "$GERRIT_BRANCH" != 'master' ]]; then
+  echo "INFO: Freeze works only for gate pipeline and for master branch"
   exit
 fi
 
