@@ -105,6 +105,7 @@
     name: Juniper/contrail-container-builder
     check:
       templates:
+        - build-rhel
         - ansible-k8s
         - ansible-os
         - cleanup
@@ -117,6 +118,7 @@
     name: Juniper/contrail-controller
     check:
       templates:
+        - build-rhel
         - test-unit
         - ansible-k8s
         - ansible-os
@@ -184,6 +186,21 @@
     gate:
       templates:
         - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
+- project:
+    name: tungstenfabric/tf-packages
+    check:
+      templates:
+        - build-rhel
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - build-rhel
         - ansible-k8s
         - ansible-os
         - cleanup
