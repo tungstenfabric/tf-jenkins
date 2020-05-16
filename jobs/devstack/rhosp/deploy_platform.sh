@@ -8,7 +8,8 @@ my_dir="$(dirname $my_file)"
 
 
 source "$my_dir/definitions"
-stackrc_file="stackrc.$JOB_NAME.env"
+stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
+
 source $WORKSPACE/$stackrc_file
 
 echo "INFO: Deploy platform for $JOB_NAME"
