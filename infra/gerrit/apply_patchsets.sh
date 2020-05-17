@@ -15,7 +15,9 @@ cd $src_dir/$project_fqdn
 for ref in $(cat $patchsets_info_file | jq -r --arg project $project_fqdn '.[] | select(.project == $project) | .ref'); do
   echo "INFO: run 'git fetch $GERRIT_URL/$project_fqdn $ref && git cherry-pick FETCH_HEAD'"
   git fetch $GERRIT_URL/$project_fqdn $ref
+  echo "INFO: HEAD - $(git log -1 --oneline HEAD)"
   head_sha=$(git log -1 --oneline --no-abbrev-commit HEAD | awk '{print $1}')
+  echo "INFO: FETCH_HEAD - $(git log -1 --oneline HEAD)"
   fetch_head_sha=$(git log -1 --oneline --no-abbrev-commit FETCH_HEAD | awk '{print $1}')
   if [[ "$head_sha" != "$fetch_head_sha" ]]; then
     git cherry-pick FETCH_HEAD
