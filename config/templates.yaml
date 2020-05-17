@@ -76,6 +76,7 @@
       build-rhel:
         vars:
           ENVIRONMENT_OS: rhel7
+          LINUX_DISTR_VER: 7.6-362
           TAG_SUFFIX: -rhel7
     jobs:
       prepare-sandbox-rhel:
