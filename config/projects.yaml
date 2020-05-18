@@ -260,6 +260,21 @@
         - cleanup
 
 - project:
+    name: Juniper/contrail-third-party
+    check:
+      templates:
+        - build-rhel
+        - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - build-rhel
+        - build-centos
+        - cleanup
+
+- project:
     name: tungstenfabric/tf-charms
     check:
       streams:
