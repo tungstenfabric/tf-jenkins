@@ -41,7 +41,7 @@
               passphrase-variable: OPENLAB2_PASSPHRASE
     scm:
       - tf-jenkins
-      - tf-test
+      - tf-dev-test
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
@@ -58,7 +58,7 @@
       - shell: |
           set +e -o pipefail
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-test ./patchsets-info.json
+          ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-dev-test ./patchsets-info.json
       - shell: |
           set +e -o pipefail
           source "$WORKSPACE/global.env"

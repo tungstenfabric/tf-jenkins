@@ -360,7 +360,7 @@
 # infra projects
 
 - project:
-    name: tungstenfabric/tf-test
+    name: tungstenfabric/tf-dev-test
     check:
       templates:
         - ansible-k8s

@@ -19,7 +19,7 @@ export ORCHESTRATOR=$ORCHESTRATOR
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export PATH=\$PATH:/usr/sbin
-src/tungstenfabric/tf-test/smoke-test/run.sh
+src/tungstenfabric/tf-dev-test/smoke-test/run.sh
 EOF
 chmod a+x $WORKSPACE/test-smoke.sh
 

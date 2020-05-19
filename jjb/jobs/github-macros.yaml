@@ -54,8 +54,8 @@
           repo: tf-dev-env
 
 - scm:
-    name: tf-test
+    name: tf-dev-test
     scm:
       - github:
           organization: tungstenfabric
-          repo: tf-test
+          repo: tf-dev-test
