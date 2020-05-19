@@ -84,6 +84,7 @@
       - shell: |
           set +e -o pipefail
           source "$WORKSPACE/global.env"
+          ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-jenkins ./patchsets-info.json
           ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-devstack ./patchsets-info.json
       - shell: |
           set +e -o pipefail
@@ -181,6 +182,7 @@
       - shell: |
           set +e -o pipefail
           source "$WORKSPACE/global.env"
+          ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-jenkins ./patchsets-info.json
           ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-devstack ./patchsets-info.json
       - shell: |
           set +e -o pipefail
@@ -277,6 +279,7 @@
       - shell: |
           set +e -o pipefail
           source "$WORKSPACE/global.env"
+          ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-jenkins ./patchsets-info.json
           ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-devstack ./patchsets-info.json
       - shell: |
           set +e -o allexport

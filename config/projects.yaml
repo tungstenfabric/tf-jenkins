@@ -366,11 +366,6 @@
         - ansible-k8s
         - ansible-os
         - cleanup
-    gate:
-      templates:
-        - ansible-k8s
-        - ansible-os
-        - cleanup
 
 - project:
     name: tungstenfabric/tf-dev-env
@@ -381,9 +376,13 @@
         - test-unit-ui
         - ansible-k8s
         - cleanup
-    gate:
+
+- project:
+    name: tungstenfabric/tf-jenkins
+    check:
       templates:
         - build-rhel
         - build-centos
-        - test-unit-ui
+        - test-unit
+        - ansible-os
         - cleanup
