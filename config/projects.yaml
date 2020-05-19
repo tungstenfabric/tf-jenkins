@@ -260,7 +260,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-third-party
+    name: tungstenfabric/tf-third-party
     check:
       templates:
         - build-rhel
