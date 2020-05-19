@@ -79,9 +79,9 @@
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
           # main run
-          ./src/progmaticlab/tf-jenkins/jobs/aquascan/run.sh || res=1
+          ./src/tungstenfabric/tf-jenkins/jobs/aquascan/run.sh || res=1
           # collect logs
-          ./src/progmaticlab/tf-jenkins/jobs/aquascan/collect_logs.sh
+          ./src/tungstenfabric/tf-jenkins/jobs/aquascan/collect_logs.sh
           exit $res
     publishers:
         - archive:

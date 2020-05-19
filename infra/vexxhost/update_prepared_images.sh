@@ -9,7 +9,7 @@ source "$my_dir/definitions"
 
 for i in "${!OS_IMAGE_USERS[@]}"; do
   packer build -machine-readable -var "os_image=${i,,}" -var "ssh_user=${OS_IMAGE_USERS[$i]}" \
-      ${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/packer/vexxhost.json
+      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/packer/vexxhost.json
   OLD_IMAGES=$(openstack image list --tag prepared-${i,,} -c Name -f value | sort -nr | tail -n +4)
   for o in $OLD_IMAGES; do
     openstack image delete $o

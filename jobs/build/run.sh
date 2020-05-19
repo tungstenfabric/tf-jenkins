@@ -97,16 +97,16 @@ case "${ENVIRONMENT_OS}" in
     ;;
   "centos7")
     # copy docker repo to local machine
-    sudo cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
+    sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
     ;;
 esac
 for mirror in $mirror_list_for_build ; do
-  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/\$mirror ./container/
+  cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/\$mirror ./container/
 done
 for mirror in $mirror_list ; do
-  cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
+  cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
 done
-cp \${WORKSPACE}/src/progmaticlab/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
+cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 
 ./run.sh "$STAGE" "$TARGET"
 EOF

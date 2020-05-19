@@ -41,4 +41,4 @@
               variable: RHEL_POOL_ID
     builders:
       - shell: |
-          ./src/progmaticlab/tf-jenkins/infra/vexxhost/update_prepared_images.sh
+          ./src/tungstenfabric/tf-jenkins/infra/vexxhost/update_prepared_images.sh

@@ -75,7 +75,7 @@
       - shell: |
           set +e -o pipefail
           source "$WORKSPACE/global.env"
-          ./src/progmaticlab/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-dev-env ./patchsets-info.json
+          ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-dev-env ./patchsets-info.json
       - shell: |
           set +e -o pipefail
           export TARGET_SET={target_set}
@@ -83,19 +83,19 @@
           source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
           source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
 
-          if ! ./src/progmaticlab/tf-jenkins/jobs/test/unit/filter_targets.sh ; then
+          if ! ./src/tungstenfabric/tf-jenkins/jobs/test/unit/filter_targets.sh ; then
             echo "INFO: target not found for set $TARGET_SET. do not run this job."
             exit 0
           fi
 
           export ENVIRONMENT_OS=centos7
           export FULL_LOGS_PATH="$LOGS_PATH/$STREAM"
-          ./src/progmaticlab/tf-jenkins/jobs/test/unit/create_workers.sh
+          ./src/tungstenfabric/tf-jenkins/jobs/test/unit/create_workers.sh
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           # main run
-          ./src/progmaticlab/tf-jenkins/jobs/test/unit/run.sh || res=1
+          ./src/tungstenfabric/tf-jenkins/jobs/test/unit/run.sh || res=1
           # collect logs
-          ./src/progmaticlab/tf-jenkins/jobs/test/unit/collect_logs.sh
+          ./src/tungstenfabric/tf-jenkins/jobs/test/unit/collect_logs.sh
           exit $res
     publishers:
       - postbuildscript:
@@ -113,7 +113,7 @@
                     if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ]; then
                       echo "INFO: stackrc file found. remove workers."
                       source "$WORKSPACE/stackrc.$JOB_NAME.env"
-                      ./src/progmaticlab/tf-jenkins/infra/$SLAVE/remove_workers.sh
+                      ./src/tungstenfabric/tf-jenkins/infra/$SLAVE/remove_workers.sh
                     else
                       echo "INFO: stackrc file could not be found."
                     fi

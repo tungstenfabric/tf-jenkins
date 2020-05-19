@@ -17,8 +17,8 @@ pipeline{
             extensions: [],
             submoduleCfg: [],
             extensions: [[$class: 'RelativeTargetDirectory', 
-              relativeTargetDir: 'src/progmaticlab/tf-jenkins']],
-            userRemoteConfigs: [[url: 'https://github.com/progmaticlab/tf-jenkins.git']]])
+              relativeTargetDir: 'src/tungstenfabric/tf-jenkins']],
+            userRemoteConfigs: [[url: 'https://github.com/tungstenfabric/tf-jenkins.git']]])
             withCredentials(
               bindings:
                 [[$class: 'AmazonWebServicesCredentialsBinding',
@@ -27,7 +27,7 @@ pipeline{
                 secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
               sh """
                 export SLAVE="aws"
-                $WORKSPACE/src/progmaticlab/tf-jenkins/infra/aws/cleanup_stalled_workers.sh
+                $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/aws/cleanup_stalled_workers.sh
               """
             }
           }
@@ -40,8 +40,8 @@ pipeline{
               extensions: [],
               submoduleCfg: [],
               extensions: [[$class: 'RelativeTargetDirectory', 
-                relativeTargetDir: 'src/progmaticlab/tf-jenkins']],
-              userRemoteConfigs: [[url: 'https://github.com/progmaticlab/tf-jenkins.git']]])
+                relativeTargetDir: 'src/tungstenfabric/tf-jenkins']],
+              userRemoteConfigs: [[url: 'https://github.com/tungstenfabric/tf-jenkins.git']]])
             withCredentials(
               bindings:
                 [string(credentialsId: 'VEXX_OS_USERNAME', variable: 'OS_USERNAME'),
@@ -52,7 +52,7 @@ pipeline{
                 string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]){
               sh """
                 export SLAVE="vexxhost"
-                $WORKSPACE/src/progmaticlab/tf-jenkins/infra/vexxhost/cleanup_stalled_workers.sh
+                $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/vexxhost/cleanup_stalled_workers.sh
               """
               }
           }

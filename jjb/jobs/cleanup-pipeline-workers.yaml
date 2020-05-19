@@ -55,4 +55,4 @@
           regexp: "DESCRIPTION (.*)"
       - shell: |
           source "$WORKSPACE/global.env"
-          $WORKSPACE/src/progmaticlab/tf-jenkins/infra/${SLAVE}/cleanup_pipeline_workers.sh
+          $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/${SLAVE}/cleanup_pipeline_workers.sh

@@ -107,7 +107,7 @@ def clone_self() {
     branches: [[name: "*/master"]],
     doGenerateSubmoduleConfigurations: false,
     submoduleCfg: [],
-    userRemoteConfigs: [[url: 'https://github.com/progmaticlab/tf-jenkins.git']],
+    userRemoteConfigs: [[url: 'https://github.com/tungstenfabric/tf-jenkins.git']],
     extensions: [
       [$class: 'CleanBeforeCheckout'],
       [$class: 'CloneOption', depth: 1],

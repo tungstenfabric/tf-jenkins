@@ -32,4 +32,4 @@
               variable: OS_AUTH_URL
     builders:
       - shell: |
-          ./src/progmaticlab/tf-jenkins/infra/vexxhost/update_base_images.sh
+          ./src/tungstenfabric/tf-jenkins/infra/vexxhost/update_base_images.sh
