@@ -27,14 +27,12 @@
         job-name: build-prepare-sandbox
         stream: build-centos
         vars:
-          PUBLISH_TYPE: stable
+          DEVENV_TAG: frozen
       fetch-sources-centos:
         job-name: build-fetch-sources
         stream: build-centos
         depends-on:
           - prepare-sandbox-centos
-        vars:
-          PUBLISH_TYPE: build
       package-deployers-centos:
         job-name: build-package-deployers
         stream: build-centos
@@ -157,52 +155,53 @@
 - template:
     name: test-unit
     parents:
-      - build-centos
+      - prepare-sources
     jobs:
       test-unit-agent:
         stream: test-unit
         depends-on:
-          - fetch-sources-centos:
+          - fetch-sources:
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-opserver:
         stream: test-unit
         depends-on:
-          - fetch-sources-centos:
+          - fetch-sources:
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-bgp:
         stream: test-unit
         depends-on:
-          - fetch-sources-centos:
+          - fetch-sources:
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-group-one:
         stream: test-unit
         depends-on:
-          - fetch-sources-centos:
+          - fetch-sources:
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-ungrouped:
         stream: test-unit
         depends-on:
-          - fetch-sources-centos:
+          - fetch-sources:
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
 
+# TODO: think about moving this job into k8s cluster somehow
 - template:
     name: test-unit-ui
     parents:
-      - build-centos
+      - prepare-sources
     jobs:
       test-unit-ui:
         depends-on:
-          - fetch-sources-centos:
+          - fetch-sources:
               inherit-keys:
                 - DEVENV_TAG
         vars:

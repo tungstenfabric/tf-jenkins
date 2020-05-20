@@ -109,6 +109,11 @@ done
 cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 
 ./run.sh "$STAGE" "$TARGET"
+
+echo "INFO: docker images"
+sudo docker images
+echo "INFO: docker containers"
+sudo docker ps -a
 EOF
 
 if [[ "$res" != '0' ]] ; then
