@@ -108,7 +108,13 @@ for mirror in $mirror_list ; do
 done
 cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 
-./run.sh "$STAGE" "$TARGET"
+if [[ -n "$STAGE" ]]; then
+  ./run.sh "$STAGE" "$TARGET"
+else
+  # default stage marked as finished in frozen image - call stages explicitly
+  ./run.sh fetch
+  ./run.sh configure
+fi
 EOF
 
 if [[ "$res" != '0' ]] ; then
