@@ -26,7 +26,8 @@ linux_distr=${TARGET_LINUX_DISTR["${ENVIRONMENT_OS}"]}
 
 echo "INFO: Build started"
 
-export DEVENV_TAG=${DEVENV_TAG:-stable${TAG_SUFFIX}}
+export DEVENV_TAG=${DEVENV_TAG:-frozen${TAG_SUFFIX}}
+#export DEVENV_TAG=${DEVENV_TAG:-stable${TAG_SUFFIX}}
 if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
   # changes in tf-dev-env - we have to rebuild it
   export DEVENV_TAG="sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
@@ -125,11 +126,12 @@ if [[ -z "$STAGE" ]]; then
 fi
 
 if [[ -n "$PUBLISH_TYPE" ]]; then
-  if [[ "$PUBLISH_TYPE" == 'stable' ]]; then
-    tag="$DEVENV_TAG"
-  elif [[ "$PUBLISH_TYPE" == 'build' ]]; then
-    tag="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
-  elif [[ "$PUBLISH_TYPE" == 'frozen' ]]; then
+#  if [[ "$PUBLISH_TYPE" == 'stable' ]]; then
+#    tag="$DEVENV_TAG"
+#  elif [[ "$PUBLISH_TYPE" == 'build' ]]; then
+#    tag="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
+#  elif [[ "$PUBLISH_TYPE" == 'frozen' ]]; then
+  if [[ "$PUBLISH_TYPE" == 'frozen' ]]; then
     tag="frozen$TAG_SUFFIX"
   else
     echo "ERROR: unsupported publish type: $PUBLISH_TYPE"
