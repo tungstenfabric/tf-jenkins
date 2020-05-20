@@ -61,6 +61,9 @@ if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-base.repo /etc/yum.repos.d/
   sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
 fi
+# build devenv and run getch&configure
+./run.sh
+# now run tests
 ./run.sh $@
 EOF
 return $res
