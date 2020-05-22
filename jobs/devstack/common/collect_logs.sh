@@ -11,6 +11,7 @@ cat <<EOF > $WORKSPACE/collect_logs.sh
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export ORCHESTRATOR=$ORCHESTRATOR
+export SSL_ENABLE=$SSL_ENABLE
 export PATH=\$PATH:/usr/sbin
 src/tungstenfabric/tf-devstack/${deployer}/run.sh logs
 EOF
