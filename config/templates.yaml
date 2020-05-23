@@ -368,14 +368,14 @@
     jobs:
       deploy-platform-juju-os:
         stream: juju-os
-        vars:
+#        vars:
 #          SSL_ENABLE: 'true'
       deploy-tf-juju-os:
         stream: juju-os
         depends-on:
           - package-containers-centos
           - deploy-platform-juju-os
-        vars:
+#        vars:
 #          SSL_ENABLE: 'true'
       test-sanity-juju-os:
         job-name: test-sanity
@@ -383,7 +383,7 @@
         depends-on:
           - package-test-containers-centos
           - deploy-tf-juju-os
-        vars:
+#        vars:
 #          SSL_ENABLE: 'true'
       collect-logs-and-cleanup-juju-os:
         job-name: collect-logs-and-cleanup
