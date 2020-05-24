@@ -1,6 +1,6 @@
-pipeline{
+pipeline {
   agent any
-  triggers{
+  triggers {
     cron('15 6 * * *')
   }
   environment {
@@ -9,20 +9,14 @@ pipeline{
   options {
     timeout(time: 10, unit: 'MINUTES') 
   }
-  stages{
+  stages {
     stage('Parallel stage') {
       parallel {
         stage('Build aws usage report') {
-          agent { label 'aws'}
+          agent { label 'aws' }
           steps {
             cleanWs()
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']],
-              doGenerateSubmoduleConfigurations: false,
-              extensions: [],
-              submoduleCfg: [],
-              extensions: [[$class: 'RelativeTargetDirectory', 
-                relativeTargetDir: 'src/tungstenfabric/tf-jenkins']],
-              userRemoteConfigs: [[url: 'https://github.com/tungstenfabric/tf-jenkins.git']]])
+            clone_self()
             withCredentials(
               bindings:
                 [[$class: 'AmazonWebServicesCredentialsBinding',
@@ -31,23 +25,17 @@ pipeline{
                 secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
               sh """
                 export SLAVE="aws"
-                $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/aws/report.sh
+                $WORKSPACE/tf-jenkins/infra/aws/report.sh
               """
               stash allowEmpty: true, name: "aws", excludes: "src/**"
             }
           }
         }
         stage('Build Vexxhost usage report') {
-          agent { label 'vexxhost'}
+          agent { label 'vexxhost' }
           steps {
             cleanWs()
-            checkout([$class: 'GitSCM', branches: [[name: '*/master']],
-              doGenerateSubmoduleConfigurations: false,
-              extensions: [],
-              submoduleCfg: [],
-              extensions: [[$class: 'RelativeTargetDirectory', 
-                relativeTargetDir: 'src/tungstenfabric/tf-jenkins']],
-              userRemoteConfigs: [[url: 'https://github.com/tungstenfabric/tf-jenkins.git']]])
+            clone_self()
             withCredentials(
               bindings:
                 [string(credentialsId: 'VEXX_OS_USERNAME', variable: 'OS_USERNAME'),
@@ -58,7 +46,7 @@ pipeline{
                 string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]){
               sh """
                 export SLAVE="vexxhost"
-                $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/vexxhost/report.sh
+                $WORKSPACE/tf-jenkins/infra/vexxhost/report.sh
               """
               stash allowEmpty: true, name: "vexxhost", excludes: "src/**"
             }
@@ -73,11 +61,9 @@ pipeline{
         unstash "vexxhost"
         sh '''
         if [[ -f "$WORKSPACE/vexxhost.report.txt" ]]; then
-          echo "VEXX instances alive more than 3 days:" >> report.txt
           cat $WORKSPACE/vexxhost.report.txt >> report.txt
         fi
         if [[ -f "$WORKSPACE/aws.report.txt" ]]; then
-          echo "AWS instances alive more than 3 days:" >> report.txt
           cat $WORKSPACE/aws.report.txt >> report.txt
         fi
         '''
@@ -90,4 +76,19 @@ pipeline{
       }
     }
   }
+}
+
+def clone_self() {
+  checkout([
+    $class: 'GitSCM',
+    branches: [[name: "*/master"]],
+    doGenerateSubmoduleConfigurations: false,
+    submoduleCfg: [],
+    userRemoteConfigs: [[url: 'https://github.com/tungstenfabric/tf-jenkins.git']],
+    extensions: [
+      [$class: 'CleanBeforeCheckout'],
+      [$class: 'CloneOption', depth: 1],
+      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
+    ]
+  ])
 }

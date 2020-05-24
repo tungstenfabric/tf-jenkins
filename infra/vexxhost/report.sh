@@ -27,3 +27,7 @@ done
 for h in "${EXCEED[@]}"; do
   echo "${h} $(openstack server show ${h} -f json | jq -r '.name')" >> vexxhost.report.txt
 done
+
+if [ -f vexxhost.report.txt ]; then
+  echo "VEXXHOST instances alive more than 3 days:" | cat - vexxhost.report.txt | tee vexxhost.report.txt
+fi

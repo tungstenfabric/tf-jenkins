@@ -45,3 +45,7 @@ for h in "${EXCEED[@]}"; do
           --output text )
   echo "${h} ${i}" >> aws.report.txt
 done
+
+if [ -f aws.report.txt ]; then
+  echo "VEXXHOST instances alive more than 3 days:" | cat - aws.report.txt | tee aws.report.txt
+fi
