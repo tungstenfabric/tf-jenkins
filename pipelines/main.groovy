@@ -46,7 +46,7 @@ timestamps {
         gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
         if (env.GERRIT_CHANGE_ID) {
           // resolve gerrit_url for further usage
-          gerrit_url = resolve_gerrit_url()
+          gerrit_url = gerrit_utils.resolve_gerrit_url()
           // resolve patcchsets
           gerrit_utils.resolve_patchsets()
           // apply patchsets file onto tf-jenkins repo to get latest changes from review if exist
