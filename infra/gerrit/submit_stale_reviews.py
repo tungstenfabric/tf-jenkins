@@ -36,7 +36,7 @@ def main():
         expert = gerrit_utils.Expert(gerrit)
         for c in filter(lambda c_: expert.is_eligible_for_submit(c_), gerrit.list_active_changes(args.branch)):
             info('submitting review #%s/%s' % (str(c.number), str(c.revision_number)))
-            gerrit.submit(c.number, c.revision_number)
+            gerrit.submit(c, c.revision_number)
 
     except Exception as e:
         print(traceback.format_exc())
