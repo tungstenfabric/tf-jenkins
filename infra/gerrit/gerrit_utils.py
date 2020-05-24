@@ -226,7 +226,7 @@ class Gerrit(object):
             for c in m:
                 start += 1
                 spin = c.get('_more_changes', False)
-                yield Change(c)
+                yield Change(c, self)
 
     def push_message(self, change, message, patchset, labels={}):
         data = {
