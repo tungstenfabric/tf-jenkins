@@ -8,7 +8,7 @@ timestamps {
   timeout(time: TIMEOUT_HOURS, unit: 'HOURS') {
     node("${SLAVE}") {
       clone_self()
-      gerrit = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
+      gerrit = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
       gerrit.submit_stale_reviews()
     }
   }
@@ -24,7 +24,7 @@ def clone_self() {
     extensions: [
       [$class: 'CleanBeforeCheckout'],
       [$class: 'CloneOption', depth: 1],
-      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
+      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src/tungstenfabric/tf-jenkins']
     ]
   ])
 }

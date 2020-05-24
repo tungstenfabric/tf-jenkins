@@ -165,7 +165,7 @@ def _notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, p
 
     // TODO: send comment by sha or patchset num
     sh """
-      ${WORKSPACE}/tf-jenkins/infra/gerrit/notify.py \
+      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/notify.py \
         --gerrit ${url} \
         --user ${GERRIT_API_USER} \
         --password ${GERRIT_API_PASSWORD} \
@@ -199,7 +199,7 @@ def _has_approvals(strategy) {
     def output = ""
     try {
       output = sh(returnStdout: true, script: """
-        ${WORKSPACE}/tf-jenkins/infra/gerrit/check_approvals.py \
+        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/check_approvals.py \
           --strategy ${strategy} \
           --gerrit ${url} \
           --user ${GERRIT_API_USER} \
@@ -221,10 +221,9 @@ def _has_approvals(strategy) {
 }
 
 def resolve_patchsets() {
-  def url = resolve_gerrit_url()
   sh """
-    ${WORKSPACE}/tf-jenkins/infra/gerrit/resolve_patchsets.py \
-      --gerrit ${url} \
+    ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/resolve_patchsets.py \
+      --gerrit ${gerrit_url} \
       --review ${GERRIT_CHANGE_ID} \
       --branch ${GERRIT_BRANCH} \
       --changed_files \
@@ -245,7 +244,7 @@ def submit_stale_reviews() {
 
     def url = resolve_gerrit_url()
     sh """
-      ${WORKSPACE}/tf-jenkins/infra/gerrit/submit_stale_reviews.py \
+      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/submit_stale_reviews.py \
         --gerrit ${url} \
         --user ${GERRIT_API_USER} \
         --password ${GERRIT_API_PASSWORD}

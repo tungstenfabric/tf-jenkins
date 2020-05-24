@@ -25,7 +25,7 @@ pipeline {
                 secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]){
               sh """
                 export SLAVE="aws"
-                $WORKSPACE/tf-jenkins/infra/aws/report.sh
+                $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/aws/report.sh
               """
               stash allowEmpty: true, name: "aws", excludes: "tf-jenkins/**"
             }
@@ -46,7 +46,7 @@ pipeline {
                 string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]){
               sh """
                 export SLAVE="vexxhost"
-                $WORKSPACE/tf-jenkins/infra/vexxhost/report.sh
+                $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/vexxhost/report.sh
               """
               stash allowEmpty: true, name: "vexxhost", excludes: "tf-jenkins/**"
             }
@@ -88,7 +88,7 @@ def clone_self() {
     extensions: [
       [$class: 'CleanBeforeCheckout'],
       [$class: 'CloneOption', depth: 1],
-      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
+      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src/tungstenfabric/tf-jenkins']
     ]
   ])
 }

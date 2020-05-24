@@ -21,7 +21,7 @@ pipeline {
                 secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
               sh """
                 export SLAVE="aws"
-                $WORKSPACE/tf-jenkins/infra/aws/cleanup_stalled_workers.sh
+                $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/aws/cleanup_stalled_workers.sh
               """
             }
           }
@@ -40,7 +40,7 @@ pipeline {
                 string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')]) {
               sh """
                 export SLAVE="vexxhost"
-                $WORKSPACE/tf-jenkins/infra/vexxhost/cleanup_stalled_workers.sh
+                $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/vexxhost/cleanup_stalled_workers.sh
               """
             }            
           }
@@ -60,7 +60,7 @@ def clone_self() {
     extensions: [
       [$class: 'CleanBeforeCheckout'],
       [$class: 'CloneOption', depth: 1],
-      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
+      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src/tungstenfabric/tf-jenkins']
     ]
   ])
 }

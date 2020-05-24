@@ -22,6 +22,7 @@ logs_path = ""
 job_results = [:]
 
 rnd = new Random()
+gerrit_url = null
 
 // gerrit utils
 gerrit_utils = null
@@ -41,16 +42,31 @@ timestamps {
       stage('init') {
         cleanWs(disableDeferredWipeout: true, notFailBuild: true, deleteDirs: true)
         clone_self()
-        gerrit_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gerrit.groovy")
-        config_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/config.groovy")
-        jobs_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/jobs.groovy")
-        gate_utils = load("${WORKSPACE}/tf-jenkins/pipelines/utils/gate.groovy")
+
+        gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
+        if (env.GERRIT_CHANGE_ID) {
+          // resolve gerrit_url for further usage
+          gerrit_url = resolve_gerrit_url()
+          // resolve patcchsets
+          gerrit_utils.resolve_patchsets()
+          // apply patchsets file onto tf-jenkins repo to get latest changes from review if exist
+          sh """#!/bin/bash -e
+            export GERRIT_URL=${gerrit_url}
+            ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-jenkins ./patchsets-info.json
+          """
+          // always reload utils (if tf-jenkins in patchset's list)
+          gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
+        }
+
+        config_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/config.groovy")
+        jobs_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/jobs.groovy")
+        gate_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gate.groovy")
       }
       if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
-            println("There is no gate approvals.. skip gate")
-            currentBuild.description = "Not ready to gate"
-            currentBuild.result = 'UNSTABLE'
-            return
+        println("There is no gate approvals.. skip gate")
+        currentBuild.description = "Not ready to gate"
+        currentBuild.result = 'UNSTABLE'
+        return
       }
 
       def streams = [:]
@@ -84,7 +100,7 @@ timestamps {
           // add gerrit voting +2 +1 / -1 -2
           verified = gerrit_utils.gerrit_vote(pre_build_done, streams, jobs, job_results, (new Date()).getTime() - time_start)
           sh """#!/bin/bash -e
-          echo "export VERIFIED=${verified}" >> global.env
+            echo "export VERIFIED=${verified}" >> global.env
           """
           archiveArtifacts(artifacts: 'global.env')
         }
@@ -111,7 +127,7 @@ def clone_self() {
     extensions: [
       [$class: 'CleanBeforeCheckout'],
       [$class: 'CloneOption', depth: 1],
-      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'tf-jenkins']
+      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src/tungstenfabric/tf-jenkins']
     ]
   ])
 }
@@ -165,13 +181,11 @@ def evaluate_env() {
     println("Pipeline to run: ${env.GERRIT_PIPELINE}")
     project_name = env.GERRIT_PROJECT
     if (env.GERRIT_CHANGE_ID) {
-      url = gerrit_utils.resolve_gerrit_url()
       sh """#!/bin/bash -e
-        echo "export GERRIT_URL=${url}" >> global.env
+        echo "export GERRIT_URL=${gerrit_url}" >> global.env
         echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
         echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
       """
-      gerrit_utils.resolve_patchsets()
     } else if (env.GERRIT_PIPELINE == 'nightly') {
       project_name = "tungstenfabric"
       sh """#!/bin/bash -e

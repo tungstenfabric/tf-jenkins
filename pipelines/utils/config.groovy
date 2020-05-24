@@ -2,13 +2,13 @@
 
 def get_jobs(project_name, gerrit_pipeline) {
   // read main file
-  def data = readYaml(file: "${WORKSPACE}/tf-jenkins/config/projects.yaml")
+  def data = readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/projects.yaml")
   // read includes
   def include_data = []
   for (item in data) {
     if (item.containsKey('include')) {
       for (file in item['include']) {
-        include_data += readYaml(file: "${WORKSPACE}/tf-jenkins/config/${file}")
+        include_data += readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/${file}")
       }
     }
   }
