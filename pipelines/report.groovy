@@ -27,7 +27,7 @@ pipeline {
                 export SLAVE="aws"
                 $WORKSPACE/tf-jenkins/infra/aws/report.sh
               """
-              stash allowEmpty: true, name: "aws", excludes: "src/**"
+              stash allowEmpty: true, name: "aws", excludes: "tf-jenkins/**"
             }
           }
         }
@@ -48,7 +48,7 @@ pipeline {
                 export SLAVE="vexxhost"
                 $WORKSPACE/tf-jenkins/infra/vexxhost/report.sh
               """
-              stash allowEmpty: true, name: "vexxhost", excludes: "src/**"
+              stash allowEmpty: true, name: "vexxhost", excludes: "tf-jenkins/**"
             }
           }
         }
