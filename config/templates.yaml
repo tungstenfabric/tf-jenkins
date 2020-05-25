@@ -365,26 +365,24 @@
     name: juju-os
     parents:
       - build-centos
+    streams:
+      juju-os:
+        vars:
+          SSL_ENABLE: 'true'
     jobs:
       deploy-platform-juju-os:
         stream: juju-os
-#        vars:
-#          SSL_ENABLE: 'true'
       deploy-tf-juju-os:
         stream: juju-os
         depends-on:
           - package-containers-centos
           - deploy-platform-juju-os
-#        vars:
-#          SSL_ENABLE: 'true'
       test-sanity-juju-os:
         job-name: test-sanity
         stream: juju-os
         depends-on:
           - package-test-containers-centos
           - deploy-tf-juju-os
-#        vars:
-#          SSL_ENABLE: 'true'
       collect-logs-and-cleanup-juju-os:
         job-name: collect-logs-and-cleanup
         stream: juju-os
@@ -398,31 +396,27 @@
     name: juju-os-maas
     parents:
       - build-centos
+    streams:
+      juju-os-maas:
+        vars:
+          CLOUD: maas
+          SSL_ENABLE: 'true'
     jobs:
       deploy-platform-juju-os-maas:
         job-name: deploy-platform-juju-os
         stream: juju-os-maas
-        vars:
-          CLOUD: maas
-#          SSL_ENABLE: 'true'
       deploy-tf-juju-os-maas:
         job-name: deploy-tf-juju-os
         stream: juju-os-maas
         depends-on:
           - package-containers-centos
           - deploy-platform-juju-os-maas
-        vars:
-          CLOUD: maas
-#          SSL_ENABLE: 'true'
       test-sanity-juju-os-maas:
         job-name: test-sanity
         stream: juju-os-maas
         depends-on:
           - package-test-containers-centos
           - deploy-tf-juju-os-maas
-        vars:
-          CLOUD: maas
-#          SSL_ENABLE: 'true'
       collect-logs-and-cleanup-juju-os-maas:
         job-name: collect-logs-and-cleanup
         stream: juju-os-maas
