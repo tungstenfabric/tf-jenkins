@@ -2,7 +2,6 @@
 
 - job:
     name: pipeline-submit-opencontrail
-    node: master
     description: Please do not run this manually
     project-type: pipeline
     concurrent: false

@@ -3,7 +3,10 @@ def gerrit
 
 timestamps {
   timeout(time: 10, unit: 'MINUTES') {
-    stage("Check and submit") {
+    node('master') {
+      if (env.GERRIT_PIPELINE != 'submit')
+        throw new Exception("ERROR: This pipeline only for submit trigger!")
+
       clone_self()
       gerrit = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
       gerrit.submit_stale_reviews()

@@ -2,7 +2,6 @@
 
 - job:
     name: pipeline-nightly
-    node: aws
     description: pipeline-nightly
     project-type: pipeline
     concurrent: false

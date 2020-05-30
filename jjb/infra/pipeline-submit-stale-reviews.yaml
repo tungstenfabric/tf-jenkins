@@ -2,7 +2,6 @@
 
 - job:
     name: submit-stale-reviews
-    node: master
     description: Checks stale reviews that has all required flags for submit but still are not submitted
     project-type: pipeline
     concurrent: false

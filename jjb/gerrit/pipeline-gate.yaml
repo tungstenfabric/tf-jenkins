@@ -2,7 +2,6 @@
 
 - job:
     name: pipeline-gate-opencontrail
-    node: aws
     description: Please do not run this manually
     project-type: pipeline
     concurrent: true

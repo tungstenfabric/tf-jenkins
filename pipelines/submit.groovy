@@ -3,7 +3,7 @@ gerrit = null
 
 timestamps {
   timeout(time: 10, unit: 'MINUTES') {
-    node("${SLAVE}") {
+    node('master') {
       if (env.GERRIT_PIPELINE != 'submit')
         throw new Exception("ERROR: This pipeline only for submit trigger!")
 

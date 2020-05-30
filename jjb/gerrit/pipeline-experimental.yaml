@@ -2,7 +2,6 @@
 
 - job:
     name: pipeline-experimental-opencontrail
-    node: aws
     description: pipeline-experimental
     project-type: pipeline
     concurrent: true
