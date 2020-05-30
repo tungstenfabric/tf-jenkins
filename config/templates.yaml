@@ -393,6 +393,37 @@
           - test-sanity-juju-os
 
 - template:
+    name: juju-os-ha
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-juju-os-ha:
+        job-name: deploy-platform-juju-os
+        stream: juju-os-ha
+        vars:
+          NODES: medium:3,small:2
+      deploy-tf-juju-os-ha:
+        job-name: deploy-tf-juju-os
+        stream: juju-os-ha
+        depends-on:
+          - package-containers-centos
+          - deploy-platform-juju-os-ha
+      test-sanity-juju-os-ha:
+        job-name: test-sanity
+        stream: juju-os-ha
+        depends-on:
+          - package-test-containers-centos
+          - deploy-tf-juju-os-ha
+      collect-logs-and-cleanup-juju-os-ha:
+        job-name: collect-logs-and-cleanup
+        stream: juju-os-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-juju-os-ha
+          - deploy-tf-juju-os-ha
+          - test-sanity-juju-os-ha
+
+- template:
     name: juju-os-maas
     parents:
       - build-centos
