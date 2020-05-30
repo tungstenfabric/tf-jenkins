@@ -21,7 +21,7 @@ clean: $(outdir)
 	find $(outdir) -maxdepth 1 -type f ! -name README -delete
 
 test: clean
-	@$(jenkins_jobs) --conf $(jenkins_jobs_ini) --user $(USER) --password $(PASSWORD) test -o $(outdir) jobs
+	@$(jenkins_jobs) --conf $(jenkins_jobs_ini) --user $(USER) --password $(PASSWORD) test -o $(outdir) common:jobs:gerrit:infra
 
 update: clean
-	@$(jenkins_jobs) --conf $(jenkins_jobs_ini) --user $(USER) --password $(PASSWORD) --ignore-cache update jobs
+	@$(jenkins_jobs) --conf $(jenkins_jobs_ini) --user $(USER) --password $(PASSWORD) --ignore-cache update common:jobs:gerrit:infra

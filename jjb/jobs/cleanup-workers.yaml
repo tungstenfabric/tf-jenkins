@@ -1,5 +1,5 @@
 - job:
-    name: "cleanup-pipeline-workers"
+    name: "cleanup-workers"
     description: "cleanup pipeline workers at the end of pipeline"
     defaults: global
     scm:

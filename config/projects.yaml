@@ -47,7 +47,7 @@
       post-jobs:
         publish-centos-stable:
           job-name: publish
-        cleanup-pipeline-workers:
+        cleanup-workers:
           depends-on:
             - publish-centos-stable
 

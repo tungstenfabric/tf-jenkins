@@ -1,9 +1,7 @@
 ---
 
-# must be a ordinary job
-
 - job:
-    name: pipeline-abandon
+    name: pipeline-abandon-opencontrail
     node: master
     description: catches 'abandon' comment from gerrit for particular review
     project-type: pipeline

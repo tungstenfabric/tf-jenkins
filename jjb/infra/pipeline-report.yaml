@@ -1,8 +1,8 @@
 ---
 
 - job:
-    name: pipeline-report
-    description: pipeline-report
+    name: usage-report
+    description: Generates report about too long locked VM-s
     project-type: pipeline
     concurrent: false
     pipeline-scm:

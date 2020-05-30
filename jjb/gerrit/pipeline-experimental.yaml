@@ -1,7 +1,7 @@
 ---
 
 - job:
-    name: pipeline-experimental
+    name: pipeline-experimental-opencontrail
     node: aws
     description: pipeline-experimental
     project-type: pipeline

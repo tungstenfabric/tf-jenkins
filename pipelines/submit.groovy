@@ -1,11 +1,8 @@
-// constansts
-TIMEOUT_HOURS = 4
-
 // gerrit utils
 gerrit = null
 
 timestamps {
-  timeout(time: TIMEOUT_HOURS, unit: 'HOURS') {
+  timeout(time: 10, unit: 'MINUTES') {
     node("${SLAVE}") {
       if (env.GERRIT_PIPELINE != 'submit')
         throw new Exception("ERROR: This pipeline only for submit trigger!")
