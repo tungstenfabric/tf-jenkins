@@ -6,7 +6,7 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-NODES=${NODES:-'medium:1'}
+NODES=${NODES:-"$VM_TYPE:1"}
 
 controllers=`echo $NODES | cut -d',' -f1`
 controller_node_type=`echo $controllers | cut -d':' -f1`

@@ -32,7 +32,7 @@ if [[ -z "$INSTANCE_TYPE" ]]; then
     echo "ERROR: invalid VM_TYPE=$VM_TYPE"
     exit 1
 fi
-echo "INFO: VM_TYPE=$VM_TYPE"
+echo "INFO: VM_TYPE=$VM_TYPE  INSTANCE_TYPE=$INSTANCE_TYPE"
 
 function cleanup () {
   local cleanup_tag=$1
