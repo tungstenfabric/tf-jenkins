@@ -2,17 +2,11 @@
 
 - job:
     name: pipeline-submit-opencontrail
-    node: aws
+    node: master
     description: Please do not run this manually
     project-type: pipeline
     concurrent: false
     parameters:
-      - choice:
-          name: SLAVE
-          choices:
-            - vexxhost
-            - aws
-          description: "Slave where all jobs will be run: vexxhost, aws"
       - hidden:
           name: GERRIT_PIPELINE
           default: submit

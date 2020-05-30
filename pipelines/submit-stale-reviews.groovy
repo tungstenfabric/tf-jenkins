@@ -1,12 +1,9 @@
-// constansts
-TIMEOUT_HOURS = 4
-
 // gerrit utils
 def gerrit
 
 timestamps {
-  timeout(time: TIMEOUT_HOURS, unit: 'HOURS') {
-    node("${SLAVE}") {
+  timeout(time: 10, unit: 'MINUTES') {
+    stage("Check and submit") {
       clone_self()
       gerrit = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
       gerrit.submit_stale_reviews()
