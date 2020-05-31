@@ -13,7 +13,7 @@ controller_node_type=`echo $controllers | cut -d':' -f1`
 controller_node_count=`echo $controllers | cut -d':' -f2`
 export VM_TYPE=$controller_node_type
 export NODES_COUNT=$controller_node_count
-export WORKER_NAME_PREFIX='controller'
+export WORKER_NAME_PREFIX='cn'
 if ! "$my_dir/../../../infra/${SLAVE}/create_workers.sh" ; then
   echo "ERROR: Instances were not created. Exit"
   exit 1
@@ -37,7 +37,7 @@ if [[ $NODES =~ ',' ]] ; then
     agent_node_count=`echo $agents | cut -d':' -f2`
     export VM_TYPE=$agent_node_type
     export NODES_COUNT=$agent_node_count
-    export WORKER_NAME_PREFIX='agent'
+    export WORKER_NAME_PREFIX='an'
     if ! "$my_dir/../../../infra/${SLAVE}/create_workers.sh" ; then
       echo "ERROR: Instances were not created. Exit"
       exit 1
