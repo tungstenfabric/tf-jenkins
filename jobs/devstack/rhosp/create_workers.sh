@@ -10,14 +10,15 @@ source "$WORKSPACE/global.env"
 source "$my_dir/../../../infra/${SLAVE}/definitions"
 source "$my_dir/definitions"
 
-stackrc_file=${stackrc_file:-"$WORKSPACE/stackrc.$JOB_NAME.env"}
+stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
+stackrc_file_path=$WORKSPACE/$stackrc_file
 
-echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$stackrc_file"
+echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$stackrc_file_path"
 IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
-echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file"
-echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file"
-echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" >> "$stackrc_file"
-echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file"
+echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
+echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
+echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" >> "$stackrc_file_path"
+echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
 
 # wait for free resource
 while true; do
@@ -32,4 +33,4 @@ done
 
 
 cd src/tungstenfabric/tf-devstack/rhosp
-vexxrc="$stackrc_file" ./providers/vexx/create_env.sh
+vexxrc="$stackrc_file_path" ./providers/vexx/create_env.sh

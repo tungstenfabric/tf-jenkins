@@ -9,11 +9,12 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
+stackrc_file_path=$WORKSPACE/$stackrc_file
 
-source $WORKSPACE/$stackrc_file
+source $stackrc_file_path
 
 echo "INFO: Deploy platform for $JOB_NAME"
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/$stackrc_file $IMAGE_SSH_USER@$mgmt_ip:./
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $stackrc_file_path $IMAGE_SSH_USER@$mgmt_ip:./
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$mgmt_ip:./
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip || res=1
