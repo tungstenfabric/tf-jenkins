@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 set -o pipefail
 
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -8,23 +8,19 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip || res=1
-[ "${DEBUG,,}" == "true" ] && set -x
-export WORKSPACE=\$HOME
-export DEBUG=$DEBUG
-export PATH=\$PATH:/usr/sbin
-cd tf-devstack/rhosp
-./run.sh logs
-EOF
+# stackrc file is prepared by pipeline based on 
+# previous job's artefacts
+stackrc_file=${stackrc_file:-"deps.${JOB_NAME}.${JOB_RND}.env"}
+stackrc_file_path=$WORKSPACE/$stackrc_file
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$mgmt_ip:logs.tgz $WORKSPACE/logs.tgz
+source $stackrc_file_path
 
-pushd $WORKSPACE
-tar -xzf logs.tgz
-ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "mkdir -p $FULL_LOGS_PATH"
-rsync -a -e "ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS" $WORKSPACE/logs $LOGS_HOST_USERNAME@$LOGS_HOST:$FULL_LOGS_PATH
-rm -rf $WORKSPACE/logs
-echo "INFO: Logs collected at ${LOGS_URL}/${JOB_LOGS_PATH}"
-popd
+function add_deployrc() {
+  local file="$1"
+  cat $stackrc_file_path >> "$file"
+}
+export -f add_deployrc
+export stackrc_file_path
 
-exit $res
+${my_dir}/../common/collect_logs.sh rhosp
+
