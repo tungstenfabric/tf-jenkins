@@ -15,10 +15,10 @@ stackrc_file_path=$WORKSPACE/$stackrc_file
 source $stackrc_file_path
 
 echo 'INFO: Deploy RHOSP overcloud'
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $stackrc_file_path $IMAGE_SSH_USER@$mgmt_ip:./
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$mgmt_ip:./
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $stackrc_file_path $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$mgmt_ip || res=1
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
 export RHEL_USER=$RHEL_USER
 export RHEL_PASSWORD=$RHEL_PASSWORD
 [ "${DEBUG,,}" == "true" ] && set -x
