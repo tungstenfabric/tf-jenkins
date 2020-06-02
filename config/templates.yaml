@@ -461,27 +461,27 @@
     name: rhosp
     parents:
       - build-rhel
-    jobs:
-      deploy-platform-rhosp:
-        stream: rhosp
+    streams:
+      rhosp:
         vars:
           ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: -rhel7
+          DEPLOY_COMPACT_AIO: true
+          ENABLE_RHEL_REGISTRATION: false
+    jobs:
+      deploy-platform-rhosp:
+        stream: rhosp
       deploy-tf-rhosp:
         stream: rhosp
         depends-on:
           - package-containers-rhel
           - deploy-platform-rhosp
-        vars:
-          TAG_SUFFIX: -rhel7
       test-sanity-rhosp:
         job-name: test-sanity
         stream: rhosp
         depends-on:
           - package-test-containers-rhel
           - deploy-tf-rhosp
-        vars:
-          TAG_SUFFIX: -rhel7
       collect-logs-and-cleanup-rhosp:
         job-name: collect-logs-and-cleanup
         stream: rhosp
@@ -490,8 +490,41 @@
           - deploy-platform-rhosp
           - deploy-tf-rhosp
           - test-sanity-rhosp
+
+- template:
+    name: rhosp-bmc
+    parents:
+      - build-rhel
+    streams:
+      rhosp-bmc:
         vars:
+          CLOUD: bmc
+          ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: -rhel7
+    jobs:
+      deploy-platform-rhosp-bmc:
+        job-name: deploy-platform-rhosp
+        stream: rhosp-bmc
+      deploy-tf-rhosp-bmc:
+        job-name: deploy-tf-rhosp
+        stream: rhosp-bmc
+        depends-on:
+          - package-containers-rhel
+          - deploy-platform-rhosp-bmc
+      test-sanity-rhosp-bmc:
+        job-name: test-sanity
+        stream: rhosp-bmc
+        depends-on:
+          - package-test-containers-rhel
+          - deploy-tf-rhosp-bmc
+      collect-logs-and-cleanup-rhosp-bmc:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp-bmc
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-rhosp-bmc
+          - deploy-tf-rhosp-bmc
+          - test-sanity-rhosp-bmc
 
 - template:
     name: openshift
