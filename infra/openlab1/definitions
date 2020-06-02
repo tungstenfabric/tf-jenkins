@@ -1,0 +1,3 @@
+export IMAGE_SSH_USER="stack"
+export VM_NAME="undercloud"
+export INSTANCE_IP="10.10.50.10"
