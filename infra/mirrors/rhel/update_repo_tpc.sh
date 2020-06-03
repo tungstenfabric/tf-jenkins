@@ -29,7 +29,7 @@ pushd $stor
 yumdownloader --disablerepo=* --enablerepo="external-tpc" *
 
 for f in $(find . -type f -name "*.rpm" | grep "$filter" | sed 's/^\.\///g'); do 
-  curl -s -u admin:$nexus_admin_password --upload-file $f http://pnexus.sytes.net/repository/yum-tpc-binary/$f
+  curl -s -u admin:$nexus_admin_password --upload-file $f http://nexus.jenkins.progmaticlab.com/repository/yum-tpc-binary/$f
 done
 
 popd

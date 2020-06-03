@@ -1,23 +1,23 @@
-[pnexus.sytes.net_repository_centos7-os]
-name=added from: http://pnexus.sytes.net/repository/centos7-os
-baseurl=http://pnexus.sytes.net/repository/centos7-os
+[nexus.jenkins.progmaticlab.com_repository_centos7-os]
+name=added from: http://nexus.jenkins.progmaticlab.com/repository/centos7-os
+baseurl=http://nexus.jenkins.progmaticlab.com/repository/centos7-os
 enabled=1
 gpgcheck=0
 
-[pnexus.sytes.net_repository_centos7-extras]
-name=added from: http://pnexus.sytes.net/repository/centos7-extras
-baseurl=http://pnexus.sytes.net/repository/centos7-extras
+[nexus.jenkins.progmaticlab.com_repository_centos7-extras]
+name=added from: http://nexus.jenkins.progmaticlab.com/repository/centos7-extras
+baseurl=http://nexus.jenkins.progmaticlab.com/repository/centos7-extras
 enabled=1
 gpgcheck=0
 
-[pnexus.sytes.net_repository_centos7-updates]
-name=added from: http://pnexus.sytes.net/repository/centos7-updates
-baseurl=http://pnexus.sytes.net/repository/centos7-updates
+[nexus.jenkins.progmaticlab.com_repository_centos7-updates]
+name=added from: http://nexus.jenkins.progmaticlab.com/repository/centos7-updates
+baseurl=http://nexus.jenkins.progmaticlab.com/repository/centos7-updates
 enabled=1
 gpgcheck=0
 
-[pnexus.sytes.net_repository_centos7-updates-old]
-name=added from: http://pnexus.sytes.net/repository/centos7-updates-old
-baseurl=http://pnexus.sytes.net/repository/centos7-updates-old
+[nexus.jenkins.progmaticlab.com_repository_centos7-updates-old]
+name=added from: http://nexus.jenkins.progmaticlab.com/repository/centos7-updates-old
+baseurl=http://nexus.jenkins.progmaticlab.com/repository/centos7-updates-old
 enabled=1
 gpgcheck=0
