@@ -3,6 +3,9 @@ set -o pipefail
 
 [ "${DEBUG,,}" == "true" ] && set -x
 
+# TODO: remove it. just for this script
+set -x
+
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
