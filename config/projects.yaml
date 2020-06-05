@@ -371,10 +371,12 @@
     name: tungstenfabric/tf-dev-env
     check:
       templates:
-        - build-rhel
-        - build-centos
-        - test-unit-ui
-        - ansible-k8s
+        #- build-rhel
+        #- build-centos
+        #- test-unit-ui
+        #- ansible-k8s
+        - juju-k8s
+        - juju-os-maas
         - cleanup
 
 - project:
