@@ -1,0 +1,4 @@
+export ENVIRONMENT_OS="ubuntu18"
+export IMAGE_SSH_USER="jenkins"
+export INSTANCE_IP="192.168.51.5"
+export VM_NAME="vm-maas"

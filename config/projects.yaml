@@ -381,8 +381,10 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
-        - build-rhel
-        - build-centos
-        - test-unit
-        - ansible-os
+        #- build-rhel
+        #- build-centos
+        #- test-unit
+        #- ansible-os
+        - juju-k8s
+        - juju-os-maas
         - cleanup
