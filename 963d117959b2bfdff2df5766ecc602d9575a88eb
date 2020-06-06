@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "71c0d019_e3dcf103",
+        "filename": "jobs/devstack/rhosp/definitions",
+        "patchSetId": 16
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 471
+      },
+      "writtenOn": "2020-06-06T16:16:53Z",
+      "side": 0,
+      "message": "these variables has moved to config/templates.yaml, there is no need to use them here",
+      "parentUuid": "915b0856_c3b415a5",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 30
+      },
+      "revId": "963d117959b2bfdff2df5766ecc602d9575a88eb",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "982d05d2_7bfc828f",
         "filename": "jobs/devstack/rhosp/definitions",
         "patchSetId": 16
@@ -39,6 +63,24 @@
       "revId": "963d117959b2bfdff2df5766ecc602d9575a88eb",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8431d2c8_63c839e7",
+        "filename": "jobs/devstack/rhosp/definitions",
+        "patchSetId": 16
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 471
+      },
+      "writtenOn": "2020-06-06T16:16:53Z",
+      "side": 0,
+      "message": "here is the same",
+      "parentUuid": "982d05d2_7bfc828f",
+      "revId": "963d117959b2bfdff2df5766ecc602d9575a88eb",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
