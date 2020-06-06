@@ -221,13 +221,12 @@
       deploy-tf-k8s-manifests:
         stream: k8s-manifests
         depends-on:
-          - package-containers-centos
+          - package-centos
           - deploy-platform-k8s-manifests
       test-sanity-k8s-manifests:
         job-name: test-sanity
         stream: k8s-manifests
         depends-on:
-          - package-test-containers-centos
           - deploy-tf-k8s-manifests
       test-smoke-k8s-manifests:
         job-name: test-smoke
@@ -260,13 +259,12 @@
       deploy-tf-ansible-k8s:
         stream: ansible-k8s
         depends-on:
-          - package-containers-centos
+          - package-centos
           - deploy-platform-ansible-k8s
       test-sanity-ansible-k8s:
         job-name: test-sanity
         stream: ansible-k8s
         depends-on:
-          - package-test-containers-centos
           - deploy-tf-ansible-k8s
       collect-logs-and-cleanup-ansible-k8s:
         job-name: collect-logs-and-cleanup
@@ -290,13 +288,12 @@
       deploy-tf-ansible-os:
         stream: ansible-os
         depends-on:
-          - package-containers-centos
+          - package-centos
           - deploy-platform-ansible-os
       test-sanity-ansible-os:
         job-name: test-sanity
         stream: ansible-os
         depends-on:
-          - package-test-containers-centos
           - deploy-tf-ansible-os
       collect-logs-and-cleanup-ansible-os:
         job-name: collect-logs-and-cleanup
@@ -317,13 +314,12 @@
       deploy-tf-helm-k8s:
         stream: helm-k8s
         depends-on:
-          - package-containers-centos
+          - package-centos
           - deploy-platform-helm-k8s
       test-sanity-helm-k8s:
         job-name: test-sanity
         stream: helm-k8s
         depends-on:
-          - package-test-containers-centos
           - deploy-tf-helm-k8s
       collect-logs-and-cleanup-helm-k8s:
         job-name: collect-logs-and-cleanup
@@ -344,13 +340,12 @@
       deploy-tf-helm-os:
         stream: helm-os
         depends-on:
-          - package-containers-centos
+          - package-centos
           - deploy-platform-helm-os
       test-sanity-helm-os:
         job-name: test-sanity
         stream: helm-os
         depends-on:
-          - package-test-containers-centos
           - deploy-tf-helm-os
       collect-logs-and-cleanup-helm-os:
         job-name: collect-logs-and-cleanup
@@ -371,13 +366,12 @@
       deploy-tf-juju-k8s:
         stream: juju-k8s
         depends-on:
-          - package-containers-centos
+          - package-centos
           - deploy-platform-juju-k8s
       test-sanity-juju-k8s:
         job-name: test-sanity
         stream: juju-k8s
         depends-on:
-          - package-test-containers-centos
           - deploy-tf-juju-k8s
       collect-logs-and-cleanup-juju-k8s:
         job-name: collect-logs-and-cleanup
@@ -402,13 +396,12 @@
       deploy-tf-juju-os:
         stream: juju-os
         depends-on:
-          - package-containers-centos
+          - package-centos
           - deploy-platform-juju-os
       test-sanity-juju-os:
         job-name: test-sanity
         stream: juju-os
         depends-on:
-          - package-test-containers-centos
           - deploy-tf-juju-os
       collect-logs-and-cleanup-juju-os:
         job-name: collect-logs-and-cleanup
@@ -433,13 +426,12 @@
         job-name: deploy-tf-juju-os
         stream: juju-os-ha
         depends-on:
-          - package-containers-centos
+          - package-centos
           - deploy-platform-juju-os-ha
       test-sanity-juju-os-ha:
         job-name: test-sanity
         stream: juju-os-ha
         depends-on:
-          - package-test-containers-centos
           - deploy-tf-juju-os-ha
       collect-logs-and-cleanup-juju-os-ha:
         job-name: collect-logs-and-cleanup
@@ -467,13 +459,12 @@
         job-name: deploy-tf-juju-os
         stream: juju-os-maas
         depends-on:
-          - package-containers-centos
+          - package-centos
           - deploy-platform-juju-os-maas
       test-sanity-juju-os-maas:
         job-name: test-sanity
         stream: juju-os-maas
         depends-on:
-          - package-test-containers-centos
           - deploy-tf-juju-os-maas
       collect-logs-and-cleanup-juju-os-maas:
         job-name: collect-logs-and-cleanup
@@ -497,7 +488,7 @@
       deploy-tf-rhosp:
         stream: rhosp
         depends-on:
-          - package-containers-rhel
+          - package-rhel
           - deploy-platform-rhosp
         vars:
           TAG_SUFFIX: -rhel7
@@ -505,7 +496,6 @@
         job-name: test-sanity
         stream: rhosp
         depends-on:
-          - package-test-containers-rhel
           - deploy-tf-rhosp
         vars:
           TAG_SUFFIX: -rhel7
@@ -535,7 +525,7 @@
         stream: openshift
         depends-on:
           - deploy-platform-openshift
-          - package-containers-rhel
+          - package-rhel
         vars:
           TAG_SUFFIX: -rhel7
           RHEL_OPENSHIFT_REGISTRY: rhel-mirrors.tf-jenkins.progmaticlab.com:5000
@@ -543,7 +533,6 @@
         job-name: test-sanity
         stream: openshift
         depends-on:
-          - package-test-containers-rhel
           - deploy-tf-openshift
         vars:
           TAG_SUFFIX: -rhel7
