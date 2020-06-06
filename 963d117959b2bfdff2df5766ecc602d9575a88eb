@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "915b0856_c3b415a5",
+        "filename": "jobs/devstack/rhosp/definitions",
+        "patchSetId": 16
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-06T15:21:10Z",
+      "side": 0,
+      "message": "this still needed for vexx lab.\nso it should be used and it depends on CLOUD",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 30
+      },
+      "revId": "963d117959b2bfdff2df5766ecc602d9575a88eb",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "982d05d2_7bfc828f",
+        "filename": "jobs/devstack/rhosp/definitions",
+        "patchSetId": 16
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-06T15:21:10Z",
+      "side": 0,
+      "message": "this must be used.",
+      "revId": "963d117959b2bfdff2df5766ecc602d9575a88eb",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}

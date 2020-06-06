@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1c52f8db_f604d03d",
+        "filename": "jobs/devstack/rhosp/deploy_platform.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-06T15:21:10Z",
+      "side": 1,
+      "message": "that script uses instance_ip for ssh but here before was mgmt_ip\nso it is needed to be exported before the call.",
+      "revId": "4188ef82347bc0eb45e311890fea943c2a084e59",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32b706f0_39775fd0",
+        "filename": "jobs/devstack/rhosp/deploy_tf.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-06T15:21:10Z",
+      "side": 1,
+      "message": "same about instance_ip and mgmt_ip",
+      "revId": "4188ef82347bc0eb45e311890fea943c2a084e59",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
