@@ -45,21 +45,16 @@
         stream: build-centos
         depends-on:
           - package-deployers-centos
-      package-containers-centos:
-        job-name: build-package-containers
+      package-centos:
+        job-name: build-package
         stream: build-centos
         depends-on:
           - compile-centos
-      package-test-containers-centos:
-        job-name: build-package-test-containers
-        stream: build-centos
-        depends-on:
-          - package-containers-centos
       freeze-centos:
         job-name: build-freeze
         stream: build-centos
         depends-on:
-          - package-test-containers-centos
+          - package-centos
         vars:
           PUBLISH_TYPE: frozen
       cleanup-centos:
@@ -102,30 +97,62 @@
         stream: build-rhel
         depends-on:
           - package-deployers-rhel
-      package-containers-rhel:
-        job-name: build-package-containers
+      package-rhel:
+        job-name: build-package
         stream: build-rhel
         depends-on:
           - compile-rhel
-      package-test-containers-rhel:
-        job-name: build-package-test-containers
-        stream: build-rhel
-        depends-on:
-          - package-containers-rhel
-      freeze-rhel:
-        job-name: build-freeze
-        stream: build-rhel
-        depends-on:
-          - package-test-containers-rhel
-        vars:
-          PUBLISH_TYPE: frozen
       cleanup-rhel:
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
         stream: build-rhel
         type: stream-post-hook
         depends-on:
-          - freeze-rhel
+          - package-rhel
+
+- template:
+    name: build-r1912
+    streams:
+      build-r1912:
+        vars:
+          GERRIT_BRANCH: "R1912"
+          TAG_SUFFIX: "-r1912"
+    jobs:
+      prepare-sandbox-r1912:
+        # it creates worker
+        job-name: build-prepare-sandbox
+        stream: build-r1912
+        vars:
+          PUBLISH_TYPE: stable
+      fetch-sources-r1912:
+        job-name: build-fetch-sources
+        stream: build-r1912
+        depends-on:
+          - prepare-sandbox-r1912
+        vars:
+          PUBLISH_TYPE: build
+      package-deployers-r1912:
+        job-name: build-package-deployers
+        stream: build-r1912
+        depends-on:
+          - fetch-sources-r1912
+      compile-r1912:
+        job-name: build-compile
+        stream: build-r1912
+        depends-on:
+          - package-deployers-r1912
+      package-r1912:
+        job-name: build-package
+        stream: build-r1912
+        depends-on:
+          - compile-r1912
+      cleanup-r1912:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
+        stream: build-r1912
+        type: stream-post-hook
+        depends-on:
+          - package-r1912
 
 - template:
     name: test-unit

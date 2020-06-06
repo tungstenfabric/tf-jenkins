@@ -20,7 +20,7 @@
         juju-os-maas:
           voting: false
       templates:
-        #- build-r1912
+        - build-r1912
         - test-unit
         - test-unit-ui
         - k8s-manifests

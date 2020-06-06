@@ -145,12 +145,9 @@
       - compile:
           stage: compile
           target: ""
-      - package-containers:
+      - package:
           stage: package
-          target: containers
-      - package-test-containers:
-          stage: package
-          target: test-containers
+          target: ""
       - freeze:
           stage: freeze
           target: ""
