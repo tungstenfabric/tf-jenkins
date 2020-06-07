@@ -13,7 +13,14 @@ export DEBUG=$DEBUG
 export ORCHESTRATOR=$ORCHESTRATOR
 export SSL_ENABLE=$SSL_ENABLE
 export PATH=\$PATH:/usr/sbin
-src/tungstenfabric/tf-devstack/${deployer}/run.sh logs
+EOF
+
+if declare -f -F add_deployrc &>/dev/null ; then
+  add_deployrc $WORKSPACE/collect_logs.sh
+fi
+
+cat <<EOF >> $WORKSPACE/collect_logs.sh
+./src/tungstenfabric/tf-devstack/${deployer}/run.sh logs
 EOF
 
 chmod a+x $WORKSPACE/collect_logs.sh

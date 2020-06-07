@@ -15,5 +15,11 @@ stackrc_file_path=$WORKSPACE/$stackrc_file
 
 source $stackrc_file_path
 
-export instance_ip=$mgmt_ip
+function add_deployrc() {
+  local file="$1"
+  cat $stackrc_file_path >> "$file"
+}
+export -f add_deployrc
+export stackrc_file_path
+
 ${my_dir}/../common/collect_logs.sh rhosp
