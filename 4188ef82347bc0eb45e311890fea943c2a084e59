@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "101e3126_cf8fb650",
+        "filename": "jobs/devstack/rhosp/deploy_platform.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 471
+      },
+      "writtenOn": "2020-06-07T16:04:22Z",
+      "side": 1,
+      "message": "tf-devstack/.../providers/vexx/create_env.sh also adds $mgmt_ip to $stackrc_file",
+      "parentUuid": "113146c0_5a10db44",
+      "revId": "4188ef82347bc0eb45e311890fea943c2a084e59",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "32b706f0_39775fd0",
         "filename": "jobs/devstack/rhosp/deploy_tf.sh",
         "patchSetId": 16
