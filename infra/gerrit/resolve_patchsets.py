@@ -24,19 +24,19 @@ class DependencyLoopError(Exception):
 
 
 def resolve_dependencies(gerrit, change, parent_ids=[]):
-    result = [ change ]
+    result = [change]
     parent_ids.append(change.change_id)
     depends_on_list = change.depends_on
     for i in depends_on_list:
         if i in parent_ids:
             raise DependencyLoopError(
-                "There is dependency loop detected: id %s is already in %s" \
+                "There is dependency loop detected: id %s is already in %s"
                 % (i, parent_ids)
             )
         cc = gerrit.get_current_change(i, change.branch)
         if cc:
             result += resolve_dependencies(gerrit, cc, copy.deepcopy(parent_ids))
-    return result            
+    return result
 
 
 def resolve_files(gerrit, changes_list):
@@ -69,7 +69,8 @@ def main():
     parser.add_argument("--review", help="Review ID", dest="review", type=str)
     parser.add_argument("--branch", help="Branch", dest="branch", type=str)
     parser.add_argument("--changed_files", dest="changed_files", action="store_true")
-    parser.add_argument("--output",
+    parser.add_argument(
+        "--output",
         help="Save result into the file instead stdout",
         default=None, dest="output", type=str)
     args = parser.parse_args()

@@ -21,11 +21,13 @@ def main():
         description="TF tool for auto-submitting stale Gerrit reviews")
     parser.add_argument("--debug", dest="debug", action="store_true")
     parser.add_argument("--gerrit", help="Gerrit URL", dest="gerrit", type=str)
-    parser.add_argument("--branch", required=False,
+    parser.add_argument(
+        "--branch", required=False,
         help="Branch (optional, it is mundatory in case of cherry-picks)",
         dest="branch", type=str)
     parser.add_argument("--user", help="Gerrit user", dest="user", type=str)
-    parser.add_argument("--password", help="Gerrit API password",
+    parser.add_argument(
+        "--password", help="Gerrit API password",
         dest="password", type=str)
     args = parser.parse_args()
 
@@ -34,9 +36,13 @@ def main():
     try:
         gerrit = gerrit_utils.Gerrit(args.gerrit, args.user, args.password)
         expert = gerrit_utils.Expert(gerrit)
-        for c in filter(lambda c_: expert.is_eligible_for_submit(c_), gerrit.list_active_changes(args.branch)):
-            info('submitting review #%s/%s' % (str(c.number), str(c.revision_number)))
-            gerrit.submit(c, c.revision_number)
+        for commit in gerrit.list_active_changes(args.branch):
+            try:
+                if expert.is_eligible_for_submit(commit):
+                    info('submitting review #%s/%s' % (str(commit.number), str(commit.revision_number)))
+                    gerrit.submit(commit, commit.revision_number)
+            except Exception as e:
+                info('failed to check review #{}/{}: {}'.format(commit.number, commit.revision_number, e))
 
     except Exception as e:
         print(traceback.format_exc())
