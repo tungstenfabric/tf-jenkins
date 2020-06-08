@@ -97,7 +97,7 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
      sleep 60
    done
 
-  nova boot --flavor ${INSTANCE_TYPE} \
+  nova_boot="nova boot --flavor ${INSTANCE_TYPE} \
             --security-groups ${OS_SG} \
             --key-name=worker \
             --min-count ${NODES_COUNT} \
@@ -105,9 +105,9 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
             --nic net-name=${OS_NETWORK} \
             --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=120,bootindex=0 \
             --poll \
-            ${instance_name}
+            ${instance_name}"
 
-  if [[ $? != 0 ]] ; then
+  if ! $nova_boot ; then
     echo "ERROR: Instances creation is failed on nova boot. Retry"
     cleanup ${group_tag}
     sleep 60
