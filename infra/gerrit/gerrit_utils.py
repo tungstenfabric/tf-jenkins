@@ -56,7 +56,7 @@ class Session(object):
         if not res.ok:
             msg = "Failed request %s with code %s: %s" % (res.url, res.status_code, res.content)
             raise GerritRequestError(msg)
-        response = res.text.strip(')]}\'')
+        _ = res.text.strip(')]}\'')
 
 
 class Change(object):
@@ -152,7 +152,7 @@ class Change(object):
         if parent and parent.is_active:
             result.append(parent.id)
             result += parent.depends_on
-        # collect Depends-On from commit message 
+        # collect Depends-On from commit message
         msg = self._data['revisions'][self.revision]['commit']['message']
         for d in DEPENDS_RE.findall(msg):
             review_id = d.split(':')[1].strip()
@@ -176,8 +176,8 @@ class Gerrit(object):
         return self._session.get('/changes/', params=params)
 
     def get_changed_files(self, change):
-        raw = self._session.get("/changes/%s/revisions/%s/files" %
-            (change.id, change.revision_number))
+        raw = self._session.get("/changes/%s/revisions/%s/files"
+                                % (change.id, change.revision_number))
         res = list()
         for k, _ in raw.items():
             if k != "/COMMIT_MSG":
@@ -192,7 +192,7 @@ class Gerrit(object):
             # there is no active reviews
             return None
         if len(res) == 1:
-            # there is no ambiguite, so return the found change 
+            # there is no ambiguite, so return the found change
             return Change(res[0], self)
         # there is ambiquity - try to resolve it by branch
         branches = {i.get('branch'): i for i in res}
@@ -207,14 +207,14 @@ class Gerrit(object):
         params = 'q=commit:%s&o=CURRENT_COMMIT&o=CURRENT_REVISION&o=DETAILED_LABELS' % sha
         res = self._session.get('/changes/', params=params)
         if len(res) == 1:
-            # there is no ambiguity, so return the found change 
+            # there is no ambiguity, so return the found change
             return Change(res[0], self)
         elif len(res) == 0:
             dbg("Cannot find a change for SHA %s" % sha)
             return None
         raise GerritRequestError("Search for SHA %s has too many results" % sha)
 
-    def list_active_changes(self, branch_ = None):
+    def list_active_changes(self, branch_=None):
         spin = True
         start = 0
         q = 'n=5&o=CURRENT_COMMIT&o=CURRENT_REVISION&o=DETAILED_LABELS&q=status:NEW'
@@ -309,4 +309,3 @@ class Expert(object):
         return self.__is_eligible_general_test(change_) and \
             self.is_mergeable(change_) and self.is_approved(change_) and \
             self.is_verified(change_, 2) and not self.has_unmerged_parents(change_)
-

@@ -39,11 +39,13 @@ def main():
     parser.add_argument("--debug", dest="debug", action="store_true")
     parser.add_argument("--gerrit", help="Gerrit URL", dest="gerrit", type=str)
     parser.add_argument("--review", help="Review ID", dest="review", type=str)
-    parser.add_argument("--branch",
+    parser.add_argument(
+        "--branch",
         help="Branch (optional, it is mandatory in case of cherry-picks)",
         dest="branch", type=str)
     parser.add_argument("--user", help="Gerrit user", dest="user", type=str)
-    parser.add_argument("--password", help="Gerrit API password",
+    parser.add_argument(
+        "--password", help="Gerrit API password",
         dest="password", type=str)
     args = parser.parse_args()
 
