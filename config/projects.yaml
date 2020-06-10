@@ -65,7 +65,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-ansible-deployer
+    name: tungstenfabric/tf-ansible-deployer
     check:
       templates:
         - ansible-k8s
