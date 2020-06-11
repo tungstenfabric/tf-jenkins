@@ -53,12 +53,13 @@ function cleanup () {
 
 function wait_for_instance_availability () {
    local instance_ip=$1
+   res=0
    timeout 300 bash -c "\
    while /bin/true ; do \
        ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
        sleep 10 ; \
-   done"
-   if [[ $? != 0 ]] ; then
+   done" || res=1
+   if [[ $res != 0 ]] ; then
      echo "ERROR: VM  with ip $instance_ip is unreachable. Exit "
      return 1
    fi
