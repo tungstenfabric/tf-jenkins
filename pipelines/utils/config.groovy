@@ -108,6 +108,8 @@ def _resolve_templates(def config_data) {
       parents_found = true
       def new_parents = []
       for (def parent in item.value['parents']) {
+        if (!templates.containsKey(parent))
+          throw new Exception("ERROR: Unknown parent: ${parent}")
         if (templates[parent].containsKey('parents')) {
           new_parents += parent
           continue
