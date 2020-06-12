@@ -78,7 +78,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-kolla-ansible
+    name: tungstenfabric/tf-kolla-ansible
     check:
       templates:
         - ansible-os
@@ -102,7 +102,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-container-builder
+    name: tungstenfabric/tf-container-builder
     check:
       templates:
         - build-rhel
@@ -131,7 +131,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-api-client
+    name: tungstenfabric/tf-api-client
     check:
       templates:
         - test-unit
@@ -161,7 +161,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-vrouter
+    name: tungstenfabric/tf-vrouter
     check:
       templates:
         - test-unit
@@ -206,7 +206,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-test
+    name: tungstenfabric/tf-test
     check:
       templates:
         - ansible-k8s
@@ -219,7 +219,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-neutron-plugin
+    name: tungstenfabric/tf-neutron-plugin
     check:
       templates:
         - test-unit
@@ -247,7 +247,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-third-party-packages
+    name: tungstenfabric/tf-third-party-packages
     check:
       templates:
         - ansible-k8s
