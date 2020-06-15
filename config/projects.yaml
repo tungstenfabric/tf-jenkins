@@ -400,7 +400,6 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
-        - build-rhel
         - build-centos
-        - ansible-os
+        - juju-os-ha
         - cleanup
