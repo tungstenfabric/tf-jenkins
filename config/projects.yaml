@@ -386,3 +386,4 @@
         - test-unit
         - ansible-os
         - cleanup
+        - juju-os-maas
