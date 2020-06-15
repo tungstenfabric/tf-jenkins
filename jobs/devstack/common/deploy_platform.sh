@@ -14,11 +14,13 @@ export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export ORCHESTRATOR=$ORCHESTRATOR
 export OPENSTACK_VERSION=$OPENSTACK_VERSION
-export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
-export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export SSL_ENABLE=$SSL_ENABLE
 export PATH=\$PATH:/usr/sbin
 EOF
+
+#do not define registry and tags for openstack platform
+[[ "$ORCHESTRATOR"!="openstack" ]] &&  echo "export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"" >> $WORKSPACE/deploy_platform.sh && \
+echo "export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"" >> $WORKSPACE/deploy_platform.sh
 
 if declare -f -F add_deployrc &>/dev/null ; then
   add_deployrc $WORKSPACE/deploy_platform.sh
