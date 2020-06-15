@@ -18,11 +18,17 @@ echo "export SSH_EXTRA_OPTIONS=\"-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/
 cat <<EOF | ssh -i $OPENLAB2_SSH_KEY $SSH_OPTIONS -p 30002 jenkins@openlab.tf-jenkins.progmaticlab.com
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
-virsh destroy $VM_NAME || /bin/true
-virsh undefine $VM_NAME || /bin/true
-rm -f $VM_NAME.qcow2
-virt-clone --original $ENVIRONMENT_OS --name $VM_NAME --auto-clone --file $VM_NAME.qcow2
-virsh start $VM_NAME
+virsh destroy $VM_NAME_MAAS || /bin/true
+virsh undefine $VM_NAME_MAAS || /bin/true
+rm -f $VM_NAME_MAAS.qcow2
+virsh destroy $VM_NAME_JUJUC || /bin/true
+virsh undefine $VM_NAME_JUJUC || /bin/true
+rm -f $VM_NAME_JUJUC.qcow2
+
+virt-clone --original $ENVIRONMENT_OS --name $VM_NAME_MAAS --auto-clone --file $VM_NAME_MAAS.qcow2
+virt-clone --original $ENVIRONMENT_OS --name $VM_NAME_JUJUC --auto-clone --file $VM_NAME_JUJUC.qcow2
+virsh start $VM_NAME_MAAS
+virsh start $VM_NAME_JUJUC
 echo "VM is spinned"
 EOF
 
