@@ -12,6 +12,8 @@ source "$my_dir/definitions"
 export stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 export stackrc_file_path=$WORKSPACE/$stackrc_file
 
+source $stackrc_file_path
+
 function add_deployrc() {
   local file="$1"
   cat "$stackrc_file_path" >> "$file"
