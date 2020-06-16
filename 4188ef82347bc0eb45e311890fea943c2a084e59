@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "b0fef6c0_5f5daaf8",
+        "filename": "jobs/devstack/rhosp/deploy_platform.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-16T09:03:09Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "101e3126_cf8fb650",
+      "revId": "4188ef82347bc0eb45e311890fea943c2a084e59",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "32b706f0_39775fd0",
         "filename": "jobs/devstack/rhosp/deploy_tf.sh",
         "patchSetId": 16
@@ -84,6 +102,24 @@
       "side": 1,
       "message": "infra/openlab1/create_workers.sh already exported this to $stackrc_file",
       "parentUuid": "32b706f0_39775fd0",
+      "revId": "4188ef82347bc0eb45e311890fea943c2a084e59",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b467cf65_c96b9d8c",
+        "filename": "jobs/devstack/rhosp/deploy_tf.sh",
+        "patchSetId": 16
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-16T09:03:09Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "1d7337da_7329bd9a",
       "revId": "4188ef82347bc0eb45e311890fea943c2a084e59",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": false
