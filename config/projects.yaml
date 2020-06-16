@@ -302,7 +302,7 @@
         - cleanup
 
 - project:
-    name: Juniper/contrail-tripleo-heat-templates
+    name: tungstenfabric/tf-tripleo-heat-templates
     check:
       templates:
         - rhosp
@@ -313,7 +313,7 @@
         - cleanup
 
 - project:
-    name: Juniper/openshift-ansible
+    name: tungstenfabric/tf-openshift-ansible
     check:
       templates:
         - openshift
