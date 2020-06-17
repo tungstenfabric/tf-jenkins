@@ -55,7 +55,7 @@
             - publish-centos-stable
 
 - project:
-    name: Juniper/contrail-vnc
+    name: tungstenfabric/tf-vnc
     check:
       templates:
         - ansible-k8s
