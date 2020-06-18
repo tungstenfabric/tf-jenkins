@@ -306,10 +306,12 @@
     check:
       templates:
         - rhosp
+        #- rhosp16
         - cleanup
     gate:
       templates:
         - rhosp
+        #- rhosp16
         - cleanup
 
 - project:
