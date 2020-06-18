@@ -34,7 +34,7 @@
         - juju-os
         - juju-os-maas
         - rhosp
-        #- rhosp-bmc
+        - rhosp-bmc
         - cleanup
       jobs:
         publish-centos-nightly:
@@ -384,8 +384,10 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
-        - build-rhel
-        - build-centos
-        - test-unit
-        - ansible-os
+        #- build-rhel
+        #- build-centos
+        #- test-unit
+        #- ansible-os
+        - rhosp
+        - rhosp-bmc
         - cleanup
