@@ -111,6 +111,51 @@
           - package-rhel
 
 - template:
+    name: build-rhel8
+    streams:
+      build-rhel8:
+        vars:
+          ENVIRONMENT_OS: rhel8
+          LINUX_DISTR_VER: 8.2
+          TAG_SUFFIX: -rhel8
+    jobs:
+      prepare-sandbox-rhel8:
+        # it creates worker
+        job-name: build-prepare-sandbox
+        stream: build-rhel8
+        vars:
+          PUBLISH_TYPE: stable
+      fetch-sources-rhel8:
+        job-name: build-fetch-sources
+        stream: build-rhel8
+        depends-on:
+          - prepare-sandbox-rhel8
+        vars:
+          PUBLISH_TYPE: build
+      package-deployers-rhel8:
+        job-name: build-package-deployers
+        stream: build-rhel8
+        depends-on:
+          - fetch-sources-rhel8
+      compile-rhel8:
+        job-name: build-compile
+        stream: build-rhel8
+        depends-on:
+          - package-deployers-rhel8
+      package-rhel8:
+        job-name: build-package
+        stream: build-rhel8
+        depends-on:
+          - compile-rhel8
+      cleanup-rhel8:
+        # it doesn't call devenv - it removes worker completely
+        job-name: build-cleanup
+        stream: build-rhel8
+        type: stream-post-hook
+        depends-on:
+          - package-rhel8
+
+- template:
     name: build-r1912
     streams:
       build-r1912:
@@ -482,6 +527,7 @@
     streams:
       rhosp:
         vars:
+          RHOSP_VERSION: rhosp13
           ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: -rhel7
           DEPLOY_COMPACT_AIO: true
@@ -507,6 +553,40 @@
           - deploy-platform-rhosp
           - deploy-tf-rhosp
           - test-sanity-rhosp
+
+- template:
+    name: rhosp16
+    parents:
+      - build-rhel8
+    streams:
+      rhosp16:
+        vars:
+          ENVIRONMENT_OS: rhel8
+          RHOSP_VERSION: rhosp16
+          TAG_SUFFIX: -rhel8
+          DEPLOY_COMPACT_AIO: true
+          ENABLE_RHEL_REGISTRATION: false
+    jobs:
+      deploy-platform-rhosp16:
+        stream: rhosp16
+      deploy-tf-rhosp16:
+        stream: rhosp16
+        depends-on:
+          - package-rhel8
+          - deploy-platform-rhosp16
+      test-sanity-rhosp16:
+        job-name: test-sanity
+        stream: rhosp16
+        depends-on:
+          - deploy-tf-rhosp16
+      collect-logs-and-cleanup-rhosp16:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp16
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-rhosp16
+          - deploy-tf-rhosp16
+          - test-sanity-rhosp16
 
 - template:
     name: rhosp-bmc
