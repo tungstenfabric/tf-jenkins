@@ -34,7 +34,7 @@
         - juju-os
         - juju-os-maas
         - rhosp13
-        #- rhosp-bmc
+        - rhosp-bmc
         - cleanup
       jobs:
         prepare-sandbox-centos:
@@ -400,7 +400,9 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
-        - build-rhel
-        - build-centos
-        - ansible-os
+        #- build-rhel
+        #- build-centos
+        #- ansible-os
+        - rhosp13
+        - rhosp-bmc
         - cleanup
