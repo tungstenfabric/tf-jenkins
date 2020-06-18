@@ -528,13 +528,12 @@
         job-name: deploy-tf-rhosp
         stream: rhosp-bmc
         depends-on:
-          - package-containers-rhel
+          - package-rhel
           - deploy-platform-rhosp-bmc
       test-sanity-rhosp-bmc:
         job-name: test-sanity
         stream: rhosp-bmc
         depends-on:
-          - package-test-containers-rhel
           - deploy-tf-rhosp-bmc
       collect-logs-and-cleanup-rhosp-bmc:
         job-name: collect-logs-and-cleanup
