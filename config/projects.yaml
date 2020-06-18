@@ -305,11 +305,13 @@
     name: tungstenfabric/tf-tripleo-heat-templates
     check:
       templates:
-        - rhosp
+        - rhosp13
+        #- rhosp16
         - cleanup
     gate:
       templates:
-        - rhosp
+        - rhosp13
+        #- rhosp16
         - cleanup
 
 - project:
