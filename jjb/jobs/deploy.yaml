@@ -8,7 +8,7 @@
       - label:
           name: NODE_NAME
       - string:
-          name: STREAM 
+          name: STREAM
       - string:
           name: JOB_RND
       - string:
@@ -136,7 +136,7 @@
       - label:
           name: NODE_NAME
       - string:
-          name: STREAM 
+          name: STREAM
       - string:
           name: JOB_RND
       - string:
@@ -209,7 +209,7 @@
       - label:
           name: NODE_NAME
       - string:
-          name: STREAM 
+          name: STREAM
       - string:
           name: JOB_RND
       - string:
@@ -329,8 +329,12 @@
           environment_os: centos7
           deployer: ansible
           orchestrator: openstack
-      - rhosp:
+      - rhosp13:
           environment_os: rhel7
+          deployer: rhosp
+          orchestrator: openstack
+      - rhosp16:
+          environment_os: rhel8
           deployer: rhosp
           orchestrator: openstack
       - openshift:
