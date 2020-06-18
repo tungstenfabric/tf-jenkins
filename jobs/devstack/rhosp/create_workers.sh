@@ -8,20 +8,27 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
+stackrc_file_path=$WORKSPACE/$stackrc_file
+
+echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" > "$stackrc_file_path"
+echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
+echo "export PROVIDER=$PROVIDER" >> "$stackrc_file_path"
+
+echo "Debug content"
+cat "$stackrc_file_path"
+
 if [[ -n "$CLOUD" ]]; then
+    source "$my_dir/../../../infra/${CLOUD}/definitions"
+
     $my_dir/../../../infra/${CLOUD}/create_workers.sh
 else
     source "$my_dir/../../../infra/${SLAVE}/definitions"
 
-    stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
-    stackrc_file_path=$WORKSPACE/$stackrc_file
-
-    echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$stackrc_file_path"
+    echo "export OS_REGION_NAME=${OS_REGION_NAME}" >> "$stackrc_file_path"
     IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
     echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
     echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
-    echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" >> "$stackrc_file_path"
-    echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
 
     # wait for free resource
     while true; do
