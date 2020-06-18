@@ -1,3 +1,4 @@
-export IMAGE_SSH_USER="stack"
+export IMAGE_SSH_USER="jenkins"
 export VM_NAME="undercloud"
 export INSTANCE_IP="10.10.50.10"
+SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
