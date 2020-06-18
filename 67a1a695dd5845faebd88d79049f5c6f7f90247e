@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "373629de_fe5389de",
+        "filename": "config/projects.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-18T12:13:32Z",
+      "side": 1,
+      "message": "i would rename it to rhosp13",
+      "range": {
+        "startLine": 308,
+        "startChar": 10,
+        "endLine": 308,
+        "endChar": 15
+      },
+      "revId": "67a1a695dd5845faebd88d79049f5c6f7f90247e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "74dcce6a_fc278c65",
+        "filename": "config/templates.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-18T12:13:32Z",
+      "side": 1,
+      "message": "not needed.\nthere is one universal build-rhel",
+      "range": {
+        "startLine": 113,
+        "startChar": 0,
+        "endLine": 115,
+        "endChar": 12
+      },
+      "revId": "67a1a695dd5845faebd88d79049f5c6f7f90247e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b320de4e_41fd45df",
+        "filename": "config/templates.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-18T12:13:32Z",
+      "side": 1,
+      "message": "build-rhel",
+      "range": {
+        "startLine": 561,
+        "startChar": 8,
+        "endLine": 561,
+        "endChar": 19
+      },
+      "revId": "67a1a695dd5845faebd88d79049f5c6f7f90247e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06797724_6cc0dcff",
+        "filename": "config/templates.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 568,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-18T12:13:32Z",
+      "side": 1,
+      "message": "keep rhel7\nthere is only one build based on thel7.\neventually we will move to rhel8 based build, as it happens we remove rhel7 based build\nand use rhel8 based build for both rhosp13 and 16",
+      "range": {
+        "startLine": 568,
+        "startChar": 23,
+        "endLine": 568,
+        "endChar": 28
+      },
+      "revId": "67a1a695dd5845faebd88d79049f5c6f7f90247e",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
