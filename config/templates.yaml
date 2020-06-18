@@ -476,37 +476,74 @@
           - test-sanity-juju-os-maas
 
 - template:
-    name: rhosp
+    name: rhosp13
     parents:
       - build-rhel
     streams:
-      rhosp:
+      rhosp13:
         vars:
+          OPENSTACK_VERSION: queens
+          RHOSP_VERSION: rhosp13
           ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: -rhel7
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
     jobs:
-      deploy-platform-rhosp:
-        stream: rhosp
+      deploy-platform-rhosp13:
+        stream: rhosp13
       deploy-tf-rhosp:
-        stream: rhosp
+        stream: rhosp13
         depends-on:
           - package-rhel
-          - deploy-platform-rhosp
-      test-sanity-rhosp:
+          - deploy-platform-rhosp13
+      test-sanity-rhosp13:
         job-name: test-sanity
-        stream: rhosp
+        stream: rhosp13
         depends-on:
-          - deploy-tf-rhosp
-      collect-logs-and-cleanup-rhosp:
+          - deploy-tf-rhosp13
+      collect-logs-and-cleanup-rhosp13:
         job-name: collect-logs-and-cleanup
-        stream: rhosp
+        stream: rhosp13
         type: stream-post-hook
         depends-on:
-          - deploy-platform-rhosp
-          - deploy-tf-rhosp
-          - test-sanity-rhosp
+          - deploy-platform-rhosp13
+          - deploy-tf-rhosp13
+          - test-sanity-rhosp13
+
+- template:
+    name: rhosp16
+    parents:
+      - build-rhel
+    streams:
+      rhosp16:
+        vars:
+          OPENSTACK_VERSION: train
+          ENVIRONMENT_OS: rhel8
+          RHOSP_VERSION: rhosp16
+          TAG_SUFFIX: -rhel7
+          DEPLOY_COMPACT_AIO: true
+          ENABLE_RHEL_REGISTRATION: false
+    jobs:
+      deploy-platform-rhosp16:
+        stream: rhosp16
+      deploy-tf-rhosp16:
+        stream: rhosp16
+        depends-on:
+          - package-rhel8
+          - deploy-platform-rhosp16
+      test-sanity-rhosp16:
+        job-name: test-sanity
+        stream: rhosp16
+        depends-on:
+          - deploy-tf-rhosp16
+      collect-logs-and-cleanup-rhosp16:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp16
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-rhosp16
+          - deploy-tf-rhosp16
+          - test-sanity-rhosp16
 
 - template:
     name: rhosp-bmc
