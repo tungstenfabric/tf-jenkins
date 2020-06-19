@@ -1,10 +1,23 @@
 #!/bin/bash -eE
 set -o pipefail
 
-sudo subscription-manager register --username "$RHEL_USER" --password "$RHEL_PASSWORD"
-sudo subscription-manager attach --pool $RHEL_POOL_ID
-sudo subscription-manager repos --enable=rhel-8-for-x86_64-baseos-rpms \
-                                --enable=rhel-8-for-x86_64-appstream-rpms
+cat << EOF > local.repo
+
+[BaseOS]
+Name=Red Hat Enterprise Linux 8.0 BaseOS
+enabled=1
+gpgcheck=1
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/base/rhel-8-for-x86_64-baseos-rpms/
+
+[AppStream]
+Name=Red Hat Enterprise Linux 8.0 AppStream
+enabled=1
+gpgcheck=1
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/appstream/rhel-8-for-x86_64-appstream-rpms/
+
+EOF
+
+sudo mv local.repo /etc/yum.repos.d/
+
 sudo yum update -y
-sudo subscription-manager unregister
 sudo sed -i '/192\.168\.122\.1/d' /etc/resolv.conf

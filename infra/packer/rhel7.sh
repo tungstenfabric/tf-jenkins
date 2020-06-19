@@ -12,70 +12,70 @@ gpgcheck=0
 
 [local-rhel-7-server-rpms]
 name = Red Hat Enterprise Linux 7 Server (RPMs) local
-baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-rpms
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [local-rhel-7-server-optional-rpms]
 name = Red Hat Enterprise Linux 7 Server - Optional (RPMs) local
-baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-optional-rpms
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-optional-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [local-rhel-7-server-extras-rpms]
 name = Red Hat Enterprise Linux 7 Server - Extras (RPMs) local
-baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-extras-rpms
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-extras-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [local-rhel-7-server-openstack-13-rpms]
 name = Red Hat OpenStack Platform 13 for RHEL 7 (RPMs) local
-baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-openstack-13-rpms
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-openstack-13-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [local-rhel-7-server-openstack-13-devtools-rpms]
 name = Red Hat OpenStack Platform Dev Tools 13 for RHEL 7 (RPMs) local
-baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-openstack-13-devtools-rpms
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-openstack-13-devtools-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [local-rhel-7-server-ose-3.11-rpms]
 name = Red Hat OSE 3.11 for RHEL 7 (RPMs) local
-baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-ose-3.11-rpms
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-ose-3.11-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [local-rhel-7-server-ansible-2.6-rpms]
 name = Red Hat Ansible 2.6 for RHEL 7 (RPMs) local
-baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-ansible-2.6-rpms
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-ansible-2.6-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [local-rhel-7-fast-datapath-rpms]
 name = Red Hat Fast Datapath for RHEL 7 (RPMs) local
-baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-7-fast-datapath-rpms
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-fast-datapath-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [local-rhel-server-rhscl-7-rpms]
 name = Red Hat Software collections 7 (RPMs) local
-baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-server-rhscl-7-rpms
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-server-rhscl-7-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [local-rhel-ha-for-rhel-7-server-rpms]
 name = Red Hat HA for RHEL 7 (RPMs) local
-baseurl = http://rhel-mirrors.tf-jenkins.progmaticlab.com/rhel-ha-for-rhel-7-server-rpms
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-ha-for-rhel-7-server-rpms
 enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
