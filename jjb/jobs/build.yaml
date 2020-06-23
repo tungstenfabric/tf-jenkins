@@ -141,7 +141,7 @@
           target: ""
       - package-deployers:
           stage: package
-          target: src-containers-only
+          target: src-containers
       - compile:
           stage: compile
           target: ""
