@@ -17,9 +17,44 @@ gpgcheck=1
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/appstream/rhel-8-for-x86_64-appstream-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
+[Openstack]
+Name=Openstack 16 for Red Hat Enterprise Linux 8.0
+enabled=1
+gpgcheck=1
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/openstack/openstack-16-for-rhel-8-x86_64-rpms/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+[Satellite 6.5]
+Name=Satellite tools 6.5 for Red Hat Enterprise Linux 8.0
+enabled=1
+gpgcheck=1
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/satellite/satellite-tools-6.5-for-rhel-8-x86_64-rpms/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+[Ansible 2.8]
+Name=Ansible 2.8 for Red Hat Enterprise Linux 8.0
+enabled=1
+gpgcheck=1
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/ansible/ansible-2.8-for-rhel-8-x86_64-rpms/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+[HighAvailability]
+Name=Red Hat Enterprise Linux 8.0 for High Availability
+enabled=1
+gpgcheck=1
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/ha/rhel-8-for-x86_64-highavailability-rpms/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+[FastDatapath]
+Name=Fast Datapath for Red Hat Enterprise Linux 8.0
+enabled=1
+gpgcheck=1
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/datapath/fast-datapath-for-rhel-8-x86_64-rpms/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
 EOF
 
-sudo mv /etc/yum.repos.d/redhat.repo ~/
+[ -f /etc/yum.repos.d/redhat.repo ] && sudo mv /etc/yum.repos.d/redhat.repo ~/
 sudo yum clean all
 sudo subscription-manager clean
 
