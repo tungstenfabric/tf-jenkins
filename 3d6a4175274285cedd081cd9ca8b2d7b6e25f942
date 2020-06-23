@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "18693cf9_9ff607a5",
+        "filename": "infra/packer/rhel8.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-06-23T17:49:47Z",
+      "side": 1,
+      "message": "?",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 1
+      },
+      "revId": "3d6a4175274285cedd081cd9ca8b2d7b6e25f942",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
