@@ -23,8 +23,14 @@ echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$ENV_FILE"
 echo "export ENVIRONMENT_OS=${ENVIRONMENT_OS}" >> "$ENV_FILE"
 
 IMAGE_TEMPLATE_NAME="${OS_IMAGES["${ENVIRONMENT_OS^^}"]}"
-IMAGE_NAME=$(openstack image list --status active -c Name -f value | grep "${IMAGE_TEMPLATE_NAME}" | sort -nr | head -n 1)
-IMAGE=$(openstack image show -c id -f value "$IMAGE_NAME")
+for (( i=1; i<=5 ; ++i )) ; do
+  IMAGE_NAME=$(openstack image list --status active -c Name -f value | grep "${IMAGE_TEMPLATE_NAME}" | sort -nr | head -n 1)
+  IMAGE=$(openstack image show -c id -f value "$IMAGE_NAME")
+  if [[ -n $IMAGE ]] ; then
+    break
+  fi
+  sleep 15
+done
 echo "export IMAGE=$IMAGE" >> "$ENV_FILE"
 
 IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
@@ -44,7 +50,7 @@ function cleanup () {
     echo "INFO: Instances to terminate: $termination_list"
     for instance_id in $termination_list ; do
       if nova show "$instance_id" | grep 'locked' | grep 'False'; then
-        down_instances $instance_id
+        down_instances $instance_id || true
         nova delete "$instance_id"
       fi
     done
