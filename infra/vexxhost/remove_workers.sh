@@ -1,5 +1,4 @@
-#!/bin/bash -eE
-set -o pipefail
+#!/bin/bash
 
 # to remove just job's workers
 
@@ -15,8 +14,9 @@ source "$WORKSPACE/global.env"
 instance_ids=$(echo $INSTANCE_IDS | sed 's/,/ /g')
 
 for instance_id in $instance_ids ; do
-  if nova show "$instance_id" | grep 'locked' | grep 'False'; then
-    down_instances $instance_id
-    nova delete "$instance_id"
+  if nova show "$instance_id" | grep 'locked' | grep 'False' ; then
+    if down_instances $instance_id ; then
+      nova delete "$instance_id"
+    fi
   fi
 done
