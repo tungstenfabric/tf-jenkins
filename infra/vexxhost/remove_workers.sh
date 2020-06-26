@@ -1,5 +1,4 @@
-#!/bin/bash -eE
-set -o pipefail
+#!/bin/bash
 
 # to remove just job's workers
 
