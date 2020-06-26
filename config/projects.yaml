@@ -32,7 +32,7 @@
         - helm-os
         - juju-k8s
         - juju-os
-        - juju-os-maas
+        #debugging: - juju-os-maas
         - rhosp
         #- rhosp-bmc
         - cleanup
