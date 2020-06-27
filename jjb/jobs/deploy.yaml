@@ -82,12 +82,12 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          set +e -o pipefail
+          set -eo pipefail
           source "$WORKSPACE/global.env"
           ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-jenkins ./patchsets-info.json
           ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-devstack ./patchsets-info.json
       - shell: |
-          set +e -o pipefail
+          set -eo pipefail
           export ENVIRONMENT_OS={environment_os}
           export ORCHESTRATOR={orchestrator}
           source "$WORKSPACE/global.env"
@@ -180,12 +180,12 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          set +e -o pipefail
+          set -eo pipefail
           source "$WORKSPACE/global.env"
           ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-jenkins ./patchsets-info.json
           ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-devstack ./patchsets-info.json
       - shell: |
-          set +e -o pipefail
+          set -eo pipefail
           source "$WORKSPACE/global.env"
           source ./src/tungstenfabric/tf-jenkins/infra/${{SLAVE}}/definitions
           source "${{WORKSPACE}}/deps.${{JOB_NAME}}.${{JOB_RND}}.env" || /bin/true
@@ -277,12 +277,10 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          set +e -o pipefail
           source "$WORKSPACE/global.env"
           ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-jenkins ./patchsets-info.json
           ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-devstack ./patchsets-info.json
       - shell: |
-          set +e -o allexport
           source "$WORKSPACE/global.env"
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
