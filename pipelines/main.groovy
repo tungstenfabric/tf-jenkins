@@ -143,8 +143,9 @@ def evaluate_common_params() {
   if (env.GERRIT_CHANGE_ID) {
     contrail_container_tag = branch
     // we have to avoid presense of 19xx, 20xx, ... in tag - apply some hack here to indicate current patchset and avoid those strings
-    contrail_container_tag += '-' + env.GERRIT_CHANGE_NUMBER.split('').join('.')
-    contrail_container_tag += '-' + env.GERRIT_PATCHSET_NUMBER.split('').join('.')
+    // and we have to avoid 5.1 and 5.0 in tag
+    contrail_container_tag += '-' + env.GERRIT_CHANGE_NUMBER.split('').join('_')
+    contrail_container_tag += '-' + env.GERRIT_PATCHSET_NUMBER.split('').join('_')
     hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
     logs_path = "${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
     logs_url = "${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
