@@ -73,6 +73,8 @@ timestamps {
           println("There is no gate approvals.. skip gate")
           currentBuild.description = "Not ready to gate"
           currentBuild.result = 'UNSTABLE'
+          // to avoid error message
+          pre_build_done = true
           return
         }
 
