@@ -421,7 +421,8 @@
         job-name: deploy-platform-juju-os
         stream: juju-os-ha
         vars:
-          NODES: medium:3,small:2
+          CLOUD: 'manual'
+          NODES: 'JUJU_CONTROLLER_NODES:small:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:2'
       deploy-tf-juju-os-ha:
         job-name: deploy-tf-juju-os
         stream: juju-os-ha
