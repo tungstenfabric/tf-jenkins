@@ -29,10 +29,13 @@ def gerrit_build_started() {
   }
 }
 
-def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration) {
+def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration, err_msg=null) {
   try {
     if (!pre_build_done) {
-      msg = "Jenkins general failure (${env.GERRIT_PIPELINE})\nPlease check pipeline logs:\n"
+      msg = "Jenkins general failure (${env.GERRIT_PIPELINE})\n\n"
+      if (err_msg)
+        msg += "${err_msg}\n\n"
+      msg += "Please check pipeline logs:\n"
       msg += "${BUILD_URL}\n${logs_url}\n"
       _notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
       return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
