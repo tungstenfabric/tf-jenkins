@@ -389,6 +389,7 @@
     streams:
       juju-os:
         vars:
+          CLOUD: 'manual'
           SSL_ENABLE: 'true'
     jobs:
       deploy-platform-juju-os:
