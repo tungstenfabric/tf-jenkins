@@ -39,14 +39,8 @@ timestamps {
         return
       }
 
-      def streams = [:]
-      def jobs = [:]
-      def post_jobs = [:]
-      pre_build_done = false
-      err_msg = null
-      time_start = (new Date()).getTime()
-      try {
-        stage('init') {
+      stage('init') {
+        try {
           cleanWs(disableDeferredWipeout: true, notFailBuild: true, deleteDirs: true)
           clone_self()
 
@@ -68,16 +62,24 @@ timestamps {
           config_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/config.groovy")
           jobs_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/jobs.groovy")
           gate_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gate.groovy")
+        } catch (err) {
+          verified = gerrit_utils.gerrit_vote(false, null, null, null, null, err.getMessage())
+          throw(err)
         }
-        if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
-          println("There is no gate approvals.. skip gate")
-          currentBuild.description = "Not ready to gate"
-          currentBuild.result = 'UNSTABLE'
-          // to avoid error message
-          pre_build_done = true
-          return
-        }
+      }
+      if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
+        println("There is no gate approvals.. skip gate")
+        currentBuild.description = "Not ready to gate"
+        currentBuild.result = 'UNSTABLE'
+        return
+      }
 
+      def streams = [:]
+      def jobs = [:]
+      def post_jobs = [:]
+      pre_build_done = false
+      try {
+        time_start = (new Date()).getTime()
         stage('Pre-build') {
           evaluate_common_params()
           if (env.GERRIT_CHANGE_ID) {
@@ -97,13 +99,11 @@ timestamps {
         }
 
         jobs_utils.run(jobs, streams, gate_utils, gerrit_utils)
-      } catch (err) {
-        err_msg = err.getMessage()
       } finally {
         println(job_results)
         stage('gerrit vote') {
           // add gerrit voting +2 +1 / -1 -2
-          verified = gerrit_utils.gerrit_vote(pre_build_done, streams, jobs, job_results, (new Date()).getTime() - time_start, err_msg)
+          verified = gerrit_utils.gerrit_vote(pre_build_done, streams, jobs, job_results, (new Date()).getTime() - time_start)
           sh """#!/bin/bash -e
             echo "export VERIFIED=${verified}" >> global.env
           """
