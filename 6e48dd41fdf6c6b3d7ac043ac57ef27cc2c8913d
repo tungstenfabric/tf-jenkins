@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3257343d_03eb00aa",
+        "filename": "jobs/devstack/common/create_workers.sh",
+        "patchSetId": 15
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 416
+      },
+      "writtenOn": "2020-07-02T10:31:51Z",
+      "side": 1,
+      "message": "return NODES\u003d${NODES:-\"$VM_TYPE:1\"} back",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 0
+      },
+      "revId": "6e48dd41fdf6c6b3d7ac043ac57ef27cc2c8913d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1df16bc8_f26b33bc",
+        "filename": "jobs/devstack/common/create_workers.sh",
+        "patchSetId": 15
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 416
+      },
+      "writtenOn": "2020-07-02T10:31:51Z",
+      "side": 1,
+      "message": "can you write a comment about commas/colons and why they are needed",
+      "revId": "6e48dd41fdf6c6b3d7ac043ac57ef27cc2c8913d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7dc58136_7435afa4",
+        "filename": "jobs/devstack/common/create_workers.sh",
+        "patchSetId": 15
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 416
+      },
+      "writtenOn": "2020-07-02T10:31:51Z",
+      "side": 1,
+      "message": "why do you remove instance_ip from env file?",
+      "revId": "6e48dd41fdf6c6b3d7ac043ac57ef27cc2c8913d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
