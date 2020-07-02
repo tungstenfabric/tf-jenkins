@@ -76,6 +76,8 @@ export OPENSTACK_VERSIONS=$openstack_versions
 export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}
 export CONTRAIL_KEEP_LOG_FILES=true
 
+export MULTI_KERNEL_BUILD=true
+
 cd src/tungstenfabric/tf-dev-env
 
 # TODO: use in future generic mirror approach
