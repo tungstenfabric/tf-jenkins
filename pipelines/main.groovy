@@ -200,7 +200,7 @@ def evaluate_env() {
     }
     archiveArtifacts(artifacts: 'global.env')
 
-    (streams, jobs, post_jobs) = config_utils.get_jobs(project_name, env.GERRIT_PIPELINE)
+    (streams, jobs, post_jobs) = config_utils.get_jobs(project_name, env.GERRIT_PIPELINE, env.GERRIT_BRANCH)
     println("Streams from  config: ${streams}")
     println("Jobs from config: ${jobs}")
     println("Post Jobs from config: ${post_jobs}")

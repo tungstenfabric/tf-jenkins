@@ -2,7 +2,7 @@
 
 # TODO: implement 'default' project with cleanup job
 
-# TODO: implement templates for projects with pipelines/templates to reduce copy-paste in each project 
+# TODO: implement templates for projects with pipelines/templates to reduce copy-paste in each project
 
 - include:
     - templates.yaml
@@ -306,13 +306,26 @@
 
 - project:
     name: tungstenfabric/tf-tripleo-heat-templates
+    branch: stable/queens
     check:
       templates:
-        - rhosp
+        - rhosp13
         - cleanup
     gate:
       templates:
-        - rhosp
+        - rhosp13
+        - cleanup
+
+- project:
+    name: tungstenfabric/tf-tripleo-heat-templates
+    branch: stable/train
+    check:
+      templates:
+        - rhosp16
+        - cleanup
+    gate:
+      templates:
+        - rhosp16
         - cleanup
 
 - project:

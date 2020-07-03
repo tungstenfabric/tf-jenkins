@@ -1,6 +1,6 @@
 // config utils
 
-def get_jobs(project_name, gerrit_pipeline) {
+def get_jobs(project_name, gerrit_pipeline, gerrit_branch) {
   // read main file
   def data = readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/projects.yaml")
   // read includes
@@ -22,6 +22,9 @@ def get_jobs(project_name, gerrit_pipeline) {
   for (item in data) {
     if (!item.containsKey('project') || item.get('project').name != project_name)
       continue
+    if (item.containsKey('branch') && item.get('branch') != gerrit_branch ) {
+      continue
+    }
     project = item.get('project')
     break
   }
@@ -137,7 +140,7 @@ def _update_map(items, new_items) {
     if (item.getClass() != java.util.LinkedHashMap$Entry) {
       throw new Exception("Invalid item in config - '${item}'. It must be an entry of HashMap")
     }
-    def value = item.value != null ? item.value : [:] 
+    def value = item.value != null ? item.value : [:]
     if (!items.containsKey(item.key))
       items[item.key] = value
     else
