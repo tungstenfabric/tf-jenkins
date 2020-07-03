@@ -18,6 +18,7 @@ export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export SSL_ENABLE=$SSL_ENABLE
 export PATH=\$PATH:/usr/sbin
+$( cat $WORKSPACE/stackrc.$JOB_NAME.env | awk /NODES/ )
 EOF
 
 if declare -f -F add_deployrc &>/dev/null ; then
