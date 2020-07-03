@@ -2,7 +2,7 @@
 
 # TODO: implement 'default' project with cleanup job
 
-# TODO: implement templates for projects with pipelines/templates to reduce copy-paste in each project 
+# TODO: implement templates for projects with pipelines/templates to reduce copy-paste in each project
 
 - include:
     - templates.yaml
@@ -13,7 +13,7 @@
       streams:
         juju-k8s:
           voting: false
-        rhosp:
+        rhosp13:
           voting: false
         helm-os:
           voting: false
@@ -23,6 +23,8 @@
           voting: false
       templates:
         - build-r1912
+        - build-r2003
+        - build-r2005
         - test-unit
         - test-unit-ui
         - k8s-manifests
@@ -33,20 +35,44 @@
         - juju-k8s
         - juju-os
         - juju-os-maas
-        - rhosp
-        #- rhosp-bmc
+        - rhosp13
+        - rhosp-bmc
         - cleanup
       jobs:
+        prepare-sandbox-centos:
+          vars:
+            DEVENV_TAG: ""
         publish-centos-nightly:
           job-name: publish
           depends-on:
             - package-centos
+        publish-centos-r1912:
+          job-name: publish
+          depends-on:
+            - package-r1912
+          vars:
+            TAG_SUFFIX: "-r1912"
+            PUBLISH_TAGS: "1912"
+        publish-centos-r2003:
+          job-name: publish
+          depends-on:
+            - package-r2003
+          vars:
+            TAG_SUFFIX: "-r2003"
+            PUBLISH_TAGS: "2003"
+        publish-centos-r2005:
+          job-name: publish
+          depends-on:
+            - package-r2005
+          vars:
+            TAG_SUFFIX: "-r2005"
+            PUBLISH_TAGS: "2005"
         aquascan-rhel-nightly:
           job-name: aquascan
           depends-on:
             - package-rhel
           vars:
-            TAG_SUFFIX: -rhel7
+            TAG_SUFFIX: "-rhel7"
       post-jobs:
         publish-centos-stable:
           job-name: publish
@@ -293,23 +319,36 @@
     check:
       templates:
         - build-rhel
-        #- rhosp
+        #- rhosp13
         - cleanup
     gate:
       templates:
         - build-rhel
-        #- rhosp
+        #- rhosp13
         - cleanup
 
 - project:
     name: tungstenfabric/tf-tripleo-heat-templates
+    branch: stable/queens
     check:
       templates:
-        - rhosp
+        - rhosp13
         - cleanup
     gate:
       templates:
-        - rhosp
+        - rhosp13
+        - cleanup
+
+- project:
+    name: tungstenfabric/tf-tripleo-heat-templates
+    branch: stable/train
+    check:
+      templates:
+        - rhosp16
+        - cleanup
+    gate:
+      templates:
+        - rhosp16
         - cleanup
 
 - project:
@@ -386,6 +425,8 @@
       templates:
         - build-rhel
         - build-centos
-        - test-unit
         - ansible-os
         - cleanup
+    gate:
+      templates:
+        - build-centos
