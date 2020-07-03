@@ -515,7 +515,7 @@
     jobs:
       deploy-platform-rhosp13:
         stream: rhosp13
-      deploy-tf-rhosp:
+      deploy-tf-rhosp13:
         stream: rhosp13
         depends-on:
           - package-rhel
