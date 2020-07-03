@@ -6,57 +6,59 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-NODES=${NODES:-"$VM_TYPE:1"}
+ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 
-controllers=`echo $NODES | cut -d',' -f1`
-controller_node_type=`echo $controllers | cut -d':' -f1`
-controller_node_count=`echo $controllers | cut -d':' -f2`
-export VM_TYPE=$controller_node_type
-export NODES_COUNT=$controller_node_count
-export WORKER_NAME_PREFIX='cn'
-if ! "$my_dir/../../../infra/${SLAVE}/create_workers.sh" ; then
-  echo "ERROR: Instances were not created. Exit"
-  exit 1
+if [[ -z "$NODES" ]]; then
+    echo "NODES declaration error: \"$NODES\""
+    echo "creating one controller"
+
+    export WORKER_NAME_PREFIX="cn"
+    export VM_TYPE="$VM_TYPE"
+    export NODES_COUNT="1"
+    if ! "$my_dir/../../../infra/${SLAVE}/create_workers.sh" ; then
+        echo "ERROR: Instances were not created. Exit"
+        exit 1
+    fi
+    exit 0
 fi
 
-ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
-CONTROLLER_IDS=`cat $ENV_FILE | grep INSTANCE_IDS | cut -d'=' -f2`
-CONTROLLER_NODES=`cat $ENV_FILE | grep INSTANCE_IPS | cut -d'=' -f2`
-sed -i '/INSTANCE_IDS=/d' "$ENV_FILE"
-sed -i '/INSTANCE_IPS=/d' "$ENV_FILE"
-
-#support single node case and old behavior
-instance_ip=`echo $CONTROLLER_NODES | cut -d',' -f1`
-
-AGENT_IDS=""
-AGENT_NODES=$CONTROLLER_NODES
-if [[ $NODES =~ ',' ]] ; then
-  agents=`echo $NODES | cut -d',' -f2`
-  if [[ -n $agents ]] ; then
-    agent_node_type=`echo $agents | cut -d':' -f1`
-    agent_node_count=`echo $agents | cut -d':' -f2`
-    export VM_TYPE=$agent_node_type
-    export NODES_COUNT=$agent_node_count
-    export WORKER_NAME_PREFIX='an'
-    if ! "$my_dir/../../../infra/${SLAVE}/create_workers.sh" ; then
-      echo "ERROR: Instances were not created. Exit"
-      exit 1
+ssh-keygen -t rsa -b 4096 -f new_key
+pub_key=$(cat new_key.pub)
+env_export=""; instance_ip=""
+for nodes in $(echo $NODES | tr ',' ' ') ; do
+    if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
+        echo "ERROR: inappropriate input \"$nodes\" in \"$NODES\""
+        exit 1
     fi
 
-    AGENT_IDS=`cat $ENV_FILE | grep INSTANCE_IDS | cut -d'=' -f2`
-    AGENT_NODES=`cat $ENV_FILE | grep INSTANCE_IPS | cut -d'=' -f2`
+    export WORKER_NAME_PREFIX="$(echo ${nodes,,} | cut -d ':' -f1 | tr '_' ' ' |
+        awk '{for(i=1;i<=NF;i++) $i=substr($i,1,1)}1' | tr -d ' ')"
+    export VM_TYPE="$(echo $nodes | cut -d ':' -f2)"
+    export NODES_COUNT="$(echo $nodes | cut -d ':' -f3)"
+
+    if [[ -z "$WORKER_NAME_PREFIX" || -z "$VM_TYPE" || -z "$NODES_COUNT" ]]; then
+        echo "ERROR: one of parameters is empty in NODES=$NODES [$nodes]"
+        exit 1
+    elif ! "$my_dir/../../../infra/${SLAVE}/create_workers.sh" ; then
+        echo "ERROR: Instances were not created. Exit"
+        exit 1
+    fi
+
+    INSTANCE_IDS+="$(cat $ENV_FILE | grep INSTANCE_IDS | cut -d'=' -f2)"
+    NEW_NODES="$(cat $ENV_FILE | grep INSTANCE_IPS | cut -d'=' -f2)"
+    env_export+="export $(echo $nodes | cut -d ':' -f1)=\"$NEW_NODES\"\n"
     sed -i '/INSTANCE_IDS=/d' "$ENV_FILE"
     sed -i '/INSTANCE_IPS=/d' "$ENV_FILE"
-  fi
-fi
 
-#pass ids and ips to devstack with comma delimeter
-INSTANCE_IDS="$(echo ${CONTROLLER_IDS},${AGENT_IDS})"
-CONTROLLER_NODES="$(echo ${CONTROLLER_NODES})"
-AGENT_NODES="$(echo ${AGENT_NODES})"
+    for ip in $(echo NEW_NODES | tr ',' ' ') ; do
+        ssh $IMAGE_SSH_USER@$ip mkdir -p .ssh
+        scp new_key $IMAGE_SSH_USER@$ip:.ssh/id_rsa
+        ssh $IMAGE_SSH_USER@$ip "echo $pub_key >> .ssh/authorized_keys ; chmod 400 .ssh/id_rsa ; chmod 400 .ssh/authorized_keys"
+    done
+    [[ -n $instance_ip ]] || instance_ip="$(echo $NEW_NODES | cut -d',' -f1)"
+done
+
 sed -i '/instance_ip=/d' "$ENV_FILE"
-
 echo "export INSTANCE_IDS=\"$INSTANCE_IDS\"" >> "$ENV_FILE"
-echo "export instance_ip=$instance_ip" >> "$ENV_FILE"
-echo "export CONTROLLER_NODES=\"$CONTROLLER_NODES\"" >> "$ENV_FILE"
-echo "export AGENT_NODES=\"$AGENT_NODES\"" >> "$ENV_FILE"
+echo "export instance_ip=\"$instance_ip\"" >> "$ENV_FILE"
+echo -e "$env_export" >> $ENV_FILE
