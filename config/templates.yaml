@@ -441,12 +441,16 @@
     name: juju-os-ha
     parents:
       - build-centos
+    streams:
+      juju-os-ha:
+        vars:
+          CLOUD: manual
     jobs:
       deploy-platform-juju-os-ha:
         job-name: deploy-platform-juju-os
         stream: juju-os-ha
         vars:
-          NODES: medium:3,small:2
+          NODES: JUJU_CONTROLLER_NODES:small:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
       deploy-tf-juju-os-ha:
         job-name: deploy-tf-juju-os
         stream: juju-os-ha
