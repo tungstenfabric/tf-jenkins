@@ -13,7 +13,7 @@
       streams:
         juju-k8s:
           voting: false
-        rhosp:
+        rhosp13:
           voting: false
         helm-os:
           voting: false
