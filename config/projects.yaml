@@ -33,7 +33,7 @@
         - juju-k8s
         - juju-os
         - juju-os-maas
-        - rhosp
+        - rhosp13
         #- rhosp-bmc
         - cleanup
       jobs:
@@ -296,12 +296,12 @@
     check:
       templates:
         - build-rhel
-        #- rhosp
+        #- rhosp13
         - cleanup
     gate:
       templates:
         - build-rhel
-        #- rhosp
+        #- rhosp13
         - cleanup
 
 - project:
