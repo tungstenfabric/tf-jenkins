@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7b1cd220_0993c5e4",
+        "filename": "jobs/devstack/common/create_workers.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-04T15:50:12Z",
+      "side": 1,
+      "message": "this is not requied - the same name will be used later",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 6
+      },
+      "revId": "7c1044d9ebfbdbf36ff38808d2aead7a61f89606",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "69d8a107_1bcd3f84",
+        "filename": "jobs/devstack/common/create_workers.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-04T15:50:12Z",
+      "side": 1,
+      "message": "for nodes in $(echo $NODES | tr \u0027,\u0027 \u0027 \u0027); do",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 25
+      },
+      "revId": "7c1044d9ebfbdbf36ff38808d2aead7a61f89606",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
