@@ -8,12 +8,16 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-tag_suffix=""
-if [[ "${STABLE,,}" == "true" ]] ; then
-  tag_suffix="-stable"
+if [[ -n "$PUBLISH_TAGS" ]]; then
+  tags="$PUBLISH_TAGS"
+else
+  tag_suffix=""
+  if [[ "${STABLE,,}" == "true" ]] ; then
+    tag_suffix="-stable"
+  fi
+  tags="$(date --utc +"%Y-%m-%d")$tag_suffix"
+  tags+=",latest$tag_suffix"
 fi
-tags="$(date --utc +"%Y-%m-%d")$tag_suffix"
-tags+=",latest$tag_suffix"
 
 scp -i $WORKER_SSH_KEY $SSH_OPTIONS $my_dir/publish.sh $IMAGE_SSH_USER@$instance_ip:./
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
