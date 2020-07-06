@@ -39,7 +39,7 @@ if [[ "$OPENSTACK_VERSION" != 'queens' ]]; then
 fi
 
 if [[ ${ENVIRONMENT_OS} == 'rhel7' ]]; then
-  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo"
+  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo mirror-rhel8-baseos.repo"
 elif [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
   mirror_list_for_build="mirror-base.repo mirror-epel.repo mirror-docker.repo mirror-google-chrome.repo"
 fi
