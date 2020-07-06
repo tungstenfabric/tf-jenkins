@@ -404,3 +404,6 @@
         - build-centos
         - ansible-os
         - cleanup
+    gate:
+      templates:
+        - build-centos
