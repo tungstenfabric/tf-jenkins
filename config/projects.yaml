@@ -34,7 +34,7 @@
         - juju-os
         - juju-os-maas
         - rhosp13
-        #- rhosp-bmc
+        - rhosp-bmc
         - cleanup
       jobs:
         prepare-sandbox-centos:
