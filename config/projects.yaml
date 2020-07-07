@@ -24,7 +24,7 @@
       templates:
         - build-r1912
         - build-r2003
-        - build-r2005
+        #- build-r2005
         - test-unit
         - test-unit-ui
         - k8s-manifests
@@ -46,13 +46,13 @@
           job-name: publish
           depends-on:
             - package-centos
-        publish-centos-r1912:
-          job-name: publish
-          depends-on:
-            - package-r1912
-          vars:
-            TAG_SUFFIX: "-r1912"
-            PUBLISH_TAGS: "1912"
+        #publish-centos-r1912:
+        #  job-name: publish
+        #  depends-on:
+        #    - package-r1912
+        #  vars:
+        #    TAG_SUFFIX: "-r1912"
+        #    PUBLISH_TAGS: "1912"
         publish-centos-r2003:
           job-name: publish
           depends-on:
@@ -60,13 +60,13 @@
           vars:
             TAG_SUFFIX: "-r2003"
             PUBLISH_TAGS: "2003"
-        publish-centos-r2005:
-          job-name: publish
-          depends-on:
-            - package-r2005
-          vars:
-            TAG_SUFFIX: "-r2005"
-            PUBLISH_TAGS: "2005"
+        #publish-centos-r2005:
+        #  job-name: publish
+        #  depends-on:
+        #    - package-r2005
+        #  vars:
+        #    TAG_SUFFIX: "-r2005"
+        #    PUBLISH_TAGS: "2005"
         aquascan-rhel-nightly:
           job-name: aquascan
           depends-on:
