@@ -22,7 +22,7 @@ def get_jobs(project_name, gerrit_pipeline, gerrit_branch) {
   for (item in data) {
     if (!item.containsKey('project') || item.get('project').name != project_name)
       continue
-    if (item.containsKey('branch') && item.get('branch') != gerrit_branch ) {
+    if (item.get('project').containsKey('branch') && item.get('project').get('branch') != gerrit_branch) {
       continue
     }
     project = item.get('project')
