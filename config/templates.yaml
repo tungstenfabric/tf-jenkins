@@ -604,6 +604,7 @@
           TAG_SUFFIX: "-rhel7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
+          OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
     jobs:
       deploy-platform-rhosp13:
         stream: rhosp13
@@ -638,13 +639,14 @@
           TAG_SUFFIX: "-rhel7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
+          OPENSTACK_CONTAINER_REGISTRY: "rhel8-mirrors.tf-jenkins.progmaticlab.com:5000"
     jobs:
       deploy-platform-rhosp16:
         stream: rhosp16
       deploy-tf-rhosp16:
         stream: rhosp16
         depends-on:
-          - package-rhel8
+          - package-rhel
           - deploy-platform-rhosp16
       test-sanity-rhosp16:
         job-name: test-sanity
