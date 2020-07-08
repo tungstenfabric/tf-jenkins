@@ -91,5 +91,7 @@ EOF
 
 sudo mv local.repo /etc/yum.repos.d/
 
+sudo chsh --shell /bin/bash ubuntu
+
 sudo yum update -y
 sudo sed -i '/192\.168\.122\.1/d' /etc/resolv.conf
