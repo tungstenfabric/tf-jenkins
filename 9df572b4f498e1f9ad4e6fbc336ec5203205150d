@@ -22,6 +22,30 @@
       "revId": "9df572b4f498e1f9ad4e6fbc336ec5203205150d",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3de0c8f6_1e7fd15d",
+        "filename": "jobs/build/run.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 471
+      },
+      "writtenOn": "2020-07-08T09:33:56Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "ad4ef52b_77e5a953",
+      "range": {
+        "startLine": 42,
+        "startChar": 68,
+        "endLine": 42,
+        "endChar": 81
+      },
+      "revId": "9df572b4f498e1f9ad4e6fbc336ec5203205150d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
