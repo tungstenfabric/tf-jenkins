@@ -23,7 +23,6 @@
           voting: false
       templates:
         - build-r1912
-        - build-r2003
         #- build-r2005
         - test-unit
         - test-unit-ui
@@ -53,13 +52,6 @@
         #  vars:
         #    TAG_SUFFIX: "-r1912"
         #    PUBLISH_TAGS: "1912"
-        publish-centos-r2003:
-          job-name: publish
-          depends-on:
-            - package-r2003
-          vars:
-            TAG_SUFFIX: "-r2003"
-            PUBLISH_TAGS: "2003"
         #publish-centos-r2005:
         #  job-name: publish
         #  depends-on:
