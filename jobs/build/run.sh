@@ -110,6 +110,11 @@ for mirror in $mirror_list ; do
 done
 cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 
+echo "INFO: df -h"
+df -h
+echo "INFO: free -h"
+free -h
+
 if [[ -n "$STAGE" ]]; then
   ./run.sh "$STAGE" "$TARGET"
 else

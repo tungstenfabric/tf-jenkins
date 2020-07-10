@@ -3,9 +3,6 @@ set -o pipefail
 
 [ "${DEBUG,,}" == "true" ] && set -x
 
-# TODO: remove it. just for this script
-set -x
-
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
@@ -42,8 +39,8 @@ echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
 INSTANCE_TYPE=${VM_TYPES[$VM_TYPE]}
 if [[ -z "$INSTANCE_TYPE" ]]; then
-    echo "ERROR: invalid VM_TYPE=$VM_TYPE"
-    exit 1
+  echo "ERROR: invalid VM_TYPE=$VM_TYPE"
+  exit 1
 fi
 echo "INFO: VM_TYPE=$VM_TYPE  INSTANCE_TYPE=$INSTANCE_TYPE"
 
@@ -62,22 +59,22 @@ function cleanup () {
 }
 
 function wait_for_instance_availability () {
-   local instance_ip=$1
-   local res=0
-   timeout 300 bash -c "\
-   while /bin/true ; do \
-       ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
-       sleep 10 ; \
-   done" || res=1
-   if [[ $res != 0 ]] ; then
-     echo "ERROR: VM  with ip $instance_ip is unreachable. Exit "
-     return 1
-   fi
-   export instance_ip
-   image_up_script=${OS_IMAGES_UP["${ENVIRONMENT_OS^^}"]}
-   if [[ -n "$image_up_script" && -e ${my_dir}/../hooks/${image_up_script}/up.sh ]] ; then
-     ${my_dir}/../hooks/${image_up_script}/up.sh
-   fi
+  local instance_ip=$1
+  local res=0
+  timeout 300 bash -c "\
+  while /bin/true ; do \
+    ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
+    sleep 10 ; \
+  done" || res=1
+  if [[ $res != 0 ]] ; then
+    echo "ERROR: VM  with ip $instance_ip is unreachable. Exit "
+    return 1
+  fi
+  export instance_ip
+  image_up_script=${OS_IMAGES_UP["${ENVIRONMENT_OS^^}"]}
+  if [[ -n "$image_up_script" && -e ${my_dir}/../hooks/${image_up_script}/up.sh ]] ; then
+    ${my_dir}/../hooks/${image_up_script}/up.sh
+  fi
  }
 
 if [[ -n $WORKER_NAME_PREFIX ]] ; then
@@ -106,16 +103,16 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
   INSTANCE_IDS=""
   INSTANCE_IPS=""
   while true; do
-     [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') + NODES_COUNT ))" -lt "$MAX_COUNT_VM" ]] && break
-     echo "INFO: waiting for free worker"
-     sleep 60
+    [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') + NODES_COUNT ))" -lt "$MAX_COUNT_VM" ]] && break
+    echo "INFO: waiting for free worker"
+    sleep 60
   done
 
   while true; do
-     [[ "$(($(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}') + total_vcpu ))" -lt "$MAX_COUNT_VCPU" ]] && break
-     echo "INFO: waiting for CPU resources"
-     sleep 60
-   done
+    [[ "$(($(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}') + total_vcpu ))" -lt "$MAX_COUNT_VCPU" ]] && break
+    echo "INFO: waiting for CPU resources"
+    sleep 60
+  done
 
   res=0
   nova boot --flavor ${INSTANCE_TYPE} \
