@@ -38,10 +38,6 @@
               username-variable: OPENLAB2_USER_NAME
               passphrase-variable: OPENLAB2_PASSPHRASE
       - credentials-binding:
-          - file:
-              credential-id: INSTACKENV
-              variable: INSTACKENV
-      - credentials-binding:
           - amazon-web-services:
               credential-id: aws-creds
               access-key: AWS_ACCESS_KEY_ID

@@ -36,4 +36,4 @@ while /bin/true ; do \
 done"
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
-rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$INSTACKENV} $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$my_dir/instackenv.json} $IMAGE_SSH_USER@$instance_ip:./
