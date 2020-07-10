@@ -415,9 +415,11 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
-        - build-rhel
-        - build-centos
-        - ansible-os
+        #- build-rhel
+        #- build-centos
+        #- ansible-os
+        - rhosp13
+        - rhosp-bmc
         - cleanup
     gate:
       templates:
