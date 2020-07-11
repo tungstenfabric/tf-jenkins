@@ -38,9 +38,6 @@
         - rhosp-bmc
         - cleanup
       jobs:
-        prepare-sandbox-centos:
-          vars:
-            DEVENV_TAG: ""
         publish-centos-nightly:
           job-name: publish
           depends-on:
