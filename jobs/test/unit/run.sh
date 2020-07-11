@@ -13,6 +13,7 @@ if [ -e $WORKSPACE/unittest_targets.lst ]; then
   mkdir -p $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
   cp -f $WORKSPACE/unittest_targets.lst $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
 fi
+echo $TARGET_SET > $WORKSPACE/src/tungstenfabric/tf-dev-env/input/target_set
 
 STAGE=${STAGE:-test}
 
