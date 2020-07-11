@@ -12,6 +12,10 @@ if [[ "$STAGE" == 'freeze' ]] && [[ "$GERRIT_PIPELINE" != 'gate' || "$GERRIT_BRA
   echo "INFO: Freeze works only for gate pipeline and for master branch"
   exit
 fi
+if [[ "$STAGE" == 'prepare-sandbox-centos' && "$GERRIT_PIPELINE" != 'check' ]]; then
+  # use frozen only for check pipeline
+  unset DEVENV_TAG
+fi
 
 # transfer patchsets info into sandbox
 if [ -e $WORKSPACE/patchsets-info.json ]; then

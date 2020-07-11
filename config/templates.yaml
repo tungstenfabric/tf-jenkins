@@ -83,8 +83,6 @@
         stream: build-rhel
         depends-on:
           - prepare-sandbox-rhel
-        vars:
-          PUBLISH_TYPE: build
       package-deployers-rhel:
         job-name: build-package-deployers
         stream: build-rhel
@@ -127,8 +125,6 @@
         stream: build-r1912
         depends-on:
           - prepare-sandbox-r1912
-        vars:
-          PUBLISH_TYPE: build
       package-deployers-r1912:
         job-name: build-package-deployers
         stream: build-r1912
@@ -171,8 +167,6 @@
         stream: build-r2005
         depends-on:
           - prepare-sandbox-r2005
-        vars:
-          PUBLISH_TYPE: build
       package-deployers-r2005:
         job-name: build-package-deployers
         stream: build-r2005
