@@ -9,10 +9,11 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 # transfer unittest targets info into sandbox
+mkdir -p $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
 if [ -e $WORKSPACE/unittest_targets.lst ]; then
-  mkdir -p $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
   cp -f $WORKSPACE/unittest_targets.lst $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
 fi
+# pass target_set as a additional key name for file names in log folder
 echo $TARGET_SET > $WORKSPACE/src/tungstenfabric/tf-dev-env/input/target_set
 
 STAGE=${STAGE:-test}
