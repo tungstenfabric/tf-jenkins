@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a1d76d3a_fdeab25d",
+        "filename": "config/templates.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 481,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-13T10:50:33Z",
+      "side": 1,
+      "message": "juju-os-1912",
+      "range": {
+        "startLine": 481,
+        "startChar": 6,
+        "endLine": 481,
+        "endChar": 13
+      },
+      "revId": "546e62476574d7b71237b340037ddfa0e94847ed",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90e1b539_6abd78dc",
+        "filename": "config/templates.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 483,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-13T10:50:33Z",
+      "side": 1,
+      "message": "please remove SSL_ENABLE",
+      "range": {
+        "startLine": 483,
+        "startChar": 10,
+        "endLine": 483,
+        "endChar": 20
+      },
+      "revId": "546e62476574d7b71237b340037ddfa0e94847ed",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af2a6538_1d309f50",
+        "filename": "config/templates.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-13T10:50:33Z",
+      "side": 1,
+      "message": "add -1912 everywhere",
+      "range": {
+        "startLine": 487,
+        "startChar": 6,
+        "endLine": 487,
+        "endChar": 29
+      },
+      "revId": "546e62476574d7b71237b340037ddfa0e94847ed",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ec366d9_e63715bb",
+        "filename": "config/templates.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-13T10:50:33Z",
+      "side": 1,
+      "message": "no build",
+      "range": {
+        "startLine": 492,
+        "startChar": 12,
+        "endLine": 492,
+        "endChar": 26
+      },
+      "revId": "546e62476574d7b71237b340037ddfa0e94847ed",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
