@@ -337,6 +337,10 @@
           environment_os: ubuntu18
           deployer: juju
           orchestrator: openstack
+      - juju-os-1912:
+          environment_os: ubuntu18
+          deployer: juju
+          orchestrator: openstack
       - ansible-k8s:
           environment_os: centos7
           deployer: ansible
