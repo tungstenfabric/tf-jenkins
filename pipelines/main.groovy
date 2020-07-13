@@ -180,6 +180,7 @@ def evaluate_env() {
       echo "export SITE_MIRROR=${SITE_MIRROR}" >> global.env
       echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
+      echo "export CONTRAIL_SRC_CONTAINER_TAG=${contrail_container_tag}" >> global.env
       echo "export GERRIT_PIPELINE=${env.GERRIT_PIPELINE}" >> global.env
     """
 
