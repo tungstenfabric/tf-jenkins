@@ -578,6 +578,40 @@
           - test-sanity-rhosp13
 
 - template:
+    name: rhosp13-1912
+    streams:
+      rhosp13-1912:
+        vars:
+          OPENSTACK_VERSION: queens
+          RHOSP_VERSION: rhosp13
+          TAG_SUFFIX: "-rhel7"
+          DEPLOY_COMPACT_AIO: true
+          ENABLE_RHEL_REGISTRATION: false
+          OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
+          CONTRAIL_CONTAINER_TAG: '1912'
+          CONTAINER_REGISTRY: 'nexus.jenkins.progmaticlab.com:5002'
+    jobs:
+      deploy-platform-rhosp13-1912:
+        stream: rhosp13-1912
+      deploy-tf-rhosp13-1912:
+        stream: rhosp13-1912
+        depends-on:
+          - deploy-platform-rhosp13-1912
+      test-sanity-rhosp13-1912:
+        job-name: test-sanity
+        stream: rhosp13-1912
+        depends-on:
+          - deploy-tf-rhosp13-1912
+      collect-logs-and-cleanup-rhosp13-1912:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp13-1912
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-rhosp13-1912
+          - deploy-tf-rhosp13-1912
+          - test-sanity-rhosp13-1912
+
+- template:
     name: rhosp16
     parents:
       - build-rhel
