@@ -476,6 +476,34 @@
           - test-sanity-juju-os
 
 - template:
+    name: juju-os-1912
+    streams:
+      juju-os-1912:
+        vars:
+          CONTRAIL_CONTAINER_TAG: '1912'
+          CONTAINER_REGISTRY: 'nexus.jenkins.progmaticlab.com:5002'
+    jobs:
+      deploy-platform-juju-os-1912:
+        stream: juju-os-1912
+      deploy-tf-juju-os:
+        stream: juju-os-1912
+        depends-on:
+          - deploy-platform-juju-os-1912
+      test-sanity-juju-os:
+        job-name: test-sanity
+        stream: juju-os-1912
+        depends-on:
+          - deploy-tf-juju-os-1912
+      collect-logs-and-cleanup-juju-os:
+        job-name: collect-logs-and-cleanup
+        stream: juju-os-1912
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-juju-os-1912
+          - deploy-tf-juju-os-1912
+          - test-sanity-juju-os-1912
+
+- template:
     name: juju-os-ha
     parents:
       - build-centos

@@ -301,6 +301,7 @@
       templates:
         - juju-k8s
         - juju-os
+        - juju-os-1912
         - cleanup
 
 - project:
