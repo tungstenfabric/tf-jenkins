@@ -349,6 +349,10 @@
           environment_os: rhel7
           deployer: rhosp
           orchestrator: openstack
+      - rhosp13-1912:
+          environment_os: rhel7
+          deployer: rhosp
+          orchestrator: openstack
       - rhosp16:
           environment_os: rhel8
           deployer: rhosp
