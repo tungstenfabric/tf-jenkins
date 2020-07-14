@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d079058c_2ac8fc46",
+        "filename": "config/templates.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-14T14:53:46Z",
+      "side": 1,
+      "message": "please check how it\u0027s defined in juju-os-ha (and please read some help at the beginning)\n\nhint: \njob-name: deploy-platform-juju-os",
+      "revId": "da280c454d563edcb8f67aabbf61ab0d46c2e7d3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "18ba16ae_ae24e520",
+        "filename": "jjb/jobs/deploy.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-14T14:53:46Z",
+      "side": 1,
+      "message": "please remove this and use already defined job",
+      "revId": "da280c454d563edcb8f67aabbf61ab0d46c2e7d3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
