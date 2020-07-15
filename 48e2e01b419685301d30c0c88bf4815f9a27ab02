@@ -1,0 +1,181 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fe49a104_3e8cf3e3",
+        "filename": "config/templates.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 536,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-15T09:54:22Z",
+      "side": 1,
+      "message": "juju-os already define orchestrator as openstack",
+      "range": {
+        "startLine": 536,
+        "startChar": 10,
+        "endLine": 536,
+        "endChar": 22
+      },
+      "revId": "48e2e01b419685301d30c0c88bf4815f9a27ab02",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0fb59a4_c1f3833c",
+        "filename": "config/templates.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-15T09:54:22Z",
+      "side": 1,
+      "message": "i would prefer to use nexus instead of dockerhub:\nregistry: nexus.jenkins.progmaticlab.com:5002\ntag: nightly-master-r2005",
+      "range": {
+        "startLine": 537,
+        "startChar": 10,
+        "endLine": 537,
+        "endChar": 28
+      },
+      "revId": "48e2e01b419685301d30c0c88bf4815f9a27ab02",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0a448466_0d591375",
+        "filename": "config/templates.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-15T09:54:22Z",
+      "side": 1,
+      "message": "if we decide to use this template for ziu (that\u0027s ok for me) then dependency from build should be moved to upgrade job. deploy tf can be run before build is finished",
+      "revId": "48e2e01b419685301d30c0c88bf4815f9a27ab02",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf738b0e_5dc1ab83",
+        "filename": "config/templates.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 556,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-15T09:54:22Z",
+      "side": 1,
+      "message": "let\u0027s use full name - test-ziu-juju-os-ha.\nlater we can add the same for other deployers",
+      "range": {
+        "startLine": 556,
+        "startChar": 6,
+        "endLine": 556,
+        "endChar": 20
+      },
+      "revId": "48e2e01b419685301d30c0c88bf4815f9a27ab02",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6eb283f6_3566242b",
+        "filename": "config/templates.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 560,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-15T09:54:22Z",
+      "side": 1,
+      "message": "package-centos is needed here - cause we should wait for ready current build to use it for upgrade",
+      "revId": "48e2e01b419685301d30c0c88bf4815f9a27ab02",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7160f748_be69c832",
+        "filename": "config/templates.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 562,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-15T09:54:22Z",
+      "side": 1,
+      "message": "this name has to be unique...",
+      "range": {
+        "startLine": 562,
+        "startChar": 6,
+        "endLine": 562,
+        "endChar": 28
+      },
+      "revId": "48e2e01b419685301d30c0c88bf4815f9a27ab02",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b86a8e5_73bdad98",
+        "filename": "config/templates.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-15T09:54:22Z",
+      "side": 1,
+      "message": "here we can leave just ziu job. it already has all deps.",
+      "revId": "48e2e01b419685301d30c0c88bf4815f9a27ab02",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51229d8d_716d1d6d",
+        "filename": "jjb/jobs/test-ziu.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-15T09:54:22Z",
+      "side": 1,
+      "message": "please remove trailing spaces",
+      "revId": "48e2e01b419685301d30c0c88bf4815f9a27ab02",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bdc24dae_18fc69b9",
+        "filename": "jobs/test/test-ziu.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-15T09:54:22Z",
+      "side": 1,
+      "message": "let\u0027s move this file (and most logic) into tf-dev-test repo - the layer that should has it.\n\nalso this file doesn\u0027t have executable permissions",
+      "revId": "48e2e01b419685301d30c0c88bf4815f9a27ab02",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
