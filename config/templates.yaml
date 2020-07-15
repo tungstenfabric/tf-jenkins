@@ -533,6 +533,8 @@
       juju-os-ha:
         vars:
           CLOUD: manual
+          CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
+          CONTRAIL_CONTAINER_TAG: nightly-master-r2005
     jobs:
       deploy-platform-juju-os-ha:
         job-name: deploy-platform-juju-os
@@ -550,6 +552,18 @@
         stream: juju-os-ha
         depends-on:
           - deploy-tf-juju-os-ha
+      test-ziu-juju-os-ha:
+        job-name: test-ziu
+        stream: juju-os-ha
+        depends-on:
+          - deploy-tf-juju-os-ha
+          - package-centos
+          - test-sanity-juju-os-ha
+      test-sanity-juju-os-ha-1:
+        job-name: test-sanity
+        stream: juju-os-ha
+        depends-on:
+          - test-ziu-juju-os-ha
       collect-logs-and-cleanup-juju-os-ha:
         job-name: collect-logs-and-cleanup
         stream: juju-os-ha
