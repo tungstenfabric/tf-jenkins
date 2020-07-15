@@ -1,0 +1,1 @@
+SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
