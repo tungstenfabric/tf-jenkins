@@ -533,6 +533,9 @@
       juju-os-ha:
         vars:
           CLOUD: manual
+          ORCHESTRATOR: openstack
+          CONTAINER_REGISTRY: tungstenfabric
+          CONTRAIL_CONTAINER_TAG: 2005
     jobs:
       deploy-platform-juju-os-ha:
         job-name: deploy-platform-juju-os
@@ -550,6 +553,18 @@
         stream: juju-os-ha
         depends-on:
           - deploy-tf-juju-os-ha
+      test-ziu-os-ha:
+        job-name: test-ziu
+        stream: juju-os-ha
+        depends-on:
+          - deploy-tf-juju-os-ha
+          - test-sanity-juju-os-ha
+      test-sanity-juju-os-ha:
+        job-name: test-sanity
+        stream: juju-os-ha
+        depends-on:
+          - deploy-tf-juju-os-ha
+          - test-ziu-os-ha
       collect-logs-and-cleanup-juju-os-ha:
         job-name: collect-logs-and-cleanup
         stream: juju-os-ha
