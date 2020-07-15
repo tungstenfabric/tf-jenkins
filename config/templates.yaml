@@ -613,11 +613,11 @@
           - test-sanity-rhosp16
 
 - template:
-    name: rhosp-bmc
+    name: rhosp13-bmc
     parents:
       - build-rhel
     streams:
-      rhosp-bmc:
+      rhosp13-bmc:
         vars:
           CLOUD: openlab1
           ENVIRONMENT_OS: rhel7
@@ -626,28 +626,28 @@
           ENABLE_NETWORK_ISOLATION: true
           PROVIDER: bmc
     jobs:
-      deploy-platform-rhosp-bmc:
-        job-name: deploy-platform-rhosp
-        stream: rhosp-bmc
-      deploy-tf-rhosp-bmc:
-        job-name: deploy-tf-rhosp
-        stream: rhosp-bmc
+      deploy-platform-rhosp13-bmc:
+        job-name: deploy-platform-rhosp13
+        stream: rhosp13-bmc
+      deploy-tf-rhosp13-bmc:
+        job-name: deploy-tf-rhosp13
+        stream: rhosp13-bmc
         depends-on:
           - package-rhel
-          - deploy-platform-rhosp-bmc
-      test-sanity-rhosp-bmc:
+          - deploy-platform-rhosp13-bmc
+      test-sanity-rhosp13-bmc:
         job-name: test-sanity
-        stream: rhosp-bmc
+        stream: rhosp13-bmc
         depends-on:
-          - deploy-tf-rhosp-bmc
-      collect-logs-and-cleanup-rhosp-bmc:
+          - deploy-tf-rhosp13-bmc
+      collect-logs-and-cleanup-rhosp13-bmc:
         job-name: collect-logs-and-cleanup
-        stream: rhosp-bmc
+        stream: rhosp13-bmc
         type: stream-post-hook
         depends-on:
-          - deploy-platform-rhosp-bmc
-          - deploy-tf-rhosp-bmc
-          - test-sanity-rhosp-bmc
+          - deploy-platform-rhosp13-bmc
+          - deploy-tf-rhosp13-bmc
+          - test-sanity-rhosp13-bmc
 
 - template:
     name: openshift
