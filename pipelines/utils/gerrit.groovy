@@ -18,7 +18,7 @@ def resolve_gerrit_url() {
 
 def gerrit_build_started() {
   try {
-    def msg = """Jenkins Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
+    def msg = """TF CI Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
     _notify_gerrit(msg)
   } catch (err) {
     println("Failed to provide comment to gerrit")
@@ -32,7 +32,7 @@ def gerrit_build_started() {
 def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration, err_msg=null) {
   try {
     if (!pre_build_done) {
-      msg = "Jenkins general failure (${env.GERRIT_PIPELINE})\n\n"
+      msg = "TF CI general failure (${env.GERRIT_PIPELINE})\n\n"
       if (err_msg)
         msg += "${err_msg}\n\n"
       msg += "Please check pipeline logs:\n"
@@ -89,9 +89,9 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration, er
     def duration_string = _get_duration_string(full_duration)
     def verified = VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]
     if (passed) {
-      msg = "Jenkins Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
+      msg = "TF CI Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
     } else {
-      msg = "Jenkins Build ${stopping_cause} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
+      msg = "TF CI Build ${stopping_cause} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
       verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
     _notify_gerrit(msg, verified)
