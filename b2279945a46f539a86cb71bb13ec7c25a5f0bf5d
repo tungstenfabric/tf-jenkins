@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6914bdf7_ebfac511",
+        "filename": "config/templates.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 548,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-16T10:58:42Z",
+      "side": 1,
+      "message": "it\u0027s not needed here",
+      "range": {
+        "startLine": 548,
+        "startChar": 12,
+        "endLine": 548,
+        "endChar": 26
+      },
+      "revId": "b2279945a46f539a86cb71bb13ec7c25a5f0bf5d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc4b127d_5a1610cc",
+        "filename": "config/templates.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 559,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-16T10:58:42Z",
+      "side": 1,
+      "message": "this is not required also. test already has it",
+      "range": {
+        "startLine": 559,
+        "startChar": 12,
+        "endLine": 559,
+        "endChar": 32
+      },
+      "revId": "b2279945a46f539a86cb71bb13ec7c25a5f0bf5d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ed5d7c3_b469832b",
+        "filename": "config/templates.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 571,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-16T10:58:42Z",
+      "side": 1,
+      "message": "here should be all jobs )",
+      "revId": "b2279945a46f539a86cb71bb13ec7c25a5f0bf5d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
