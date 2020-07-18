@@ -496,6 +496,9 @@
         stream: juju-os-1912
         depends-on:
           - deploy-tf-juju-os-1912
+        vars:
+          # use tf-test container from latest build to avoid cherry-picking fixes to 1912 for tf-test
+          TF_TEST_IMAGE: 'nexus.jenkins.progmaticlab.com:5002/contrail-test-test:queens-nightly-master'
       collect-logs-and-cleanup-juju-os-1912:
         job-name: collect-logs-and-cleanup
         stream: juju-os-1912
