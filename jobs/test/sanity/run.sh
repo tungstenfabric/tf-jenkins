@@ -19,6 +19,7 @@ export ORCHESTRATOR=$ORCHESTRATOR
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export SSL_ENABLE=$SSL_ENABLE
+export TF_TEST_IMAGE="$TF_TEST_IMAGE"
 export PATH=\$PATH:/usr/sbin
 src/tungstenfabric/tf-dev-test/contrail-sanity/run.sh
 EOF
