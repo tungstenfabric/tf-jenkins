@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e2775715_cea0f863",
+        "filename": "config/templates.yaml",
+        "patchSetId": 8
+      },
+      "lineNbr": 601,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-07-19T08:21:59Z",
+      "side": 1,
+      "message": "add:\n\n        vars:\n          # use tf-test container from latest build to avoid cherry-picking fixes to 1912 for tf-test\n          TF_TEST_IMAGE: \u0027nexus.jenkins.progmaticlab.com:5002/contrail-test-test:queens-nightly-master\u0027",
+      "revId": "e6e2e4a114535ae732737d1b8212276b8c3be6d1",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
