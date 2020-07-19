@@ -164,6 +164,16 @@
         - cleanup
 
 - project:
+    name: Juniper/contrail-common
+    check:
+      templates:
+        - test-unit
+        - cleanup
+    gate:
+      templates:
+        - test-unit
+        - cleanup
+- project:
     name: tungstenfabric/tf-common
     check:
       templates:
