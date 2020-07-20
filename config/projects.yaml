@@ -19,8 +19,8 @@
           voting: false
         juju-os-maas:
           voting: false
-        rhosp13-bmc:
-          voting: false
+        # rhosp13-bmc:
+          # voting: false
       templates:
         - build-r1912
         #- build-r2005
@@ -35,7 +35,7 @@
         - juju-os
         - juju-os-maas
         - rhosp13
-        - rhosp13-bmc
+        # - rhosp13-bmc
         - cleanup
       jobs:
         publish-centos-nightly:
