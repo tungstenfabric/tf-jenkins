@@ -56,8 +56,8 @@
       - shell: |
           source "$WORKSPACE/global.env"
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}  Stream: ${STREAM}"
-          desc+="<br>Job logs: <a href=\"${LOGS_URL}/$JOB_LOGS_PATH\">${LOGS_URL}/$JOB_LOGS_PATH</a>"
+          desc="Pipeline: ${PIPELINE_NAME}-$PIPELINE_NUMBER  Random: ${JOB_RND}  Stream: ${STREAM}"
+          desc+="<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -69,12 +69,12 @@
       - shell: |
           set -eo pipefail
           source "$WORKSPACE/global.env"
+          prom=$CONTRAIL_CONTAINER_TAG
           source ./src/tungstenfabric/tf-jenkins/infra/${SLAVE}/definitions
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
-          # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
+          export CONTRAIL_CONTAINER_TAG=$prom
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
-
           ./src/tungstenfabric/tf-jenkins/jobs/test/ziu/run.sh || res=1
           exit $res
     publishers:
