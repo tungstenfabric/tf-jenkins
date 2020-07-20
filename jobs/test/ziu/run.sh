@@ -1,6 +1,6 @@
 #!/bin/bash -eE
 set -o pipefail
-
+set -x
 [ "${DEBUG,,}" == "true" ] && set -x
 
 my_file="$(readlink -e "$0")"
@@ -18,7 +18,6 @@ export DEBUG=$DEBUG
 export ORCHESTRATOR=$ORCHESTRATOR
 export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
 export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
-export SSL_ENABLE=$SSL_ENABLE
 export PATH=\$PATH:/usr/sbin
 src/tungstenfabric/tf-dev-test/ziu-test/run.sh
 EOF
