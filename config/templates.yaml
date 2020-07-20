@@ -83,6 +83,8 @@
         stream: build-rhel
         depends-on:
           - prepare-sandbox-rhel
+        vars:
+          PUBLISH_TYPE: build
       package-deployers-rhel:
         job-name: build-package-deployers
         stream: build-rhel
@@ -125,6 +127,8 @@
         stream: build-r1912
         depends-on:
           - prepare-sandbox-r1912
+        vars:
+          PUBLISH_TYPE: build
       package-deployers-r1912:
         job-name: build-package-deployers
         stream: build-r1912
@@ -149,6 +153,50 @@
           - package-r1912
 
 - template:
+    name: build-r2003
+    streams:
+      build-r2003:
+        vars:
+          GERRIT_BRANCH: "R2003"
+          TAG_SUFFIX: "-r2003"
+    jobs:
+      prepare-sandbox-r2003:
+        # it creates worker
+        job-name: build-prepare-sandbox
+        stream: build-r2003
+        vars:
+          PUBLISH_TYPE: stable
+      fetch-sources-r2003:
+        job-name: build-fetch-sources
+        stream: build-r2003
+        depends-on:
+          - prepare-sandbox-r2003
+        vars:
+          PUBLISH_TYPE: build
+      package-deployers-r2003:
+        job-name: build-package-deployers
+        stream: build-r2003
+        depends-on:
+          - fetch-sources-r2003
+      compile-r2003:
+        job-name: build-compile
+        stream: build-r2003
+        depends-on:
+          - package-deployers-r2003
+      package-r2003:
+        job-name: build-package
+        stream: build-r2003
+        depends-on:
+          - compile-r2003
+      cleanup-r2003:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
+        stream: build-r2003
+        type: stream-post-hook
+        depends-on:
+          - package-r2003
+
+- template:
     name: build-r2005
     streams:
       build-r2005:
@@ -167,6 +215,8 @@
         stream: build-r2005
         depends-on:
           - prepare-sandbox-r2005
+        vars:
+          PUBLISH_TYPE: build
       package-deployers-r2005:
         job-name: build-package-deployers
         stream: build-r2005
@@ -476,40 +526,6 @@
           - test-sanity-juju-os
 
 - template:
-    name: juju-os-1912
-    streams:
-      juju-os-1912:
-        vars:
-          CONTRAIL_CONTAINER_TAG: 'nightly-master-r1912'
-          CONTAINER_REGISTRY: 'nexus.jenkins.progmaticlab.com:5002'
-          SSL_ENABLE: 'true'
-    jobs:
-      deploy-platform-juju-os-1912:
-        job-name: deploy-platform-juju-os
-        stream: juju-os-1912
-      deploy-tf-juju-os-1912:
-        job-name: deploy-tf-juju-os
-        stream: juju-os-1912
-        depends-on:
-          - deploy-platform-juju-os-1912
-      test-sanity-juju-os-1912:
-        job-name: test-sanity
-        stream: juju-os-1912
-        depends-on:
-          - deploy-tf-juju-os-1912
-        vars:
-          # use tf-test container from latest build to avoid cherry-picking fixes to 1912 for tf-test
-          TF_TEST_IMAGE: 'nexus.jenkins.progmaticlab.com:5002/contrail-test-test:queens-nightly-master'
-      collect-logs-and-cleanup-juju-os-1912:
-        job-name: collect-logs-and-cleanup
-        stream: juju-os-1912
-        type: stream-post-hook
-        depends-on:
-          - deploy-platform-juju-os-1912
-          - deploy-tf-juju-os-1912
-          - test-sanity-juju-os-1912
-
-- template:
     name: juju-os-ha
     parents:
       - build-centos
@@ -517,6 +533,8 @@
       juju-os-ha:
         vars:
           CLOUD: manual
+          CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
+          CONTRAIL_CONTAINER_TAG: nightly-master-r2005
     jobs:
       deploy-platform-juju-os-ha:
         job-name: deploy-platform-juju-os
@@ -527,13 +545,23 @@
         job-name: deploy-tf-juju-os
         stream: juju-os-ha
         depends-on:
-          - package-centos
           - deploy-platform-juju-os-ha
-      test-sanity-juju-os-ha:
+      # test-sanity-juju-os-ha:
+      #  job-name: test-sanity
+      #  stream: juju-os-ha
+      #  depends-on:
+      #    - deploy-tf-juju-os-ha
+      test-ziu-juju-os-ha:
+        job-name: test-ziu
+        stream: juju-os-ha
+        depends-on:
+          - package-centos
+        #  - test-sanity-juju-os-ha
+      test-sanity-juju-os-ha-1:
         job-name: test-sanity
         stream: juju-os-ha
         depends-on:
-          - deploy-tf-juju-os-ha
+          - test-ziu-juju-os-ha
       collect-logs-and-cleanup-juju-os-ha:
         job-name: collect-logs-and-cleanup
         stream: juju-os-ha
@@ -541,7 +569,9 @@
         depends-on:
           - deploy-platform-juju-os-ha
           - deploy-tf-juju-os-ha
-          - test-sanity-juju-os-ha
+        #  - test-sanity-juju-os-ha
+          - test-ziu-juju-os-ha
+          - test-sanity-juju-os-ha-1
 
 - template:
     name: juju-os-maas
@@ -647,11 +677,11 @@
           - test-sanity-rhosp16
 
 - template:
-    name: rhosp13-bmc
+    name: rhosp-bmc
     parents:
       - build-rhel
     streams:
-      rhosp13-bmc:
+      rhosp-bmc:
         vars:
           CLOUD: openlab1
           ENVIRONMENT_OS: rhel7
@@ -660,28 +690,28 @@
           ENABLE_NETWORK_ISOLATION: true
           PROVIDER: bmc
     jobs:
-      deploy-platform-rhosp13-bmc:
-        job-name: deploy-platform-rhosp13
-        stream: rhosp13-bmc
-      deploy-tf-rhosp13-bmc:
-        job-name: deploy-tf-rhosp13
-        stream: rhosp13-bmc
+      deploy-platform-rhosp-bmc:
+        job-name: deploy-platform-rhosp
+        stream: rhosp-bmc
+      deploy-tf-rhosp-bmc:
+        job-name: deploy-tf-rhosp
+        stream: rhosp-bmc
         depends-on:
           - package-rhel
-          - deploy-platform-rhosp13-bmc
-      test-sanity-rhosp13-bmc:
+          - deploy-platform-rhosp-bmc
+      test-sanity-rhosp-bmc:
         job-name: test-sanity
-        stream: rhosp13-bmc
+        stream: rhosp-bmc
         depends-on:
-          - deploy-tf-rhosp13-bmc
-      collect-logs-and-cleanup-rhosp13-bmc:
+          - deploy-tf-rhosp-bmc
+      collect-logs-and-cleanup-rhosp-bmc:
         job-name: collect-logs-and-cleanup
-        stream: rhosp13-bmc
+        stream: rhosp-bmc
         type: stream-post-hook
         depends-on:
-          - deploy-platform-rhosp13-bmc
-          - deploy-tf-rhosp13-bmc
-          - test-sanity-rhosp13-bmc
+          - deploy-platform-rhosp-bmc
+          - deploy-tf-rhosp-bmc
+          - test-sanity-rhosp-bmc
 
 - template:
     name: openshift
