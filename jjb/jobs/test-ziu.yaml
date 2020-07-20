@@ -74,7 +74,6 @@
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
-
           ./src/tungstenfabric/tf-jenkins/jobs/test/ziu/run.sh || res=1
           exit $res
     publishers:
