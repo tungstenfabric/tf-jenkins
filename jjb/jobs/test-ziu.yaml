@@ -71,6 +71,11 @@
           source "$WORKSPACE/global.env"
           source ./src/tungstenfabric/tf-jenkins/infra/${SLAVE}/definitions
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
+          # source "${WORKSPACE}/stackrc.$JOB_NAME.env" || /bin/true
+          source "${WORKSPACE}/stackrc.deploy-platform-juju-os.env" || /bin/true
+          export IMAGE_SSH_USER=$IMAGE_SSH_USER
+          export instance_ip=$instance_ip
+          export SSH_EXTRA_OPTIONS=$SSH_EXTRA_OPTIONS
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
