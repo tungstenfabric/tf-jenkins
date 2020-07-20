@@ -658,6 +658,7 @@
           TAG_SUFFIX: "-rhel7"
           ENABLE_RHEL_REGISTRATION: false
           ENABLE_NETWORK_ISOLATION: true
+          OPENSTACK_CONTAINER_REGISTRY: "10.10.50.2:5000"
           PROVIDER: bmc
     jobs:
       deploy-platform-rhosp13-bmc:
