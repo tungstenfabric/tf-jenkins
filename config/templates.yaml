@@ -544,6 +544,55 @@
           - test-sanity-juju-os-ha
 
 - template:
+    name: juju-os-ha-ziu
+    parents:
+      - build-centos
+    streams:
+      juju-os-ha-ziu:
+        vars:
+          CLOUD: manual
+          CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
+          CONTRAIL_CONTAINER_TAG: nightly-master-r2005
+    jobs:
+      deploy-platform-juju-os-ha-ziu:
+        job-name: deploy-platform-juju-os
+        stream: juju-os-ha-ziu
+        vars:
+          NODES: JUJU_CONTROLLER_NODES:xsmall:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-juju-os-ha-ziu:
+        job-name: deploy-tf-juju-os
+        stream: juju-os-ha-ziu
+        depends-on:
+          - deploy-platform-juju-os-ha-ziu
+      test-sanity-juju-os-ha-ziu:
+        job-name: test-sanity
+        stream: juju-os-ha-ziu
+        depends-on:
+          - deploy-tf-juju-os-ha-ziu
+      test-ziu-juju-os-ha-ziu:
+        job-name: test-ziu
+        stream: juju-os-ha-ziu
+        depends-on:
+          - package-centos
+          - deploy-tf-juju-os-ha-ziu
+          - test-sanity-juju-os-ha-ziu
+      test-sanity-juju-os-ha-ziu-1:
+        job-name: test-sanity
+        stream: juju-os-ha-ziu
+        depends-on:
+          - test-ziu-juju-os-ha-ziu
+      collect-logs-and-cleanup-juju-os-ha-ziu:
+        job-name: collect-logs-and-cleanup
+        stream: juju-os-ha-ziu
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-juju-os-ha-ziu
+          - deploy-tf-juju-os-ha-ziu
+          - test-sanity-juju-os-ha-ziu
+          - test-ziu-juju-os-ha-ziu
+          - test-sanity-juju-os-ha-ziu-1
+
+- template:
     name: juju-os-maas
     parents:
       - build-centos
