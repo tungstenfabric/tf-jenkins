@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "01eff679_2081298f",
+        "filename": "config/templates.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 662,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-07-22T18:09:15Z",
+      "side": 1,
+      "message": "i\u0027d prefere use dns names if possible.. in that cases this code never change in case of changing in infra.",
+      "revId": "504f6fbf06878f91e12f23483e671b53bd7e7c8d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
