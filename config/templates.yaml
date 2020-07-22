@@ -659,6 +659,7 @@
           ENABLE_RHEL_REGISTRATION: false
           ENABLE_NETWORK_ISOLATION: true
           PROVIDER: bmc
+          OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
     jobs:
       deploy-platform-rhosp13-bmc:
         job-name: deploy-platform-rhosp13
