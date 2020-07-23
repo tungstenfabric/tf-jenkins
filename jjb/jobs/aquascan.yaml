@@ -82,6 +82,7 @@
           # do it as a latest source to override all exports
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="${LOGS_PATH}/${STREAM}"
+          export FULL_LOGS_URL="${LOGS_URL}/${STREAM}"
           # main run
           ./src/tungstenfabric/tf-jenkins/jobs/aquascan/run.sh || res=1
           # collect logs
