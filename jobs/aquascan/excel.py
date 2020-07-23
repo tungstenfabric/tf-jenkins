@@ -3,8 +3,8 @@
 import os
 import sys
 import json
-import xlwt
 import getopt
+import xlsxwriter
 
 ROW_TEMPLATE = [
   'Registry', 'Image Name', 'Vulnerability Name', 'Vendor CVSS v2 Severity', 'Vendor CVSS v2 Score',
@@ -15,37 +15,28 @@ ROW_TEMPLATE = [
   'Acknowledged Date', 'Base Image Vulnerability', 'Base Image Name'
 ]
 
-def craftSink():
+def craftSink(path_):
   """ Opens a reference to an Excel WorkBook and Worksheet objects """
-  b = xlwt.Workbook(encoding='utf-8')
-  return b, b.add_sheet("Sheet 1")
-
-def addHeader(sink_):
-  F = xlwt.Font()
-  F.bold = True
-  S = xlwt.XFStyle()
-  S.font = F
+  b = xlsxwriter.Workbook(path_)
+  s = b.add_worksheet("Sheet 1")
+  f = b.add_format({'bold': True})
 
   """ Write the header line into the worksheet """
   for i, c in enumerate(ROW_TEMPLATE, start=0):
-    sink_.write(0, i, c, style=S)
-    C = sink_.col(i)
-    w = len(c)*367
-    if C.width < w:
-      C.width = w
+    s.write_string(0, i, c, f)
+    s.set_column(i, i, len(c) + 5)
 
-  sink_.set_panes_frozen(True)
-  sink_.set_horz_split_pos(1)
-      
+  s.freeze_panes(1, 0)
+
+  return b, s
 
 def addVulnerability(data_, sink_, lineno_):
   for i, c in enumerate(ROW_TEMPLATE, start=0):
-    sink_.write(lineno_, i, data_[c] if c in data_ else ' ')
+    sink_.write_string(lineno_, i, str(data_[c]) if c in data_ else ' ')
 
   return lineno_ + 1
 
-def addVulnerabilities(source_, sink_, firstLine_):
-  output = firstLine_
+def addVulnerabilities(source_, builder_):
   with open(source_) as f:
     d = json.load(f)
     for r in filter(lambda r_: 'vulnerabilities' in r_,  d['resources']):
@@ -71,9 +62,9 @@ def addVulnerabilities(source_, sink_, firstLine_):
         if 'nvd_score' in v:
           s = s and 7 > float(v['nvd_score'])
           x['NVD CVSS v2 Score'] = v['nvd_score']
-	if 'fix_version' in v:
+        if 'fix_version' in v:
           x['Fix Version'] = v['fix_version']
-	if 'solution' in v:
+        if 'solution' in v:
           x['Solution'] = v['solution']
         if 'publish_date' in v:
           x['Publish Date'] = v['publish_date']
@@ -88,9 +79,12 @@ def addVulnerabilities(source_, sink_, firstLine_):
         x['Description'] = v['description']
         x['Base Image Vulnerability'] = 'FALSE'
         if not s:
-          output = addVulnerability(x, sink_, output)
+          builder_(x)
 
-  return output
+def direct(silo_, builder_):
+  for f in os.listdir(silo_):
+    if f.endswith(".json"):
+      addVulnerabilities('%s/%s' % (silo_, f), builder_)
 
 def main():
   d, x = None, None
@@ -101,7 +95,7 @@ def main():
         d = a
       elif '-o' == o:
         x = a
-    
+
   except getopt.GetoptError, error_:
     print >> sys.stderr, str(error_)
     sys.exit(1)
@@ -110,15 +104,14 @@ def main():
     print >> sys.stderr, "Both -i and -o values are mandatory"
     sys.exit(2)
 
-  b, s = craftSink()
-  addHeader(s)
+  b, s = craftSink(x)
+  l = [1]
+  def build(report_):
+    l[0] = addVulnerability(report_, s, l[0])
 
-  l = 1
-  for f in os.listdir(d):
-    if f.endswith(".json"):
-      l = addVulnerabilities('%s/%s' % (d, f), s, l)
-
-  b.save(x)
+  direct(d, build)
+  s.autofilter(0, 0, l[0] - 1, len(ROW_TEMPLATE) - 1)
+  b.close()
 
 if __name__ == "__main__":
   main()
