@@ -1,0 +1,62 @@
+- job:
+    name: "docs"
+    description: "build docs"
+    defaults: global
+    scm:
+      - docs
+    parameters:
+      - label:
+          name: NODE_NAME
+      - string:
+          name: STREAM 
+      - string:
+          name: JOB_RND
+      - string:
+          name: PIPELINE_NAME
+      - string:
+          name: PIPELINE_NUMBER
+    wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+      - credentials-binding:
+        - ssh-user-private-key:
+            credential-id: worker
+            key-file-variable: WORKER_SSH_KEY
+            username-variable: WORKER_USER_NAME
+            passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+        - ssh-user-private-key:
+            credential-id: logs_host
+            key-file-variable: LOGS_HOST_SSH_KEY
+            username-variable: LOGS_HOST_USERNAME
+    builders:
+      - copyartifact:
+          project: ${PIPELINE_NAME}
+          filter: "global.env,*.$JOB_RND.env"
+          which-build: upstream-build
+          optional: true
+      - shell: |
+          source "$WORKSPACE/global.env"
+          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}<br>Job logs: <a href=\"${LOGS_URL}/${STREAM}\">${LOGS_URL}/${STREAM}</a>"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
+          tox -e docs
+    publishers:
+      - postbuildscript:
+          builders:
+            - role: SLAVE
+              build-on:
+                - SUCCESS
+                - FAILURE
+                - ABORTED
+                - NOT_BUILT
+                - UNSTABLE
+              build-steps:
+                - shell: |
+                    source "$WORKSPACE/global.env"
+                    tox -e docs
+      - archive:
+          artifacts: '*.env'
