@@ -13,7 +13,7 @@
       streams:
         juju-k8s:
           voting: false
-        rhosp13:
+        rhosp16:
           voting: false
         helm-os:
           voting: false
@@ -35,6 +35,7 @@
         - juju-os
         - juju-os-maas
         - rhosp13
+        - rhosp16
         # - rhosp13-bmc
         - cleanup
       jobs:
@@ -316,15 +317,16 @@
 
 - project:
     name: tungstenfabric/tf-tripleo-puppet
+    branch: stable/queens
     check:
       templates:
-        - build-rhel
-        #- rhosp13
+        - rhosp13
+        - rhosp16
         - cleanup
     gate:
       templates:
-        - build-rhel
-        #- rhosp13
+        - rhosp13
+        - rhosp16
         - cleanup
 
 - project:
