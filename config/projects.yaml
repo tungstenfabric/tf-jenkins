@@ -420,6 +420,15 @@
         - cleanup
 
 - project:
+    name: tungstenfabric/tf-build
+    check:
+      templates:
+        - build-rhel
+        - build-centos
+        - ansible-k8s
+        - cleanup
+
+- project:
     name: tungstenfabric/tf-jenkins
     check:
       templates:
