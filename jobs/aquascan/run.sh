@@ -57,17 +57,17 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_
 export WORKSPACE=\$HOME
 source ./scan.env
 if sudo -E ./scan.sh; then
-  i="${CONTAINER_REGISTRY}/tf-container-builder-src:${CONTAINER_TAG}"
+  i="\${CONTAINER_REGISTRY}/tf-container-builder-src:\${CONTAINER_TAG}"
   if sudo docker pull \${i} >/dev/null ; then
     I=\$(sudo docker create \${i} cat)
-    sudo docker cp \${I}:/src/security_vulnerabilities_whitelist ${SCAN_REPORTS_STASH}/
+    sudo docker cp \${I}:/src/security_vulnerabilities_whitelist \${SCAN_REPORTS_STASH}/
     sudo docker rm -f \${I}
     sudo docker image rm -f \${i}
-    sudo python ./new_cves.py -i ${SCAN_REPORTS_STASH} -o $new_cves_report \
-      -w ${SCAN_REPORTS_STASH}/security_vulnerabilities_whitelist
+    sudo python ./new_cves.py -i \${SCAN_REPORTS_STASH} -o $new_cves_report \
+      -w \${SCAN_REPORTS_STASH}/security_vulnerabilities_whitelist
   fi
 
-  sudo -E python ./excel.py -i ${SCAN_REPORTS_STASH} -o $scan_report
+  sudo -E python ./excel.py -i \${SCAN_REPORTS_STASH} -o $scan_report
 fi
 EOF
 rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:$scan_report . || true
