@@ -11,8 +11,6 @@
     name: tungstenfabric
     nightly:
       streams:
-        juju-k8s:
-          voting: false
         rhosp16:
           voting: false
         helm-os:

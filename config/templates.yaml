@@ -275,9 +275,6 @@
     name: k8s-manifests
     parents:
       - build-centos
-    streams:
-      k8s-manifests:
-        voting: false
     jobs:
       deploy-platform-k8s-manifests:
         stream: k8s-manifests
