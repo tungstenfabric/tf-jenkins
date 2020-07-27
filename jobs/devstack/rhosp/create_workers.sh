@@ -15,6 +15,7 @@ echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" > "$stackrc_file_path"
 echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
 echo "export ENABLE_NETWORK_ISOLATION=$ENABLE_NETWORK_ISOLATION" >> "$stackrc_file_path"
 echo "export OPENSTACK_CONTAINER_REGISTRY=$OPENSTACK_CONTAINER_REGISTRY" >> "$stackrc_file_path"
+echo "export CONTRAIL_CONTAINER_SRC_TAG=$CONTRAIL_CONTAINER_SRC_TAG" >> "$stackrc_file_path"
 echo "export PROVIDER=$PROVIDER" >> "$stackrc_file_path"
 
 if [[ -n "$CLOUD" ]]; then
