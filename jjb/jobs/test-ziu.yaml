@@ -73,7 +73,6 @@
           source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
-          export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG_PIPELINE_ORIGINAL"
           ./src/tungstenfabric/tf-jenkins/jobs/test/ziu/run.sh || res=1
           exit $res
     publishers:
