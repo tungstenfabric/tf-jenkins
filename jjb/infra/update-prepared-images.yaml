@@ -12,12 +12,6 @@
           disable-deferred-wipeout: true
       - timestamps
       - credentials-binding:
-          - ssh-user-private-key:
-              credential-id: worker
-              key-file-variable: WORKER_SSH_KEY
-              username-variable: WORKER_USER_NAME
-              passphrase-variable: WORKER_PASSPHRASE
-      - credentials-binding:
           - text:
               credential-id: VEXX_OS_USERNAME
               variable: OS_USERNAME
