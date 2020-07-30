@@ -7,8 +7,7 @@
       "net_id":"{{env `OS_NETWORK_ID`}}",
       "rhel_user":"{{env `RHEL_USER`}}",
       "rhel_pass":"{{env `RHEL_PASSWORD`}}",
-      "rhel_pool":"{{env `RHEL_POOL_ID`}}",
-      "ssh_private_key": "{{env `WORKER_SSH_KEY}`}}"
+      "rhel_pool":"{{env `RHEL_POOL_ID`}}"
    },
    "builders":[
       {
@@ -22,8 +21,6 @@
             "most_recent":true
          },
          "ssh_username":"{{user `ssh_user`}}",
-         "ssh_keypair_name":"worker",
-         "ssh_private_key_file":"{{user `ssh_private_key`}}",
          "use_blockstorage_volume":true,
          "volume_size":"10",
          "networks":"{{user `net_id`}}",
