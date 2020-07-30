@@ -1,0 +1,78 @@
+---
+
+- job:
+    name: "update-repository-tpc"
+    description: "Update tpc repo"
+    defaults: global
+    node: vexxhost
+    scm:
+      - tf-jenkins
+      - tf-dev-env
+    wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - amazon-web-services:
+              credential-id: aws-creds
+              access-key: AWS_ACCESS_KEY_ID
+              secret-key: AWS_SECRET_ACCESS_KEY
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
+          - text:
+              credential-id: TPC_REPO_USER
+              variable: TPC_REPO_USER
+          - text:
+              credential-id: TPC_REPO_PASS
+              variable: TPC_REPO_PASS
+    builders:
+      - shell: |
+          set -eo pipefail
+          echo "export SLAVE=vexxhost" > $WORKSPACE/global.env
+          source $WORKSPACE/global.env
+          export ENVIRONMENT_OS="centos7"
+          export REPO_SOURCE="http://nexus.jenkins.progmaticlab.com/repository/yum-tpc-source"
+          export CONTAINER_REGISTRY="nexus.jenkins.progmaticlab.com:5001"
+          export DEVENV_TAG="stable"
+          ./src/tungstenfabric/tf-jenkins/jobs/build/create_workers.sh
+          source "$WORKSPACE/stackrc.$JOB_NAME.env"
+          ./src/tungstenfabric/tf-jenkins/infra/mirrors/tpc/update_tpc.sh
+    publishers:
+      - postbuildscript:
+          builders:
+            - role: SLAVE
+              build-on:
+                  - SUCCESS
+                  - FAILURE
+                  - ABORTED
+                  - NOT_BUILT
+                  - UNSTABLE
+              build-steps:
+                  - shell: |
+                      source "$WORKSPACE/global.env"
+                      source "$WORKSPACE/stackrc.$JOB_NAME.env" || /bin/true
+                      ./src/tungstenfabric/tf-jenkins/infra/$SLAVE/remove_workers.sh
+                      rm -f "$WORKSPACE/stackrc.$JOB_NAME.env"
