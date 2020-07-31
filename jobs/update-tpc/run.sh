@@ -8,7 +8,7 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" {$WORKSPACE/src,$WORKSPACE/update_tpc.sh} $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" {$WORKSPACE/src,$my_dir/update_tpc.sh} $IMAGE_SSH_USER@$instance_ip:./
 
 echo "INFO: Update tpc started"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
