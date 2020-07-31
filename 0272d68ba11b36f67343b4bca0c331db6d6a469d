@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "72ff0888_10ba54b1",
+        "filename": "infra/mirrors/tpc/update_tpc.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 471
+      },
+      "writtenOn": "2020-07-31T10:33:32Z",
+      "side": 1,
+      "message": "ok",
+      "parentUuid": "5749cf4f_70ffc6b8",
+      "revId": "0272d68ba11b36f67343b4bca0c331db6d6a469d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a51215ae_a04ec84a",
         "filename": "jjb/infra/update-repository-tpc.yaml",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "0272d68ba11b36f67343b4bca0c331db6d6a469d",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06c2a69e_d1df1da5",
+        "filename": "jjb/infra/update-repository-tpc.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 471
+      },
+      "writtenOn": "2020-07-31T10:33:32Z",
+      "side": 1,
+      "message": "yep",
+      "parentUuid": "a51215ae_a04ec84a",
+      "revId": "0272d68ba11b36f67343b4bca0c331db6d6a469d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     },
     {
       "key": {
@@ -56,6 +92,30 @@
       "revId": "0272d68ba11b36f67343b4bca0c331db6d6a469d",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c25cd240_75d113a2",
+        "filename": "jjb/infra/update-repository-tpc.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 471
+      },
+      "writtenOn": "2020-07-31T10:33:32Z",
+      "side": 1,
+      "message": "I was updating the binary repository during tests",
+      "parentUuid": "f78a4788_f6ebdd1a",
+      "range": {
+        "startLine": 57,
+        "startChar": 17,
+        "endLine": 57,
+        "endChar": 28
+      },
+      "revId": "0272d68ba11b36f67343b4bca0c331db6d6a469d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
