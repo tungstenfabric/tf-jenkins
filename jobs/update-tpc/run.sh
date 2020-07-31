@@ -16,11 +16,14 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
-export REPO_SOURCE=$REPO_SOURCE
-export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
-export DEVENV_TAG=$DEVENV_TAG
 export TPC_REPO_USER=$TPC_REPO_USER
 export TPC_REPO_PASS=$TPC_REPO_PASS
+
+export REPO_SOURCE=http://nexus.jenkins.progmaticlab.com/repository/yum-tpc-source
+export CONTAINER_REGISTRY=nexus.jenkins.progmaticlab.com:5001
+export DEVENV_TAG=stable
+export CONTRAIL_DEPLOY_REGISTRY=0
+
 export PATH=\$PATH:/usr/sbin
 ./update_tpc.sh
 EOF
