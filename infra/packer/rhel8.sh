@@ -17,11 +17,11 @@ gpgcheck=1
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/appstream/rhel-8-for-x86_64-appstream-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
-[Openstack]
-Name=Openstack 16 for Red Hat Enterprise Linux 8.0
+[rhosp16.1]
+Name=Openstack 16 for Red Hat Enterprise Linux 8.2
 enabled=1
 gpgcheck=1
-baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/openstack/openstack-16-for-rhel-8-x86_64-rpms/
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/openstack/openstack-16.1-for-rhel-8-x86_64-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [Satellite]
@@ -31,11 +31,11 @@ gpgcheck=1
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/satellite/satellite-tools-6.5-for-rhel-8-x86_64-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
-[Ansible]
-Name=Ansible 2.8 for Red Hat Enterprise Linux 8.0
+[Ansible2.x]
+Name=Ansible 2.x for Red Hat Enterprise Linux 8.x
 enabled=1
 gpgcheck=1
-baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/ansible/ansible-2.8-for-rhel-8-x86_64-rpms/
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/ansible/ansible-2-for-rhel-8-x86_64-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 [HighAvailability]
