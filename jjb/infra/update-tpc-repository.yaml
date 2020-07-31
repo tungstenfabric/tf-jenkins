@@ -1,10 +1,11 @@
 ---
 
 - job:
-    name: "update-repository-tpc"
-    description: "Update tpc repo"
+    name: "update-tpc-source-repository"
+    description: "Update tpc-source repository from tf-third-party-packages"
     defaults: global
     node: vexxhost
+    concurrent: false
     scm:
       - tf-jenkins
       - tf-dev-env
@@ -50,29 +51,43 @@
               variable: TPC_REPO_PASS
     builders:
       - shell: |
-          set -eo pipefail
+          # individual job - create global.env
           echo "export SLAVE=vexxhost" > $WORKSPACE/global.env
-          source $WORKSPACE/global.env
-          export ENVIRONMENT_OS="centos7"
-          export REPO_SOURCE="http://nexus.jenkins.progmaticlab.com/repository/yum-tpc-source"
-          export CONTAINER_REGISTRY="nexus.jenkins.progmaticlab.com:5001"
-          export DEVENV_TAG="stable"
-          ./src/tungstenfabric/tf-jenkins/jobs/build/create_workers.sh
+          echo "export ENVIRONMENT_OS=centos7" >> $WORKSPACE/global.env
+          echo "export REPO_SOURCE=http://nexus.jenkins.progmaticlab.com/repository/yum-tpc-source" >> $WORKSPACE/global.env
+          echo "export CONTAINER_REGISTRY=nexus.jenkins.progmaticlab.com:5001" >> $WORKSPACE/global.env
+          echo "export DEVENV_TAG=stable" >> $WORKSPACE/global.env
+      - shell: |
+          set -eo pipefail
+          source "$WORKSPACE/global.env"
+
+          ./src/tungstenfabric/tf-jenkins/jobs/update-tpc/create_workers.sh
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
-          ./src/tungstenfabric/tf-jenkins/infra/mirrors/tpc/update_tpc.sh
+          # main run
+          ./src/tungstenfabric/tf-jenkins/jobs/update-tpc/run.sh || res=1
+          # collect logs
+          ./src/tungstenfabric/tf-jenkins/jobs/update-tpc/collect_logs.sh
+          exit $res
     publishers:
       - postbuildscript:
           builders:
             - role: SLAVE
               build-on:
-                  - SUCCESS
-                  - FAILURE
-                  - ABORTED
-                  - NOT_BUILT
-                  - UNSTABLE
+                - SUCCESS
+                - FAILURE
+                - ABORTED
+                - NOT_BUILT
+                - UNSTABLE
               build-steps:
-                  - shell: |
-                      source "$WORKSPACE/global.env"
-                      source "$WORKSPACE/stackrc.$JOB_NAME.env" || /bin/true
+                - shell: |
+                    source "$WORKSPACE/global.env"
+                    if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ]; then
+                      echo "INFO: stackrc file found. remove workers."
+                      source "$WORKSPACE/stackrc.$JOB_NAME.env"
                       ./src/tungstenfabric/tf-jenkins/infra/$SLAVE/remove_workers.sh
-                      rm -f "$WORKSPACE/stackrc.$JOB_NAME.env"
+                    else
+                      echo "INFO: stackrc file could not be found."
+                    fi
+                    rm -f "$WORKSPACE/stackrc.$JOB_NAME.env"
+      - archive:
+          artifacts: '*.env'
