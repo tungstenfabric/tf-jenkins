@@ -15,6 +15,7 @@ function add_deployrc() {
   cat <<EOF >> "$file"
 export CLOUD=$CLOUD
 source \$HOME/$CLOUD.vars || /bin/true
+export JUJU_CONTROLLER_NODES="$JUJU_CONTROLLER_NODES"
 EOF
 }
 export -f add_deployrc
