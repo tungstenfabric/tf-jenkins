@@ -54,9 +54,6 @@
           # individual job - create global.env
           echo "export SLAVE=vexxhost" > $WORKSPACE/global.env
           echo "export ENVIRONMENT_OS=centos7" >> $WORKSPACE/global.env
-          echo "export REPO_SOURCE=http://nexus.jenkins.progmaticlab.com/repository/yum-tpc-source" >> $WORKSPACE/global.env
-          echo "export CONTAINER_REGISTRY=nexus.jenkins.progmaticlab.com:5001" >> $WORKSPACE/global.env
-          echo "export DEVENV_TAG=stable" >> $WORKSPACE/global.env
       - shell: |
           set -eo pipefail
           source "$WORKSPACE/global.env"
