@@ -7,7 +7,7 @@ source $my_dir/common.sh
 
 [ -f $my_dir/rhel_account ] && source $my_dir/rhel-account
 
-MIRROR_REGISTRY="rhel-mirrors.tf-jenkins.progmaticlab.com:5000"
+MIRROR_REGISTRY="rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
 REDHAT_REGISTRY="registry.redhat.io"
 
 RHEL_NAMESPACE="rhel7"
