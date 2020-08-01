@@ -64,5 +64,12 @@ sudo cp -f subscription-manager.conf.temp /etc/yum/pluginconf.d/subscription-man
 rm -rf subscription-manager.conf.temp
 sudo mv local.repo /etc/yum.repos.d/
 
+echo "INFO: /etc/yum.repos.d/local.repo"
+sudo cat /etc/yum.repos.d/local.repo
+
+echo "INFO: yum update"
 sudo yum update -y
+
 sudo sed -i '/192\.168\.122\.1/d' /etc/resolv.conf
+echo "INFO: /etc/resolv.conf"
+sudo cat /etc/resolv.conf
