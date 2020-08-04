@@ -1,0 +1,29 @@
+#cloud-config
+hostname: ${VM_HOST_NAME}
+fqdn: ${VM_HOST_NAME}.${VM_DOMAIM_NAME}
+manage_etc_hosts: true
+users:
+  - name: ${SSH_USER}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    shell: /bin/bash
+    lock_passwd: false
+    ssh-authorized-keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDakVAppagi15mkaphO8qP1Cgt6l/HULlbGN6jbjI+qq9y+2cyvLnGLmt4kyfqgbJatjJguQu10Z0/puFrXNBcETWDyal+svlOnJofKO7dFDrV2h1hMYAzyC3bKPQOddZeCD0Ny1yhz01jJ/oPCRxbEIxXjF8iccPRxtM2B8W5Pg8hAdU1OL4Oziaa/5GSC3DWLFRp2dIlsfd4TSXw7KJGPgheoYJLg0HOKsTSz9VIggFwRTmdiFlBIrD3+VJ+afldYyv5/mpBRiyUx27bXRChaqO1LFafYfBeVYyV1YZ6b9bUDwFg1GBz1oPsEYW94v5uOAisU//zK1MaLiIs0lWAB"
+      - ${SSH_USER_KEY}
+ssh_pwauth: true
+disable_root: false
+chpasswd:
+  list: |
+  ${SSH_USER}:${USER_PASSWORD}
+  expire: False
+packages:
+  - qemu-guest-agent
+runcmd:
+  - [ systemctl, daemon-reload ]
+  - [ systemctl, enable, "serial-getty@ttyS0.service" ]
+  - [ systemctl, start, "serial-getty@ttyS0.service" ]
+  - [ systemctl, disable, --now, apt-daily-upgrade.timer ]
+  - [ systemctl, disable, --now, apt-daily.timer ]
+# written to /var/log/cloud-init-output.log
+final_message: "The system is finally up. Enjoy."
