@@ -13,7 +13,7 @@ export CLOUD=${CLOUD:-"local"}
 function add_deployrc() {
   local file="$1"
   cat <<EOF >> "$file"
-export CLOUD=$CLOUD
+export CLOUD="$CLOUD"
 source \$HOME/$CLOUD.vars || /bin/true
 export JUJU_CONTROLLER_NODES="$JUJU_CONTROLLER_NODES"
 EOF
