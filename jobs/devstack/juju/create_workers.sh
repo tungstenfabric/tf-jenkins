@@ -27,10 +27,11 @@ cd \$HOME/src/tungstenfabric/tf-devstack/common
 EOF
   chmod a+x $WORKSPACE/run_deploy_maas.sh
 
-  rsync -a -e "$ssh_cmd" $WORKSPACE/run_deploy_maas.sh $IMAGE_SSH_USER@$instance_ip:./
+  rsync -a -e "$ssh_cmd" $WORKSPACE/run_deploy_maas.sh $IMAGE_SSH_USER@$MAAS_CONTROLLER:./
   # run this via eval due to special symbols in ssh_cmd
   eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./run_deploy_maas.sh
-
+  rsync -a -e "$ssh_cmd" $IMAGE_SSH_USER@$MAAS_CONTROLLER:./maas.vars $WORKSPACE/
+  cat $WORKSPACE/maas.vars >> ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 else
   "$my_dir/../common/create_workers.sh"
 fi
