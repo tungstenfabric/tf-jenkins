@@ -13,8 +13,10 @@ export CLOUD=${CLOUD:-"local"}
 function add_deployrc() {
   local file="$1"
   cat <<EOF >> "$file"
-export CLOUD=$CLOUD
-source \$HOME/$CLOUD.vars || /bin/true
+export CLOUD="$CLOUD"
+export MAAS_ENDPOINT="$MAAS_ENDPOINT"
+export MAAS_API_KEY="$MAAS_API_KEY"
+export VIRTUAL_IPS="$VIRTUAL_IPS"
 export JUJU_CONTROLLER_NODES="$JUJU_CONTROLLER_NODES"
 EOF
 }
