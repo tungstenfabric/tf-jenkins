@@ -1,4 +1,24 @@
+SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+export BASE_IMAGES_PATH="/var/lib/libvirt/images/base"
+export VM_IMAGES_PATH="$HOME/vms"
+
 export ENVIRONMENT_OS="ubuntu18"
-export IMAGE_SSH_USER="jenkins"
-export INSTANCE_IP="192.168.51.5"
-export VM_NAME="vm-maas"
+export IMAGE_SSH_USER="ubuntu"
+export USER_PASSWORD="tungst3n123"
+export SSH_USER_KEY=$(cat ~/.ssh/id_rsa.pub)
+
+declare -A MAAS_CONTROLLER=( ['VM_ID']='maas.openlab2.local' \
+                             ['VM_VCPU']='4' \
+                             ['VM_MEMORY']='16348' \
+                             ['VM_HDD_SIZE']='80G' \
+                             ['VM_HOST_NAME']='maas' \
+                             ['VM_DOMAIN_NAME']='openlab2.local'\
+                             ['VM_IP_ADDRESS']='192.168.51.6' )
+
+declare -A JUJU_CONTROLLER=( ['VM_ID']='juju-controller.openlab2.local' \
+                             ['VM_VCPU']='4' \
+                             ['VM_MEMORY']='8192' \
+                             ['VM_HDD_SIZE']='40G' \
+                             ['VM_HOST_NAME']='juju-controller' \
+                             ['VM_DOMAIN_NAME']='openlab2.local'\
+                             ['VM_IP_ADDRESS']='192.168.51.7' )
