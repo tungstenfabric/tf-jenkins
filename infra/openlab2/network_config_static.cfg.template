@@ -1,0 +1,9 @@
+version: 2
+ethernets:
+  ens3:
+     dhcp4: false
+     addresses: [ ${VM_IP_ADDRESS}/24 ]
+     gateway4: 192.168.51.1
+     nameservers:
+       addresses: [ 8.8.4.4,8.8.8.8 ]
+       search: [ ${VM_DOMAIN_NAME} ]
