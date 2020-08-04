@@ -72,6 +72,9 @@
           - text:
               credential-id: RHEL_PASSWORD
               variable: RHEL_PASSWORD
+          - text:
+              credential-id: MAAS_API_KEY
+              variable: MAAS_API_KEY
     scm:
       - tf-jenkins
       - tf-devstack

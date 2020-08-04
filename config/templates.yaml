@@ -547,6 +547,7 @@
     streams:
       juju-os-maas:
         vars:
+          DEBUG: true
           CLOUD: maas
           SSL_ENABLE: 'true'
     jobs:
