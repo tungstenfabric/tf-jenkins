@@ -18,18 +18,19 @@ if [[ "$CLOUD" == 'maas' ]] ; then
   source "$ENV_FILE"
   ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
   rsync -a -e "$ssh_cmd" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
-  cat <<EOF >> $WORKSPACE/run_deploy_maas.sh
+  cat <<EOF >> $WORKSPACE/run_prepare_maas.sh
 #!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
-export IPMI_IPS='$IPMI_IPS'
-cd \$HOME/src/tungstenfabric/tf-devstack/common
-./deploy_maas.sh \$HOME/maas.vars
+export MAAS_PROFILE=$MAAS_PROFILE
+export MAAS_API_KEY=$MAAS_API_KEY
+export MAAS_ENDPOINT=$MAAS_ENDPOINT
+src/tungstenfabric/tf-jenkins/infra/openlab2/prepare_maas.sh \$HOME/maas.vars
 EOF
-  chmod a+x $WORKSPACE/run_deploy_maas.sh
+  chmod a+x $WORKSPACE/run_prepare_maas.sh
 
-  rsync -a -e "$ssh_cmd" $WORKSPACE/run_deploy_maas.sh $IMAGE_SSH_USER@$instance_ip:./
+  rsync -a -e "$ssh_cmd" $WORKSPACE/run_prepare_maas.sh $IMAGE_SSH_USER@$instance_ip:./
   # run this via eval due to special symbols in ssh_cmd
-  eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./run_deploy_maas.sh
+  eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./run_prepare_maas.sh
 
 else
   "$my_dir/../common/create_workers.sh"
