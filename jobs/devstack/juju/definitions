@@ -3,4 +3,4 @@ export VM_TYPE=${vm_types[$ORCHESTRATOR]}
 
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
-export IPMI_IPS="192.168.51.20 192.168.51.21 192.168.51.22 192.168.51.23 192.168.51.24"
+export IPMI_IPS="192.168.51.19 192.168.51.20 192.168.51.21 192.168.51.22 192.168.51.23 192.168.51.24"
