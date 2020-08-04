@@ -478,6 +478,7 @@
       juju-os-1912:
         vars:
           CONTRAIL_CONTAINER_TAG: 'nightly-master-r1912'
+          CONTRAIL_DEPLOYER_CONTAINER_TAG: 'latest'
           CONTAINER_REGISTRY: 'nexus.jenkins.progmaticlab.com:5002'
           SSL_ENABLE: 'true'
     jobs:
