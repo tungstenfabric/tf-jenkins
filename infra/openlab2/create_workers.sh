@@ -8,28 +8,14 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+ssh_cmd="ssh -i $OPENLAB2_SSH_KEY $SSH_OPTIONS"
+rsync -a -e "$ssh_cmd" --port=30002  $my_dir/*  jenkins@openlab.tf-jenkins.progmaticlab.com:./
+
+eval $ssh_cmd jenkins@openlab.tf-jenkins.progmaticlab.com:3002 ./run_create_worker.sh
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
 echo "export ENVIRONMENT_OS=$ENVIRONMENT_OS" >> "$ENV_FILE"
 echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
-echo "export instance_ip=$INSTANCE_IP" >> "$ENV_FILE"
+echo "export instance_ip=${JUJU_CONTROLLER[VM_IP]}" >> "$ENV_FILE"
+echo "export MAAS_CONTROLLER=${MAAS_CONTROLLER[VM_IP]}" >> "$ENV_FILE"
 echo "export SSH_EXTRA_OPTIONS=\"-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -i \$OPENLAB2_SSH_KEY -l jenkins -p 30002 openlab.tf-jenkins.progmaticlab.com\\\"\"" >> "$ENV_FILE"
-
-cat <<EOF | ssh -i $OPENLAB2_SSH_KEY $SSH_OPTIONS -p 30002 jenkins@openlab.tf-jenkins.progmaticlab.com
-[ "${DEBUG,,}" == "true" ] && set -x
-export PATH=\$PATH:/usr/sbin
-virsh destroy $VM_NAME || /bin/true
-virsh undefine $VM_NAME || /bin/true
-rm -f $VM_NAME.qcow2
-virt-clone --original $ENVIRONMENT_OS --name $VM_NAME --auto-clone --file $VM_NAME.qcow2
-virsh start $VM_NAME
-echo "VM is spinned"
-EOF
-
-source "$ENV_FILE"
-
-timeout 300 bash -c "\
-while /bin/true ; do \
-  ssh -i $OPENLAB2_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
-  sleep 10 ; \
-done"
