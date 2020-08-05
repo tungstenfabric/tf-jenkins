@@ -9,6 +9,7 @@ if (env.GERRIT_PIPELINE == 'nightly') {
   TIMEOUT_HOURS = 6
   CONTAINER_REGISTRY="nexus.jenkins.progmaticlab.com:5002"
 }
+DEPLOYER_CONTAINER_REGISTRY=$CONTAINER_REGISTRY
 // this is default LTS release for all deployers
 DEFAULT_OPENSTACK_VERSION = "queens"
 
@@ -179,6 +180,7 @@ def evaluate_env() {
       echo "export OPENSTACK_VERSION=${openstack_version}" >> global.env
       echo "export SITE_MIRROR=${SITE_MIRROR}" >> global.env
       echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
+      echo "export DEPLOYER_CONTAINER_REGISTRY=${DEPLOYER_CONTAINER_REGISTRY}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
       echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG=${contrail_container_tag}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG_PIPELINE_ORIGINAL=${contrail_container_tag}" >> global.env
