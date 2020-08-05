@@ -474,6 +474,8 @@
 
 - template:
     name: juju-os-1912
+    parents:
+        - build-centos
     streams:
       juju-os-1912:
         vars:
