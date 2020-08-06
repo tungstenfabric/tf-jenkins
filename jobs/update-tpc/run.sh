@@ -21,6 +21,7 @@ export TPC_REPO_PASS=$TPC_REPO_PASS
 
 export REPO_SOURCE=http://nexus.jenkins.progmaticlab.com/repository/yum-tpc-source
 export CONTAINER_REGISTRY=nexus.jenkins.progmaticlab.com:5001
+export DEPLOYER_CONTAINER_REGISTRY=$CONTAINER_REGISTRY
 export DEVENV_TAG=stable
 export CONTRAIL_DEPLOY_REGISTRY=0
 
