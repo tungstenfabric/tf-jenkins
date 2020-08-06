@@ -488,6 +488,7 @@
         job-name: deploy-tf-juju-os
         stream: juju-os-1912
         depends-on:
+          - package-deployers-centos
           - deploy-platform-juju-os-1912
       test-sanity-juju-os-1912:
         job-name: test-sanity
