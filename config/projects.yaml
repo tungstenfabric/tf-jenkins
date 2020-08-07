@@ -333,10 +333,12 @@
     check:
       templates:
         - rhosp13
+        - rhosp13-1912
         - cleanup
     gate:
       templates:
         - rhosp13
+        - rhosp13-1912
         - cleanup
 
 - project:
