@@ -43,7 +43,7 @@ if [[ "$OPENSTACK_VERSION" != 'queens' ]]; then
 fi
 
 if [[ ${ENVIRONMENT_OS} == 'rhel7' ]]; then
-  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo mirror-rhel8-baseos.repo"
+  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
 elif [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
   mirror_list_for_build="mirror-base.repo mirror-epel.repo mirror-docker.repo mirror-google-chrome.repo"
 fi
@@ -81,6 +81,7 @@ export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}
 export CONTRAIL_KEEP_LOG_FILES=true
 
 export MULTI_KERNEL_BUILD=true
+export KERNEL_REPOSITORIES_RHEL8="--disablerepo=* --enablerepo=BaseOS --enablerepo=KERNELS_ARCHIVE_RHEL8"
 
 cd src/tungstenfabric/tf-dev-env
 
