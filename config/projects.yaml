@@ -433,8 +433,9 @@
     check:
       templates:
         - build-rhel
-        - build-centos
-        - ansible-os
+        - juju-os-ha
+        #- build-centos
+        #- ansible-os
         - cleanup
     gate:
       templates:
