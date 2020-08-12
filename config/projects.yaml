@@ -433,8 +433,7 @@
     check:
       templates:
         - build-rhel
-        - build-centos
-        - ansible-os
+        - rhosp16
         - cleanup
     gate:
       templates:
