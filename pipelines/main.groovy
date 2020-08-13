@@ -139,7 +139,7 @@ def clone_self() {
 
 def evaluate_common_params() {
   // evaluate logs params
-  branch = 'master'
+  branch = ''
   if (env.GERRIT_BRANCH)
     branch = env.GERRIT_BRANCH.split('/')[-1].toLowerCase()
   openstack_version = DEFAULT_OPENSTACK_VERSION
@@ -155,7 +155,7 @@ def evaluate_common_params() {
     logs_path = "${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
     logs_url = "${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
   } else if (env.GERRIT_PIPELINE == 'nightly') {
-    contrail_container_tag = "nightly-${branch}"
+    contrail_container_tag = "nightly"
     logs_path = "${LOGS_BASE_PATH}/nightly/pipeline_${BUILD_NUMBER}"
     logs_url = "${LOGS_BASE_URL}/nightly/pipeline_${BUILD_NUMBER}"
   } else {

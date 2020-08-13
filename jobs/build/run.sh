@@ -81,7 +81,6 @@ export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}
 export CONTRAIL_KEEP_LOG_FILES=true
 
 export MULTI_KERNEL_BUILD=true
-export KERNEL_REPOSITORIES_RHEL8="--disablerepo=* --enablerepo=BaseOS --enablerepo=KERNELS_ARCHIVE_RHEL8"
 
 cd src/tungstenfabric/tf-dev-env
 
