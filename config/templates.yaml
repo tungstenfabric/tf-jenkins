@@ -625,7 +625,6 @@
           OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
           CONTAINER_REGISTRY: 'nexus.jenkins.progmaticlab.com:5002'
-          TF_TEST_IMAGE: 'nexus.jenkins.progmaticlab.com:5002/contrail-test-test:queens-nightly'
     jobs:
       deploy-platform-rhosp13-1912:
         stream: rhosp13-1912
@@ -641,6 +640,9 @@
         stream: rhosp13-1912
         depends-on:
           - deploy-tf-rhosp13-1912
+        vars:
+          # use tf-test container from latest build to avoid cherry-picking fixes to 1912 for tf-test
+          TF_TEST_IMAGE: 'nexus.jenkins.progmaticlab.com:5002/contrail-test-test:queens-nightly'
       collect-logs-and-cleanup-rhosp13-1912:
         job-name: collect-logs-and-cleanup
         stream: rhosp13-1912
