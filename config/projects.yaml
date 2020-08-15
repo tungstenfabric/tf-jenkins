@@ -434,10 +434,16 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
-        - build-rhel
-        - build-centos
-        - ansible-os
+        - rhosp13-1912
         - cleanup
     gate:
       templates:
         - build-centos
+
+- project:
+    name: Juniper/contrail-tripleo-pupper
+    check:
+      templates:
+        - rhosp13-1912
+        - cleanup
+
