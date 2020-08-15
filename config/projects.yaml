@@ -434,9 +434,8 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
-        - build-rhel
         - build-centos
-        - ansible-os
+        - ansible-k8s
         - cleanup
     gate:
       templates:
