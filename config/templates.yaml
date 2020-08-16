@@ -620,6 +620,7 @@
         vars:
           OPENSTACK_VERSION: queens
           RHOSP_VERSION: rhosp13
+          TAG_SUFFIX: "-rhel7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
