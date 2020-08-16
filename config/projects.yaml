@@ -21,6 +21,7 @@
           # voting: false
       templates:
         - build-r1912
+        - build-r1912-rhel
         #- build-r2005
         - test-unit
         - test-unit-ui
