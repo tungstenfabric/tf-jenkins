@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "93a52106_afc3d8fd",
+        "filename": "infra/openlab2/cloud_init.cfg.template",
+        "patchSetId": 3
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 471
+      },
+      "writtenOn": "2020-08-18T20:04:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d85f760e_5cb3a375",
+      "range": {
+        "startLine": 4,
+        "startChar": 18,
+        "endLine": 4,
+        "endChar": 22
+      },
+      "revId": "cfbcde3e8a5361e8638cd5bd0f32a2884be3a104",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8db4c275_7fbd2989",
         "filename": "infra/openlab2/definitions",
         "patchSetId": 3
@@ -39,6 +63,24 @@
       "revId": "cfbcde3e8a5361e8638cd5bd0f32a2884be3a104",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a363890c_a82f73b7",
+        "filename": "infra/openlab2/definitions",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 471
+      },
+      "writtenOn": "2020-08-18T20:04:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8db4c275_7fbd2989",
+      "revId": "cfbcde3e8a5361e8638cd5bd0f32a2884be3a104",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
