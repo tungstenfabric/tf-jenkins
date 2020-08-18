@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d85f760e_5cb3a375",
+        "filename": "infra/openlab2/cloud_init.cfg.template",
+        "patchSetId": 3
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-18T14:25:25Z",
+      "side": 1,
+      "message": "please set it to False",
+      "range": {
+        "startLine": 4,
+        "startChar": 18,
+        "endLine": 4,
+        "endChar": 22
+      },
+      "revId": "cfbcde3e8a5361e8638cd5bd0f32a2884be3a104",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8db4c275_7fbd2989",
+        "filename": "infra/openlab2/definitions",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-18T14:25:25Z",
+      "side": 1,
+      "message": "please add comment what is this key",
+      "revId": "cfbcde3e8a5361e8638cd5bd0f32a2884be3a104",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
