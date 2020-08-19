@@ -4,5 +4,5 @@ export VM_TYPE=${vm_types[$ORCHESTRATOR]}
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 export VIRTUAL_IPS="192.168.51.201 192.168.51.202 192.168.51.203 192.168.51.204 192.168.51.205 192.168.51.206 192.168.51.207"
-export MAAS_ENDPOINT="http://192.168.51.5:5240/MAAS"
+export MAAS_ENDPOINT="http://10.10.51.2:5240/MAAS"
 export MAAS_PROFILE="admin"
