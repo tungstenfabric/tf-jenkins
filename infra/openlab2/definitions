@@ -17,7 +17,7 @@ declare -A worker=( ['VM_ID']='worker.openlab2.local' \
                              ['VM_VCPU']='4' \
                              ['VM_MEMORY']='16348' \
                              ['VM_HDD_SIZE']='80G' \
-                             ['VM_HOST_NAME']='maas' \
+                             ['VM_HOST_NAME']='worker' \
                              ['VM_DOMAIN_NAME']='openlab2.local'\
                              ['VM_IP_ADDRESS']='192.168.51.6' )
 
