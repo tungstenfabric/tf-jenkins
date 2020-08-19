@@ -107,6 +107,50 @@
           - package-rhel
 
 - template:
+    name: build-r1912-rhel
+    streams:
+        build-r1912-rhel:
+            vars:
+                ENVIRONMENT_OS: rhel7
+                LINUX_DISTR_VER: 7.6-362
+                GERRIT_BRANCH: "R1912"
+                TAG_SUFFIX: "-r1912-rhel7"
+    jobs:
+        prepare-sandbox-r1912-rhel:
+            # it creates worker
+            job-name: build-prepare-sandbox
+            stream: build-r1912-rhel
+            vars:
+              PUBLISH_TYPE: stable
+          fetch-sources-r1912-rhel:
+            job-name: build-fetch-sources
+            stream: build-r1912-rhel
+            depends-on:
+              - prepare-sandbox-r1912-rhel
+          package-deployers-r1912-rhel:
+            job-name: build-package-deployers
+            stream: build-r1912-rhel
+            depends-on:
+              - fetch-sources-r1912-rhel
+          compile-r1912-rhel:
+            job-name: build-compile
+            stream: build-r1912-rhel
+            depends-on:
+              - package-deployers-r1912-rhel
+          package-r1912-rhel:
+            job-name: build-package
+            stream: build-r1912-rhel
+            depends-on:
+              - compile-r1912-rhel
+          cleanup-r1912-rhel:
+            # it doesn't call devenv - it removes worker completly
+            job-name: build-cleanup
+            stream: build-r1912-rhel
+            type: stream-post-hook
+            depends-on:
+              - package-r1912-rhel
+
+- template:
     name: build-r1912
     streams:
       build-r1912:
@@ -620,6 +664,7 @@
         vars:
           OPENSTACK_VERSION: queens
           RHOSP_VERSION: rhosp13
+          TAG_SUFFIX: "-rhel7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
