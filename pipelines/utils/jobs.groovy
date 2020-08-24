@@ -305,4 +305,24 @@ def _save_job_output(name, job_name, stream, job_number) {
   }
 }
 
+def log_job(status) {
+  status = status ?: 'SUCCESS'
+  def status_number
+  if (status == 'SUCCESS') {
+    status_number = 1
+  } else {
+    status_number = 0
+  }
+  if (deployer && orchestrator && target) {
+    step([$class: 'Fluentd', tag: 'pipeline', json: """{
+      "pipeline": "${currentBuild.projectName}",
+      "deployer": "${deployer}",
+      "orchestrator": "${orchestrator}",
+      "status" : "${status_number)}",
+      "gerrit": "${gerrit}",
+      "target": "${target}"
+      }"""])
+  }
+}
+
 return this

@@ -99,6 +99,10 @@ timestamps {
         }
 
         jobs_utils.run(jobs, streams, gate_utils, gerrit_utils)
+        currentBuild.result = 'SUCCESS'
+      } catch(e) {
+        currentBuild.result = 'FAILED'
+        throw e
       } finally {
         println(job_results)
         stage('gerrit vote') {
@@ -108,6 +112,7 @@ timestamps {
             echo "export VERIFIED=${verified}" >> global.env
           """
           archiveArtifacts(artifacts: 'global.env')
+          log_job(currentBuild.result)
         }
         if (pre_build_done)
           try {

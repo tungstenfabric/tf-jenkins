@@ -324,42 +324,52 @@
           environment_os: centos7
           deployer: k8s_manifests
           orchestrator: kubernetes
+          target: AIO
       - helm-k8s:
           environment_os: centos7
           deployer: helm
           orchestrator: kubernetes
+          target: AIO
       - helm-os:
           environment_os: centos7
           deployer: helm
           orchestrator: openstack
+          target: AIO
       - juju-k8s:
           environment_os: ubuntu18
           deployer: juju
           orchestrator: kubernetes
+          target: AIO
       - juju-os:
           environment_os: ubuntu18
           deployer: juju
           orchestrator: openstack
+          target: AIO
       - ansible-k8s:
           environment_os: centos7
           deployer: ansible
           orchestrator: kubernetes
+          target: AIO
       - ansible-os:
           environment_os: centos7
           deployer: ansible
           orchestrator: openstack
+          target: AIO
       - rhosp13:
           environment_os: rhel7
           deployer: rhosp
           orchestrator: openstack
+          target: AIO
       - rhosp16:
           environment_os: rhel8
           deployer: rhosp
           orchestrator: openstack
+          target: AIO
       - openshift:
           environment_os: rhel7
           deployer: openshift
           orchestrator: kubernetes
+          target: AIO
     jobs:
       - 'deploy-platform-{project}'
       - 'deploy-tf-{project}'
