@@ -305,4 +305,26 @@ def _save_job_output(name, job_name, stream, job_number) {
   }
 }
 
+def log_job(streams) {
+  def result = ''
+  for (stream in streams) {
+    if (results.containsKey(stream) && stream.containsKey('vars')) {
+      vars = stream.vars
+      if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
+          vars.containsKey('MONITORING_DEPLOYER') &&
+          vars.containsKey('MONITORING_ORCHESTRATOR')) {
+            result = gerrit_utils._get_stream_result(results[stream]['results'])
+            step([$class: 'Fluentd', tag: 'pipeline', json: """{
+              "pipeline": "${currentBuild.projectName}",
+              "deployer": "${vars['MONITORING_DEPLOYER']}",
+              "orchestrator": "${vars['MONITORING_ORCHESTRATOR']}",
+              "status" : "${result)}",
+              "gerrit": "${env.GERRIT_PIPELINE}",
+              "target": "${vars['MONITORING_DEPLOY_TARGET']}"
+              }"""])
+      }
+    }
+  }
+}
+
 return this

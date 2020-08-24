@@ -101,6 +101,7 @@ timestamps {
         jobs_utils.run(jobs, streams, gate_utils, gerrit_utils)
       } finally {
         println(job_results)
+        def results = [:]
         stage('gerrit vote') {
           // add gerrit voting +2 +1 / -1 -2
           verified = gerrit_utils.gerrit_vote(pre_build_done, streams, jobs, job_results, (new Date()).getTime() - time_start)
@@ -108,6 +109,7 @@ timestamps {
             echo "export VERIFIED=${verified}" >> global.env
           """
           archiveArtifacts(artifacts: 'global.env')
+          job_utils.log_job(streams)
         }
         if (pre_build_done)
           try {

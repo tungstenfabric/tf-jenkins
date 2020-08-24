@@ -41,7 +41,7 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration, er
       return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
 
-    def results = [:]
+    results = [:]
     for (name in job_set.keySet()) {
       // do not include post job into report
       if (job_set[name].get('type') == 'stream-post-hook')
@@ -351,7 +351,7 @@ def _notify_terminated(def params) {
     println("Failed to provide comment to gerrit")
     def msg = err.getMessage()
     if (msg != null) {
-      println(msg) 
+      println(msg)
     }
   }
 }
@@ -368,7 +368,7 @@ def _get_dependencies_for_commit(commit_message) {
     println('WARNING! Unable to parse dependency string')
     def msg = err.getMessage()
     if (msg != null) {
-      println(msg) 
+      println(msg)
     }
   }
   return deps
