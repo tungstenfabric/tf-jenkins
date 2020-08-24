@@ -108,6 +108,7 @@ timestamps {
             echo "export VERIFIED=${verified}" >> global.env
           """
           archiveArtifacts(artifacts: 'global.env')
+          job_utils.log_job(verified)
         }
         if (pre_build_done)
           try {

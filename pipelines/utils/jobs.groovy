@@ -305,4 +305,17 @@ def _save_job_output(name, job_name, stream, job_number) {
   }
 }
 
+def log_job(status) {
+  if (deployer && orchestrator && env.MONITORING_DEPLOY_TARGET) {
+    step([$class: 'Fluentd', tag: 'pipeline', json: """{
+      "pipeline": "${currentBuild.projectName}",
+      "deployer": "${deployer}",
+      "orchestrator": "${orchestrator}",
+      "status" : "${status)}",
+      "gerrit": "${env.GERRIT_PIPELINE}",
+      "target": "${env.MONITORING_DEPLOY_TARGET}"
+      }"""])
+  }
+}
+
 return this

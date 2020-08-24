@@ -315,6 +315,10 @@
 
 - template:
     name: k8s-manifests
+    streams:
+      k8s-manifests:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
     parents:
       - build-centos
     jobs:
@@ -350,6 +354,10 @@
 
 - template:
     name: ansible-k8s
+    streams:
+      ansible-k8s:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
     parents:
       - build-centos
     jobs:
@@ -379,6 +387,10 @@
 
 - template:
     name: ansible-os
+    streams:
+      k8s-manifests:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
     parents:
       - build-centos
     jobs:
@@ -408,6 +420,10 @@
 
 - template:
     name: helm-k8s
+    streams:
+      k8s-manifests:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
     parents:
       - build-centos
     jobs:
@@ -434,6 +450,10 @@
 
 - template:
     name: helm-os
+    streams:
+      helm-os:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
     parents:
       - build-centos
     jobs:
@@ -460,6 +480,10 @@
 
 - template:
     name: juju-k8s
+    streams:
+      juju-k8s:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
     parents:
       - build-centos
     jobs:
@@ -486,6 +510,10 @@
 
 - template:
     name: juju-os
+    streams:
+      juju-os:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
     parents:
       - build-centos
     streams:
@@ -516,6 +544,10 @@
 
 - template:
     name: juju-os-1912
+    streams:
+      juju-os-1912:
+        vars:
+          MONITORING_DEPLOY_TARGET: ILTS
     parents:
         - build-centos
     streams:
@@ -553,6 +585,10 @@
 
 - template:
     name: juju-os-ha
+    streams:
+      juju-os-ha:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
     parents:
       - build-centos
     streams:
@@ -587,6 +623,10 @@
 
 - template:
     name: juju-os-ha-ziu
+    streams:
+      juju-os-ha-ziu:
+        vars:
+          MONITORING_DEPLOY_TARGET: ZIU
     parents:
       - build-centos
     streams:
@@ -636,6 +676,10 @@
 
 - template:
     name: juju-os-maas
+    streams:
+      juju-os-maas:
+        vars:
+          MONITORING_DEPLOY_TARGET: PROD
     parents:
       - build-centos
     streams:
@@ -643,6 +687,7 @@
         vars:
           CLOUD: maas
           SSL_ENABLE: 'true'
+          MONITORING_DEPLOY_TARGET: AIO
     jobs:
       deploy-platform-juju-os-maas:
         job-name: deploy-platform-juju-os
@@ -669,6 +714,10 @@
 
 - template:
     name: rhosp13
+    streams:
+      rhosp13:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
     parents:
       - build-rhel
     streams:
@@ -704,6 +753,10 @@
 
 - template:
     name: rhosp13-1912
+    streams:
+      rhosp13-1912:
+        vars:
+          MONITORING_DEPLOY_TARGET: ILTS
     parents:
       - build-rhel
     streams:
@@ -746,6 +799,10 @@
 
 - template:
     name: rhosp16
+    streams:
+      rhosp16:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
     parents:
       - build-rhel
     streams:
@@ -781,6 +838,10 @@
 
 - template:
     name: rhosp13-bmc
+    streams:
+      rhosp13-bmc:
+        vars:
+          MONITORING_DEPLOY_TARGET: PROD
     parents:
       - build-rhel
     streams:
@@ -819,6 +880,10 @@
 
 - template:
     name: openshift
+    streams:
+      openshift:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
     parents:
       - build-rhel
     jobs:
