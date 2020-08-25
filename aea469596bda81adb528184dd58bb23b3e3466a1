@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "609624f4_1feb121a",
+        "filename": "jjb/jobs/deploy.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-25T13:25:33Z",
+      "side": 1,
+      "message": "looks like it\u0027s default setting - but do we really need it?\nI would suggest to specify real setting in template.yaml",
+      "revId": "aea469596bda81adb528184dd58bb23b3e3466a1",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "153c2e21_3e16f100",
+        "filename": "pipelines/main.groovy",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-25T13:25:33Z",
+      "side": 1,
+      "message": "let\u0027s decide on \u0027verified\u0027 flag - this flag shows real job result. even if some jobs failed - if they are non-voting then real result will be success. but build state will be failed.",
+      "range": {
+        "startLine": 115,
+        "startChar": 18,
+        "endLine": 115,
+        "endChar": 37
+      },
+      "revId": "aea469596bda81adb528184dd58bb23b3e3466a1",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
