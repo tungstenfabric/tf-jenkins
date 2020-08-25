@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "cc117560_36243cdb",
+        "filename": "jobs/devstack/common/create_workers.sh",
+        "patchSetId": 15
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 958
+      },
+      "writtenOn": "2020-08-25T12:11:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3257343d_03eb00aa",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 0
+      },
+      "revId": "6e48dd41fdf6c6b3d7ac043ac57ef27cc2c8913d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1df16bc8_f26b33bc",
         "filename": "jobs/devstack/common/create_workers.sh",
         "patchSetId": 15
@@ -39,6 +63,24 @@
       "revId": "6e48dd41fdf6c6b3d7ac043ac57ef27cc2c8913d",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa05f8f7_22227501",
+        "filename": "jobs/devstack/common/create_workers.sh",
+        "patchSetId": 15
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 958
+      },
+      "writtenOn": "2020-08-25T12:11:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1df16bc8_f26b33bc",
+      "revId": "6e48dd41fdf6c6b3d7ac043ac57ef27cc2c8913d",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     },
     {
       "key": {
