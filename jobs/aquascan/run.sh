@@ -71,8 +71,8 @@ if sudo -E ./scan.sh; then
 fi
 EOF
 rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:$scan_report . || true
+rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:$new_cves_report . 2>/dev/null || true
 if [ -e ${new_cves_report} ]; then
-  rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:$new_cves_report .
   echo "ERROR: new CVE-s are detected: ${FULL_LOGS_URL}/${new_cves_report}"
   exit 1
 fi
