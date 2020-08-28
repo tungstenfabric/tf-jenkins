@@ -51,7 +51,7 @@ fi
 mirror_list=""
 # epel must not be there - it cause incorrect installs and fails at runtime
 if [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
-  mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo"
+  mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo mirror-google-chrome.repo"
 fi
 
 res=0
