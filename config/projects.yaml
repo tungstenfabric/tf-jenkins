@@ -22,7 +22,7 @@
       templates:
         - build-r1912
         - build-r1912-rhel
-        #- build-r2005
+        - build-r2005
         - test-unit
         - test-unit-ui
         - k8s-manifests
@@ -35,7 +35,7 @@
         - juju-os-maas
         - rhosp13
         - rhosp16
-        # - rhosp13-bmc
+        - rhosp13-bmc
         - cleanup
       jobs:
         publish-centos-nightly:
