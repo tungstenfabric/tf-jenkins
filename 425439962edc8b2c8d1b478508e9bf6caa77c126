@@ -1,0 +1,257 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8d4dfc5e_10858d3f",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "k8s_manifests",
+      "range": {
+        "startLine": 322,
+        "startChar": 31,
+        "endLine": 322,
+        "endChar": 35
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad86b332_6ba0f412",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 747,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "rhosp13",
+      "range": {
+        "startLine": 747,
+        "startChar": 31,
+        "endLine": 747,
+        "endChar": 38
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "171d2963_a1897fec",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 748,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "os",
+      "range": {
+        "startLine": 748,
+        "startChar": 35,
+        "endLine": 748,
+        "endChar": 42
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3fac427_08a1f80e",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 787,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "rhosp13",
+      "range": {
+        "startLine": 787,
+        "startChar": 31,
+        "endLine": 787,
+        "endChar": 38
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ef3ecc5_802d02e0",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 788,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "os",
+      "range": {
+        "startLine": 788,
+        "startChar": 35,
+        "endLine": 788,
+        "endChar": 42
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e92a7245_a2966775",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 830,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "rhosp16",
+      "range": {
+        "startLine": 830,
+        "startChar": 31,
+        "endLine": 830,
+        "endChar": 38
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04a5cd47_28c48de5",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 831,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "os",
+      "range": {
+        "startLine": 831,
+        "startChar": 35,
+        "endLine": 831,
+        "endChar": 42
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "52693789_072a8ba7",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 869,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "rhosp13",
+      "range": {
+        "startLine": 869,
+        "startChar": 31,
+        "endLine": 869,
+        "endChar": 38
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37b1f5c4_f4e6771d",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 870,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "os",
+      "range": {
+        "startLine": 870,
+        "startChar": 35,
+        "endLine": 870,
+        "endChar": 42
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2a3757a1_73cd2ae3",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 901,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "openshift",
+      "range": {
+        "startLine": 901,
+        "startChar": 31,
+        "endLine": 901,
+        "endChar": 38
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a21b601_504cdcb9",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 902,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-08-28T11:54:46Z",
+      "side": 1,
+      "message": "k8s",
+      "range": {
+        "startLine": 902,
+        "startChar": 35,
+        "endLine": 902,
+        "endChar": 44
+      },
+      "revId": "425439962edc8b2c8d1b478508e9bf6caa77c126",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
