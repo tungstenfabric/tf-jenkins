@@ -594,7 +594,7 @@
         vars:
           CLOUD: manual
           CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
-          CONTRAIL_CONTAINER_TAG: nightly-master-r2005
+          CONTRAIL_CONTAINER_TAG: nightly-r2005
     jobs:
       deploy-platform-juju-os-ha-ziu:
         job-name: deploy-platform-juju-os
