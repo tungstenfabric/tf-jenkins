@@ -439,8 +439,12 @@
     jobs:
       deploy-platform-helm-os:
         stream: helm-os
+          vars:
+            OPENSTACK_VERSION: rocky
       deploy-tf-helm-os:
         stream: helm-os
+          vars:
+            OPENSTACK_VERSION: rocky
         depends-on:
           - package-centos
           - deploy-platform-helm-os
