@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "21b81f25_8cd8c1f6",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 872
+      },
+      "writtenOn": "2020-08-31T10:30:32Z",
+      "side": 1,
+      "message": "Look carefully at the example Andrey has been sent you. It looks like your structure is not the same.",
+      "range": {
+        "startLine": 442,
+        "startChar": 8,
+        "endLine": 447,
+        "endChar": 36
+      },
+      "revId": "0fc6ec416edeb78cb20e83bb650734c9721cfa1b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
