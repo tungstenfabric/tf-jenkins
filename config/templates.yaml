@@ -436,6 +436,10 @@
     name: helm-os
     parents:
       - build-centos
+    streams:
+      helm-os:
+        vars:
+          OPENSTACK_VERSION: rocky
     jobs:
       deploy-platform-helm-os:
         stream: helm-os
