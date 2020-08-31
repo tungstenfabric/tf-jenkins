@@ -315,6 +315,12 @@
 
 - template:
     name: k8s-manifests
+    streams:
+      k8s-manifests:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: k8s_manifests
+          MONITORING_ORCHESTRATOR: k8s
     parents:
       - build-centos
     jobs:
@@ -350,6 +356,12 @@
 
 - template:
     name: ansible-k8s
+    streams:
+      ansible-k8s:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: k8s
     parents:
       - build-centos
     jobs:
@@ -379,6 +391,12 @@
 
 - template:
     name: ansible-os
+    streams:
+      k8s-manifests:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: os
     parents:
       - build-centos
     jobs:
@@ -408,6 +426,12 @@
 
 - template:
     name: helm-k8s
+    streams:
+      k8s-manifests:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: helm
+          MONITORING_ORCHESTRATOR: k8s
     parents:
       - build-centos
     jobs:
@@ -434,6 +458,12 @@
 
 - template:
     name: helm-os
+    streams:
+      helm-os:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: helm
+          MONITORING_ORCHESTRATOR: os
     parents:
       - build-centos
     streams:
@@ -464,6 +494,12 @@
 
 - template:
     name: juju-k8s
+    streams:
+      juju-k8s:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: k8s
     parents:
       - build-centos
     jobs:
@@ -490,6 +526,12 @@
 
 - template:
     name: juju-os
+    streams:
+      juju-os:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
     parents:
       - build-centos
     streams:
@@ -520,6 +562,12 @@
 
 - template:
     name: juju-os-1912
+    streams:
+      juju-os-1912:
+        vars:
+          MONITORING_DEPLOY_TARGET: ILTS
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
     parents:
         - build-centos
     streams:
@@ -557,6 +605,12 @@
 
 - template:
     name: juju-os-ha
+    streams:
+      juju-os-ha:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
     parents:
       - build-centos
     streams:
@@ -591,6 +645,12 @@
 
 - template:
     name: juju-os-ha-ziu
+    streams:
+      juju-os-ha-ziu:
+        vars:
+          MONITORING_DEPLOY_TARGET: ZIU
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
     parents:
       - build-centos
     streams:
@@ -647,6 +707,9 @@
         vars:
           CLOUD: maas
           SSL_ENABLE: 'true'
+          MONITORING_DEPLOY_TARGET: PROD
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-juju-os-maas:
         job-name: deploy-platform-juju-os
@@ -684,6 +747,9 @@
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: rhosp13
+          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-rhosp13:
         stream: rhosp13
@@ -721,6 +787,9 @@
           OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
           CONTAINER_REGISTRY: 'nexus.jenkins.progmaticlab.com:5002'
+          MONITORING_DEPLOY_TARGET: ILTS
+          MONITORING_DEPLOYER: rhosp13
+          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-rhosp13-1912:
         stream: rhosp13-1912
@@ -761,6 +830,9 @@
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "rhel8-mirrors.tf-jenkins.progmaticlab.com:5000"
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: rhosp16
+          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-rhosp16:
         stream: rhosp16
@@ -797,6 +869,9 @@
           ENABLE_NETWORK_ISOLATION: true
           PROVIDER: bmc
           OPENSTACK_CONTAINER_REGISTRY: "10.10.50.2:5000"
+          MONITORING_DEPLOY_TARGET: PROD
+          MONITORING_DEPLOYER: rhosp13
+          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-rhosp13-bmc:
         job-name: deploy-platform-rhosp13
@@ -823,6 +898,12 @@
 
 - template:
     name: openshift
+    streams:
+      openshift:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: openshift
+          MONITORING_ORCHESTRATOR: k8s
     parents:
       - build-rhel
     jobs:

@@ -29,7 +29,7 @@ def gerrit_build_started() {
   }
 }
 
-def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration, err_msg=null) {
+def publish_results(pre_build_done, streams, job_set, job_results, full_duration, err_msg=null) {
   try {
     if (!pre_build_done) {
       msg = "TF CI general failure (${env.GERRIT_PIPELINE})\n\n"
@@ -64,6 +64,25 @@ def gerrit_vote(pre_build_done, streams, job_set, job_results, full_duration, er
     for (stream in results.keySet()) {
       println("Evaluated results for ${stream} = ${results[stream]}")
       def result = _get_stream_result(results[stream]['results'])
+
+      // Log stream result
+      if (streams.containsKey(stream)) {
+        vars = streams[stream][vars]
+        if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
+            vars.containsKey('MONITORING_DEPLOYER') &&
+            vars.containsKey('MONITORING_ORCHESTRATOR')) {
+
+              step([$class: 'Fluentd', tag: 'pipeline', json: """{
+                "pipeline": "${currentBuild.projectName}",
+                "deployer": "${vars['MONITORING_DEPLOYER']}",
+                "orchestrator": "${vars['MONITORING_ORCHESTRATOR']}",
+                "status" : "${result}",
+                "gerrit": "${env.GERRIT_PIPELINE}",
+                "target": "${vars['MONITORING_DEPLOY_TARGET']}"
+                }"""])
+        }
+      }
+
       if (result == 'ABORTED') {
         stopping_cause = 'Aborted'
       }
@@ -351,7 +370,7 @@ def _notify_terminated(def params) {
     println("Failed to provide comment to gerrit")
     def msg = err.getMessage()
     if (msg != null) {
-      println(msg) 
+      println(msg)
     }
   }
 }
@@ -368,7 +387,7 @@ def _get_dependencies_for_commit(commit_message) {
     println('WARNING! Unable to parse dependency string')
     def msg = err.getMessage()
     if (msg != null) {
-      println(msg) 
+      println(msg)
     }
   }
   return deps
