@@ -19,8 +19,8 @@
           voting: false
         juju-os-ha-ziu:
           voting: false
-        # rhosp13-bmc:
-          # voting: false
+        rhosp13-bmc:
+          voting: false
       templates:
         - build-r1912
         - build-r1912-rhel
@@ -46,7 +46,7 @@
         - rhosp13
         - rhosp13-1912
         - rhosp16
-        #- rhosp13-bmc
+        - rhosp13-bmc
         - cleanup
       jobs:
         publish-centos-nightly:
@@ -446,6 +446,7 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
+        - build-rhel
         - build-centos
         - ansible-os
         - cleanup
