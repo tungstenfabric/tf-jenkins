@@ -1,12 +1,20 @@
 {
     "nodes":[
         {
+            "name":"compute_hw21",
+            "pm_type":"pxe_ipmitool",
+            "pm_addr":"192.168.50.21",
+            "pm_user":"ADMIN",
+            "pm_password":"ADMIN",
+            "capabilities":"profile:compute-dpdk"
+        },
+        {
             "name":"compute_hw22",
             "pm_type":"pxe_ipmitool",
             "pm_addr":"192.168.50.22",
             "pm_user":"ADMIN",
             "pm_password":"ADMIN",
-            "capabilities":"profile:compute"
+            "capabilities":"profile:compute-sriov"
         },
         {
             "name":"contrail-controller-kvm20",
