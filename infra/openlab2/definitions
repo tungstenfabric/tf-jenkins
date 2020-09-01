@@ -4,7 +4,7 @@ export VM_IMAGES_PATH="$HOME/vms"
 
 export ENVIRONMENT_OS="ubuntu18"
 export IMAGE_SSH_USER="ubuntu"
-export USER_PASSWORD="tungst3n123"
+export USER_PASSWORD="c0ntrail123"
 # Jenkins worker public key
 export SSH_USER_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDakVAppagi15mkaphO8qP1Cgt6l/HULlbGN6jbjI+qq9y+2cyvLnGLmt4kyfqgbJatjJguQu10Z0/puFrXNBcETWDyal+svlOnJofKO7dFDrV2h1hMYAzyC3bKPQOddZeCD0Ny1yhz01jJ/oPCRxbEIxXjF8iccPRxtM2B8W5Pg8hAdU1OL4Oziaa/5GSC3DWLFRp2dIlsfd4TSXw7KJGPgheoYJLg0HOKsTSz9VIggFwRTmdiFlBIrD3+VJ+afldYyv5/mpBRiyUx27bXRChaqO1LFafYfBeVYyV1YZ6b9bUDwFg1GBz1oPsEYW94v5uOAisU//zK1MaLiIs0lWAB"
 export VM_BRIDGE=br0
