@@ -67,7 +67,7 @@ def publish_results(pre_build_done, streams, job_set, job_results, full_duration
 
       // Log stream result
       if (streams.containsKey(stream)) {
-        vars = streams[stream][vars]
+        vars = streams[stream].get('vars', [:])
         if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
             vars.containsKey('MONITORING_DEPLOYER') &&
             vars.containsKey('MONITORING_ORCHESTRATOR')) {

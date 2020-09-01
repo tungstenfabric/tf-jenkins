@@ -9,7 +9,7 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 ssh_cmd="ssh -i $OPENLAB2_SSH_KEY $SSH_OPTIONS -p 30002"
-rsync -a -e "$ssh_cmd" $my_dir/*  jenkins@openlab.tf-jenkins.progmaticlab.com:./
+rsync -a -e "$ssh_cmd" $my_dir/* jenkins@openlab.tf-jenkins.progmaticlab.com:./
 
 eval $ssh_cmd -p 30002 jenkins@openlab.tf-jenkins.progmaticlab.com ./run_create_worker.sh
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"

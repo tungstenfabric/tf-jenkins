@@ -20,4 +20,3 @@ declare -A worker=( ['VM_ID']='worker.openlab2.local' \
                              ['VM_HOST_NAME']='worker' \
                              ['VM_DOMAIN_NAME']='openlab2.local'\
                              ['VM_IP_ADDRESS']='192.168.51.6' )
-
