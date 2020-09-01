@@ -65,22 +65,30 @@ def publish_results(pre_build_done, streams, job_set, job_results, full_duration
       println("Evaluated results for ${stream} = ${results[stream]}")
       def result = _get_stream_result(results[stream]['results'])
 
-      // Log stream result
-      if (streams.containsKey(stream)) {
-        vars = streams[stream].get('vars', [:])
-        if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
-            vars.containsKey('MONITORING_DEPLOYER') &&
-            vars.containsKey('MONITORING_ORCHESTRATOR')) {
+      try {
+        // Log stream result
+        if (streams.containsKey(stream)) {
+          vars = streams[stream].get('vars', [:])
+          if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
+              vars.containsKey('MONITORING_DEPLOYER') &&
+              vars.containsKey('MONITORING_ORCHESTRATOR')) {
 
-              step([$class: 'Fluentd', tag: 'pipeline', json: """{
-                "pipeline": "${currentBuild.projectName}",
-                "deployer": "${vars['MONITORING_DEPLOYER']}",
-                "orchestrator": "${vars['MONITORING_ORCHESTRATOR']}",
-                "status" : "${result}",
-                "gerrit": "${env.GERRIT_PIPELINE}",
-                "target": "${vars['MONITORING_DEPLOY_TARGET']}"
-                }"""])
+                step([$class: 'Fluentd', tag: 'pipeline', json: """{
+                  "pipeline": "${currentBuild.projectName}",
+                  "deployer": "${vars['MONITORING_DEPLOYER']}",
+                  "orchestrator": "${vars['MONITORING_ORCHESTRATOR']}",
+                  "status" : "${result}",
+                  "gerrit": "${env.GERRIT_PIPELINE}",
+                  "target": "${vars['MONITORING_DEPLOY_TARGET']}"
+                  }"""])
+          }
         }
+      } catch (err) {
+        println("Failed to send data to fluentd")
+        msg = err.getMessage()
+        if (msg != null)
+          println("Message - ${msg}")
+        println("Stacktrace - ${err.getStackTrace()}")
       }
 
       if (result == 'ABORTED') {
