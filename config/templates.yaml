@@ -466,21 +466,23 @@
           MONITORING_ORCHESTRATOR: os
     parents:
       - build-centos
-    streams:
-      helm-os:
-        vars:
-          OPENSTACK_VERSION: rocky
     jobs:
       deploy-platform-helm-os:
         stream: helm-os
+        vars:
+          OPENSTACK_VERSION: rocky
       deploy-tf-helm-os:
         stream: helm-os
+        vars:
+          OPENSTACK_VERSION: rocky
         depends-on:
           - package-centos
           - deploy-platform-helm-os
       test-sanity-helm-os:
         job-name: test-sanity
         stream: helm-os
+        vars:
+          OPENSTACK_VERSION: queens
         depends-on:
           - deploy-tf-helm-os
       collect-logs-and-cleanup-helm-os:

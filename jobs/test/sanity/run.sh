@@ -2,6 +2,7 @@
 set -o pipefail
 
 [ "${DEBUG,,}" == "true" ] && set -x
+set -x
 
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
@@ -13,6 +14,8 @@ echo "INFO: Test sanity started"
 cat << EOF > $WORKSPACE/test-sanity.sh
 #!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
+set -x
+echo "openstack version 123 $OPENSTACK_VERSION"
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export ORCHESTRATOR=$ORCHESTRATOR
@@ -21,6 +24,8 @@ export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 export SSL_ENABLE=$SSL_ENABLE
 export TF_TEST_IMAGE="$TF_TEST_IMAGE"
 export PATH=\$PATH:/usr/sbin
+echo "openstack version 123 $OPENSTACK_VERSION"
+echo "tf test image 123 $TF_TEST_IMAGE"
 src/tungstenfabric/tf-dev-test/contrail-sanity/run.sh
 EOF
 chmod a+x $WORKSPACE/test-sanity.sh
