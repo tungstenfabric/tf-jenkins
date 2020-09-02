@@ -670,18 +670,18 @@
         stream: juju-os-ha-ziu
         depends-on:
           - deploy-platform-juju-os-ha-ziu
-      test-sanity-juju-os-ha-ziu:
-        job-name: test-sanity
-        stream: juju-os-ha-ziu
-        depends-on:
-          - deploy-tf-juju-os-ha-ziu
+      #test-sanity-juju-os-ha-ziu:
+      #  job-name: test-sanity
+      #  stream: juju-os-ha-ziu
+      #  depends-on:
+      #    - deploy-tf-juju-os-ha-ziu
       test-ziu-juju-os-ha-ziu:
         job-name: test-ziu
         stream: juju-os-ha-ziu
         depends-on:
           - package-centos
           - deploy-tf-juju-os-ha-ziu
-          - test-sanity-juju-os-ha-ziu
+          #- test-sanity-juju-os-ha-ziu
       test-sanity-juju-os-ha-ziu-1:
         job-name: test-sanity
         stream: juju-os-ha-ziu
@@ -694,7 +694,7 @@
         depends-on:
           - deploy-platform-juju-os-ha-ziu
           - deploy-tf-juju-os-ha-ziu
-          - test-sanity-juju-os-ha-ziu
+          #- test-sanity-juju-os-ha-ziu
           - test-ziu-juju-os-ha-ziu
           - test-sanity-juju-os-ha-ziu-1
 
