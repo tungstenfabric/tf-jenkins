@@ -36,12 +36,6 @@ if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
   export DEVENV_TAG="sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 fi
 
-# build queens for test container always and add OPENSTACK_VERSION if it's different
-openstack_versions='queens'
-if [[ "$OPENSTACK_VERSION" != 'queens' ]]; then
-  openstack_versions+=",$OPENSTACK_VERSION"
-fi
-
 if [[ ${ENVIRONMENT_OS} == 'rhel7' ]]; then
   mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
 elif [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
@@ -76,7 +70,6 @@ export GERRIT_BRANCH=${GERRIT_BRANCH}
 export DEVENV_TAG=$DEVENV_TAG
 export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
 export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
-export OPENSTACK_VERSIONS=$openstack_versions
 export CONTRAIL_BUILD_FROM_SOURCE=${CONTRAIL_BUILD_FROM_SOURCE}
 export CONTRAIL_KEEP_LOG_FILES=true
 
