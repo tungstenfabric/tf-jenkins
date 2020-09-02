@@ -73,14 +73,22 @@ def publish_results(pre_build_done, streams, job_set, job_results, full_duration
               vars.containsKey('MONITORING_DEPLOYER') &&
               vars.containsKey('MONITORING_ORCHESTRATOR')) {
 
-                step([$class: 'Fluentd', tag: 'pipeline', json: """{
-                  "pipeline": "${currentBuild.projectName}",
+                println(stream)
+                println(env.GERRIT_PIPELINE)
+                println(vars['MONITORING_DEPLOYER'])
+                println(vars['MONITORING_ORCHESTRATOR'])
+                println(vars['MONITORING_DEPLOY_TARGET'])
+                println(result)
+
+                json_string = """{
+                  "pipeline": "${stream}",
                   "deployer": "${vars['MONITORING_DEPLOYER']}",
                   "orchestrator": "${vars['MONITORING_ORCHESTRATOR']}",
                   "status" : "${result}",
                   "gerrit": "${env.GERRIT_PIPELINE}",
                   "target": "${vars['MONITORING_DEPLOY_TARGET']}"
-                  }"""])
+                }"""
+                step([$class: 'Fluentd', tag: 'pipeline', json: json_string])
           }
         }
       } catch (err) {
