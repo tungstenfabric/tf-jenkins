@@ -35,7 +35,7 @@
         - juju-os-maas
         - rhosp13
         - rhosp16
-        - rhosp13-bmc
+        #- rhosp13-bmc
         - cleanup
       jobs:
         publish-centos-nightly:
