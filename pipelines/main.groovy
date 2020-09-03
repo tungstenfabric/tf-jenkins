@@ -182,7 +182,10 @@ def evaluate_env() {
       echo "export DEPLOYER_CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
       echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG=${contrail_container_tag}" >> global.env
-      echo "export CONTRAIL_CONTAINER_TAG_PIPELINE_ORIGINAL=${contrail_container_tag}" >> global.env
+      echo "export CONTAINER_REGISTRY_ORIGINAL=${CONTAINER_REGISTRY}" >> global.env
+      echo "export DEPLOYER_CONTAINER_REGISTRY_ORIGINAL=${CONTAINER_REGISTRY}" >> global.env
+      echo "export CONTRAIL_CONTAINER_TAG_ORIGINAL=${contrail_container_tag}" >> global.env
+      echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL=${contrail_container_tag}" >> global.env
       echo "export GERRIT_PIPELINE=${env.GERRIT_PIPELINE}" >> global.env
     """
 
