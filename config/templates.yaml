@@ -392,7 +392,7 @@
 - template:
     name: ansible-os
     streams:
-      k8s-manifests:
+      ansible-os:
         vars:
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: ansible
@@ -427,7 +427,7 @@
 - template:
     name: helm-k8s
     streams:
-      k8s-manifests:
+      helm-k8s:
         vars:
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: helm
