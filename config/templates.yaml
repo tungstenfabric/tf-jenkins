@@ -458,18 +458,15 @@
 
 - template:
     name: helm-os
-    streams:
-      helm-os:
-        vars:
-          MONITORING_DEPLOY_TARGET: AIO
-          MONITORING_DEPLOYER: helm
-          MONITORING_ORCHESTRATOR: os
     parents:
       - build-centos
     streams:
       helm-os:
         vars:
           OPENSTACK_VERSION: rocky
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: helm
+          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-helm-os:
         stream: helm-os
@@ -526,18 +523,15 @@
 
 - template:
     name: juju-os
-    streams:
-      juju-os:
-        vars:
-          MONITORING_DEPLOY_TARGET: AIO
-          MONITORING_DEPLOYER: juju
-          MONITORING_ORCHESTRATOR: os
     parents:
       - build-centos
     streams:
       juju-os:
         vars:
           SSL_ENABLE: 'true'
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-juju-os:
         stream: juju-os
@@ -562,12 +556,6 @@
 
 - template:
     name: juju-os-1912
-    streams:
-      juju-os-1912:
-        vars:
-          MONITORING_DEPLOY_TARGET: ILTS
-          MONITORING_DEPLOYER: juju
-          MONITORING_ORCHESTRATOR: os
     parents:
         - build-centos
     streams:
@@ -576,6 +564,9 @@
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
           CONTAINER_REGISTRY: 'nexus.jenkins.progmaticlab.com:5002'
           SSL_ENABLE: 'true'
+          MONITORING_DEPLOY_TARGET: ILTS
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-juju-os-1912:
         job-name: deploy-platform-juju-os
@@ -605,18 +596,15 @@
 
 - template:
     name: juju-os-ha
-    streams:
-      juju-os-ha:
-        vars:
-          MONITORING_DEPLOY_TARGET: HA
-          MONITORING_DEPLOYER: juju
-          MONITORING_ORCHESTRATOR: os
     parents:
       - build-centos
     streams:
       juju-os-ha:
         vars:
           CLOUD: manual
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-juju-os-ha:
         job-name: deploy-platform-juju-os
@@ -645,12 +633,6 @@
 
 - template:
     name: juju-os-ha-ziu
-    streams:
-      juju-os-ha-ziu:
-        vars:
-          MONITORING_DEPLOY_TARGET: ZIU
-          MONITORING_DEPLOYER: juju
-          MONITORING_ORCHESTRATOR: os
     parents:
       - build-centos
     streams:
@@ -659,6 +641,9 @@
           CLOUD: manual
           CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2005
+          MONITORING_DEPLOY_TARGET: ZIU
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-juju-os-ha-ziu:
         job-name: deploy-platform-juju-os
