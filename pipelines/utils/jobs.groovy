@@ -141,13 +141,15 @@ def _job_params_to_file(def job_set, def name, def streams, def env_file) {
 
   def job_name = job_set[name].get('job-name', name)
   def env_text = ""
-  def vars = job_set[name].get('vars', [:])
+  def vars = [:]
   if (job_set[name].containsKey('stream')) {
     stream = streams.get(job_set[name]['stream'])
     if (stream && stream.containsKey('vars')) {
       vars += stream['vars']
     }
   }
+  if (job_set[name].containsKey('vars'))
+    vars += job_set[name]['vars']
   def vars_keys = vars.keySet() as List
   if (vars_keys.size() == 0) {
     println("JOB ${name}: vars empty. do not store vars file.")
