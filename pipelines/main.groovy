@@ -6,7 +6,7 @@ LOGS_HOST = "nexus.jenkins.progmaticlab.com"
 LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
 LOGS_BASE_URL = "http://nexus.jenkins.progmaticlab.com:8082/jenkins_logs"
 if (env.GERRIT_PIPELINE == 'nightly') {
-  TIMEOUT_HOURS = 6
+  TIMEOUT_HOURS = 9
   CONTAINER_REGISTRY="nexus.jenkins.progmaticlab.com:5002"
 }
 // this is default LTS release for all deployers

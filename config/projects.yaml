@@ -28,12 +28,17 @@
         - test-unit
         - test-unit-ui
         - k8s-manifests
+        - k8s-manifests-ha
         - ansible-k8s
+        - ansible-k8s-ha
         - ansible-os
         - ansible-os-ha
         - helm-k8s
+        - helm-k8s-ha
         - helm-os
+        - helm-os-ha
         - juju-k8s
+        - juju-k8s-ha
         - juju-os
         - juju-os-maas
         - juju-os-ha-ziu
