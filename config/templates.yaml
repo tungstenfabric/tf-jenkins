@@ -314,6 +314,16 @@
           TARGET: ui
 
 - template:
+    name: ansible-hybrid
+    streams:
+      ansible-hybrid:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: h
+          MONITORING_NOT_IMPLEMENTED: 1
+
+- template:
     name: k8s-manifests
     streams:
       k8s-manifests:

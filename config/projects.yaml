@@ -42,6 +42,7 @@
         - rhosp13-1912
         - rhosp16
         #- rhosp13-bmc
+        - ansible-hybrid
         - cleanup
       jobs:
         publish-centos-nightly:
