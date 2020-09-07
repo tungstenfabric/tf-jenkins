@@ -584,7 +584,7 @@
           - deploy-tf-juju-os-1912
         vars:
           # use tf-test container from latest build to avoid cherry-picking fixes to 1912 for tf-test
-          TF_TEST_IMAGE: 'nexus.jenkins.progmaticlab.com:5002/contrail-test-test:queens-nightly'
+          TF_TEST_IMAGE: 'nexus.jenkins.progmaticlab.com:5002/contrail-test-test:nightly'
       collect-logs-and-cleanup-juju-os-1912:
         job-name: collect-logs-and-cleanup
         stream: juju-os-1912
@@ -655,21 +655,18 @@
         stream: juju-os-ha-ziu
         depends-on:
           - deploy-platform-juju-os-ha-ziu
-      test-sanity-juju-os-ha-ziu:
-        job-name: test-sanity
-        stream: juju-os-ha-ziu
-        depends-on:
-          - deploy-tf-juju-os-ha-ziu
       test-ziu-juju-os-ha-ziu:
         job-name: test-ziu
         stream: juju-os-ha-ziu
         depends-on:
           - package-centos
           - deploy-tf-juju-os-ha-ziu
-          - test-sanity-juju-os-ha-ziu
-      test-sanity-juju-os-ha-ziu-1:
+      test-sanity-juju-os-ha-ziu:
         job-name: test-sanity
         stream: juju-os-ha-ziu
+        vars:
+          DEBUG: true
+          TF_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/contrail-test-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
           - test-ziu-juju-os-ha-ziu
       collect-logs-and-cleanup-juju-os-ha-ziu:
@@ -679,9 +676,8 @@
         depends-on:
           - deploy-platform-juju-os-ha-ziu
           - deploy-tf-juju-os-ha-ziu
-          - test-sanity-juju-os-ha-ziu
           - test-ziu-juju-os-ha-ziu
-          - test-sanity-juju-os-ha-ziu-1
+          - test-sanity-juju-os-ha-ziu
 
 - template:
     name: juju-os-maas
