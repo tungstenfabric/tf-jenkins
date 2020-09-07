@@ -21,7 +21,7 @@
       script-path: pipelines/main.groovy
       lightweight-checkout: true
     triggers:
-      - timed: "0 3 * * *"
+      - timed: "0 21 * * *"
       - gerrit:
           server-name: review.opencontrail.org
           skip-vote:
