@@ -425,6 +425,43 @@
           - test-sanity-ansible-os
 
 - template:
+    name: ansible-os-ha
+    streams:
+      ansible-os-ha:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: os
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-ansible-os-ha:
+        stream: ansible-os-ha
+        depends-on:
+          # temporary solution
+          - compile-centos
+        vars:
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-ansible-os-ha:
+        stream: ansible-os-ha
+        depends-on:
+          - package-centos
+          - deploy-platform-ansible-os-ha
+      test-sanity-ansible-os-ha:
+        job-name: test-sanity
+        stream: ansible-os-ha
+        depends-on:
+          - deploy-tf-ansible-os-ha
+      collect-logs-and-cleanup-ansible-os-ha:
+        job-name: collect-logs-and-cleanup
+        stream: ansible-os-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-ansible-os-ha
+          - deploy-tf-ansible-os-ha
+          - test-sanity-ansible-os-ha
+
+- template:
     name: helm-k8s
     streams:
       helm-k8s:
@@ -602,7 +639,7 @@
       juju-os-ha:
         vars:
           CLOUD: manual
-          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
     jobs:

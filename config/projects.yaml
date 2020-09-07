@@ -17,6 +17,8 @@
           voting: false
         juju-os-maas:
           voting: false
+        juju-os-ha-ziu:
+          voting: false
         # rhosp13-bmc:
           # voting: false
       templates:
@@ -28,12 +30,16 @@
         - k8s-manifests
         - ansible-k8s
         - ansible-os
+        - ansible-os-ha
         - helm-k8s
         - helm-os
         - juju-k8s
         - juju-os
         - juju-os-maas
+        - juju-os-ha-ziu
+        - juju-os-1912
         - rhosp13
+        - rhosp13-1912
         - rhosp16
         #- rhosp13-bmc
         - cleanup
@@ -435,7 +441,6 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
-        - build-rhel
         - build-centos
         - ansible-os
         - cleanup
