@@ -14,6 +14,13 @@
 #   type - type of the job. possible values: stream-post-hook
 
 
+# 1. run after all stream jobs if any of stream jobs was run
+# 2. shouldn't be included into report
+# 3. should not dictate how to wait - wait_for_deps should exit on first fail and do not wait for all
+#      collect-logs-and-cleanup-k8s-manifests:
+#        type: stream-post-hook
+
+
 - template:
     name: cleanup
     post-jobs:
@@ -336,15 +343,7 @@
         stream: k8s-manifests
         depends-on:
           - deploy-tf-k8s-manifests
-      test-smoke-k8s-manifests:
-        job-name: test-smoke
-        stream: k8s-manifests
-        depends-on:
-          - deploy-tf-k8s-manifests
       collect-logs-and-cleanup-k8s-manifests:
-        # 1. run after all stream jobs if any of stream jobs was run
-        # 2. shouldn't be included into report
-        # 3. should not dictate how to wait - wait_for_deps should exit on first fail and do not wait for all
         job-name: collect-logs-and-cleanup
         stream: k8s-manifests
         type: stream-post-hook
@@ -352,7 +351,42 @@
           - deploy-platform-k8s-manifests
           - deploy-tf-k8s-manifests
           - test-sanity-k8s-manifests
-          - test-smoke-k8s-manifests
+
+- template:
+    name: k8s-manifests-ha
+    streams:
+      k8s-manifests-ha:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: k8s_manifests
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-k8s-manifests-ha:
+        job-name: deploy-platform-k8s-manifests
+        stream: k8s-manifests-ha
+        vars:
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-k8s-manifests-ha:
+        job-name: deploy-tf-k8s-manifests
+        stream: k8s-manifests-ha
+        depends-on:
+          - package-centos
+          - deploy-platform-k8s-manifests-ha
+      test-sanity-k8s-manifests-ha:
+        job-name: test-sanity
+        stream: k8s-manifests-ha
+        depends-on:
+          - deploy-tf-k8s-manifests-ha
+      collect-logs-and-cleanup-k8s-manifests-ha:
+        job-name: collect-logs-and-cleanup
+        stream: k8s-manifests-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-k8s-manifests-ha
+          - deploy-tf-k8s-manifests-ha
+          - test-sanity-k8s-manifests-ha
 
 - template:
     name: ansible-k8s
@@ -388,6 +422,45 @@
           - deploy-platform-ansible-k8s
           - deploy-tf-ansible-k8s
           - test-sanity-ansible-k8s
+
+- template:
+    name: ansible-k8s-ha
+    streams:
+      ansible-k8s-ha:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-ansible-k8s-ha:
+        job-name: deploy-platform-ansible-k8s
+        stream: ansible-k8s-ha
+        depends-on:
+          # temporary solution
+          - compile-centos
+        vars:
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-ansible-k8s-ha:
+        job-name: deploy-tf-ansible-k8s
+        stream: ansible-k8s-ha
+        depends-on:
+          - package-centos
+          - deploy-platform-ansible-k8s-ha
+      test-sanity-ansible-k8s-ha:
+        job-name: test-sanity
+        stream: ansible-k8s-ha
+        depends-on:
+          - deploy-tf-ansible-k8s-ha
+      collect-logs-and-cleanup-ansible-k8s-ha:
+        job-name: collect-logs-and-cleanup
+        stream: ansible-k8s-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-ansible-k8s-ha
+          - deploy-tf-ansible-k8s-ha
+          - test-sanity-ansible-k8s-ha
 
 - template:
     name: ansible-os
@@ -436,6 +509,7 @@
       - build-centos
     jobs:
       deploy-platform-ansible-os-ha:
+        job-name: deploy-platform-ansible-os
         stream: ansible-os-ha
         depends-on:
           # temporary solution
@@ -443,6 +517,7 @@
         vars:
           NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
       deploy-tf-ansible-os-ha:
+        job-name: deploy-tf-ansible-os
         stream: ansible-os-ha
         depends-on:
           - package-centos
@@ -494,6 +569,41 @@
           - test-sanity-helm-k8s
 
 - template:
+    name: helm-k8s-ha
+    streams:
+      helm-k8s-ha:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: helm
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-helm-k8s-ha:
+        job-name: deploy-platform-helm-k8s
+        stream: helm-k8s-ha
+        vars:
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-helm-k8s-ha:
+        stream: helm-k8s-ha
+        depends-on:
+          - package-centos
+          - deploy-platform-helm-k8s-ha
+      test-sanity-helm-k8s-ha:
+        job-name: test-sanity
+        stream: helm-k8s-ha
+        depends-on:
+          - deploy-tf-helm-k8s-ha
+      collect-logs-and-cleanup-helm-k8s-ha:
+        job-name: collect-logs-and-cleanup
+        stream: helm-k8s-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-helm-k8s-ha
+          - deploy-tf-helm-k8s-ha
+          - test-sanity-helm-k8s-ha
+
+- template:
     name: helm-os
     parents:
       - build-centos
@@ -527,6 +637,41 @@
           - test-sanity-helm-os
 
 - template:
+    name: helm-os-ha
+    parents:
+      - build-centos
+    streams:
+      helm-os-ha:
+        vars:
+          OPENSTACK_VERSION: rocky
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: helm
+          MONITORING_ORCHESTRATOR: os
+    jobs:
+      deploy-platform-helm-os-ha:
+        job-name: deploy-platform-helm-os
+        stream: helm-os-ha
+      deploy-tf-helm-os-ha:
+        job-name: deploy-tf-helm-os
+        stream: helm-os-ha
+        depends-on:
+          - package-centos
+          - deploy-platform-helm-os-ha
+      test-sanity-helm-os-ha:
+        job-name: test-sanity
+        stream: helm-os-ha
+        depends-on:
+          - deploy-tf-helm-os-ha
+      collect-logs-and-cleanup-helm-os-ha:
+        job-name: collect-logs-and-cleanup
+        stream: helm-os-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-helm-os-ha
+          - deploy-tf-helm-os-ha
+          - test-sanity-helm-os-ha
+
+- template:
     name: juju-k8s
     streams:
       juju-k8s:
@@ -557,6 +702,40 @@
           - deploy-platform-juju-k8s
           - deploy-tf-juju-k8s
           - test-sanity-juju-k8s
+
+- template:
+    name: juju-k8s-ha
+    streams:
+      juju-k8s-ha:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-juju-k8s-ha:
+        job-name: deploy-platform-juju-k8s
+        stream: juju-k8s-ha
+      deploy-tf-juju-k8s-ha:
+        job-name: deploy-tf-juju-k8s
+        stream: juju-k8s-ha
+        depends-on:
+          - package-centos
+          - deploy-platform-juju-k8s-ha
+      test-sanity-juju-k8s-ha:
+        job-name: test-sanity
+        stream: juju-k8s-ha
+        depends-on:
+          - deploy-tf-juju-k8s-ha
+      collect-logs-and-cleanup-juju-k8s-ha:
+        job-name: collect-logs-and-cleanup
+        stream: juju-k8s-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-juju-k8s-ha
+          - deploy-tf-juju-k8s-ha
+          - test-sanity-juju-k8s-ha
 
 - template:
     name: juju-os
