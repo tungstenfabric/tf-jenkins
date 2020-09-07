@@ -42,6 +42,16 @@
         - rhosp13-1912
         - rhosp16
         #- rhosp13-bmc
+        - juju-hybrid-not-implemented
+        - juju-os-not-implemented
+        - juju-k8s-not-implemented
+        - rhosp13-os-not-implemented
+        - rhosp16-os-not-implemented
+        - ansible-os-not-implemented
+        - ansible-k8s-not-implemented
+        - helm-os-k8s-not-implemented
+        - k8s-manifests-k8s-not-implemented
+        - openshift-k8s-not-implemented
         - cleanup
       jobs:
         publish-centos-nightly:

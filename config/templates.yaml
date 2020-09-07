@@ -313,6 +313,8 @@
         vars:
           TARGET: ui
 
+
+
 - template:
     name: k8s-manifests
     streams:
@@ -956,3 +958,93 @@
           - test-sanity-openshift
         vars:
           TAG_SUFFIX: "-rhel7"
+
+- template:
+    name: juju-hybrid-not-implemented
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO,HA,CharmUpgrade,CCImport
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: hybrid
+
+- template:
+    name: juju-os-not-implemented
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: ISSU,SR-IOV,CCImport
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: juju-k8s-not-implemented
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA,CCImport
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: k8s
+
+- template:
+    name: rhosp13-os-not-implemented
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA,ZIU,ISSU,SR-IOV,CCImport
+          MONITORING_DEPLOYER: rhosp13
+          MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: rhosp16-os-not-implemented
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA,PROD,ZIU,ISSU,SR-IOV,ILTS,CCImport
+          MONITORING_DEPLOYER: rhosp16
+          MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: ansible-os-not-implemented
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: ZIU,ISSU
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: ansible-k8s-not-implemented
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: k8s
+
+- template:
+    name: helm-os-k8s-not-implemented
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: helm
+          MONITORING_ORCHESTRATOR: os,k8s
+
+- template:
+    name: k8s-manifests-k8s-not-implemented
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: k8s_manifests
+          MONITORING_ORCHESTRATOR: k8s
+
+- template:
+    name: openshift-k8s-not-implemented
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: openshift
+          MONITORING_ORCHESTRATOR: k8s
