@@ -73,15 +73,14 @@ def publish_results(pre_build_done, streams, job_set, job_results, full_duration
               vars.containsKey('MONITORING_DEPLOYER') &&
               vars.containsKey('MONITORING_ORCHESTRATOR')) {
 
-                json_string = """{
-                  "pipeline": "${stream}",
-                  "deployer": "${vars['MONITORING_DEPLOYER']}",
-                  "orchestrator": "${vars['MONITORING_ORCHESTRATOR']}",
-                  "status" : "${result}",
-                  "gerrit": "${env.GERRIT_PIPELINE}",
-                  "target": "${vars['MONITORING_DEPLOY_TARGET']}"
-                }"""
-                step([$class: 'Fluentd', tag: 'pipeline', json: json_string])
+                sh """
+                  ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
+                    --gerrit ${env.GERRIT_PIPELINE} \
+                    --target ${vars['MONITORING_DEPLOY_TARGET']} \
+                    --deployer ${vars['MONITORING_DEPLOYER']} \
+                    --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
+                    --status ${result}
+                """
           }
         }
       } catch (err) {
@@ -111,6 +110,26 @@ def publish_results(pre_build_done, streams, job_set, job_results, full_duration
       }
       if (voting && result != 'SUCCESS') {
         passed = false
+      }
+    }
+
+    // Log not yet implemented streams
+    for (stream in streams) {
+      if (!results.containsKey(stream)) {
+        vars = streams[stream].get('vars', [:])
+        if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
+            vars.containsKey('MONITORING_DEPLOYER') &&
+            vars.containsKey('MONITORING_ORCHESTRATOR')) {
+
+          sh """
+            ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
+              --gerrit ${env.GERRIT_PIPELINE} \
+              --target ${vars['MONITORING_DEPLOY_TARGET']} \
+              --deployer ${vars['MONITORING_DEPLOYER']} \
+              --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
+              --status NOT_IMPLEMENTED
+          """
+        }
       }
     }
 
