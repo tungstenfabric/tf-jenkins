@@ -28,6 +28,10 @@
 
 - template:
     name: build-centos
+    streams:
+      build-centos:
+        vars:
+          LINUX_DISTR: centos
     jobs:
       prepare-sandbox-centos:
         # it creates worker
@@ -71,11 +75,60 @@
           - freeze-centos
 
 - template:
+    name: build-ubi
+    streams:
+      build-ubi:
+        vars:
+          LINUX_DISTR: ubi7
+    jobs:
+      prepare-sandbox-ubi:
+        # it creates worker
+        job-name: build-prepare-sandbox
+        stream: build-ubi
+        vars:
+          DEVENV_TAG: frozen
+      fetch-sources-ubi:
+        job-name: build-fetch-sources
+        stream: build-ubi
+        depends-on:
+          - prepare-sandbox-ubi
+      package-deployers-ubi:
+        job-name: build-package-deployers
+        stream: build-ubi
+        depends-on:
+          - fetch-sources-ubi
+      compile-ubi:
+        job-name: build-ubi
+        stream: build-ubi
+        depends-on:
+          - package-deployers-ubi
+      package-ubi:
+        job-name: build-package
+        stream: build-ubi
+        depends-on:
+          - compile-ubi
+      freeze-ubi:
+        job-name: build-freeze
+        stream: build-ubi
+        depends-on:
+          - package-ubi
+        vars:
+          PUBLISH_TYPE: frozen
+      cleanup-ubi:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
+        stream: build-ubi
+        type: stream-post-hook
+        depends-on:
+          - freeze-ubi
+
+- template:
     name: build-rhel
     streams:
       build-rhel:
         vars:
           ENVIRONMENT_OS: rhel7
+          LINUX_DISTR: rhel7
           LINUX_DISTR_VER: 7.6-362
           TAG_SUFFIX: "-rhel7"
     jobs:
@@ -119,6 +172,7 @@
       build-r1912-rhel:
         vars:
           ENVIRONMENT_OS: rhel7
+          LINUX_DISTR: rhel7
           LINUX_DISTR_VER: 7.6-362
           GERRIT_BRANCH: "R1912"
           TAG_SUFFIX: "-r1912-rhel7"
@@ -160,6 +214,7 @@
     streams:
       build-r1912:
         vars:
+          LINUX_DISTR: centos
           GERRIT_BRANCH: "R1912"
           TAG_SUFFIX: "-r1912"
     jobs:
@@ -202,6 +257,7 @@
     streams:
       build-r2005:
         vars:
+          LINUX_DISTR: centos
           GERRIT_BRANCH: "R2005"
           TAG_SUFFIX: "-r2005"
     jobs:

@@ -26,9 +26,7 @@ fi
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS"
 rsync -a -e "$ssh_cmd" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-linux_distr=${TARGET_LINUX_DISTR["${ENVIRONMENT_OS}"]}
-
-echo "INFO: Build started"
+echo "INFO: Build started: LINUX_DISTR=$LINUX_DISTR"
 
 export DEVENV_TAG=${DEVENV_TAG:-stable${TAG_SUFFIX}}
 if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
@@ -36,15 +34,21 @@ if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
   export DEVENV_TAG="sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 fi
 
-if [[ ${ENVIRONMENT_OS} == 'rhel7' ]]; then
+# build queens for test container always and add OPENSTACK_VERSION if it's different
+openstack_versions='queens'
+if [[ "$OPENSTACK_VERSION" != 'queens' ]]; then
+  openstack_versions+=",$OPENSTACK_VERSION"
+fi
+
+if [[ ${LINUX_DISTR} == 'rhel7' ]]; then
   mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
-elif [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
+elif [[ ${LINUX_DISTR} == 'centos' ]]; then
   mirror_list_for_build="mirror-base.repo mirror-epel.repo mirror-docker.repo mirror-google-chrome.repo"
 fi
 
 mirror_list=""
 # epel must not be there - it cause incorrect installs and fails at runtime
-if [[ ${ENVIRONMENT_OS} == 'centos7' ]]; then
+if [[ ${LINUX_DISTR} == 'centos' ]]; then
   mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo mirror-google-chrome.repo"
 fi
 
@@ -60,7 +64,7 @@ export CONTRAIL_DEPLOY_REGISTRY=0
 # to not to bind contrail sources to container
 export CONTRAIL_DIR=""
 
-export LINUX_DISTR=$linux_distr
+export LINUX_DISTR=$LINUX_DISTR
 export LINUX_DISTR_VER=${LINUX_DISTR_VER}
 export SITE_MIRROR=$SITE_MIRROR
 export GERRIT_URL=${GERRIT_URL}
@@ -84,7 +88,7 @@ cd src/tungstenfabric/tf-dev-env
 export BASE_EXTRA_RPMS=''
 rm -rf ./config/etc
 mkdir -p ./config/etc/yum.repos.d
-case "${ENVIRONMENT_OS}" in
+case "${LINUX_DISTR}" in
   "rhel7")
     export RHEL_HOST_REPOS=''
     # TODO: now no way to put gpg keys into containers for repo mirrors
@@ -95,7 +99,7 @@ case "${ENVIRONMENT_OS}" in
       cp -f ./config/etc/yum.repos.d/\$frepo ./container/\$frepo
     done
     ;;
-  "centos7")
+  "centos")
     # copy docker repo to local machine
     sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
     ;;
