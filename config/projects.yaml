@@ -442,7 +442,8 @@
     check:
       templates:
         - build-centos
-        - ansible-os
+        - ansible-os-ha
+        - ansible-k8s-ha
         - cleanup
     gate:
       templates:
