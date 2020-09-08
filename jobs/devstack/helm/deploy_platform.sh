@@ -8,4 +8,23 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+function add_deployrc() {
+  local file="$1"
+  cat <<EOF >> "$file"
+  # Openstack Helm installation requires set locale
+  sudo localectl set-locale LANG=en-US.UTF-8
+  . /etc/locale.conf
+  export LC_ALL=en_US.UTF-8
+
+  cat /etc/environment
+  if ! (grep "LANG" /etc/environment); then
+    if ! (grep "LC_ALL" /etc/environment); then
+      sudo sh -c "echo -e 'LANG=en_US.utf-8\nLC_ALL=en_US.utf-8' >> /etc/environment"
+      cat /etc/environment
+    fi
+  fi
+EOF
+}
+export -f add_deployrc
+
 ${my_dir}/../common/deploy_platform.sh helm
