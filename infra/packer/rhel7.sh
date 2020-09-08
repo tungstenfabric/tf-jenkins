@@ -80,15 +80,11 @@ enabled = 1
 gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
-[BaseOS]
-Name=Red Hat Enterprise Linux 8.0 BaseOS
-enabled=0
-gpgcheck=0
-baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/base/rhel-8-for-x86_64-baseos-rpms/
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-
 EOF
 
+sudo sed 's/enabled=1/enabled=0/g' /etc/yum/pluginconf.d/subscription-manager.conf > subscription-manager.conf.temp
+sudo cp -f subscription-manager.conf.temp /etc/yum/pluginconf.d/subscription-manager.conf
+rm -rf subscription-manager.conf.temp
 sudo mv local.repo /etc/yum.repos.d/
 
 sudo yum update -y
