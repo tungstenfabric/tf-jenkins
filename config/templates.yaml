@@ -79,7 +79,8 @@
     streams:
       build-ubi:
         vars:
-          LINUX_DISTR: ubi7
+          LINUX_DISTR: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000/ubi7
+          TAG_SUFFIX: "-ubi7"
     jobs:
       prepare-sandbox-ubi:
         # it creates worker
