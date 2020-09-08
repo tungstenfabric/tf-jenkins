@@ -26,7 +26,7 @@ fi
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS"
 rsync -a -e "$ssh_cmd" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
-echo "INFO: Build started: LINUX_DISTR=$LINUX_DISTR"
+echo "INFO: Build started: ENVIRONMENT_OS=$ENVIRONMENT_OS LINUX_DISTR=$LINUX_DISTR"
 
 export DEVENV_TAG=${DEVENV_TAG:-stable${TAG_SUFFIX}}
 if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
@@ -34,16 +34,19 @@ if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
   export DEVENV_TAG="sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 fi
 
+#list for tf containers
+mirror_list=""
+# list of repos for tf-dev-sandbox container
+mirror_list_for_build=""
 if [[ ${LINUX_DISTR} == 'rhel7' ]]; then
   mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
 elif [[ ${LINUX_DISTR} == 'centos' ]]; then
-  mirror_list_for_build="mirror-base.repo mirror-epel.repo mirror-docker.repo mirror-google-chrome.repo"
-fi
-
-mirror_list=""
-# epel must not be there - it cause incorrect installs and fails at runtime
-if [[ ${LINUX_DISTR} == 'centos' ]]; then
+  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo mirror-docker.repo mirror-base.repo "
+  # epel must not be there - it cause incorrect installs and fails at runtime
   mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo mirror-google-chrome.repo"
+elif [[ "${LINUX_DISTR}" =~ 'ubi7']] ; then
+  mirror_list_for_build="mirror-ubi7.repo mirror-epel.repo mirror-google-chrome.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
+  mirror_list="mirror-ubi7.repo"
 fi
 
 res=0
