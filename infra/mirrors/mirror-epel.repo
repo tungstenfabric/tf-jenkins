@@ -3,3 +3,4 @@ name=added from: http://nexus.jenkins.progmaticlab.com/repository/epel
 baseurl=http://nexus.jenkins.progmaticlab.com/repository/epel
 enabled=1
 gpgcheck=0
+cost = 500
