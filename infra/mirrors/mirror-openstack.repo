@@ -3,3 +3,4 @@ name=added from: http://nexus.jenkins.progmaticlab.com/repository/openstack-quee
 baseurl=http://nexus.jenkins.progmaticlab.com/repository/openstack-queens
 enabled=1
 gpgcheck=0
+priority = 50

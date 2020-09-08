@@ -3,3 +3,4 @@ name=added from: http://nexus.jenkins.progmaticlab.com/repository/docker-ce-stab
 baseurl=http://nexus.jenkins.progmaticlab.com/repository/docker-ce-stable
 enabled=1
 gpgcheck=0
+priority = 50
