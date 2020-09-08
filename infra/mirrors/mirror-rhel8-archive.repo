@@ -4,3 +4,4 @@ enabled=0
 gpgcheck=0
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/archive/rhel-8-for-x86_64-archive-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+priority = 70
