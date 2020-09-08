@@ -585,6 +585,7 @@
         vars:
           NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
       deploy-tf-helm-k8s-ha:
+        job-name: deploy-tf-helm-k8s
         stream: helm-k8s-ha
         depends-on:
           - package-centos
@@ -708,7 +709,7 @@
     streams:
       juju-k8s-ha:
         vars:
-          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: k8s
     parents:
@@ -820,7 +821,7 @@
       juju-os-ha:
         vars:
           CLOUD: manual
-          MONITORING_DEPLOY_TARGET: HA,ZIU
+          MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
     jobs:
@@ -859,7 +860,7 @@
           CLOUD: manual
           CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2005
-          MONITORING_DEPLOY_TARGET: ZIU
+          MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
     jobs:

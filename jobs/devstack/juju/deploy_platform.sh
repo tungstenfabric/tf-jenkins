@@ -8,8 +8,6 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-export CLOUD=${CLOUD:-"local"}
-
 function add_deployrc() {
   local file="$1"
   cat <<EOF >> "$file"
