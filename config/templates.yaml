@@ -449,21 +449,22 @@
     streams:
       ansible-k8s:
         vars:
+          TAG_SUFFIX: "-ubi7"
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: k8s
     parents:
-      - build-centos
+      - build-ubi
     jobs:
       deploy-platform-ansible-k8s:
         stream: ansible-k8s
         depends-on:
           # temporary solution
-          - compile-centos
+          - compile-ubi
       deploy-tf-ansible-k8s:
         stream: ansible-k8s
         depends-on:
-          - package-centos
+          - package-ubi
           - deploy-platform-ansible-k8s
       test-sanity-ansible-k8s:
         job-name: test-sanity
@@ -523,21 +524,22 @@
     streams:
       ansible-os:
         vars:
+          TAG_SUFFIX: "-ubi7"
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: os
     parents:
-      - build-centos
+      - build-ubi
     jobs:
       deploy-platform-ansible-os:
         stream: ansible-os
         depends-on:
           # temporary solution
-          - compile-centos
+          - compile-ubi
       deploy-tf-ansible-os:
         stream: ansible-os
         depends-on:
-          - package-centos
+          - package-ubi
           - deploy-platform-ansible-os
       test-sanity-ansible-os:
         job-name: test-sanity
