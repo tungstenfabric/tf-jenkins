@@ -480,6 +480,44 @@
           - test-sanity-ansible-k8s
 
 - template:
+    name: ansible-k8s-ubi
+    streams:
+      ansible-k8s-ubi:
+        vars:
+          TAG_SUFFIX: "-ubi7"
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-ubi
+    jobs:
+      deploy-platform-ansible-k8s-ubi:
+        job_name: deploy-platform-ansible-k8s
+        stream: ansible-k8s-ubi
+        depends-on:
+          # temporary solution
+          - compile-ubi
+      deploy-tf-ansible-k8s-ubi:
+        job_name: deploy-tf-ansible-k8s
+        stream: ansible-k8s-ubi
+        depends-on:
+          - package-ubi
+          - deploy-platform-ansible-k8s-ubi
+      test-sanity-ansible-k8s-ubi:
+        job-name: test-sanity
+        stream: ansible-k8s-ubi
+        depends-on:
+          - deploy-tf-ansible-k8s-ubi
+      collect-logs-and-cleanup-ansible-k8s-ubi:
+        job-name: collect-logs-and-cleanup
+        stream: ansible-k8s-ubi
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-ansible-k8s-ubi
+          - deploy-tf-ansible-k8s-ubi
+          - test-sanity-ansible-k8s-ubi
+
+- template:
     name: ansible-k8s-ha
     streams:
       ansible-k8s-ha:
@@ -552,6 +590,44 @@
           - deploy-platform-ansible-os
           - deploy-tf-ansible-os
           - test-sanity-ansible-os
+
+- template:
+    name: ansible-os-ubi
+    streams:
+      ansible-os-ubi:
+        vars:
+          TAG_SUFFIX: "-ubi7"
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: os
+    parents:
+      - build-ubi
+    jobs:
+      deploy-platform-ansible-os-ubi:
+        job_name: deploy-platform-ansible
+        stream: ansible-os-ubi
+        depends-on:
+          # temporary solution
+          - compile-ubi
+      deploy-tf-ansible-os-ubi:
+        job_name: deploy-tf-ansible-os
+        stream: ansible-os-ubi
+        depends-on:
+          - package-ubi
+          - deploy-platform-ansible-os-ubi
+      test-sanity-ansible-os-ubi:
+        job-name: test-sanity
+        stream: ansible-os-ubi
+        depends-on:
+          - deploy-tf-ansible-os-ubi
+      collect-logs-and-cleanup-ansible-os-ubi:
+        job-name: collect-logs-and-cleanup
+        stream: ansible-os-ubi
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-ansible-os-ubi
+          - deploy-tf-ansible-os-ubi
+          - test-sanity-ansible-os-ubi
 
 - template:
     name: ansible-os-ha
