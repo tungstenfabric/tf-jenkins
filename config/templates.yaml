@@ -79,14 +79,16 @@
     streams:
       build-ubi:
         vars:
-          LINUX_DISTR: ubi7
+          LINUX_DISTR: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000/ubi7
+          TAG_SUFFIX: "-ubi7"
+          INSECURE_REGISTRIES: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000
     jobs:
       prepare-sandbox-ubi:
         # it creates worker
         job-name: build-prepare-sandbox
         stream: build-ubi
         vars:
-          DEVENV_TAG: frozen
+          PUBLISH_TYPE: stable
       fetch-sources-ubi:
         job-name: build-fetch-sources
         stream: build-ubi
@@ -98,7 +100,7 @@
         depends-on:
           - fetch-sources-ubi
       compile-ubi:
-        job-name: build-ubi
+        job-name: build-compile
         stream: build-ubi
         depends-on:
           - package-deployers-ubi
@@ -107,20 +109,13 @@
         stream: build-ubi
         depends-on:
           - compile-ubi
-      freeze-ubi:
-        job-name: build-freeze
-        stream: build-ubi
-        depends-on:
-          - package-ubi
-        vars:
-          PUBLISH_TYPE: frozen
       cleanup-ubi:
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
         stream: build-ubi
         type: stream-post-hook
         depends-on:
-          - freeze-ubi
+          - package-ubi
 
 - template:
     name: build-rhel
