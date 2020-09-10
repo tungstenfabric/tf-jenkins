@@ -67,12 +67,12 @@
         #  vars:
         #    TAG_SUFFIX: "-r2005"
         #    PUBLISH_TAGS: "R2005"
-        aquascan-rhel-nightly:
+        aquascan-ubi-nightly:
           job-name: aquascan
           depends-on:
-            - package-rhel
+            - package-ubi
           vars:
-            TAG_SUFFIX: "-rhel7"
+            TAG_SUFFIX: "-ubi7"
       post-jobs:
         publish-centos-stable:
           job-name: publish
@@ -134,7 +134,7 @@
     name: tungstenfabric/tf-container-builder
     check:
       templates:
-        - build-rhel
+        - build-ubi
         - ansible-k8s
         - ansible-os
         - cleanup
@@ -147,7 +147,7 @@
     name: Juniper/contrail-controller
     check:
       templates:
-        - build-rhel
+        - build-ubi
         - test-unit
         - ansible-k8s
         - ansible-os
@@ -233,13 +233,13 @@
     name: tungstenfabric/tf-packages
     check:
       templates:
-        - build-rhel
+        - build-ubi
         - ansible-k8s
         - ansible-os
         - cleanup
     gate:
       templates:
-        - build-rhel
+        - build-ubi
         - ansible-k8s
         - ansible-os
         - cleanup
@@ -302,14 +302,14 @@
     name: tungstenfabric/tf-third-party
     check:
       templates:
-        - build-rhel
+        - build-ubi
         - test-unit
         - ansible-k8s
         - ansible-os
         - cleanup
     gate:
       templates:
-        - build-rhel
+        - build-ubi
         - build-centos
         - cleanup
 
@@ -427,7 +427,7 @@
     name: tungstenfabric/tf-dev-env
     check:
       templates:
-        - build-rhel
+        - build-ubi
         - build-centos
         - test-unit-ui
         - ansible-k8s
@@ -437,7 +437,7 @@
     name: tungstenfabric/tf-build
     check:
       templates:
-        - build-rhel
+        - build-ubi
         - build-centos
         - ansible-k8s
         - cleanup

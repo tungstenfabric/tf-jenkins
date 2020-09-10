@@ -988,13 +988,13 @@
 - template:
     name: rhosp13
     parents:
-      - build-rhel
+      - build-ubi
     streams:
       rhosp13:
         vars:
           OPENSTACK_VERSION: queens
           RHOSP_VERSION: rhosp13
-          TAG_SUFFIX: "-rhel7"
+          TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
@@ -1007,7 +1007,7 @@
       deploy-tf-rhosp13:
         stream: rhosp13
         depends-on:
-          - package-rhel
+          - package-ubi
           - deploy-platform-rhosp13
       test-sanity-rhosp13:
         job-name: test-sanity
@@ -1071,13 +1071,13 @@
 - template:
     name: rhosp16
     parents:
-      - build-rhel
+      - build-ubi
     streams:
       rhosp16:
         vars:
           OPENSTACK_VERSION: train
           RHOSP_VERSION: rhosp16
-          TAG_SUFFIX: "-rhel7"
+          TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "rhel8-mirrors.tf-jenkins.progmaticlab.com:5000"
@@ -1090,7 +1090,7 @@
       deploy-tf-rhosp16:
         stream: rhosp16
         depends-on:
-          - package-rhel
+          - package-ubi
           - deploy-platform-rhosp16
       test-sanity-rhosp16:
         job-name: test-sanity
@@ -1109,13 +1109,13 @@
 - template:
     name: rhosp13-bmc
     parents:
-      - build-rhel
+      - build-ubi
     streams:
       rhosp13-bmc:
         vars:
           CLOUD: openlab1
           ENVIRONMENT_OS: rhel7
-          TAG_SUFFIX: "-rhel7"
+          TAG_SUFFIX: "-ubi7"
           ENABLE_RHEL_REGISTRATION: false
           ENABLE_NETWORK_ISOLATION: true
           PROVIDER: bmc
@@ -1131,7 +1131,7 @@
         job-name: deploy-tf-rhosp13
         stream: rhosp13-bmc
         depends-on:
-          - package-rhel
+          - package-ubi
           - deploy-platform-rhosp13-bmc
       test-sanity-rhosp13-bmc:
         job-name: test-sanity
@@ -1152,33 +1152,30 @@
     streams:
       openshift:
         vars:
+          TAG_SUFFIX: "-ubi7"
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
     parents:
-      - build-rhel
+      - build-ubi
     jobs:
       deploy-platform-openshift:
         stream: openshift
         vars:
           ENVIRONMENT_OS: rhel7
-          TAG_SUFFIX: "-rhel7"
           RHEL_OPENSHIFT_REGISTRY: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000
       deploy-tf-openshift:
         stream: openshift
         depends-on:
           - deploy-platform-openshift
-          - package-rhel
+          - package-ubi
         vars:
-          TAG_SUFFIX: "-rhel7"
           RHEL_OPENSHIFT_REGISTRY: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000
       test-sanity-openshift:
         job-name: test-sanity
         stream: openshift
         depends-on:
           - deploy-tf-openshift
-        vars:
-          TAG_SUFFIX: "-rhel7"
       collect-logs-and-cleanup-openshift:
         job-name: collect-logs-and-cleanup
         stream: openshift
@@ -1187,5 +1184,3 @@
           - deploy-platform-openshift
           - deploy-tf-openshift
           - test-sanity-openshift
-        vars:
-          TAG_SUFFIX: "-rhel7"
