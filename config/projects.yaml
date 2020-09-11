@@ -47,6 +47,13 @@
         - rhosp13-1912
         - rhosp16
         - rhosp13-bmc
+        - juju-hybrid-not-implemented-targets
+        - juju-os-not-implemented-targets
+        - juju-k8s-not-implemented-targets
+        - rhosp13-os-not-implemented-targets
+        - rhosp16-os-not-implemented-targets
+        - ansible-os-not-implemented-targets
+        - openshift-k8s-not-implemented-targets
         - cleanup
       jobs:
         publish-centos-nightly:
