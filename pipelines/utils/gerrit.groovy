@@ -65,31 +65,32 @@ def publish_results(pre_build_done, streams, job_set, job_results, full_duration
       println("Evaluated results for ${stream} = ${results[stream]}")
       def result = _get_stream_result(results[stream]['results'])
 
-      try {
-        // Log stream result
-        if (streams.containsKey(stream)) {
-          vars = streams[stream].get('vars', [:])
-          if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
-              vars.containsKey('MONITORING_DEPLOYER') &&
-              vars.containsKey('MONITORING_ORCHESTRATOR')) {
+      if (env.GERRIT_PIPELINE == 'nightly') {
+        try {
+          // Log stream result
+          if (streams.containsKey(stream)) {
+            vars = streams[stream].get('vars', [:])
+            if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
+                vars.containsKey('MONITORING_DEPLOYER') &&
+                vars.containsKey('MONITORING_ORCHESTRATOR')) {
 
-                json_string = """{
-                  "pipeline": "${stream}",
-                  "deployer": "${vars['MONITORING_DEPLOYER']}",
-                  "orchestrator": "${vars['MONITORING_ORCHESTRATOR']}",
-                  "status" : "${result}",
-                  "gerrit": "${env.GERRIT_PIPELINE}",
-                  "target": "${vars['MONITORING_DEPLOY_TARGET']}"
-                }"""
-                step([$class: 'Fluentd', tag: 'pipeline', json: json_string])
+                  sh """
+                    ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
+                      --gerrit ${env.GERRIT_PIPELINE} \
+                      --target ${vars['MONITORING_DEPLOY_TARGET']} \
+                      --deployer ${vars['MONITORING_DEPLOYER']} \
+                      --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
+                      --status ${result}
+                  """
+            }
           }
+        } catch (err) {
+          println("Failed to send data to fluentd")
+          msg = err.getMessage()
+          if (msg != null)
+            println("Message - ${msg}")
+          println("Stacktrace - ${err.getStackTrace()}")
         }
-      } catch (err) {
-        println("Failed to send data to fluentd")
-        msg = err.getMessage()
-        if (msg != null)
-          println("Message - ${msg}")
-        println("Stacktrace - ${err.getStackTrace()}")
       }
 
       if (result == 'ABORTED') {
@@ -111,6 +112,35 @@ def publish_results(pre_build_done, streams, job_set, job_results, full_duration
       }
       if (voting && result != 'SUCCESS') {
         passed = false
+      }
+    }
+    // Log not yet implemented streams
+    if (env.GERRIT_PIPELINE == 'nightly') {
+      try {
+        for (stream in streams) {
+          if (!results.containsKey(stream)) {
+            vars = streams[stream].get('vars', [:])
+            if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
+                vars.containsKey('MONITORING_DEPLOYER') &&
+                vars.containsKey('MONITORING_ORCHESTRATOR')) {
+
+                sh """
+                  ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
+                    --gerrit ${env.GERRIT_PIPELINE} \
+                    --target ${vars['MONITORING_DEPLOY_TARGET']} \
+                    --deployer ${vars['MONITORING_DEPLOYER']} \
+                    --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
+                    --status NOT_IMPLEMENTED
+                """
+            }
+          }
+        }
+      } catch(err) {
+        println("Failed to send data to fluentd")
+        msg = err.getMessage()
+        if (msg != null)
+          println("Message - ${msg}")
+        println("Stacktrace - ${err.getStackTrace()}")
       }
     }
 

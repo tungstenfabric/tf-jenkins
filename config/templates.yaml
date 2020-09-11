@@ -656,7 +656,7 @@
           - test-sanity-helm-k8s-ha
 
 - template:
-    name: helm-os
+    name:
     parents:
       - build-centos
     streams:
@@ -1184,3 +1184,66 @@
           - deploy-platform-openshift
           - deploy-tf-openshift
           - test-sanity-openshift
+
+- template:
+    name: juju-hybrid-not-implemented-targets
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO,HA,CharmUpgrade,CCImport
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: hybrid
+
+- template:
+    name: juju-os-not-implemented-targets
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: ISSU,SR-IOV,DPDK,CCImport
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: juju-k8s-not-implemented-targets
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: CCImport
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: k8s
+
+- template:
+    name: rhosp13-os-not-implemented-targets
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA,ZIU,ISSU,SR-IOV,DPDK,CCImport
+          MONITORING_DEPLOYER: rhosp13
+          MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: rhosp16-os-not-implemented-targets
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA,PROD,ZIU,ISSU,SR-IOV,DPDK,ILTS,CCImport
+          MONITORING_DEPLOYER: rhosp16
+          MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: ansible-os-not-implemented-targets
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: ZIU,ISSU
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: openshift-k8s-not-implemented-targets
+    streams:
+      not_implemented:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: openshift
+          MONITORING_ORCHESTRATOR: k8s
