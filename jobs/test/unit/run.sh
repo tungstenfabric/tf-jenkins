@@ -55,7 +55,8 @@ cd src/tungstenfabric/tf-dev-env
 # TODO: unify this with build/run.sh
 
 mkdir -p ./config/etc/yum.repos.d
-cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
+# https://issues.sonatype.org/browse/NEXUS-25231
+#cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 # substitute repos only for centos7
 if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-base.repo ./config/etc/yum.repos.d/
