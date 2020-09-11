@@ -958,6 +958,10 @@
         vars:
           CLOUD: maas
           SSL_ENABLE: 'true'
+          CONTROLLER_NODES: "C1,C2,C3"
+          AGENT_NODES: "A1,A2"
+          CONTROL_NETWORK: '192.168.51.0/24'
+          DATA_NETWORK: '10.0.0.0/16'
           MONITORING_DEPLOY_TARGET: PROD
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
