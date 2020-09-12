@@ -745,6 +745,8 @@
       deploy-platform-helm-os-ha:
         job-name: deploy-platform-helm-os
         stream: helm-os-ha
+        vars:
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
       deploy-tf-helm-os-ha:
         job-name: deploy-tf-helm-os
         stream: helm-os-ha
