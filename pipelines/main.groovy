@@ -103,7 +103,9 @@ timestamps {
         println(job_results)
         stage('gerrit vote') {
           // add gerrit voting +2 +1 / -1 -2
-          verified = gerrit_utils.publish_results(pre_build_done, streams, jobs, job_results, (new Date()).getTime() - time_start)
+          def results = job_utils.get_jobs_result_for_gerrit(jobs, job_results)
+          gerrit_utils.publish_results_to_monitoring(streams, results)
+          verified = gerrit_utils.publish_results(pre_build_done, streams, results, (new Date()).getTime() - time_start)
           sh """#!/bin/bash -e
             echo "export VERIFIED=${verified}" >> global.env
           """

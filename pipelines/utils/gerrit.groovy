@@ -29,7 +29,7 @@ def gerrit_build_started() {
   }
 }
 
-def publish_results(pre_build_done, streams, job_set, job_results, full_duration, err_msg=null) {
+def publish_results(pre_build_done, streams, results, full_duration, err_msg=null) {
   try {
     if (!pre_build_done) {
       msg = "TF CI general failure (${env.GERRIT_PIPELINE})\n\n"
@@ -41,65 +41,20 @@ def publish_results(pre_build_done, streams, job_set, job_results, full_duration
       return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
 
-    def results = [:]
-    for (name in job_set.keySet()) {
-      // do not include post job into report
-      if (job_set[name].get('type') == 'stream-post-hook')
-        continue
-      def stream = job_set[name].get('stream', name)
-      def job_result = job_results.get(name)
-      def result = job_result != null ? job_result.get('result', 'NOT_BUILT') : 'NOT_BUILT'
-      def duration = job_result != null ? job_result.get('duration', 0) : 0
-      if (!results.containsKey(stream)) {
-        results[stream] = ['results': [result], 'duration': duration]
-      } else {
-        results[stream]['results'] += result
-        results[stream]['duration'] += duration
-      }
-    }
-
     def passed = true
-    def msg = ''
+    def check_msg = ''
     def stopping_cause = 'Failed'
     for (stream in results.keySet()) {
       println("Evaluated results for ${stream} = ${results[stream]}")
       def result = _get_stream_result(results[stream]['results'])
 
-      if (env.GERRIT_PIPELINE == 'nightly') {
-        try {
-          // Log stream result
-          if (streams.containsKey(stream)) {
-            vars = streams[stream].get('vars', [:])
-            if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
-                vars.containsKey('MONITORING_DEPLOYER') &&
-                vars.containsKey('MONITORING_ORCHESTRATOR')) {
-
-                  sh """
-                    ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
-                      --gerrit ${env.GERRIT_PIPELINE} \
-                      --target ${vars['MONITORING_DEPLOY_TARGET']} \
-                      --deployer ${vars['MONITORING_DEPLOYER']} \
-                      --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
-                      --status ${result}
-                  """
-            }
-          }
-        } catch (err) {
-          println("Failed to send data to fluentd")
-          msg = err.getMessage()
-          if (msg != null)
-            println("Message - ${msg}")
-          println("Stacktrace - ${err.getStackTrace()}")
-        }
-      }
-
       if (result == 'ABORTED') {
         stopping_cause = 'Aborted'
       }
       if (result == 'NOT_BUILT') {
-        msg += "\n- ${stream} : NOT_BUILT"
+        check_msg += "\n- ${stream} : NOT_BUILT"
       } else {
-        msg += "\n- " + _get_gerrit_msg_for_job(stream, result, results[stream]['duration'])
+        check_msg += "\n- " + _get_gerrit_msg_for_job(stream, result, results[stream]['duration'])
       }
       def voting = true
       if (streams.containsKey(stream) && streams[stream].containsKey('voting')) {
@@ -108,60 +63,68 @@ def publish_results(pre_build_done, streams, job_set, job_results, full_duration
         voting = jobs[stream]['voting']
       }
       if (!voting) {
-        msg += ' (non-voting)'
+        check_msg += ' (non-voting)'
       }
       if (voting && result != 'SUCCESS') {
         passed = false
-      }
-    }
-    // Log not yet implemented streams
-    if (env.GERRIT_PIPELINE == 'nightly') {
-      try {
-        for (stream in streams) {
-          if (!results.containsKey(stream)) {
-            vars = streams[stream].get('vars', [:])
-            if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
-                vars.containsKey('MONITORING_DEPLOYER') &&
-                vars.containsKey('MONITORING_ORCHESTRATOR')) {
-
-                sh """
-                  ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
-                    --gerrit ${env.GERRIT_PIPELINE} \
-                    --target ${vars['MONITORING_DEPLOY_TARGET']} \
-                    --deployer ${vars['MONITORING_DEPLOYER']} \
-                    --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
-                    --status NOT_IMPLEMENTED
-                """
-            }
-          }
-        }
-      } catch(err) {
-        println("Failed to send data to fluentd")
-        msg = err.getMessage()
-        if (msg != null)
-          println("Message - ${msg}")
-        println("Stacktrace - ${err.getStackTrace()}")
       }
     }
 
     def duration_string = _get_duration_string(full_duration)
     def verified = VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]
     if (passed) {
-      msg = "TF CI Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
+      check_msg = "TF CI Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + check_msg
     } else {
-      msg = "TF CI Build ${stopping_cause} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + msg
+      check_msg = "TF CI Build ${stopping_cause} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + check_msg
       verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
-    _notify_gerrit(msg, verified)
+    _notify_gerrit(check_msg, verified)
     return verified
   } catch (err) {
     println("Failed to provide vote to gerrit")
-    msg = err.getMessage()
-    if (msg != null)
-      println("Message - ${msg}")
+    local_err_msg = err.getMessage()
+    if (local_err_msg != null)
+      println("Message - ${local_err_msg}")
     println("Stacktrace - ${err.getStackTrace()}")
   }
   return 0
+}
+
+def publish_results_to_monitoring(streams, results) {
+  // Log stream result
+  if (env.GERRIT_PIPELINE != 'nightly') {
+    // log only nightly results for now
+    return
+  }
+
+  for (stream in streams.keySet()) {
+    def result = "NOT_IMPLEMENTED"
+    if (results.containsKey(stream))
+      result = _get_stream_result(results[stream]['results'])
+
+    try {
+      vars = streams[stream].get('vars', [:])
+      if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
+          vars.containsKey('MONITORING_DEPLOYER') &&
+          vars.containsKey('MONITORING_ORCHESTRATOR')) {
+
+            sh """
+              ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
+                --gerrit ${env.GERRIT_PIPELINE} \
+                --target ${vars['MONITORING_DEPLOY_TARGET']} \
+                --deployer ${vars['MONITORING_DEPLOYER']} \
+                --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
+                --status ${result}
+            """
+      }
+    } catch (err) {
+      println("Failed to send data to fluentd")
+      err_msg = err.getMessage()
+      if (err_msg != null)
+        println("Message - ${err_msg}")
+      println("Stacktrace - ${err.getStackTrace()}")
+    }
+  }
 }
 
 def _get_stream_result(def results) {

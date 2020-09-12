@@ -98,6 +98,26 @@ def run_jobs(def job_set, def streams) {
     parallel(jobs_code)
 }
 
+def get_jobs_result_for_gerrit(job_set, job_results) {
+  def results = [:]
+  for (name in job_set.keySet()) {
+    // do not include post job into report
+    if (job_set[name].get('type') == 'stream-post-hook')
+      continue
+    def stream = job_set[name].get('stream', name)
+    def job_result = job_results.get(name)
+    def result = job_result != null ? job_result.get('result', 'NOT_BUILT') : 'NOT_BUILT'
+    def duration = job_result != null ? job_result.get('duration', 0) : 0
+    if (!results.containsKey(stream)) {
+      results[stream] = ['results': [result], 'duration': duration]
+    } else {
+      results[stream]['results'] += result
+      results[stream]['duration'] += duration
+    }
+  }
+  return results
+}
+
 def _wait_for_dependencies(job_set, name) {
   def deps = job_set[name].get('depends-on')
   if (deps == null || deps.size() == 0)
