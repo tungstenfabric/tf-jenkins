@@ -10,17 +10,6 @@
 - project:
     name: tungstenfabric
     nightly:
-      streams:
-        rhosp16:
-          voting: false
-        helm-os:
-          voting: false
-        juju-os-maas:
-          voting: false
-        juju-os-ha-ziu:
-          voting: false
-        rhosp13-bmc:
-          voting: false
       templates:
         - build-r1912
         - build-r1912-ubi
