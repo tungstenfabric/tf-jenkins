@@ -4,14 +4,22 @@ import requests
 import argparse
 import time
 
+tags = [
+    'target',
+    'orchestrator',
+    'deployer',
+    'gerrit',
+    'status',
+]
+
 def splitdata(logdata):
     ret = []
-    for key in logdata:
-        datalist = logdata[key].split(',')
+    for tag in tags:
+        datalist = logdata[tag].split(',')
         if len(datalist) > 1:
             for d in datalist:
                 logcopy = logdata.copy()
-                logcopy[key] = d
+                logcopy[tag] = d
                 ret.append(l)
             break
     if len(ret) > 1:
@@ -32,17 +40,10 @@ def do_log(url, logdata):
         r = requests.post(url=url, json=logitem)
 
 def main():
-    keys = [
-        'target',
-        'orchestrator',
-        'deployer',
-        'gerrit',
-        'status',
-    ]
     parser = argparse.ArgumentParser()
-    for key in keys:
+    for tag in tags:
         parser.add_argument(
-            "--{}".format(key), dest=key,
+            "--{}".format(tag), dest=tag,
             type=str, required=True
         )
     parser.add_argument(
@@ -57,8 +58,8 @@ def main():
     if args.url[-1] == '/':
         args.url = args.url[:-1]
     logdata = {}
-    for key in keys:
-        logdata[key] = getattr(args, key)
+    for tag in tags:
+        logdata[tag] = getattr(args, tag)
     logdata['timestamp'] = int(time.time())
     url = '{}/{}'.format(args.url, args.measurement)
     do_log(url, logdata)
