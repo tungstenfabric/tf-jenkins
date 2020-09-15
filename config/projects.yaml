@@ -29,7 +29,7 @@
         - juju-k8s
         - juju-k8s-ha
         - juju-os
-        - juju-os-maas
+        #- juju-os-maas
         - juju-os-ha-ziu
         - juju-os-1912
         - rhosp13

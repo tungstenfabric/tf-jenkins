@@ -14,6 +14,8 @@ function add_deployrc() {
 export CLOUD=$CLOUD
 source \$HOME/$CLOUD.vars || /bin/true
 export JUJU_CONTROLLER_NODES="$JUJU_CONTROLLER_NODES"
+export CONTROL_NETWORK="$CONTROL_NETWORK"
+export DATA_NETWORK="$DATA_NETWORK"
 EOF
 }
 export -f add_deployrc
