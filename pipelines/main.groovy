@@ -209,7 +209,14 @@ def evaluate_env() {
     }
     archiveArtifacts(artifacts: 'global.env')
 
-    (streams, jobs, post_jobs) = config_utils.get_jobs(project_name, env.GERRIT_PIPELINE, env.GERRIT_BRANCH)
+    if (env.GERRIT_PIPELINE != 'check-templates') {
+      // Get jobs for the whole project
+      (streams, jobs, post_jobs) = config_utils.get_project_jobs(project_name, env.GERRIT_PIPELINE, env.GERRIT_BRANCH)
+    } else {
+       // It triggers by comment "(check|recheck) template(s) name1 name2 ...".
+      def template_names = env.GERRIT_EVENT_COMMENT_TEXT.split()[2..-1]
+      (streams, jobs, post_jobs) = config_utils.get_templates_jobs(template_names)
+    }
     println("Streams from  config: ${streams}")
     println("Jobs from config: ${jobs}")
     println("Post Jobs from config: ${post_jobs}")
