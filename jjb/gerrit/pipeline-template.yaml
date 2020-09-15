@@ -1,0 +1,43 @@
+---
+
+- job:
+    name: pipeline-template-opencontrail
+    description: pipeline-template
+    project-type: pipeline
+    concurrent: true
+    parameters:
+      - choice:
+          name: SLAVE
+          choices:
+            - vexxhost
+            - aws
+          description: "Slave where all jobs will be run: vexxhost, aws"
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: template
+      - hidden:
+          name: GERRIT_TEMPLATE
+          default: 
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: pipelines/main.groovy
+      lightweight-checkout: true
+    triggers:
+      - gerrit:
+          server-name: review.opencontrail.org
+          skip-vote:
+            successful: true
+            failed: true
+            unstable: true
+            notbuilt: true
+          trigger-on:
+            - comment-added-contains-event:
+                comment-contains-value: '^(check|recheck)\s+[A-Za-z0-9\-]+\s*$'
+          trigger-for-unreviewed-patches: true
+          projects:
+            - project-compare-type: 'ANT'
+              project-pattern: '**'
+              branches:
+                - branch-compare-type: 'ANT'
+                  branch-pattern: '**'
