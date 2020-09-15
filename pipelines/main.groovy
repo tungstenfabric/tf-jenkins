@@ -208,8 +208,16 @@ def evaluate_env() {
       """
     }
     archiveArtifacts(artifacts: 'global.env')
-
-    (streams, jobs, post_jobs) = config_utils.get_jobs(project_name, env.GERRIT_PIPELINE, env.GERRIT_BRANCH)
+    
+    if (env.GERRIT_PIPELINE == 'template') {
+      // Get jobs only for one template. It triggers by comment "(check|recheck) template_name".
+      def tmpl_find = env.GERRIT_EVENT_COMMENT_TEXT =~ /^(?:check|recheck)\s+([A-Za-z0-9\-]+)\s*$/;
+      def tmpl_name = tmpl_find[0][0]
+      (streams, jobs, post_jobs) = config_utils.get_template_jobs(tmpl_name)
+    } else {
+      // Get jobs for hole project
+      (streams, jobs, post_jobs) = config_utils.get_project_jobs(project_name, env.GERRIT_PIPELINE, env.GERRIT_BRANCH)
+    }
     println("Streams from  config: ${streams}")
     println("Jobs from config: ${jobs}")
     println("Post Jobs from config: ${post_jobs}")

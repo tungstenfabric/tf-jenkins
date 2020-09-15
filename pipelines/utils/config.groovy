@@ -1,18 +1,33 @@
 // config utils
+def get_template_jobs(template_name) {
+  //get data
+  def data = _get_data()
+  // get templates
+  def templates = _resolve_templates(data)
 
-def get_jobs(project_name, gerrit_pipeline, gerrit_branch) {
-  // read main file
-  def data = readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/projects.yaml")
-  // read includes
-  def include_data = []
-  for (item in data) {
-    if (item.containsKey('include')) {
-      for (file in item['include']) {
-        include_data += readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/${file}")
-      }
-    }
-  }
-  data += include_data
+  if (!templates.containsKey(template_name))
+        throw new Exception("ERROR: template ${template_name} is absent in configuration")
+  template = templates[template_name]
+  
+  _update_map(streams, template.get('streams', [:]))
+  _update_map(jobs, template.get('jobs', [:]))
+  _update_map(post_jobs, template.get('post-jobs', [:]))
+
+  // set empty dict for dicts without params
+  _set_default_values(streams)
+  _set_default_values(jobs)
+  _set_default_values(post_jobs)
+  // do some checks
+  // check if all deps point to real jobs
+  _check_dependencies(jobs)
+  _check_dependencies(post_jobs)
+
+  return [streams, jobs, post_jobs]
+}
+
+def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
+  // get data
+  def data = _get_data()
 
   // get templates
   def templates = _resolve_templates(data)
@@ -65,6 +80,22 @@ def get_jobs(project_name, gerrit_pipeline, gerrit_branch) {
   _check_dependencies(post_jobs)
 
   return [streams, jobs, post_jobs]
+}
+
+def _get_data() {
+  // read main file
+  def data = readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/projects.yaml")
+  // read includes
+  def include_data = []
+  for (item in data) {
+    if (item.containsKey('include')) {
+      for (file in item['include']) {
+        include_data += readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/${file}")
+      }
+    }
+  }
+  data += include_data
+  return data
 }
 
 def _set_default_values(def items) {
