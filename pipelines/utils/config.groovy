@@ -1,18 +1,29 @@
-// config utils
+def get_templates_jobs(template_names) {
+  def data      = _get_data()
+  def templates = _resolve_templates(data)
 
-def get_jobs(project_name, gerrit_pipeline, gerrit_branch) {
-  // read main file
-  def data = readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/projects.yaml")
-  // read includes
-  def include_data = []
-  for (item in data) {
-    if (item.containsKey('include')) {
-      for (file in item['include']) {
-        include_data += readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/${file}")
-      }
-    }
-  }
-  data += include_data
+  def streams   = [:]
+  def jobs      = [:]
+  def post_jobs = [:]
+  _add_templates_jobs(template_names, templates, streams, jobs, post_jobs)
+
+  // Set empty dict for dicts without params
+  _set_default_values(streams)
+  _set_default_values(jobs)
+  _set_default_values(post_jobs)
+  // Do some checks
+  // Check if all deps point to real jobs
+  _check_dependencies(jobs)
+  _check_dependencies(post_jobs)
+
+  return [streams, jobs, post_jobs]
+}
+
+
+
+def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
+  // get data
+  def data = _get_data()
 
   // get templates
   def templates = _resolve_templates(data)
@@ -41,14 +52,7 @@ def get_jobs(project_name, gerrit_pipeline, gerrit_branch) {
     return [streams, jobs, post_jobs]
   }
   if (project[gerrit_pipeline].containsKey('templates')) {
-    for (template_name in project[gerrit_pipeline].templates) {
-      if (!templates.containsKey(template_name))
-        throw new Exception("ERROR: template ${template_name} is absent in configuration")
-      template = templates[template_name]
-      _update_map(streams, template.get('streams', [:]))
-      _update_map(jobs, template.get('jobs', [:]))
-      _update_map(post_jobs, template.get('post-jobs', [:]))
-    }
+    _add_templates_jobs(project[gerrit_pipeline].templates, templates, streams, jobs, post_jobs)
   }
   // merge info from templates with project's jobs
   _update_map(streams, project[gerrit_pipeline].get('streams', [:]))
@@ -65,6 +69,34 @@ def get_jobs(project_name, gerrit_pipeline, gerrit_branch) {
   _check_dependencies(post_jobs)
 
   return [streams, jobs, post_jobs]
+}
+
+def _get_data() {
+  // read main file
+  def data = readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/projects.yaml")
+  // read includes
+  def include_data = []
+  for (item in data) {
+    if (item.containsKey('include')) {
+      for (file in item['include']) {
+        include_data += readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/${file}")
+      }
+    }
+  }
+  data += include_data
+  return data
+}
+
+def _add_templates_jobs(template_names, templates, streams, jobs, post_jobs) {
+  for (template_name in template_names) {
+    if (!templates.containsKey(template_name)) {
+      throw new Exception("ERROR: template ${template_name} is absent in configuration")
+    }
+    template = templates[template_name]
+    _update_map(streams,   template.get('streams',   [:]))
+    _update_map(jobs,      template.get('jobs',      [:]))
+    _update_map(post_jobs, template.get('post-jobs', [:]))
+  }
 }
 
 def _set_default_values(def items) {
