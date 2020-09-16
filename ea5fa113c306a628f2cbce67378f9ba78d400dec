@@ -1,0 +1,158 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d9c94131_d0c87ef2",
+        "filename": "jjb/gerrit/pipeline-template.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-09-16T10:33:08Z",
+      "side": 1,
+      "message": "^check\\s+template[s]\\s+.*$",
+      "range": {
+        "startLine": 33,
+        "startChar": 41,
+        "endLine": 33,
+        "endChar": 78
+      },
+      "revId": "ea5fa113c306a628f2cbce67378f9ba78d400dec",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "861f85f1_779ead54",
+        "filename": "pipelines/main.groovy",
+        "patchSetId": 2
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-09-16T10:33:08Z",
+      "side": 1,
+      "message": "trailing spaces...",
+      "revId": "ea5fa113c306a628f2cbce67378f9ba78d400dec",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5eae294_21baf6a3",
+        "filename": "pipelines/main.groovy",
+        "patchSetId": 2
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-09-16T10:33:08Z",
+      "side": 1,
+      "message": "if (... !\u003d \u0027template\u0027) {\n  old code\n} else {\n  new code\n}",
+      "revId": "ea5fa113c306a628f2cbce67378f9ba78d400dec",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0828f52_2a11ebdf",
+        "filename": "pipelines/main.groovy",
+        "patchSetId": 2
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-09-16T10:33:08Z",
+      "side": 1,
+      "message": "check template[s] name1, name2 name3,name4",
+      "range": {
+        "startLine": 213,
+        "startChar": 64,
+        "endLine": 213,
+        "endChar": 95
+      },
+      "revId": "ea5fa113c306a628f2cbce67378f9ba78d400dec",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "056616a5_0d4a8f7a",
+        "filename": "pipelines/main.groovy",
+        "patchSetId": 2
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-09-16T10:33:08Z",
+      "side": 1,
+      "message": "please do not use regexp finder - it may lead to Non-Closure exception in jenkins. just read first line and check it with spaces/commas separators",
+      "revId": "ea5fa113c306a628f2cbce67378f9ba78d400dec",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78b31af6_2258dab1",
+        "filename": "pipelines/main.groovy",
+        "patchSetId": 2
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-09-16T10:33:08Z",
+      "side": 1,
+      "message": "-\u003e template_name",
+      "range": {
+        "startLine": 215,
+        "startChar": 10,
+        "endLine": 215,
+        "endChar": 19
+      },
+      "revId": "ea5fa113c306a628f2cbce67378f9ba78d400dec",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "254d980d_1f48c936",
+        "filename": "pipelines/utils/config.groovy",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-09-16T10:33:08Z",
+      "side": 1,
+      "message": "each indent \u003d 2 spaces",
+      "revId": "ea5fa113c306a628f2cbce67378f9ba78d400dec",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3e909dfd_18c4ac14",
+        "filename": "pipelines/utils/config.groovy",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-09-16T10:33:08Z",
+      "side": 1,
+      "message": "trailing spaces",
+      "revId": "ea5fa113c306a628f2cbce67378f9ba78d400dec",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
