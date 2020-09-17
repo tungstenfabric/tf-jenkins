@@ -213,8 +213,20 @@ def evaluate_env() {
       // Get jobs for the whole project
       (streams, jobs, post_jobs) = config_utils.get_project_jobs(project_name, env.GERRIT_PIPELINE, env.GERRIT_BRANCH)
     } else {
-       // It triggers by comment "(check|recheck) template(s) name1 name2 ...".
-      def template_names = env.GERRIT_EVENT_COMMENT_TEXT.split()[2..-1]
+      // It triggers by comment "(check|recheck) template(s) name1 name2 ...".
+      def full_comment = env.GERRIT_EVENT_COMMENT_TEXT
+      def lines = full_comment.split("\n")
+      def needed_line = ""
+      for (line in lines) {
+        if (line.startsWith("check") || line.startsWith("recheck")) {
+          needed_line = line
+          break
+        }
+      }
+      if (needed_line == "") {
+        throw new Exception("ERROR: strange comment message: ${full_comment}")
+      }
+      def template_names = needed_line.split()[2..-1]
       (streams, jobs, post_jobs) = config_utils.get_templates_jobs(template_names)
     }
     println("Streams from  config: ${streams}")
