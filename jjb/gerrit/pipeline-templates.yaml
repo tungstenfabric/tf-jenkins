@@ -1,8 +1,8 @@
 ---
 
 - job:
-    name: pipeline-check-templates-opencontrail
-    description: pipeline-check-templates
+    name: pipeline-templates-opencontrail
+    description: pipeline-templates
     project-type: pipeline
     concurrent: true
     parameters:
@@ -14,7 +14,7 @@
           description: "Slave where all jobs will be run: vexxhost, aws"
       - hidden:
           name: GERRIT_PIPELINE
-          default: check-templates
+          default: templates
     pipeline-scm:
       scm:
         - tf-jenkins
