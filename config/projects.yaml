@@ -442,9 +442,10 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
-        - build-centos
-        - ansible-os
-        - cleanup
+        #- build-centos
+        #- ansible-os
+        #- cleanup
+        - juju-os-maas
     gate:
       templates:
         - build-centos
