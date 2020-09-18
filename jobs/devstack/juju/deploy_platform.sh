@@ -14,6 +14,7 @@ function add_deployrc() {
 export CLOUD=$CLOUD
 source \$HOME/$CLOUD.vars || /bin/true
 export JUJU_CONTROLLER_NODES="$JUJU_CONTROLLER_NODES"
+export ENABLE_DPDK_SRIOV="$ENABLE_DPDK_SRIOV"
 EOF
 }
 export -f add_deployrc
