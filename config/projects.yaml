@@ -433,10 +433,11 @@
     name: tungstenfabric/tf-build
     check:
       templates:
-        - build-ubi
-        - build-centos
-        - ansible-k8s
-        - cleanup
+        #- build-ubi
+        #- build-centos
+        #- ansible-k8s
+        #- cleanup
+        - juju-os-maas
 
 - project:
     name: tungstenfabric/tf-jenkins
