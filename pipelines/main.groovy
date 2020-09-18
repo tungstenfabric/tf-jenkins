@@ -209,7 +209,7 @@ def evaluate_env() {
     }
     archiveArtifacts(artifacts: 'global.env')
 
-    if (env.GERRIT_PIPELINE != 'check-templates') {
+    if (env.GERRIT_PIPELINE != 'templates') {
       // Get jobs for the whole project
       (streams, jobs, post_jobs) = config_utils.get_project_jobs(project_name, env.GERRIT_PIPELINE, env.GERRIT_BRANCH)
     } else {
