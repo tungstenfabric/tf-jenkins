@@ -1234,7 +1234,7 @@
 - template:
     name: juju-hybrid-not-implemented-targets
     streams:
-      not_implemented:
+      juju-hybrid-not-implemented-targets:
         vars:
           MONITORING_DEPLOY_TARGET: AIO,HA,CharmUpgrade,CCImport
           MONITORING_DEPLOYER: juju
@@ -1243,7 +1243,7 @@
 - template:
     name: juju-os-not-implemented-targets
     streams:
-      not_implemented:
+      juju-os-not-implemented-targets:
         vars:
           MONITORING_DEPLOY_TARGET: ISSU,SR-IOV,DPDK,CCImport
           MONITORING_DEPLOYER: juju
@@ -1252,7 +1252,7 @@
 - template:
     name: juju-k8s-not-implemented-targets
     streams:
-      not_implemented:
+      juju-k8s-not-implemented-targets:
         vars:
           MONITORING_DEPLOY_TARGET: CCImport
           MONITORING_DEPLOYER: juju
@@ -1261,7 +1261,7 @@
 - template:
     name: rhosp13-os-not-implemented-targets
     streams:
-      not_implemented:
+      rhosp13-os-not-implemented-targets:
         vars:
           MONITORING_DEPLOY_TARGET: HA,ZIU,ISSU,SR-IOV,DPDK,CCImport
           MONITORING_DEPLOYER: rhosp13
@@ -1270,7 +1270,7 @@
 - template:
     name: rhosp16-os-not-implemented-targets
     streams:
-      not_implemented:
+      rhosp16-os-not-implemented-targets:
         vars:
           MONITORING_DEPLOY_TARGET: HA,PROD,ZIU,ISSU,SR-IOV,DPDK,ILTS,CCImport
           MONITORING_DEPLOYER: rhosp16
@@ -1279,7 +1279,7 @@
 - template:
     name: ansible-os-not-implemented-targets
     streams:
-      not_implemented:
+      ansible-os-not-implemented-targets:
         vars:
           MONITORING_DEPLOY_TARGET: ZIU,ISSU
           MONITORING_DEPLOYER: ansible
@@ -1288,7 +1288,7 @@
 - template:
     name: openshift-k8s-not-implemented-targets
     streams:
-      not_implemented:
+      openshift-k8s-not-implemented-targets:
         vars:
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: openshift
