@@ -443,7 +443,7 @@
     check:
       templates:
         - build-centos
-        - ansible-os
+        - helm-k8s
         - cleanup
     gate:
       templates:
