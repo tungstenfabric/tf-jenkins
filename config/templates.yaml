@@ -290,47 +290,47 @@
           - package-r1912
 
 - template:
-    name: build-r2005
+    name: build-r2008
     streams:
-      build-r2005:
+      build-r2008:
         vars:
           LINUX_DISTR: centos
-          GERRIT_BRANCH: "R2005"
-          TAG_SUFFIX: "-r2005"
+          GERRIT_BRANCH: "R2008"
+          TAG_SUFFIX: "-r2008"
     jobs:
-      prepare-sandbox-r2005:
+      prepare-sandbox-r2008:
         # it creates worker
         job-name: build-prepare-sandbox
-        stream: build-r2005
+        stream: build-r2008
         vars:
           PUBLISH_TYPE: stable
-      fetch-sources-r2005:
+      fetch-sources-r2008:
         job-name: build-fetch-sources
-        stream: build-r2005
+        stream: build-r2008
         depends-on:
-          - prepare-sandbox-r2005
-      package-deployers-r2005:
+          - prepare-sandbox-r2008
+      package-deployers-r2008:
         job-name: build-package-deployers
-        stream: build-r2005
+        stream: build-r2008
         depends-on:
-          - fetch-sources-r2005
-      compile-r2005:
+          - fetch-sources-r2008
+      compile-r2008:
         job-name: build-compile
-        stream: build-r2005
+        stream: build-r2008
         depends-on:
-          - package-deployers-r2005
-      package-r2005:
+          - package-deployers-r2008
+      package-r2008:
         job-name: build-package
-        stream: build-r2005
+        stream: build-r2008
         depends-on:
-          - compile-r2005
-      cleanup-r2005:
+          - compile-r2008
+      cleanup-r2008:
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
-        stream: build-r2005
+        stream: build-r2008
         type: stream-post-hook
         depends-on:
-          - package-r2005
+          - package-r2008
 
 - template:
     name: prepare-sources
@@ -954,7 +954,7 @@
         vars:
           CLOUD: manual
           CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
-          CONTRAIL_CONTAINER_TAG: nightly-r2005
+          CONTRAIL_CONTAINER_TAG: nightly-r2008
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
