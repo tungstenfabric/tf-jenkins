@@ -896,9 +896,6 @@
         stream: juju-os-1912
         depends-on:
           - deploy-tf-juju-os-1912
-        vars:
-          # use tf-test container from latest build to avoid cherry-picking fixes to 1912 for tf-test
-          TF_TEST_IMAGE: 'nexus.jenkins.progmaticlab.com:5002/contrail-test-test:nightly'
       collect-logs-and-cleanup-juju-os-1912:
         job-name: collect-logs-and-cleanup
         stream: juju-os-1912
@@ -1097,7 +1094,7 @@
         stream: rhosp13-1912
         job-name: deploy-tf-rhosp13
         depends-on:
-          - package-r1912-ubi
+          - package-deployers-r1912-ubi
           - deploy-platform-rhosp13-1912
       test-sanity-rhosp13-1912:
         job-name: test-sanity
