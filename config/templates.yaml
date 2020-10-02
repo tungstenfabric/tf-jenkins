@@ -738,7 +738,7 @@
       helm-os-ha:
         vars:
           OPENSTACK_VERSION: rocky
-          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: helm
           MONITORING_ORCHESTRATOR: os
     jobs:
