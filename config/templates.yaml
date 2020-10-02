@@ -80,6 +80,7 @@
       build-ubi:
         vars:
           LINUX_DISTR: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000/ubi7
+          LINUX_DISTR_VER: latest
           TAG_SUFFIX: "-ubi7"
           INSECURE_REGISTRIES: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000
     jobs:
@@ -210,6 +211,7 @@
       build-r1912-ubi:
         vars:
           LINUX_DISTR: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000/ubi7
+          LINUX_DISTR_VER: latest
           TAG_SUFFIX: "-r1912-ubi7"
           INSECURE_REGISTRIES: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000
           GERRIT_BRANCH: "R1912"
