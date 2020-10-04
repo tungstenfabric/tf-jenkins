@@ -339,8 +339,8 @@ def _save_job_output(name, job_name, stream, job_number) {
     """
     // hack for better visibility of UT failures
     sh """#!/bin/bash
-      if grep -q '^ERROR.*failed$' output-${name}.log ; then
-        grep -q '^ERROR.*failed$' output-${name}.log > output-${name}-failed.log
+      if grep -q '^ERROR.*failed\$' output-${name}.log ; then
+        grep -q '^ERROR.*failed\$' output-${name}.log > output-${name}-failed.log
         rsync -a -e "${ssh_cmd}" output-${name}-failed.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/${stream}/
       fi
     """
