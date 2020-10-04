@@ -19,8 +19,6 @@ def get_templates_jobs(template_names) {
   return [streams, jobs, post_jobs]
 }
 
-
-
 def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
   // get data
   def data = _get_data()

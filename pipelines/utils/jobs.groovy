@@ -128,7 +128,7 @@ def save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
       rsync -a -e "${ssh_cmd}" pipelinelog.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/
     """
   }
-  echo "Output logs saved at ${logs_url}/pipelinelog.txt"
+  println("Output logs saved at ${logs_url}/pipelinelog.txt")
 }
 
 def _wait_for_dependencies(job_set, name) {

@@ -63,6 +63,7 @@ timestamps {
           jobs_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/jobs.groovy")
           gate_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gate.groovy")
         } catch (err) {
+          println(err.getMessage())
           verified = gerrit_utils.gerrit_vote(false, null, null, null, null, err.getMessage())
           throw(err)
         }
