@@ -455,19 +455,20 @@
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: k8s_manifests
           MONITORING_ORCHESTRATOR: k8s
-    parents:
-      - build-centos
+          CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
+          DEPLOYER_CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
+          CONTRAIL_CONTAINER_TAG: nightly
+          CONTRAIL_DEPLOYER_CONTAINER_TAG: nightly
     jobs:
       deploy-platform-k8s-manifests-ha:
         job-name: deploy-platform-k8s-manifests
         stream: k8s-manifests-ha
         vars:
-          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+          NODES: CONTROLLER_NODES:medium:1,AGENT_NODES:small:2
       deploy-tf-k8s-manifests-ha:
         job-name: deploy-tf-k8s-manifests
         stream: k8s-manifests-ha
         depends-on:
-          - package-centos
           - deploy-platform-k8s-manifests-ha
       test-sanity-k8s-manifests-ha:
         job-name: test-sanity
