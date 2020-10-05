@@ -953,7 +953,7 @@
         vars:
           CLOUD: manual
           CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
-          CONTRAIL_CONTAINER_TAG: nightly-r2008
+          CONTRAIL_CONTAINER_TAG: nightly-r2005
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
