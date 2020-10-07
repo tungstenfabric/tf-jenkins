@@ -1,20 +1,22 @@
 {
     "nodes":[
         {
-            "name":"compute_hw21",
+            "name":"compute-bms21",
             "pm_type":"pxe_ipmitool",
             "pm_addr":"192.168.50.21",
             "pm_user":"ADMIN",
             "pm_password":"ADMIN",
-            "capabilities":"profile:compute-dpdk"
+            "arch": "x86_64",
+            "capabilities":"node:openstack-contraildpdk-0,boot_option:local"
         },
         {
-            "name":"compute_hw22",
+            "name":"compute-bms22",
             "pm_type":"pxe_ipmitool",
             "pm_addr":"192.168.50.22",
             "pm_user":"ADMIN",
             "pm_password":"ADMIN",
-            "capabilities":"profile:compute-sriov"
+            "arch": "x86_64",
+            "capabilities":"node:openstack-contrailsriov--0,boot_option:local"
         },
         {
             "name":"contrail-controller-kvm20",
@@ -23,7 +25,8 @@
             "pm_port":"16230",
             "pm_user":"ADMIN",
             "pm_password":"ADMIN",
-            "capabilities":"profile:contrail-controller",
+            "arch": "x86_64",
+            "capabilities":"node:overcloud-contrailcontroller-0,boot_option:local",
             "mac":[
                 "52:54:00:15:91:32"
             ]
@@ -35,7 +38,8 @@
             "pm_port":"16230",
             "pm_user":"ADMIN",
             "pm_password":"ADMIN",
-            "capabilities":"profile:contrail-controller",
+            "arch": "x86_64",
+            "capabilities":"node:overcloud-contrailcontroller-1,boot_option:local",
             "mac":[
                 "52:54:00:6f:0e:40"
             ]
@@ -47,7 +51,8 @@
             "pm_port":"16230",
             "pm_user":"ADMIN",
             "pm_password":"ADMIN",
-            "capabilities":"profile:contrail-controller",
+            "arch": "x86_64",
+            "capabilities":"node:overcloud-contrailcontroller-2,boot_option:local",
             "mac":[
                 "52:54:00:9a:ff:72"
             ]
@@ -59,7 +64,8 @@
             "pm_port":"16231",
             "pm_user":"ADMIN",
             "pm_password":"ADMIN",
-            "capabilities":"profile:controller",
+            "arch": "x86_64",
+            "capabilities":"node:overcloud-controller-0,boot_option:local",
             "mac":[
                 "52:54:00:b9:9e:7a"
             ]
@@ -71,7 +77,8 @@
             "pm_port":"16231",
             "pm_user":"ADMIN",
             "pm_password":"ADMIN",
-            "capabilities":"profile:controller",
+            "arch": "x86_64",
+            "capabilities":"node:overcloud-controller-1,boot_option:local",
             "mac":[
                 "52:54:00:4c:16:3c"
             ]
@@ -83,7 +90,8 @@
             "pm_port":"16231",
             "pm_user":"ADMIN",
             "pm_password":"ADMIN",
-            "capabilities":"profile:controller",
+            "arch": "x86_64",
+            "capabilities":"node:overcloud-controller-2,boot_option:local",
             "mac":[
                 "52:54:00:84:31:ca"
             ]
@@ -95,9 +103,49 @@
             "pm_port":"16232",
             "pm_user":"ADMIN",
             "pm_password":"ADMIN",
-            "capabilities":"profile:compute",
+            "arch": "x86_64",
+            "capabilities":"node:overcloud-novacompute-0,boot_option:local",
             "mac":[
                 "52:54:00:fd:76:41"
+            ]
+        },
+        {
+            "name":"ceph-storage-kvm20",
+            "pm_type":"pxe_ipmitool",
+            "pm_addr":"10.10.50.20",
+            "pm_port":"16235",
+            "pm_user":"ADMIN",
+            "pm_password":"ADMIN",
+            "arch": "x86_64",
+            "capabilities":"node:overcloud-ceph-0,boot_option:local",
+            "mac":[
+                "52:54:00:3e:bf:ff"
+            ]
+        },
+        {
+            "name":"ceph-storage-kvm23",
+            "pm_type":"pxe_ipmitool",
+            "pm_addr":"10.10.50.23",
+            "pm_port":"16235",
+            "pm_user":"ADMIN",
+            "pm_password":"ADMIN",
+            "arch": "x86_64",
+            "capabilities":"node:overcloud-ceph-1,boot_option:local",
+            "mac":[
+                "52:54:00:0f:8a:15"
+            ]
+        },
+        {
+            "name":"ceph-storage-kvm24",
+            "pm_type":"pxe_ipmitool",
+            "pm_addr":"10.10.50.24",
+            "pm_port":"16235",
+            "pm_user":"ADMIN",
+            "pm_password":"ADMIN",
+            "arch": "x86_64",
+            "capabilities":"node:overcloud-ceph-2,boot_option:local",
+            "mac":[
+                "52:54:00:ed:d6:24"
             ]
         }
     ]
