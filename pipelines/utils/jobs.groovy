@@ -335,11 +335,14 @@ def _save_job_output(name, job_name, stream, job_number) {
     sh """#!/bin/bash
       curl -s ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > output-${name}.log
       ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}/${stream}/"
+      rsync -a -e "${ssh_cmd}" output-${name}.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/${stream}/
+    """
+    // hack for better visibility of UT failures
+    sh """#!/bin/bash
       if grep -q '^ERROR.*failed\$' output-${name}.log ; then
-        # hack for better visibility of UT failures
         grep '^ERROR.*failed\$' output-${name}.log > output-${name}-FAILED.log
+        rsync -a -e "${ssh_cmd}" output-${name}-FAILED.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/${stream}/
       fi
-      rsync -a -e "${ssh_cmd}" output-${name}*.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/${stream}/
     """
   }
 }
