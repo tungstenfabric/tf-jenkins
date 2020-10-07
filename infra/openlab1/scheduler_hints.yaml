@@ -1,0 +1,13 @@
+parameter_defaults:
+  ComputeSchedulerHints:
+    'capabilities:node': 'compute-%index%'
+  ContrailDpdkSchedulerHints:
+    'capabilities:node': 'compute-dpdk-%index%'
+  ContrailSriovSchedulerHints:
+    'capabilities:node': 'compute-sriov-%index%'
+  ControllerSchedulerHints:
+    'capabilities:node': 'controller-%index%'
+  ContrailControllerSchedulerHints:
+    'capabilities:node': 'contrail-controller-%index%'
+  CephStorageSchedulerHints:
+    'capabilities:node': 'ceph-storage-%index%'
