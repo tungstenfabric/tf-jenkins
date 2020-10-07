@@ -15,4 +15,5 @@ if [[ "$PROVIDER" == "bmc" ]]; then
 fi
 
 cd src/tungstenfabric/tf-devstack/rhosp/providers/vexx
+source $stackrc_file_path
 vexxrc="$stackrc_file_path" ./cleanup.sh
