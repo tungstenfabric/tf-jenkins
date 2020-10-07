@@ -1,5 +1,5 @@
 // constansts
-TIMEOUT_HOURS = 5
+TIMEOUT_HOURS = 6
 CONTAINER_REGISTRY="nexus.jenkins.progmaticlab.com:5001"
 SITE_MIRROR="http://nexus.jenkins.progmaticlab.com/repository"
 LOGS_HOST = "nexus.jenkins.progmaticlab.com"
