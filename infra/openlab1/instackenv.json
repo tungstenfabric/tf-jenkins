@@ -99,6 +99,42 @@
             "mac":[
                 "52:54:00:fd:76:41"
             ]
+        },
+        {
+            "name":"ceph-storage-kvm20",
+            "pm_type":"pxe_ipmitool",
+            "pm_addr":"10.10.50.20",
+            "pm_port":"16235",
+            "pm_user":"ADMIN",
+            "pm_password":"ADMIN",
+            "capabilities":"profile:ceph-storage",
+            "mac":[
+                "52:54:00:3e:bf:ff"
+            ]
+        },
+        {
+            "name":"ceph-storage-kvm23",
+            "pm_type":"pxe_ipmitool",
+            "pm_addr":"10.10.50.23",
+            "pm_port":"16235",
+            "pm_user":"ADMIN",
+            "pm_password":"ADMIN",
+            "capabilities":"profile:ceph-storage",
+            "mac":[
+                "52:54:00:0f:8a:15"
+            ]
+        },
+        {
+            "name":"ceph-storage-kvm24",
+            "pm_type":"pxe_ipmitool",
+            "pm_addr":"10.10.50.24",
+            "pm_port":"16235",
+            "pm_user":"ADMIN",
+            "pm_password":"ADMIN",
+            "capabilities":"profile:ceph-storage",
+            "mac":[
+                "52:54:00:ed:d6:24"
+            ]
         }
     ]
 }
