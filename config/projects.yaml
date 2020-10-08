@@ -443,7 +443,7 @@
     check:
       templates:
         - build-centos
-        - ansible-os
+        - juju-os-1912
         - cleanup
     gate:
       templates:
