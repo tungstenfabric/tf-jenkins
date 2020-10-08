@@ -103,12 +103,18 @@
           source "${{WORKSPACE}}/deps.${{JOB_NAME}}.${{JOB_RND}}.env" || /bin/true
           source "${{WORKSPACE}}/vars.${{JOB_NAME}}.${{JOB_RND}}.env" || /bin/true
 
-          ./src/tungstenfabric/tf-jenkins/jobs/devstack/{deployer}/create_workers.sh
+          res=0
+          # do exit later when all context will be saved to env_file
+          ./src/tungstenfabric/tf-jenkins/jobs/devstack/{deployer}/create_workers.sh || res=1
           # add more information about current deployment for deploy-tf job
           ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
           echo "export ORCHESTRATOR=$ORCHESTRATOR" >> "$ENV_FILE"
           echo "export DEPLOYER={deployer}" >> "$ENV_FILE"
           echo "export JOB_LOGS_PATH=${{STREAM}}" >> "$ENV_FILE"
+          if [[ $res == 1 ]]; then
+            echo "ERROR: workers creation failed"
+            exit 1
+          fi
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           source ./src/tungstenfabric/tf-jenkins/infra/${{SLAVE}}/definitions
 

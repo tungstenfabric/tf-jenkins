@@ -54,10 +54,10 @@ for nodes in $( echo $NODES | tr ',' ' ' ) ; do
     sed -i '/INSTANCE_IPS=/d' "$ENV_FILE"
 
     for ip in $( echo $NEW_NODES | tr ',' ' ' ) ; do
-        ssh -i $WORKER_SSH_KEY $ssh_user@$ip "mkdir -p ~/.ssh ; chmod 700 ~/.ssh"
-        scp -i $WORKER_SSH_KEY new_key $ssh_user@$ip:~/.ssh/id_rsa
-        scp -i $WORKER_SSH_KEY new_key.pub $ssh_user@$ip:~/.ssh/id_rsa.pub
-        ssh -i $WORKER_SSH_KEY $ssh_user@$ip "echo $pub_key >> ~/.ssh/authorized_keys; chmod 400 ~/.ssh/id_rsa; chmod 400 ~/.ssh/id_rsa.pub; chmod 400 ~/.ssh/authorized_keys"
+        ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $ssh_user@$ip "mkdir -p ~/.ssh ; chmod 700 ~/.ssh"
+        scp -i $WORKER_SSH_KEY $SSH_OPTIONS new_key $ssh_user@$ip:~/.ssh/id_rsa
+        scp -i $WORKER_SSH_KEY $SSH_OPTIONS new_key.pub $ssh_user@$ip:~/.ssh/id_rsa.pub
+        ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $ssh_user@$ip "echo $pub_key >> ~/.ssh/authorized_keys; chmod 400 ~/.ssh/id_rsa; chmod 400 ~/.ssh/id_rsa.pub; chmod 400 ~/.ssh/authorized_keys"
     done
 done
 
