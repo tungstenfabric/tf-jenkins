@@ -896,7 +896,10 @@
       test-sanity-juju-os-1912:
         job-name: test-sanity
         stream: juju-os-1912
+        vars:
+          TF_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/contrail-test-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
+          - package-centos
           - deploy-tf-juju-os-1912
       collect-logs-and-cleanup-juju-os-1912:
         job-name: collect-logs-and-cleanup
