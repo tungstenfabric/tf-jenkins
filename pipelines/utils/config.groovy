@@ -29,11 +29,14 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
   // find project and pipeline inside it
   project = null
   for (item in data) {
-    if (!item.containsKey('project') || item.get('project').name != project_name)
+    if (!item.containsKey('project'))
       continue
-    if (item.get('project').containsKey('branch') && item.get('project').get('branch') != gerrit_branch) {
+    if (item.get('project').containsKey('name') && item.get('project').name != project_name))
       continue
-    }
+    if (item.get('project').containsKey('names') && !item.get('project').names.contains(project_name)))
+      continue
+    if (item.get('project').containsKey('branch') && item.get('project').get('branch') != gerrit_branch)
+      continue
     project = item.get('project')
     break
   }
