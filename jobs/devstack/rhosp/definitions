@@ -9,3 +9,9 @@ export provision_network_name=data
 export prov_net_cleanup=false
 
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+
+if [[ -n "$CLOUD" ]]; then
+  export PROVIDER="bmc"
+else
+  export PROVIDER="vexx"
+fi
