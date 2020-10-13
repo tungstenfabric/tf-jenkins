@@ -32,6 +32,7 @@
         - juju-os-maas
         - juju-os-ha-ziu
         - juju-os-1912
+        - juju-hybrid
         - rhosp13
         - rhosp13-1912
         - rhosp16
@@ -305,10 +306,13 @@
       streams:
         juju-k8s:
           voting: false
+        juju-hybrid:
+          voting: false
       templates:
         - juju-k8s
         - juju-os
         - juju-os-1912
+        - juju-hybrid
         - cleanup
 
 - project:
