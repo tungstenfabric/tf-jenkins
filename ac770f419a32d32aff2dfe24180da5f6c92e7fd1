@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "570170b4_45a1ad48",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1042,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-10-13T10:52:22Z",
+      "side": 1,
+      "message": "no ssl",
+      "revId": "ac770f419a32d32aff2dfe24180da5f6c92e7fd1",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d7d5037_b3bea2d5",
+        "filename": "config/templates.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1045,
+      "author": {
+        "id": 382
+      },
+      "writtenOn": "2020-10-13T10:52:22Z",
+      "side": 1,
+      "message": "something different has to be here",
+      "revId": "ac770f419a32d32aff2dfe24180da5f6c92e7fd1",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
