@@ -32,11 +32,11 @@
         - juju-os-maas
         - juju-os-ha-ziu
         - juju-os-1912
+        - juju-hybrid
         - rhosp13
         - rhosp13-1912
         - rhosp16
         #- rhosp13-bmc
-        - juju-hybrid-not-implemented-targets
         - juju-os-not-implemented-targets
         - juju-k8s-not-implemented-targets
         - rhosp13-os-not-implemented-targets
