@@ -1,0 +1,158 @@
+---
+
+- template:
+    name: ansible-os-not-implemented-targets
+    streams:
+      ansible-os-not-implemented-targets:
+        vars:
+          MONITORING_DEPLOY_TARGET: ZIU,ISSU
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: ansible-k8s
+    streams:
+      ansible-k8s:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-ansible-k8s:
+        stream: ansible-k8s
+        depends-on:
+          # temporary solution
+          - compile-centos
+      deploy-tf-ansible-k8s:
+        stream: ansible-k8s
+        depends-on:
+          - package-centos
+          - deploy-platform-ansible-k8s
+      test-sanity-ansible-k8s:
+        job-name: test-sanity
+        stream: ansible-k8s
+        depends-on:
+          - deploy-tf-ansible-k8s
+      collect-logs-and-cleanup-ansible-k8s:
+        job-name: collect-logs-and-cleanup
+        stream: ansible-k8s
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-ansible-k8s
+          - deploy-tf-ansible-k8s
+          - test-sanity-ansible-k8s
+
+- template:
+    name: ansible-k8s-ha
+    streams:
+      ansible-k8s-ha:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-ansible-k8s-ha:
+        job-name: deploy-platform-ansible-k8s
+        stream: ansible-k8s-ha
+        depends-on:
+          # temporary solution
+          - compile-centos
+        vars:
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-ansible-k8s-ha:
+        job-name: deploy-tf-ansible-k8s
+        stream: ansible-k8s-ha
+        depends-on:
+          - package-centos
+          - deploy-platform-ansible-k8s-ha
+      test-sanity-ansible-k8s-ha:
+        job-name: test-sanity
+        stream: ansible-k8s-ha
+        depends-on:
+          - deploy-tf-ansible-k8s-ha
+      collect-logs-and-cleanup-ansible-k8s-ha:
+        job-name: collect-logs-and-cleanup
+        stream: ansible-k8s-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-ansible-k8s-ha
+          - deploy-tf-ansible-k8s-ha
+          - test-sanity-ansible-k8s-ha
+
+- template:
+    name: ansible-os
+    streams:
+      ansible-os:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: os
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-ansible-os:
+        stream: ansible-os
+        depends-on:
+          # temporary solution
+          - compile-centos
+      deploy-tf-ansible-os:
+        stream: ansible-os
+        depends-on:
+          - package-centos
+          - deploy-platform-ansible-os
+      test-sanity-ansible-os:
+        job-name: test-sanity
+        stream: ansible-os
+        depends-on:
+          - deploy-tf-ansible-os
+      collect-logs-and-cleanup-ansible-os:
+        job-name: collect-logs-and-cleanup
+        stream: ansible-os
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-ansible-os
+          - deploy-tf-ansible-os
+          - test-sanity-ansible-os
+
+- template:
+    name: ansible-os-ha
+    streams:
+      ansible-os-ha:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: os
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-ansible-os-ha:
+        job-name: deploy-platform-ansible-os
+        stream: ansible-os-ha
+        depends-on:
+          # temporary solution
+          - compile-centos
+        vars:
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-ansible-os-ha:
+        job-name: deploy-tf-ansible-os
+        stream: ansible-os-ha
+        depends-on:
+          - package-centos
+          - deploy-platform-ansible-os-ha
+      test-sanity-ansible-os-ha:
+        job-name: test-sanity
+        stream: ansible-os-ha
+        depends-on:
+          - deploy-tf-ansible-os-ha
+      collect-logs-and-cleanup-ansible-os-ha:
+        job-name: collect-logs-and-cleanup
+        stream: ansible-os-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-ansible-os-ha
+          - deploy-tf-ansible-os-ha
+          - test-sanity-ansible-os-ha

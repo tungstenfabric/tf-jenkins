@@ -1,0 +1,69 @@
+---
+
+- template:
+    name: k8s-manifests
+    streams:
+      k8s-manifests:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: k8s_manifests
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-k8s-manifests:
+        stream: k8s-manifests
+      deploy-tf-k8s-manifests:
+        stream: k8s-manifests
+        depends-on:
+          - package-centos
+          - deploy-platform-k8s-manifests
+      test-sanity-k8s-manifests:
+        job-name: test-sanity
+        stream: k8s-manifests
+        depends-on:
+          - deploy-tf-k8s-manifests
+      collect-logs-and-cleanup-k8s-manifests:
+        job-name: collect-logs-and-cleanup
+        stream: k8s-manifests
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-k8s-manifests
+          - deploy-tf-k8s-manifests
+          - test-sanity-k8s-manifests
+
+- template:
+    name: k8s-manifests-ha
+    streams:
+      k8s-manifests-ha:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: k8s_manifests
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-k8s-manifests-ha:
+        job-name: deploy-platform-k8s-manifests
+        stream: k8s-manifests-ha
+        vars:
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-k8s-manifests-ha:
+        job-name: deploy-tf-k8s-manifests
+        stream: k8s-manifests-ha
+        depends-on:
+          - package-centos
+          - deploy-platform-k8s-manifests-ha
+      test-sanity-k8s-manifests-ha:
+        job-name: test-sanity
+        stream: k8s-manifests-ha
+        depends-on:
+          - deploy-tf-k8s-manifests-ha
+      collect-logs-and-cleanup-k8s-manifests-ha:
+        job-name: collect-logs-and-cleanup
+        stream: k8s-manifests-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-k8s-manifests-ha
+          - deploy-tf-k8s-manifests-ha
+          - test-sanity-k8s-manifests-ha

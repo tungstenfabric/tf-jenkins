@@ -6,6 +6,14 @@
 
 - include:
     - templates.yaml
+    - templates-ansible.yaml
+    - templates-build.yaml
+    - templates-helm.yaml
+    - templates-juju.yaml
+    - templates-k8s-manifests.yaml
+    - templates-openshift.yaml
+    - templates-rhosp.yaml
+    - templates-tests.yaml
 
 - project:
     name: tungstenfabric
@@ -39,6 +47,7 @@
         #- rhosp13-bmc
         - juju-os-not-implemented-targets
         - juju-k8s-not-implemented-targets
+        - juju-hybrid-not-implemented-targets
         - rhosp13-os-not-implemented-targets
         - rhosp16-os-not-implemented-targets
         - ansible-os-not-implemented-targets
