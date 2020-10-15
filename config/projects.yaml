@@ -432,6 +432,14 @@
         - ansible-k8s
         - cleanup
 
+- project:
+    name: tungstenfabric/tf-deployment-test
+    check:
+      templates:
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
 # infra projects
 
 - project:
