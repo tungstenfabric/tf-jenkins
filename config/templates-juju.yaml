@@ -289,3 +289,35 @@
           - deploy-platform-juju-os-maas
           - deploy-tf-juju-os-maas
           - test-sanity-juju-os-maas
+
+- template:
+    name: juju-hybrid
+    parents:
+      - build-centos
+    streams:
+      juju-hybrid:
+        vars:
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: hybrid
+    jobs:
+      deploy-platform-juju-hybrid:
+        stream: juju-hybrid
+      deploy-tf-juju-hybrid:
+        stream: juju-hybrid
+        depends-on:
+          - package-centos
+          - deploy-platform-juju-hybrid
+      test-sanity-juju-hybrid:
+        job-name: test-sanity
+        stream: juju-hybrid
+        depends-on:
+          - deploy-tf-juju-hybrid
+      collect-logs-and-cleanup-juju-hybrid:
+        job-name: collect-logs-and-cleanup
+        stream: juju-hybrid
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-juju-hybrid
+          - deploy-tf-juju-hybrid
+          - test-sanity-juju-hybrid
