@@ -168,11 +168,11 @@ def _notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, p
       usernameVariable: 'GERRIT_API_USER')]) {
     def opts = ""
 
-    //label_name = 'VerifiedTF'
     // temporary hack to not vote for review.opencontrail.org
-    def label_name = 'Verified'
-    if (env.GERRIT_HOST == 'review.opencontrail.org')
-      label_name = 'VerifiedTF'
+    def label_name = 'VerifiedTF'
+    def verified_projects = ['tungstenfabric/tf-container-builder', 'tungstenfabric/tf-ansible-deployer']
+    if (env.GERRIT_HOST != 'review.opencontrail.org' || env.GERRIT_PROJECT in verified_projects)
+      label_name = 'Verified'
 
     if (verified != null) {
       opts += " --labels ${label_name}=${verified}"
@@ -213,12 +213,6 @@ def _has_approvals(strategy) {
       usernamePassword(credentialsId: env.GERRIT_HOST,
       passwordVariable: 'GERRIT_API_PASSWORD',
       usernameVariable: 'GERRIT_API_USER')]) {
-
-    //label_name = 'VerifiedTF'
-    // temporary hack to not vote for review.opencontrail.org
-    // label_name = 'Verified'
-    // if (env.GERRIT_HOST == 'review.opencontrail.org')
-    //   label_name = 'VerifiedTF'
 
     def url = resolve_gerrit_url()
     def output = ""
