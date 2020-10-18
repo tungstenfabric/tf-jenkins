@@ -171,7 +171,7 @@ def _notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, p
     // temporary hack to not vote for review.opencontrail.org
     def label_name = 'VerifiedTF'
     def verified_projects = ['tungstenfabric/tf-container-builder', 'tungstenfabric/tf-ansible-deployer']
-    if (env.GERRIT_HOST != 'review.opencontrail.org' || env.GERRIT_PROJECT in verified_projects)
+    if (env.GERRIT_HOST != 'review.opencontrail.org' || (env.GERRIT_PROJECT in verified_projects && env.GERRIT_BRANCH == 'master'))
       label_name = 'Verified'
 
     if (verified != null) {
