@@ -14,6 +14,7 @@
     streams:
       ansible-k8s:
         vars:
+          SSL_ENABLE: 'true'
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: k8s
@@ -49,6 +50,7 @@
     streams:
       ansible-k8s-ha:
         vars:
+          SSL_ENABLE: 'true'
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: k8s
@@ -88,6 +90,7 @@
     streams:
       ansible-os:
         vars:
+          SSL_ENABLE: 'true'
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: os
@@ -123,6 +126,7 @@
     streams:
       ansible-os-ha:
         vars:
+          SSL_ENABLE: 'true'
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: os
