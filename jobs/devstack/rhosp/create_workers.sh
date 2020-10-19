@@ -39,8 +39,8 @@ else
       [[ "$(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}')" -lt "$MAX_COUNT_VCPU" ]] && break
       sleep 60
     done
-
-
-    cd src/tungstenfabric/tf-devstack/rhosp
-    vexxrc="$stackrc_file_path" ./providers/vexx/create_env.sh
 fi
+
+# to prepare rhosp-provisionin.sh
+export vexxrc="$stackrc_file_path"
+./src/tungstenfabric/tf-devstack/rhosp/run.sh provisioning
