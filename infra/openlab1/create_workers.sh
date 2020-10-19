@@ -24,6 +24,7 @@ EOF
 stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 stackrc_file_path=$WORKSPACE/$stackrc_file
 echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file"
+echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file"
 echo "export instance_ip=$instance_ip" >> "$stackrc_file"
 echo "export mgmt_ip=$instance_ip" >> "$stackrc_file"
 echo "export SSH_EXTRA_OPTIONS=\"-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -i \$OPENLAB1_SSH_KEY -l jenkins -p 30001 openlab.tf-jenkins.progmaticlab.com\\\"\"" >> "$stackrc_file"
