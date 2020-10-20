@@ -90,6 +90,26 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
   return 0
 }
 
+def report_timeline(results) {
+  withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
+    ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    output = ""
+    for (stream in results.keySet()) {
+      def result = _get_stream_result(results[stream]['results'])
+      duration = (int) (results[stream]['duration']/1000) // ms to seconds
+      dashes = (int) 1 + duration/300 // 1 dash per 5m
+      seconds = (int) duration % 60 ;
+      minutes = (int) (duration / 60) % 60;
+      hours   = (int) (duration / 3600);
+      output = String.format("%s|%32s | %5d h %2d m %2d s | %s\n", output, stream, hours, minutes, seconds, "-"*dashes)
+    }
+    writeFile file: 'timeline.log' text: output
+    sh """#!/bin/bash
+      rsync -a -e "${ssh_cmd}" timeline.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/
+    """
+  }
+}
+
 def publish_results_to_monitoring(streams, results) {
   // TODO: handle flag pre_build_done - if it false then results will be empty
   // Log stream result
