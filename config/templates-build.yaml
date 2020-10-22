@@ -266,44 +266,44 @@
           - package-r1912
 
 - template:
-    name: build-r2008
+    name: build-r2011-centos
     streams:
-      build-r2008:
+      build-r2011-centos:
         vars:
           LINUX_DISTR: centos
-          GERRIT_BRANCH: "R2008"
-          TAG_SUFFIX: "-r2008"
+          GERRIT_BRANCH: "R2011"
+          TAG_SUFFIX: "-r2011-centos"
     jobs:
-      prepare-sandbox-r2008:
+      prepare-sandbox-r2011-centos:
         # it creates worker
         job-name: build-prepare-sandbox
-        stream: build-r2008
+        stream: build-r2011-centos
         vars:
           PUBLISH_TYPE: stable
-      fetch-sources-r2008:
+      fetch-sources-r2011-centos:
         job-name: build-fetch-sources
-        stream: build-r2008
+        stream: build-r2011-centos
         depends-on:
-          - prepare-sandbox-r2008
-      package-deployers-r2008:
+          - prepare-sandbox-r2011-centos
+      package-deployers-r2011-centos:
         job-name: build-package-deployers
-        stream: build-r2008
+        stream: build-r2011-centos
         depends-on:
-          - fetch-sources-r2008
-      compile-r2008:
+          - fetch-sources-r2011-centos
+      compile-r2011-centos:
         job-name: build-compile
-        stream: build-r2008
+        stream: build-r2011-centos
         depends-on:
-          - package-deployers-r2008
-      package-r2008:
+          - package-deployers-r2011-centos
+      package-r2011-centos:
         job-name: build-package
-        stream: build-r2008
+        stream: build-r2011-centos
         depends-on:
-          - compile-r2008
-      cleanup-r2008:
+          - compile-r2011-centos
+      cleanup-r2011-centos:
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
-        stream: build-r2008
+        stream: build-r2011-centos
         type: stream-post-hook
         depends-on:
-          - package-r2008
+          - package-r2011-centos

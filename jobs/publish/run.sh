@@ -15,8 +15,11 @@ else
   if [[ "${STABLE,,}" == "true" ]] ; then
     tag_suffix="-stable"
   fi
-  tags="$(date --utc +"%Y-%m-%d")$tag_suffix"
-  tags+=",latest$tag_suffix"
+  if [[ "$GERRIT_BRANCH" != "master" ]]; then
+    tag_prefix="${GERRIT_BRANCH}-"
+  fi
+  tags="$tag_prefix$(date --utc +"%Y-%m-%d")${tag_suffix}"
+  tags+=",${tag_prefix}latest${tag_suffix}"
 fi
 
 scp -i $WORKER_SSH_KEY $SSH_OPTIONS $my_dir/publish.sh $IMAGE_SSH_USER@$instance_ip:./

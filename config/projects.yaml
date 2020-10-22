@@ -21,7 +21,7 @@
       templates:
         - build-r1912
         - build-r1912-ubi
-        #- build-r2008
+        - build-r2011-centos
         - test-unit
         - test-unit-ui
         - k8s-manifests
@@ -58,6 +58,10 @@
           job-name: publish
           depends-on:
             - package-centos
+        publish-r2011-centos-nightly:
+          job-name: publish
+          depends-on:
+            - package-r2011-centos
         # to use just built nightly images
         deploy-tf-juju-os-1912:
           job-name: deploy-tf-juju-os
