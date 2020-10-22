@@ -103,9 +103,8 @@ def report_timeline(results) {
       hours   = (int) (duration / 3600);
       output += String.format("|%32s | %5d h %2d m %2d s | %s\n", stream, hours, minutes, seconds, "-"*dashes)
     }
-
+    writeFile(file: 'timeline.log', text: output)
     sh """#!/bin/bash
-      cat "${output}" > timeline.log
       rsync -a -e "${ssh_cmd}" timeline.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/
     """
   }
