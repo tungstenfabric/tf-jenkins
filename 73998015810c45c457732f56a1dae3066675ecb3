@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5cbb3d85_9ac70693",
+        "filename": "infra/mirrors/rhel8/update_repo.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-10-22T15:30:00Z",
+      "side": 1,
+      "message": "lets have both ansible-2-for-rhel-8-x86_64-rpms\nand ansible-2.9-for-rhel-8-x86_64-rpms",
+      "range": {
+        "startLine": 20,
+        "startChar": 13,
+        "endLine": 20,
+        "endChar": 47
+      },
+      "revId": "73998015810c45c457732f56a1dae3066675ecb3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
