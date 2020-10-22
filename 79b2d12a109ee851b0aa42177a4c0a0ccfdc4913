@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a8526586_4797ac95",
+        "filename": "infra/mirrors/rhel8/update_repo.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-10-22T09:19:17Z",
+      "side": 1,
+      "message": "what is it? is it dns rhel8-mirror.... ?",
+      "range": {
+        "startLine": 14,
+        "startChar": 41,
+        "endLine": 14,
+        "endChar": 51
+      },
+      "revId": "79b2d12a109ee851b0aa42177a4c0a0ccfdc4913",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e4aac91c_93e90fa4",
+        "filename": "infra/mirrors/rhel8/update_repo.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-10-22T09:19:17Z",
+      "side": 1,
+      "message": "do we need these comments?",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 128
+      },
+      "revId": "79b2d12a109ee851b0aa42177a4c0a0ccfdc4913",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "701e0130_d4fbfee3",
+        "filename": "infra/mirrors/rhel8/update_repo.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-10-22T09:19:17Z",
+      "side": 1,
+      "message": "why not ansible-2-for-rhel-8-x86_64-rpms",
+      "range": {
+        "startLine": 22,
+        "startChar": 7,
+        "endLine": 22,
+        "endChar": 41
+      },
+      "revId": "79b2d12a109ee851b0aa42177a4c0a0ccfdc4913",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b55af68a_27fb39f4",
+        "filename": "infra/mirrors/rhel8/update_repo.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-10-22T09:19:17Z",
+      "side": 1,
+      "message": "so, what folders appears in /var/www/html/repos?\n\ninfra/packer/rhel8.sh\nthis file uses previous names like: http://rhel8-mirrors.tf-jenkins.progmaticlab.com/appstream/rhel-8-for-x86_64-appstream-rpms/",
+      "range": {
+        "startLine": 29,
+        "startChar": 4,
+        "endLine": 29,
+        "endChar": 36
+      },
+      "revId": "79b2d12a109ee851b0aa42177a4c0a0ccfdc4913",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4a2ff89_ab5f37d2",
+        "filename": "infra/mirrors/rhel8/update_repo.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-10-22T09:19:17Z",
+      "side": 1,
+      "message": "imho: this script may have options like\n./update_repo.sh output_repo_file.repo\nand if it is not provided then print to output.. \nBecause just output may have more lines from reposync or alike commands..?",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 8
+      },
+      "revId": "79b2d12a109ee851b0aa42177a4c0a0ccfdc4913",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
