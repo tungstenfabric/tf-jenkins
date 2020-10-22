@@ -90,22 +90,37 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
   return 0
 }
 
+@NonCPS
+def getResultsSorted(def results, sortkey) {
+  results.sort() { a, b -> b.value[sortkey] <=> a.value[sortkey] }
+}
+
 def report_timeline(results) {
   withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
     ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     def output = ""
-    for (stream in results.keySet()) {
-      def result = _get_stream_result(results[stream]['results'])
-      duration = (int) (results[stream]['duration']/1000) // ms to seconds
-      dashes = (int) 1 + duration/300 // 1 dash per 5m
-      seconds = (int) duration % 60 ;
-      minutes = (int) (duration / 60) % 60;
-      hours   = (int) (duration / 3600);
-      output += String.format("|%32s | %5d h %2d m %2d s | %s\n", stream, hours, minutes, seconds, "-"*dashes)
+    def resultsSorted = getResultsSorted(results, 'started')
+    def startTime = 0
+    def endTime = 0
+    for (stream in resultsSorted.keySet()) {
+      if (results[stream]['started'] < startTime || startTime == 0) {
+        startTime = results[stream]['started']
+      }
+      if (result[stream]['started'] + result[stream]['duration'] > endTime) {
+        endTime = result[stream]['started'] + result[stream]['duration']
+      }
+      // duration = (int) (results[stream]['duration']/1000) // ms to seconds
+      dashesBefore = (int) (results[stream]['started'] - startTime)/(300*1000) // 1 dash per 5m
+      equals = (int) 1 + duration/(300*1000)
+      dashesAfter = (int) (endTime - results[stream]['started'] - duration)/(300*1000)
+      seconds = (int) duration % (60*1000) ;
+      minutes = (int) (duration / (60*1000)) % 60;
+      hours   = (int) (duration / (3600*1000));
+      output += String.format("|%32s | %5d h %2d m %2d s | %s%s%s\n",
+        stream, hours, minutes, seconds, "-"*dashesBefore, "="*equals, "-"*dashesAfter)
     }
-
+    writeFile(file: 'timeline.log', text: output)
     sh """#!/bin/bash
-      cat "${output}" > timeline.log
       rsync -a -e "${ssh_cmd}" timeline.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/
     """
   }
