@@ -7,7 +7,7 @@ my_dir="$(dirname $my_file)"
 
 [ -f $my_dir/rhel-account ] && source $my_dir/rhel-account
 
-MIRROR_REGISTRY="rhel8-mirrors.tf-jenkins.progmaticlab.com:5000"
+MIRROR_REGISTRY=${MIRROR_REGISTRY:-"rhel8-mirrors.tf-jenkins.progmaticlab.com:5000"}
 
 REDHAT_REGISTRY="registry.redhat.io"
 RHOSP_NAMESPACE="rhosp-rhel8"
