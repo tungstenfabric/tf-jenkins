@@ -76,7 +76,9 @@ def addVulnerabilities(source_, builder_):
           x['NVD CVSS v2 Vectors'] = v['nvd_vectors']
         if 'nvd_url' in v:
           x['NVD URL'] = v['nvd_url']
-        x['Description'] = v['description']
+        if 'description' in v:
+          x['Description'] = v['description']
+
         x['Base Image Vulnerability'] = 'FALSE'
         if not s:
           builder_(x)
