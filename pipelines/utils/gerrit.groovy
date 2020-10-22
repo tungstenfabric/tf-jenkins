@@ -95,17 +95,32 @@ def report_timeline(results) {
     ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     def output = ""
     for (stream in results.keySet()) {
-      def result = _get_stream_result(results[stream]['results'])
-      duration = (int) (results[stream]['duration']/1000) // ms to seconds
-      dashes = (int) 1 + duration/300 // 1 dash per 5m
-      seconds = (int) duration % 60 ;
-      minutes = (int) (duration / 60) % 60;
-      hours   = (int) (duration / 3600);
-      output += String.format("|%32s | %5d h %2d m %2d s | %s\n", stream, hours, minutes, seconds, "-"*dashes)
-    }
+      if (!results[stream].containsKey('started') ||
+          !results[stream].containsKey('duration')) {
+            if (results[stream].containsKey('result')) {
+              output += String.format("|%48s | %5d h %2d m %2d s | %s\n",
+                stream, 0, 0, 0, results[stream]['result'])
+            } else {
+              output += String.format("|%48s | %5d h %2d m %2d s |\n",
+                stream, 0, 0, 0)
+            }
+      } else {
+        if (results[stream]['started'] < startTime || startTime == 0) {
+          startTime = results[stream]['started']
+        }
 
+        duration = results[stream]['duration']
+        dashesBefore = (int) (results[stream]['started'] - startTime)/(300*1000)
+        equals = (int) 1 + duration/(300*1000)
+        seconds = (int) (duration % (60*1000) / 1000)
+        minutes = (int) (duration / (60*1000)) % 60
+        hours   = (int) (duration / (3600*1000))
+        output += String.format("|%48s | %5d h %2d m %2d s | %s%s\n",
+          stream, hours, minutes, seconds, "-"*dashesBefore, "="*equals)
+      }
+    }
+    writeFile(file: 'timeline.log', text: output)
     sh """#!/bin/bash
-      cat "${output}" > timeline.log
       rsync -a -e "${ssh_cmd}" timeline.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/
     """
   }
