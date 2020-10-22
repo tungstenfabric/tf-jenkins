@@ -286,6 +286,7 @@ def _run_job(def job_set, def name, def streams) {
     def job = build(job: job_name, parameters: params)
     job_number = job.getNumber()
     job_results[name]['number'] = job_number
+    job_results[name]['started'] = job.getStartTimeInMillis()
     job_results[name]['duration'] = job.getDuration()
     job_results[name]['result'] = job.getResult().toString()
     println("JOB ${name}: Finished with SUCCESS")
