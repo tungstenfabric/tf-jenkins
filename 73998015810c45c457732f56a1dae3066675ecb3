@@ -22,6 +22,30 @@
       "revId": "73998015810c45c457732f56a1dae3066675ecb3",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02f81e35_8c412706",
+        "filename": "infra/mirrors/rhel8/update_repo.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 844
+      },
+      "writtenOn": "2020-10-23T09:55:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5cbb3d85_9ac70693",
+      "range": {
+        "startLine": 20,
+        "startChar": 13,
+        "endLine": 20,
+        "endChar": 47
+      },
+      "revId": "73998015810c45c457732f56a1dae3066675ecb3",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
