@@ -62,6 +62,8 @@
           job-name: publish
           depends-on:
             - package-r2011-centos
+          vars:
+            GERRIT_BRANCH: "R2011"
         # to use just built nightly images
         deploy-tf-juju-os-1912:
           job-name: deploy-tf-juju-os
