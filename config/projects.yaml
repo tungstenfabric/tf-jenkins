@@ -281,6 +281,8 @@
     gate:
       templates:
         - test-unit
+        - rhosp13
+        - rhosp16
         - ansible-os
         - helm-os
         - cleanup
