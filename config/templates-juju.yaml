@@ -136,7 +136,7 @@
       juju-os-1912:
         vars:
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
-          CONTAINER_REGISTRY: 'nexus.jenkins.progmaticlab.com:5002'
+          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5002'
           SSL_ENABLE: 'true'
           MONITORING_DEPLOY_TARGET: ILTS
           MONITORING_DEPLOYER: juju
@@ -210,7 +210,7 @@
       juju-os-ha-ziu:
         vars:
           CLOUD: manual
-          CONTAINER_REGISTRY: nexus.jenkins.progmaticlab.com:5002
+          CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2008
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju

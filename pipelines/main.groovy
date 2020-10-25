@@ -1,13 +1,13 @@
 // constansts
 TIMEOUT_HOURS = 6
-CONTAINER_REGISTRY="nexus.jenkins.progmaticlab.com:5001"
-SITE_MIRROR="http://nexus.jenkins.progmaticlab.com/repository"
-LOGS_HOST = "nexus.jenkins.progmaticlab.com"
+CONTAINER_REGISTRY="tf-nexus.progmaticlab.com:5001"
+SITE_MIRROR="http://tf-nexus.progmaticlab.com/repository"
+LOGS_HOST = "tf-nexus.progmaticlab.com"
 LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
-LOGS_BASE_URL = "http://nexus.jenkins.progmaticlab.com:8082/jenkins_logs"
+LOGS_BASE_URL = "http://tf-nexus.progmaticlab.com:8082/jenkins_logs"
 if (env.GERRIT_PIPELINE == 'nightly') {
   TIMEOUT_HOURS = 9
-  CONTAINER_REGISTRY="nexus.jenkins.progmaticlab.com:5002"
+  CONTAINER_REGISTRY="tf-nexus.progmaticlab.com:5002"
 }
 // this is default LTS release for all deployers
 DEFAULT_OPENSTACK_VERSION = "queens"

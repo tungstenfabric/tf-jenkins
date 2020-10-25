@@ -1,27 +1,27 @@
-[nexus.jenkins.progmaticlab.com_repository_centos7-os]
-name=added from: http://nexus.jenkins.progmaticlab.com/repository/centos7-os
-baseurl=http://nexus.jenkins.progmaticlab.com/repository/centos7-os
+[tf-nexus.progmaticlab.com_repository_centos7-os]
+name=added from: http://tf-nexus.progmaticlab.com/repository/centos7-os
+baseurl=http://tf-nexus.progmaticlab.com/repository/centos7-os
 enabled=1
 gpgcheck=0
 cost = 500
 
-[nexus.jenkins.progmaticlab.com_repository_centos7-extras]
-name=added from: http://nexus.jenkins.progmaticlab.com/repository/centos7-extras
-baseurl=http://nexus.jenkins.progmaticlab.com/repository/centos7-extras
+[tf-nexus.progmaticlab.com_repository_centos7-extras]
+name=added from: http://tf-nexus.progmaticlab.com/repository/centos7-extras
+baseurl=http://tf-nexus.progmaticlab.com/repository/centos7-extras
 enabled=1
 gpgcheck=0
 cost = 500
 
-[nexus.jenkins.progmaticlab.com_repository_centos7-updates]
-name=added from: http://nexus.jenkins.progmaticlab.com/repository/centos7-updates
-baseurl=http://nexus.jenkins.progmaticlab.com/repository/centos7-updates
+[tf-nexus.progmaticlab.com_repository_centos7-updates]
+name=added from: http://tf-nexus.progmaticlab.com/repository/centos7-updates
+baseurl=http://tf-nexus.progmaticlab.com/repository/centos7-updates
 enabled=1
 gpgcheck=0
 cost = 500
 
-[nexus.jenkins.progmaticlab.com_repository_centos7-updates-old]
-name=added from: http://nexus.jenkins.progmaticlab.com/repository/centos7-updates-old
-baseurl=http://nexus.jenkins.progmaticlab.com/repository/centos7-updates-old
+[tf-nexus.progmaticlab.com_repository_centos7-updates-old]
+name=added from: http://tf-nexus.progmaticlab.com/repository/centos7-updates-old
+baseurl=http://tf-nexus.progmaticlab.com/repository/centos7-updates-old
 enabled=1
 gpgcheck=0
 cost = 500

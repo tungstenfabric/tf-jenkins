@@ -70,7 +70,7 @@
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
-          CONTAINER_REGISTRY: 'nexus.jenkins.progmaticlab.com:5002'
+          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5002'
           MONITORING_DEPLOY_TARGET: ILTS
           MONITORING_DEPLOYER: rhosp13
           MONITORING_ORCHESTRATOR: os
