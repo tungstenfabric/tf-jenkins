@@ -69,7 +69,7 @@ export SITE_MIRROR=$SITE_MIRROR
 export GERRIT_URL=${GERRIT_URL}
 export GERRIT_BRANCH=${GERRIT_BRANCH}
 
-# devenftag is passed from parent job
+# devenvtag is passed from parent job
 export DEVENV_TAG=$DEVENV_TAG
 export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
 export CONTRAIL_CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
@@ -78,6 +78,7 @@ export CONTRAIL_KEEP_LOG_FILES=true
 export INSECURE_REGISTRIES=${INSECURE_REGISTRIES}
 export MULTI_KERNEL_BUILD=true
 export KERNEL_REPOSITORIES_RHEL8="--disablerepo=* --enablerepo=BaseOS --enablerepo=KERNELS_ARCHIVE_RHEL8"
+export BUILD_MODE=$BUILD_MODE
 
 cd src/tungstenfabric/tf-dev-env
 
