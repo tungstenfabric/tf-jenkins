@@ -13,7 +13,7 @@ touch "$targets_file"
 
 # hardcoded sets of targets
 agent=",controller/src/agent:test,controller/src/cat:test,"
-bgp=",controller/src/bgp:test,"
+bgp=",controller/src/bgp:test,controller/src/cat:test_upgrade,"
 opserver=",src/contrail-analytics/contrail-opserver:test,"
 
 group_one=",controller/src/stats:test,contrail-nodemgr:test,vrouter-py-ut:test,"
