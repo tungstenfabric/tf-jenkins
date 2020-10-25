@@ -63,6 +63,7 @@
           depends-on:
             - package-r2011-centos
           vars:
+            TAG_SUFFIX: "-r2011-centos"
             GERRIT_BRANCH: "R2011"
         # to use just built nightly images
         deploy-tf-juju-os-1912:
