@@ -5,8 +5,8 @@ cat << EOF > local.repo
 
 # epel mirror disabled by default it is enabled explicitly only in tf-dev-env
 [epel]
-name=added from: http://nexus.jenkins.progmaticlab.com/repository/epel
-baseurl=http://nexus.jenkins.progmaticlab.com/repository/epel
+name=added from: http://tf-nexus.progmaticlab.com/repository/epel
+baseurl=http://tf-nexus.progmaticlab.com/repository/epel
 enabled=0
 gpgcheck=0
 

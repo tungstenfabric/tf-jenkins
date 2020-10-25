@@ -1,6 +1,6 @@
-[nexus.jenkins.progmaticlab.com_repository_google-chrome]
-name=added from: http://nexus.jenkins.progmaticlab.com/repository/google-chrome
-baseurl=http://nexus.jenkins.progmaticlab.com/repository/google-chrome
+[tf-nexus.progmaticlab.com_repository_google-chrome]
+name=added from: http://tf-nexus.progmaticlab.com/repository/google-chrome
+baseurl=http://tf-nexus.progmaticlab.com/repository/google-chrome
 enabled=1
 gpgcheck=0
 cost = 500

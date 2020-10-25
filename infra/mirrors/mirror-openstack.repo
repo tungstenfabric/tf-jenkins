@@ -1,6 +1,6 @@
-[nexus.jenkins.progmaticlab.com_repository_openstack-queens]
-name=added from: http://nexus.jenkins.progmaticlab.com/repository/openstack-queens
-baseurl=http://nexus.jenkins.progmaticlab.com/repository/openstack-queens
+[tf-nexus.progmaticlab.com_repository_openstack-queens]
+name=added from: http://tf-nexus.progmaticlab.com/repository/openstack-queens
+baseurl=http://tf-nexus.progmaticlab.com/repository/openstack-queens
 enabled=1
 gpgcheck=0
 cost = 500

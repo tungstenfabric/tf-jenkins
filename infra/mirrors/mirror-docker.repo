@@ -1,6 +1,6 @@
-[nexus.jenkins.progmaticlab.com_repository_docker-ce-stable]
-name=added from: http://nexus.jenkins.progmaticlab.com/repository/docker-ce-stable
-baseurl=http://nexus.jenkins.progmaticlab.com/repository/docker-ce-stable
+[tf-nexus.progmaticlab.com_repository_docker-ce-stable]
+name=added from: http://tf-nexus.progmaticlab.com/repository/docker-ce-stable
+baseurl=http://tf-nexus.progmaticlab.com/repository/docker-ce-stable
 enabled=1
 gpgcheck=0
 cost = 500
