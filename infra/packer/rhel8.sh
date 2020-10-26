@@ -9,6 +9,7 @@ enabled=1
 gpgcheck=1
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/base/rhel-8-for-x86_64-baseos-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
 
 [AppStream]
 Name=Red Hat Enterprise Linux 8.0 AppStream
@@ -16,6 +17,7 @@ enabled=1
 gpgcheck=1
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/appstream/rhel-8-for-x86_64-appstream-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
 
 [rhosp16.1]
 Name=Openstack 16 for Red Hat Enterprise Linux 8.2
@@ -23,6 +25,7 @@ enabled=1
 gpgcheck=1
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/openstack/openstack-16.1-for-rhel-8-x86_64-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
 
 [Satellite]
 Name=Satellite tools 6.5 for Red Hat Enterprise Linux 8.0
@@ -30,6 +33,7 @@ enabled=1
 gpgcheck=1
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/satellite/satellite-tools-6.5-for-rhel-8-x86_64-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
 
 [Ansible2.x]
 Name=Ansible 2.x for Red Hat Enterprise Linux 8.x
@@ -37,6 +41,7 @@ enabled=1
 gpgcheck=1
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/ansible/ansible-2-for-rhel-8-x86_64-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
 
 [HighAvailability]
 Name=Red Hat Enterprise Linux 8.0 for High Availability
@@ -44,6 +49,7 @@ enabled=1
 gpgcheck=1
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/ha/rhel-8-for-x86_64-highavailability-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
 
 [FastDatapath]
 Name=Fast Datapath for Red Hat Enterprise Linux 8.0
@@ -51,6 +57,15 @@ enabled=1
 gpgcheck=1
 baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/datapath/fast-datapath-for-rhel-8-x86_64-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
+
+[Ceph]
+Name=Ceph for Red Hat Enterprise Linux 8.0
+enabled=1
+gpgcheck=1
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/datapath/rhceph-4-tools-for-rhel-8-x86_64-rpms/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
 
 EOF
 

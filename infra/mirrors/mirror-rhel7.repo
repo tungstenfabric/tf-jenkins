@@ -67,3 +67,10 @@ baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-ha-for-rhel-7-se
 enabled = 1
 gpgcheck = 0
 cost = 600
+
+[local-rhel-7-server-rhceph-3-tools-rpms]
+name = Red Hat Ceph for RHEL 7 (RPMs) local
+baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-rhceph-3-tools-rpms
+enabled = 1
+gpgcheck = 0
+cost = 600

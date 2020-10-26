@@ -12,6 +12,7 @@ repos["advanced-virt-for-rhel-8-x86_64-rpms"]="Advanced Virtualization for RHEL 
 repos["satellite-tools-6.5-for-rhel-8-x86_64-rpms"]="Red Hat Satellite Tools for RHEL 8 Server RPMs x86_64"
 repos["openstack-16.1-for-rhel-8-x86_64-rpms"]="Red Hat OpenStack Platform 16.1 for RHEL 8 (RPMs)"
 repos["fast-datapath-for-rhel-8-x86_64-rpms"]="Red Hat Fast Datapath for RHEL 8 (RPMS)"
+repos["rhceph-4-tools-for-rhel-8-x86_64-rpms"]="Red Hat Ceph for RHEL 8 (RPMS)"
 
 
 declare -A baseurl_dir
@@ -24,6 +25,8 @@ baseurl_dir["advanced-virt-for-rhel-8-x86_64-rpms"]=virt
 baseurl_dir["satellite-tools-6.5-for-rhel-8-x86_64-rpms"]=satellite
 baseurl_dir["openstack-16.1-for-rhel-8-x86_64-rpms"]=openstack
 baseurl_dir["fast-datapath-for-rhel-8-x86_64-rpms"]=datapath
+baseurl_dir["rhceph-4-tools-for-rhel-8-x86_64-rpms"]=ceph
+
 
 #Generate repo file
 if [ "$1" != "" ]; then
@@ -45,4 +48,3 @@ mkdir -p /var/www/html/repos/{ansible,appstream,base,datapath,openstack,ha,satel
 for repo in ${!repos[@]}; do
     reposync  -p /var/www/html/repos/${baseurl_dir[${repo}]} --download-metadata --repo=${repo}
 done
-
