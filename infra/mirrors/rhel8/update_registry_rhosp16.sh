@@ -11,6 +11,8 @@ MIRROR_REGISTRY=${MIRROR_REGISTRY:-"rhel8-mirrors.tf-jenkins.progmaticlab.com:50
 
 REDHAT_REGISTRY="registry.redhat.io"
 RHOSP_NAMESPACE="rhosp-rhel8"
+CEPH_NAMESPACE="rhceph"
+
 TAG='16.1'
 
 function sync_container() {
@@ -114,8 +116,10 @@ openstack-tempest
 openstack-zaqar-wsgi
 )
 
-all_containers+=$(printf "${RHOSP_NAMESPACE}/%s:$TAG " "${rhosp_images[@]}")
+ceph_containers=(rhceph-4-rhel8:4)
 
+all_containers+=$(printf "${RHOSP_NAMESPACE}/%s:$TAG " "${rhosp_images[@]}")
+all_containers+=$(printf "${CEPH_NAMESPACE}/%s " "${ceph_containers[@]}")
 
 res=0
 for c in ${all_containers} ; do

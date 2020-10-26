@@ -11,6 +11,7 @@ MIRROR_REGISTRY="rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
 
 REDHAT_REGISTRY="registry.redhat.io"
 RHOSP_NAMESPACE="rhosp13"
+CEPH_NAMESPACE="rhceph"
 TAG='13.0'
 
 function sync_container() {
@@ -76,7 +77,10 @@ openstack-swift-object \
 openstack-swift-proxy-server \
 )
 
+ceph_containers=(rhceph-3-rhel7:3)
+
 all_containers+=$(printf "${RHOSP_NAMESPACE}/%s:$TAG " "${rhosp_containers[@]}")
+all_containers+=$(printf "${CEPH_NAMESPACE}/%s " "${ceph_containers[@]}")
 
 res=0
 for c in ${all_containers} ; do
