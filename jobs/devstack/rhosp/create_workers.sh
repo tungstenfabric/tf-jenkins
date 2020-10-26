@@ -43,7 +43,7 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
   fi
 
   # to prepare rhosp-provisionin.sh
-  if ./src/tungstenfabric/tf-devstack/rhosp/run.sh provisioning ; then
+  if ./src/tungstenfabric/tf-devstack/rhosp/create_env.sh ; then
     exit 0
   fi
   echo "ERROR: Instances creation is failed. Retry"
