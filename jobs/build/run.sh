@@ -16,6 +16,9 @@ if [[ "$STAGE" == 'none' ]] && [[ "$GERRIT_PIPELINE" != 'check' || "$GERRIT_BRAN
   # use frozen only for check pipeline
   unset DEVENV_TAG
 fi
+if [[ "$GERRIT_PIPELINE" == 'nightly' ]]; then
+  export DEBUGINFO=${DEBUGINFO:-TRUE}
+fi
 
 # transfer patchsets info into sandbox
 if [ -e $WORKSPACE/patchsets-info.json ]; then
@@ -79,6 +82,7 @@ export INSECURE_REGISTRIES=${INSECURE_REGISTRIES}
 export MULTI_KERNEL_BUILD=true
 export KERNEL_REPOSITORIES_RHEL8="--disablerepo=* --enablerepo=BaseOS --enablerepo=KERNELS_ARCHIVE_RHEL8"
 export BUILD_MODE=$BUILD_MODE
+export DEBUGINFO=$DEBUGINFO
 
 cd src/tungstenfabric/tf-dev-env
 
