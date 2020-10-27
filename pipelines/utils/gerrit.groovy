@@ -167,7 +167,7 @@ def publish_results_to_monitoring(streams, results, totalTime) {
                 --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
                 --status ${result} \
                 --duration ${totalTime} \
-                --logs ${logs_url}
+                --logs ${logs_url}/${stream}/
             """
       }
     } catch (err) {
