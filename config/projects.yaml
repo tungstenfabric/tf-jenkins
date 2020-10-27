@@ -53,6 +53,28 @@
         - ansible-os-not-implemented-targets
         - openshift-k8s-not-implemented-targets
         - cleanup
+      streams:
+        build-centos:
+          vars:
+            DEBUGINFO: TRUE
+        build-ubi:
+          vars:
+            DEBUGINFO: TRUE
+        build-r1912:
+          vars:
+            DEBUGINFO: TRUE
+        build-r1912-ubi:
+          vars:
+            DEBUGINFO: TRUE
+        build-r2011-centos:
+          vars:
+            DEBUGINFO: TRUE
+        build-rhel:
+          vars:
+            DEBUGINFO: TRUE
+        build-r1912-rhel:
+          vars:
+            DEBUGINFO: TRUE
       jobs:
         publish-centos-nightly:
           job-name: publish
