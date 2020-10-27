@@ -3,16 +3,30 @@
 import requests
 import argparse
 import time
+from influxdb import InfluxDBClient
 
 tags = [
     'target',
     'orchestrator',
     'deployer',
     'gerrit',
+]
+results = [
     'status',
     'duration',
-    'logs'
+    'logs',
 ]
+
+def countprevious(days, measurement, tags):
+    s=""
+    for tag in tags:
+        s += "{} =~ /^{}$/ and ".format(tag, tags[tag])
+    query = "SELECT status FROM \"{}\" WHERE {} time >= now() - {}d".format(measurement, s, days)
+    client = InfluxDBClient(database="monitoring")
+    rs=client.query(query)
+    points = list(rs.get_points())
+    successcount = len([p for p in points if p['status'] == "SUCCESS"])
+    return "{}/{}".format(successcount, len(points))
 
 def splitdata(logdata):
     ret = []
@@ -34,12 +48,18 @@ def splitdata(logdata):
 
     return ret
 
-def do_log(url, logdata):
+def do_log(url, measurement, logdata):
     loglist = splitdata(logdata)
     for logitem in loglist:
         # No need to check response status code, workspace is a subject to wipe out
         # If data can't be submitted at the moment, it'll be dropped out
-        r = requests.post(url=url, json=logitem)
+        logitem['duration'] = "{}h {}m {}s".format(
+            int(logitem['duration'] / (3600*1000)),
+            int(logitem['duration'] / (1000*60) % 60),
+            int(logitem['duration'] % (60*1000) / 1000)
+        )
+        logitem['last_success_count'] = countprevious(7, measurement, {key: logitem[key] for key in tags})
+        r = requests.post(url="{}/{}".format(url, measurement), json=logitem)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -48,6 +68,12 @@ def main():
             "--{}".format(tag), dest=tag,
             type=str, required=True
         )
+    for result in results:
+        parser.add_argument(
+            "--{}".format(result), dest=result,
+            type=str, required=True
+        )
+
     parser.add_argument(
         "--url", dest="url", type=str,
         default="http://10.0.3.124:9880"
@@ -60,11 +86,11 @@ def main():
     if args.url[-1] == '/':
         args.url = args.url[:-1]
     logdata = {}
-    for tag in tags:
-        logdata[tag] = getattr(args, tag)
+    points = tags+results
+    for point in points:
+        logdata[point] = getattr(args, point)
     logdata['timestamp'] = int(time.time())
-    url = '{}/{}'.format(args.url, args.measurement)
-    do_log(url, logdata)
+    do_log(args.url, args.measurement, logdata)
 
 if __name__ == "__main__":
     main()

@@ -140,7 +140,7 @@ def report_timeline(results) {
   return totalTime
 }
 
-def publish_results_to_monitoring(streams, results, totalTime) {
+def publish_results_to_monitoring(streams, results) {
   // TODO: handle flag pre_build_done - if it false then results will be empty
   // Log stream result
   if (env.GERRIT_PIPELINE != 'nightly') {
@@ -166,8 +166,8 @@ def publish_results_to_monitoring(streams, results, totalTime) {
                 --deployer ${vars['MONITORING_DEPLOYER']} \
                 --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
                 --status ${result} \
-                --duration ${totalTime} \
-                --logs ${logs_url}
+                --duration ${results[stream]['duration']} \
+                --logs ${logs_url}/${stream}/
             """
       }
     } catch (err) {
