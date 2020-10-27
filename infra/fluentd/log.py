@@ -10,6 +10,8 @@ tags = [
     'deployer',
     'gerrit',
     'status',
+    'duration',
+    'logs'
 ]
 
 def splitdata(logdata):
