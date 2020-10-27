@@ -110,8 +110,8 @@ timestamps {
             echo "export VERIFIED=${verified}" >> global.env
           """
           archiveArtifacts(artifacts: 'global.env')
-          gerrit_utils.publish_results_to_monitoring(streams, results)
-          gerrit_utils.report_timeline(job_results)
+          duration = gerrit_utils.report_timeline(job_results)
+          gerrit_utils.publish_results_to_monitoring(streams, results, duration)
         }
         if (pre_build_done) {
           try {
