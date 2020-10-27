@@ -91,53 +91,56 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
 }
 
 def report_timeline(results) {
+  def output = ""
+  def startTime = 0
+  def endTime = 0
+  def totalTime = 0
+
+  for (stream in results.keySet()) {
+    if (!results[stream].containsKey('started') ||
+        !results[stream].containsKey('duration')) {
+          if (results[stream].containsKey('result')) {
+            output += String.format("|%48s | %5d h %2d m %2d s | %s\n",
+              stream, 0, 0, 0, results[stream]['result'])
+          } else {
+            output += String.format("|%48s | %5d h %2d m %2d s |\n",
+              stream, 0, 0, 0)
+          }
+    } else {
+      if (results[stream]['started'] < startTime || startTime == 0) {
+        startTime = results[stream]['started']
+      }
+      if (results[stream]['started'] + results[stream]['duration'] > endTime) {
+        endTime = results[stream]['started'] + results[stream]['duration']
+      }
+
+      duration = results[stream]['duration']
+      dashesBefore = (int) (results[stream]['started'] - startTime)/(300*1000)
+      equals = (int) 1 + duration/(300*1000)
+      seconds = (int) (duration % (60*1000) / 1000)
+      minutes = (int) (duration / (60*1000)) % 60
+      hours   = (int) (duration / (3600*1000))
+      output += String.format("|%48s | %5d h %2d m %2d s | %s%s\n",
+        stream, hours, minutes, seconds, "-"*dashesBefore, "="*equals)
+    }
+  }
+  totalTime = endTime - startTime
+  output += String.format("Total run time: %5d h %2d m %2d s\n",
+    (int) (totalTime / (3600*1000)),
+    (int) (totalTime / (60*1000)) % 60,
+    (int) (totalTime % (60*1000) / 1000)
+  )
   withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
     ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-    def output = ""
-    def startTime = 0
-    def endTime = 0
-    for (stream in results.keySet()) {
-      if (!results[stream].containsKey('started') ||
-          !results[stream].containsKey('duration')) {
-            if (results[stream].containsKey('result')) {
-              output += String.format("|%48s | %5d h %2d m %2d s | %s\n",
-                stream, 0, 0, 0, results[stream]['result'])
-            } else {
-              output += String.format("|%48s | %5d h %2d m %2d s |\n",
-                stream, 0, 0, 0)
-            }
-      } else {
-        if (results[stream]['started'] < startTime || startTime == 0) {
-          startTime = results[stream]['started']
-        }
-        if (results[stream]['started'] + results[stream]['duration'] > endTime) {
-          endTime = results[stream]['started'] + results[stream]['duration']
-        }
-
-        duration = results[stream]['duration']
-        dashesBefore = (int) (results[stream]['started'] - startTime)/(300*1000)
-        equals = (int) 1 + duration/(300*1000)
-        seconds = (int) (duration % (60*1000) / 1000)
-        minutes = (int) (duration / (60*1000)) % 60
-        hours   = (int) (duration / (3600*1000))
-        output += String.format("|%48s | %5d h %2d m %2d s | %s%s\n",
-          stream, hours, minutes, seconds, "-"*dashesBefore, "="*equals)
-      }
-    }
-    totalTime = endTime - startTime
-    output += String.format("Total run time: %5d h %2d m %2d s\n",
-      (int) (totalTime / (3600*1000)),
-      (int) (totalTime / (60*1000)) % 60,
-      (int) (totalTime % (60*1000) / 1000)
-    )
     writeFile(file: 'timeline.log', text: output)
     sh """#!/bin/bash
       rsync -a -e "${ssh_cmd}" timeline.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/
     """
   }
+  return totalTime
 }
 
-def publish_results_to_monitoring(streams, results) {
+def publish_results_to_monitoring(streams, results, totalTime) {
   // TODO: handle flag pre_build_done - if it false then results will be empty
   // Log stream result
   if (env.GERRIT_PIPELINE != 'nightly') {
@@ -162,7 +165,9 @@ def publish_results_to_monitoring(streams, results) {
                 --target ${vars['MONITORING_DEPLOY_TARGET']} \
                 --deployer ${vars['MONITORING_DEPLOYER']} \
                 --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
-                --status ${result}
+                --status ${result} \
+                --durartion ${totalTime} \
+                --logs ${logs_url}
             """
       }
     } catch (err) {
