@@ -186,8 +186,10 @@ def _update_map(items, new_items) {
     def value = item.value != null ? item.value : [:]
     if (!items.containsKey(item.key))
       items[item.key] = value
-    else
+    else if (value.getClass() == java.util.LinkedHashMap$Entry)
       _update_map(items[item.key], value)
+    else if (items[item.key] != value)
+      throw new Exception("Invalid configuration - item '${item}' has different value in another place: ${value}")
   }
 }
 
