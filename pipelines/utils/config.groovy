@@ -186,11 +186,11 @@ def _update_map(items, new_items) {
     if (!items.containsKey(item.key) || items[item.key] == null)
       items[item.key] = item.value
     else if (item.value != null) {
-      if (item.value.getClass() == java.util.LinkedHashMap$Entry)
+      if (item.value.getClass() == java.util.LinkedHashMap)
         _update_map(items[item.key], value)
       else if(items[item.key] != item.value)
         throw new Exception(
-          "Invalid configuration - new item '${item}' of type ${item.getClass()}' " +
+          "Invalid configuration - new item '${item}' with value type ${item.value.getClass()}' " +
           "has different value in current items: '${items[item.key]}' of type '${items[item.key].getClass()}")
     }
   }
