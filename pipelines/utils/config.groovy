@@ -187,7 +187,7 @@ def _update_map(items, new_items) {
       items[item.key] = item.value
     else if (item.value != null) {
       if (item.value.getClass() == java.util.LinkedHashMap)
-        _update_map(items[item.key], value)
+        _update_map(items[item.key], item.value)
       else if(items[item.key] != item.value)
         throw new Exception(
           "Invalid configuration - new item '${item}' with value type ${item.value.getClass()}' " +
