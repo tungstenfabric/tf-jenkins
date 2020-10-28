@@ -61,7 +61,7 @@
   group:
     name: docker
     state: present
-  
+
 - name: adding existing user jenkins to group docker
   user:
     name: jenkins
@@ -78,13 +78,13 @@
     validate: 'visudo -cf %s'
 
 - name: check if packer exists
-  stat: 
+  stat:
     path: /usr/local/bin/packer
     get_checksum: no
   register: packer_state
 
 - name: check if rules file exists
-  command: "/usr/local/bin/packer --version" 
+  command: "/usr/local/bin/packer --version"
   register: packer_version
   ignore_errors: True
 
