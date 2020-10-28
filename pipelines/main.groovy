@@ -99,7 +99,8 @@ timestamps {
           pre_build_done = true
         }
 
-        jobs_utils.run(jobs, streams, gate_utils, gerrit_utils)
+        if (env.GERRIT_PIPELINE != 'nightly')
+          jobs_utils.run(jobs, streams, gate_utils, gerrit_utils)
       } finally {
         println(job_results)
         stage('gerrit vote') {
