@@ -187,7 +187,7 @@ def _update_map(items, new_items) {
     if (!items.containsKey(item.key))
       items[item.key] = value
     else
-      items[item.key] += value
+      _update_map(items[item.key], value)
   }
 }
 
