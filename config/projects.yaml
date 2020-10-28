@@ -69,12 +69,6 @@
         build-r2011-centos:
           vars:
             DEBUGINFO: TRUE
-        build-rhel:
-          vars:
-            DEBUGINFO: TRUE
-        build-r1912-rhel:
-          vars:
-            DEBUGINFO: TRUE
       jobs:
         publish-centos-nightly:
           job-name: publish
