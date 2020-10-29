@@ -3,7 +3,8 @@
 import requests
 import argparse
 import time
-from influxdb import InfluxDBClient
+import sys
+import subprocess
 
 tags = [
     'target',
@@ -18,13 +19,19 @@ results = [
 ]
 
 def countprevious(days, measurement, tags):
-    s=""
+    try:
+        import influxdb
+    except:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'influxdb'])
+        import influxdb
+
+    clause=""
     for tag in tags:
-        s += "{} =~ /^{}$/ and ".format(tag, tags[tag])
-    query = "SELECT status FROM \"{}\" WHERE {} time >= now() - {}d".format(measurement, s, days)
-    client = InfluxDBClient(database="monitoring")
-    rs=client.query(query)
-    points = list(rs.get_points())
+        clause += "{} =~ /^{}$/ and ".format(tag, tags[tag])
+    query = "SELECT status FROM \"{}\" WHERE {} time >= now() - {}d".format(measurement, clause, days)
+    client = influxdb.InfluxDBClient(host="10.0.3.124", database="monitoring")
+    res=client.query(query)
+    points = list(res.get_points())
     successcount = len([p for p in points if p['status'] == "SUCCESS"])
     return "{}/{}".format(successcount, len(points))
 
@@ -54,11 +61,14 @@ def do_log(url, measurement, logdata):
         # No need to check response status code, workspace is a subject to wipe out
         # If data can't be submitted at the moment, it'll be dropped out
         logitem['duration'] = "{}h {}m {}s".format(
-            int(logitem['duration'] / (3600*1000)),
-            int(logitem['duration'] / (1000*60) % 60),
-            int(logitem['duration'] % (60*1000) / 1000)
+            int(int(logitem['duration']) / (3600*1000)),
+            int(int(logitem['duration']) / (1000*60) % 60),
+            int(int(logitem['duration']) % (60*1000) / 1000)
         )
-        logitem['last_success_count'] = countprevious(7, measurement, {key: logitem[key] for key in tags})
+        try:
+            logitem['last_success_count'] = countprevious(7, measurement, {key: logitem[key] for key in tags})
+        except:
+            logitem['last_success_count'] = ""
         r = requests.post(url="{}/{}".format(url, measurement), json=logitem)
 
 def main():
