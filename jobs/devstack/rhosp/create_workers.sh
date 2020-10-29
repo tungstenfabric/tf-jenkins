@@ -37,7 +37,6 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
 
       echo "export OS_REGION_NAME=${OS_REGION_NAME}" >> "$stackrc_file_path"
       IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
-      echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
       echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
       # wait for free resource
@@ -51,8 +50,10 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
         sleep 60
       done
   fi
+  echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
   # to prepare rhosp-provisionin.sh
+  source $stackrc_file_path
   if ./src/tungstenfabric/tf-devstack/rhosp/create_env.sh ; then
     exit 0
   fi

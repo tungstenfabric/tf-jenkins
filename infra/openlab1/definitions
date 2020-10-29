@@ -1,5 +1,5 @@
 export IMAGE_SSH_USER="stack"
 export VM_NAME="undercloud"
-export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
 export instance_ip="10.10.50.10"

@@ -7,4 +7,4 @@ declare -A RHEL_REPOS_MAP=( ['newton']='10' \
                           ['stein']='15' \
                           ['train']='16' )
 
-SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
