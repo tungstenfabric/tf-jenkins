@@ -150,9 +150,12 @@ def publish_results_to_monitoring(streams, results) {
 
   for (stream in streams.keySet()) {
     def result = "NOT_IMPLEMENTED"
-    if (results.containsKey(stream))
+    def duration = 0
+    if (results.containsKey(stream)) {
       result = _get_stream_result(results[stream]['results'])
-
+      if (results[stream].containsKey('duration')) {
+        duration = results[stream]['duration']
+    }
     try {
       vars = streams[stream].get('vars', [:])
       if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
@@ -166,7 +169,7 @@ def publish_results_to_monitoring(streams, results) {
                 --deployer ${vars['MONITORING_DEPLOYER']} \
                 --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
                 --status ${result} \
-                --duration ${results[stream]['duration']} \
+                --duration ${duration} \
                 --logs ${logs_url}/${stream}/
             """
       }
