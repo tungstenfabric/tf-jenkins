@@ -153,7 +153,7 @@ def publish_results_to_monitoring(streams, results) {
     def duration = 0
     if (results.containsKey(stream)) {
       result = _get_stream_result(results[stream]['results'])
-      if (results[stream].containsKey('duration')) {
+      if (results[stream].containsKey('duration'))
         duration = results[stream]['duration']
     }
     try {
