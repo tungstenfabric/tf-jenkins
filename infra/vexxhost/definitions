@@ -48,4 +48,4 @@ declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['UBUNTU16']='' \
                             ['UBUNTU18']='' )
 
-SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"

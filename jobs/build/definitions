@@ -1,5 +1,5 @@
 export VM_TYPE=large
 
-SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
 ENVIRONMENT_OS=${ENVIRONMENT_OS:-'centos7'}
