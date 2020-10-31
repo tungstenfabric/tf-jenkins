@@ -1,4 +1,4 @@
-#!/bin/bash -eE
+#!/bin/bash -eEx
 set -o pipefail
 
 deployer=$1
@@ -8,7 +8,7 @@ deployer=$1
 echo "INFO: Deploy TF with $deployer"
 
 cat <<EOF > $WORKSPACE/deploy_tf.sh
-#!/bin/bash -e
+#!/bin/bash -ex
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
