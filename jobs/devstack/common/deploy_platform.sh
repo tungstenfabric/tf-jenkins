@@ -8,7 +8,7 @@ deployer=$1
 echo "INFO: Deploy platform for $JOB_NAME"
 
 cat <<EOF > $WORKSPACE/deploy_platform.sh
-#!/bin/bash -e
+#!/bin/bash -ex
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
