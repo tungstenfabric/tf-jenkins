@@ -12,6 +12,16 @@ stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 stackrc_file_path=$WORKSPACE/$stackrc_file
 export vexxrc="$stackrc_file_path"
 
+# TAG_SUFFIX is defined in vars.deploy-platform-rhosp13.23584.env
+# but CONTRAIL_CONTAINER_TAG is defined in global.env w/o suffix
+# So, global is sourced before vars and CONTRAIL_CONTAINER_TAG is w/o suffix here
+if [ -n "$TAG_SUFFIX" ] ; then
+  export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
+  export CONTRAIL_DEPLOYER_CONTAINER_TAG="$CONTRAIL_DEPLOYER_CONTAINER_TAG$TAG_SUFFIX"
+  export CONTRAIL_CONTAINER_TAG_ORIGINAL="$CONTRAIL_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX"
+  export CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL"$CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX"
+fi
+
 for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
   echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" > "$stackrc_file_path"
   echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
