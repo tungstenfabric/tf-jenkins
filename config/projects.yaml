@@ -512,4 +512,5 @@
     check:
       templates:
         - build-centos
+        - ansible-k8s-ha
         - cleanup
