@@ -513,3 +513,9 @@
       templates:
         - build-centos
         - cleanup
+
+- project:
+    name: dummy-project
+    check:
+      templates:
+        - dummy-template

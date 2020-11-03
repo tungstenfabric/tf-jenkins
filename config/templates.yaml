@@ -25,3 +25,9 @@
     name: cleanup
     post-jobs:
       cleanup-workers:
+
+- template:
+    name: dummy-template
+    jobs:
+      dummy-job:
+        stream: dummy-stream
