@@ -18,7 +18,8 @@ results = [
     'logs',
 ]
 
-def countprevious(days, measurement, tags):
+def countprevious(days, measurement, logitem):
+    taglist = {key: logitem[key] for key in tags}
     try:
         import influxdb
     except:
@@ -26,14 +27,15 @@ def countprevious(days, measurement, tags):
         import influxdb
 
     clause=""
-    for tag in tags:
-        clause += "{} =~ /^{}$/ and ".format(tag, tags[tag])
-    query = "SELECT status FROM \"{}\" WHERE {} time >= now() - {}d".format(measurement, clause, days)
+    for tag in taglist:
+        clause += "{} =~ /^{}$/ and ".format(tag, taglist[tag])
+    query = "SELECT status FROM \"{}\" WHERE {} time >= now() - {}d".format(measurement, clause, days-1)
     client = influxdb.InfluxDBClient(host="10.0.3.124", database="monitoring")
     res=client.query(query)
     points = list(res.get_points())
     successcount = len([p for p in points if p['status'] == "SUCCESS"])
-    return "{}/{}".format(successcount, len(points))
+    successcount += 1 if logitem['status'] == "SUCCESS"
+    return "{}/{}".format(successcount, len(points)+1)
 
 def splitdata(logdata):
     ret = []
@@ -66,7 +68,7 @@ def do_log(url, measurement, logdata):
             int(int(logitem['duration']) % (60*1000) / 1000)
         )
         try:
-            logitem['last_success_count'] = countprevious(7, measurement, {key: logitem[key] for key in tags})
+            logitem['last_success_count'] = countprevious(7, measurement, logitem)
         except:
             logitem['last_success_count'] = ""
         r = requests.post(url="{}/{}".format(url, measurement), json=logitem)
