@@ -143,11 +143,7 @@ def report_timeline(results) {
 def publish_results_to_monitoring(streams, results) {
   // TODO: handle flag pre_build_done - if it false then results will be empty
   // Log stream result
-  if (env.GERRIT_PIPELINE != 'nightly') {
-    // log only nightly results for now
-    return
-  }
-
+  println("publish_results_to_monitoring" + results)
   for (stream in streams.keySet()) {
     def result = "NOT_IMPLEMENTED"
     def duration = 0
