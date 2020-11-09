@@ -5,7 +5,9 @@
     streams:
       build-centos:
         vars:
-          LINUX_DISTR: centos
+          LINUX_DISTR: tf-nexus.progmaticlab.com:5005/centos
+          LINUX_DISTR_VER: "7"
+          INSECURE_REGISTRIES: tf-nexus.progmaticlab.com:5005
     jobs:
       prepare-sandbox-centos:
         # it creates worker
@@ -227,7 +229,9 @@
     streams:
       build-r1912:
         vars:
-          LINUX_DISTR: centos
+          LINUX_DISTR: tf-nexus.progmaticlab.com:5005/centos
+          LINUX_DISTR_VER: "7"
+          INSECURE_REGISTRIES: tf-nexus.progmaticlab.com:5005
           GERRIT_BRANCH: "R1912"
           TAG_SUFFIX: "-r1912"
     jobs:
@@ -270,7 +274,9 @@
     streams:
       build-r2011-centos:
         vars:
-          LINUX_DISTR: centos
+          LINUX_DISTR: tf-nexus.progmaticlab.com:5005/centos
+          LINUX_DISTR_VER: "7"
+          INSECURE_REGISTRIES: tf-nexus.progmaticlab.com:5005
           GERRIT_BRANCH: "R2011"
           TAG_SUFFIX: "-r2011-centos"
     jobs:
