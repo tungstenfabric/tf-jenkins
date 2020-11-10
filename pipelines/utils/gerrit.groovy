@@ -143,14 +143,25 @@ def report_timeline(results) {
 def publish_results_to_monitoring(streams, results) {
   // TODO: handle flag pre_build_done - if it false then results will be empty
   // Log stream result
+
+  def patchseturl = "NA"
+  if (env.GERRIT_PIPELINE == 'check') {
+    patchseturl = resolve_gerrit_url() +'c/' + env.GERRIT_PROJECT +
+      '/+/' + env.GERRIT_CHANGE_NUMBER + '/' + env.GERRIT_PATCHSET_NUMBER
+  }
+
   println("publish_results_to_monitoring" + results)
+  println(streams)
   for (stream in streams.keySet()) {
     def result = "NOT_IMPLEMENTED"
     def duration = 0
+    def started = 0
     if (results.containsKey(stream)) {
       result = _get_stream_result(results[stream]['results'])
       if (results[stream].containsKey('duration'))
         duration = results[stream]['duration']
+      if (results[stream].containsKey('started'))
+        started = results[stream]['started']
     }
     try {
       vars = streams[stream].get('vars', [:])
@@ -166,6 +177,8 @@ def publish_results_to_monitoring(streams, results) {
                 --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
                 --status ${result} \
                 --duration ${duration} \
+                --started ${started} \
+                --patchset ${patchseturl} \
                 --logs ${logs_url}/${stream}/
             """
       }
