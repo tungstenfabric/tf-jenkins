@@ -15,6 +15,8 @@ tags = [
 results = [
     'status',
     'duration',
+    'started',
+    'patchset',
     'logs',
 ]
 
@@ -35,7 +37,7 @@ def countprevious(days, measurement, logitem):
     points = list(res.get_points())
     successcount = len([p for p in points if p['status'] == "SUCCESS"])
     if logitem['status'] == "SUCCESS":
-        successcount += 1 
+        successcount += 1
     return "{}/{}".format(successcount, len(points)+1)
 
 def splitdata(logdata):
@@ -79,12 +81,12 @@ def main():
     for tag in tags:
         parser.add_argument(
             "--{}".format(tag), dest=tag,
-            type=str, required=True
+            type=str
         )
     for result in results:
         parser.add_argument(
             "--{}".format(result), dest=result,
-            type=str, required=True
+            type=str
         )
 
     parser.add_argument(
