@@ -2,7 +2,6 @@
 
 import requests
 import argparse
-import time
 import sys
 import subprocess
 
@@ -15,6 +14,8 @@ tags = [
 results = [
     'status',
     'duration',
+    'started',
+    'patchset',
     'logs',
 ]
 
@@ -35,12 +36,12 @@ def countprevious(days, measurement, logitem):
     points = list(res.get_points())
     successcount = len([p for p in points if p['status'] == "SUCCESS"])
     if logitem['status'] == "SUCCESS":
-        successcount += 1 
+        successcount += 1
     return "{}/{}".format(successcount, len(points)+1)
 
 def splitdata(logdata):
     ret = []
-    for tag in tags:
+    for tag in logdata.keys():
         datalist = logdata[tag].split(',')
         if len(datalist) > 1:
             for d in datalist:
@@ -71,7 +72,7 @@ def do_log(url, measurement, logdata):
         try:
             logitem['last_success_count'] = countprevious(7, measurement, logitem)
         except:
-            logitem['last_success_count'] = ""
+            pass
         r = requests.post(url="{}/{}".format(url, measurement), json=logitem)
 
 def main():
@@ -79,12 +80,12 @@ def main():
     for tag in tags:
         parser.add_argument(
             "--{}".format(tag), dest=tag,
-            type=str, required=True
+            type=str
         )
     for result in results:
         parser.add_argument(
             "--{}".format(result), dest=result,
-            type=str, required=True
+            type=str
         )
 
     parser.add_argument(
@@ -99,10 +100,12 @@ def main():
     if args.url[-1] == '/':
         args.url = args.url[:-1]
     logdata = {}
-    points = tags+results
-    for point in points:
-        logdata[point] = getattr(args, point)
-    logdata['timestamp'] = int(time.time())
+    keys = tags+results
+    for key in keys:
+        value = getattr(args, key)
+        if value:
+            logdata[key] = value
+
     do_log(args.url, args.measurement, logdata)
 
 if __name__ == "__main__":
