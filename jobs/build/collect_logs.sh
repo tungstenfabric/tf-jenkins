@@ -8,7 +8,10 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "tar -czf logs.tgz -C \$HOME/output logs" || /bin/true
+if ! ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "tar -czf logs.tgz -C \$HOME/output logs" ; then
+  echo "INFO: logs folder is absent on target"
+  exit
+fi
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/
 rm -rf $WORKSPACE/logs
