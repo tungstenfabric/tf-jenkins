@@ -143,6 +143,26 @@ def report_timeline(results) {
 def publish_results_to_monitoring(streams, results) {
   // TODO: handle flag pre_build_done - if it false then results will be empty
   // Log stream result
+
+  def psurl = ""
+  try {
+    if (env.GERRIT_PIPELINE == 'check') {
+      def patchset_text = readFile("patchsets-info.json")
+      println(patchset_text)
+      def sl = new JsonSlurper()
+      def patchset = sl.parseText(patchset_text)
+      println(patchset)
+      psurl = resolve_gerrit_url() +'c/' + patchset[0]['project'] + '/+/' + patchset[0]['number']
+      println(psurl)
+    }
+  } catch(err) {
+    println("Failed to get patchset url")
+    err_msg = err.getMessage()
+    if (err_msg != null)
+      println("Message - ${err_msg}")
+    println("Stacktrace - ${err.getStackTrace()}")
+
+  }
   println("publish_results_to_monitoring" + results)
   for (stream in streams.keySet()) {
     def result = "NOT_IMPLEMENTED"
