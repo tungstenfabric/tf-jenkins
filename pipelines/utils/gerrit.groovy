@@ -143,32 +143,56 @@ def report_timeline(results) {
 def publish_results_to_monitoring(streams, results) {
   // TODO: handle flag pre_build_done - if it false then results will be empty
   // Log stream result
+
+  if (env.GERRIT_PIPELINE != 'check' && env.GERRIT_PIPELINE != 'nightly') {
+    return
+  }
+
   println("publish_results_to_monitoring" + results)
+  println(streams)
+
+  def log_opts = [
+    gerrit: env.GERRIT_PIPELINE,
+    status: "NOT_IMPLEMENTED",
+    duration: 0,
+    started: currentBuild.startTimeInMillis
+  ]
+  optstostring = {
+    it.collect { /--$it.key $it.value/ } join " "
+  }
   for (stream in streams.keySet()) {
-    def result = "NOT_IMPLEMENTED"
-    def duration = 0
     if (results.containsKey(stream)) {
-      result = _get_stream_result(results[stream]['results'])
-      if (results[stream].containsKey('duration'))
-        duration = results[stream]['duration']
+      log_opts['logs'] = logs_url+'/'+stream
+      log_opts['status'] = _get_stream_result(results[stream]['results'])
+      if (results[stream].containsKey('duration')) {
+        log_opts['duration'] = results[stream]['duration']
+      }
+      if (results[stream].containsKey('started')) {
+        log_opts['started'] = results[stream]['started']
+      }
     }
     try {
-      vars = streams[stream].get('vars', [:])
-      if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
-          vars.containsKey('MONITORING_DEPLOYER') &&
-          vars.containsKey('MONITORING_ORCHESTRATOR')) {
+      if (env.GERRIT_PIPELINE == 'nightly') {
+        vars = streams[stream].get('vars', [:])
+        if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
+            vars.containsKey('MONITORING_DEPLOYER') &&
+            vars.containsKey('MONITORING_ORCHESTRATOR')) {
 
-            sh """
-              ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
-                --gerrit ${env.GERRIT_PIPELINE} \
-                --target ${vars['MONITORING_DEPLOY_TARGET']} \
-                --deployer ${vars['MONITORING_DEPLOYER']} \
-                --orchestrator ${vars['MONITORING_ORCHESTRATOR']} \
-                --status ${result} \
-                --duration ${duration} \
-                --logs ${logs_url}/${stream}/
-            """
+              log_opts['target'] = vars['MONITORING_DEPLOY_TARGET']
+              log_opts['deployer'] = vars['MONITORING_DEPLOYER']
+              log_opts['orchestrator'] = vars['MONITORING_ORCHESTRATOR']
+        }
+      } else if (env.GERRIT_PIPELINE == 'check') {
+        patchseturl = resolve_gerrit_url() +'c/' + env.GERRIT_PROJECT +
+          '/+/' + env.GERRIT_CHANGE_NUMBER + '/' + env.GERRIT_PATCHSET_NUMBER
+        log_opts['patchset'] = patchseturl
       }
+
+      logstring = optstostring(log_opts)
+      sh """
+        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
+          ${logstring}
+      """
     } catch (err) {
       println("Failed to send data to fluentd")
       err_msg = err.getMessage()
