@@ -111,7 +111,7 @@ timestamps {
           """
           archiveArtifacts(artifacts: 'global.env')
           gerrit_utils.report_timeline(job_results)
-          gerrit_utils.publish_results_to_monitoring(streams, results)
+          gerrit_utils.publish_results_to_monitoring(streams, results, verified)
         }
         if (pre_build_done) {
           try {

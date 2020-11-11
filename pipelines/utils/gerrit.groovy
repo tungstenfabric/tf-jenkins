@@ -140,12 +140,53 @@ def report_timeline(results) {
   return totalTime
 }
 
-def publish_results_to_monitoring(streams, results) {
+def publish_results_to_monitoring(streams, results, verified) {
   // TODO: handle flag pre_build_done - if it false then results will be empty
   // Log stream result
 
-  println("publish_results_to_monitoring" + results)
+  println("publish_results_to_monitoring: " + results)
   println(streams)
+
+  if (env.GERRIT_PIPELINE == 'nightly')
+    publish_nightly_results_to_monitoring(streams, results)
+  else
+    publish_plain_results_to_monitoring(streams, results, verified)
+}
+
+def publish_plain_results_to_monitoring(streams, results, verified) {
+  def optstostring = {
+    it.collect { /--$it.key $it.value/ } join " "
+  }
+
+  try {
+    def path = "c/${env.GERRIT_PROJECT}/+/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}"
+    def log_opts = [
+      gerrit: env.GERRIT_PIPELINE,
+      status: verified > 0 ? "SUCCESS" : "FAILURE",
+      started: currentBuild.startTimeInMillis,
+      duration: (new Date()).getTime() - currentBuild.startTimeInMillis,
+      patchset: "${resolve_gerrit_url()}${path}",
+      logs: logs_url
+    ]
+
+    logstring = optstostring(log_opts)
+    sh """
+      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
+        ${logstring}
+    """
+  } catch (err) {
+    println("Failed to send data to fluentd")
+    err_msg = err.getMessage()
+    if (err_msg != null)
+      println("Message - ${err_msg}")
+    println("Stacktrace - ${err.getStackTrace()}")
+  }
+}
+
+def publish_nightly_results_to_monitoring(streams, results) {
+  def optstostring = {
+    it.collect { /--$it.key $it.value/ } join " "
+  }
 
   def log_opts = [
     gerrit: env.GERRIT_PIPELINE,
@@ -153,12 +194,9 @@ def publish_results_to_monitoring(streams, results) {
     duration: 0,
     started: currentBuild.startTimeInMillis
   ]
-  optstostring = {
-    it.collect { /--$it.key $it.value/ } join " "
-  }
   for (stream in streams.keySet()) {
     if (results.containsKey(stream)) {
-      log_opts['logs'] = logs_url+'/'+stream
+      log_opts['logs'] = "${logs_url}/${stream}"
       log_opts['status'] = _get_stream_result(results[stream]['results'])
       if (results[stream].containsKey('duration')) {
         log_opts['duration'] = results[stream]['duration']
@@ -168,20 +206,14 @@ def publish_results_to_monitoring(streams, results) {
       }
     }
     try {
-      if (env.GERRIT_PIPELINE == 'nightly') {
-        vars = streams[stream].get('vars', [:])
-        if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
-            vars.containsKey('MONITORING_DEPLOYER') &&
-            vars.containsKey('MONITORING_ORCHESTRATOR')) {
+      vars = streams[stream].get('vars', [:])
+      if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
+          vars.containsKey('MONITORING_DEPLOYER') &&
+          vars.containsKey('MONITORING_ORCHESTRATOR')) {
 
-              log_opts['target'] = vars['MONITORING_DEPLOY_TARGET']
-              log_opts['deployer'] = vars['MONITORING_DEPLOYER']
-              log_opts['orchestrator'] = vars['MONITORING_ORCHESTRATOR']
-        }
-      } else if (env.GERRIT_PIPELINE == 'check' || env.GERRIT_PIPELINE == 'gate') {
-        patchseturl = resolve_gerrit_url() +'c/' + env.GERRIT_PROJECT +
-          '/+/' + env.GERRIT_CHANGE_NUMBER + '/' + env.GERRIT_PATCHSET_NUMBER
-        log_opts['patchset'] = patchseturl
+            log_opts['target'] = vars['MONITORING_DEPLOY_TARGET']
+            log_opts['deployer'] = vars['MONITORING_DEPLOYER']
+            log_opts['orchestrator'] = vars['MONITORING_ORCHESTRATOR']
       }
 
       logstring = optstostring(log_opts)
