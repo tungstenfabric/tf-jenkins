@@ -246,8 +246,9 @@ def _get_stream_result(def results) {
     return 'FAILURE'
   if ('ABORTED' in results)
     return 'ABORTED'
+  // let's treat this as FAILURE. it can be caused by failures in deps
   if ('NOT_BUILT' in results && 'SUCCESS' in results)
-    return 'ABORTED'
+    return 'FAILURE'
   return results[0]
 }
 
