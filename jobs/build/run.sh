@@ -47,8 +47,8 @@ elif [[ ${LINUX_DISTR} == 'centos' ]]; then
   # epel must not be there - it cause incorrect installs and fails at runtime
   mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo mirror-google-chrome.repo"
 elif [[ "${LINUX_DISTR}" =~ 'ubi7' ]] ; then
-  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo mirror-ubi7.repo mirror-rhel7.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
-  mirror_list="mirror-google-chrome.repo mirror-ubi7.repo mirror-rhel7.repo"
+  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo ubi.repo mirror-rhel7.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
+  mirror_list="mirror-google-chrome.repo ubi.repo mirror-rhel7.repo"
 fi
 
 res=0
