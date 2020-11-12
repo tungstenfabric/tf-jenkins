@@ -140,7 +140,7 @@ def report_timeline(results) {
   return totalTime
 }
 
-def publish_results_to_monitoring(streams, results, verified) {
+def publish_results_to_monitoring(streams, results, pipeline_result) {
   // TODO: handle flag pre_build_done - if it false then results will be empty
   // Log stream result
 
@@ -150,10 +150,10 @@ def publish_results_to_monitoring(streams, results, verified) {
   if (env.GERRIT_PIPELINE == 'nightly')
     publish_nightly_results_to_monitoring(streams, results)
   else
-    publish_plain_results_to_monitoring(streams, results, verified)
+    publish_plain_results_to_monitoring(streams, results, pipeline_result)
 }
 
-def publish_plain_results_to_monitoring(streams, results, verified) {
+def publish_plain_results_to_monitoring(streams, results, pipeline_result) {
   def optstostring = {
     it.collect { /--$it.key $it.value/ } join " "
   }
@@ -162,7 +162,7 @@ def publish_plain_results_to_monitoring(streams, results, verified) {
     def path = "c/${env.GERRIT_PROJECT}/+/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}"
     def log_opts = [
       gerrit: env.GERRIT_PIPELINE,
-      status: verified > 0 ? "SUCCESS" : "FAILURE",
+      status: pipeline_result,
       started: currentBuild.startTimeInMillis,
       duration: (new Date()).getTime() - currentBuild.startTimeInMillis,
       patchset: "${resolve_gerrit_url()}${path}",
