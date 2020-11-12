@@ -30,7 +30,7 @@ def main(def gate_utils, def gerrit_utils, def config_utils) {
 
     _run(jobs, streams, gate_utils, gerrit_utils)
   } finally {
-    println(job_results)
+    println("Jobs results: ${job_results}")
     stage('gerrit vote') {
       // add gerrit voting +2 +1 / -1 -2
       def results = _get_jobs_result_for_gerrit(jobs, job_results)
@@ -40,7 +40,15 @@ def main(def gate_utils, def gerrit_utils, def config_utils) {
       """
       archiveArtifacts(artifacts: 'global.env')
       gerrit_utils.report_timeline(job_results)
-      gerrit_utils.publish_results_to_monitoring(streams, results, verified)
+
+      def pipeline_result = verified > 0 ? "SUCCESS" : "FAILURE"
+      for (name in job_results.keySet()) {
+        if (job_results['name'].get('result') == 'ABORTED') {
+          pipeline_result = 'ABORTED'
+          break
+        }
+      }
+      gerrit_utils.publish_results_to_monitoring(streams, results, pipeline_result)
     }
     if (pre_build_done) {
       try {
