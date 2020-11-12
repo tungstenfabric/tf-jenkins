@@ -16,7 +16,7 @@ def main(def gate_utils, def gerrit_utils, def config_utils) {
         gerrit_utils.terminate_runs_by_review_number()
         gerrit_utils.terminate_runs_by_depends_on_recursive(env.GERRIT_CHANGE_ID)
       }
-      (streams, jobs, post_jobs) = _evaluate_env()
+      (streams, jobs, post_jobs) = _evaluate_env(config_utils)
       gerrit_utils.gerrit_build_started()
 
       desc = "<a href='${logs_url}'>${logs_url}</a>"
