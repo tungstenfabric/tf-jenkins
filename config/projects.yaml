@@ -128,7 +128,7 @@
     names: [tungstenfabric/tf-vnc, Juniper/contrail-vnc]
     check:
       templates:
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -176,7 +176,7 @@
     names: [tungstenfabric/tf-container-builder, Juniper/contrail-container-builder]
     check:
       templates:
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -191,7 +191,7 @@
     check:
       templates:
         - test-unit
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -206,7 +206,7 @@
     check:
       templates:
         - test-unit
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -221,7 +221,7 @@
     check:
       templates:
         - test-unit
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -236,7 +236,7 @@
     check:
       templates:
         - test-unit
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -251,7 +251,7 @@
     check:
       templates:
         - test-unit
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -265,7 +265,7 @@
     names: [tungstenfabric/tf-packages, Juniper/contrail-packages]
     check:
       templates:
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -279,7 +279,7 @@
     names: [tungstenfabric/tf-test, Juniper/contrail-test]
     check:
       templates:
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -293,7 +293,7 @@
     check:
       templates:
         - test-unit
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -321,7 +321,7 @@
     names: [tungstenfabric/tf-third-party-packages, Juniper/contrail-third-party-packages]
     check:
       templates:
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -334,7 +334,7 @@
     names: [tungstenfabric/tf-third-party, Juniper/contrail-third-party]
     check:
       templates:
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -450,7 +450,7 @@
     check:
       templates:
         - test-unit
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -465,7 +465,7 @@
     name: tungstenfabric/tf-deployment-test
     check:
       templates:
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -481,7 +481,7 @@
     name: tungstenfabric/tf-dev-test
     check:
       templates:
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
@@ -496,7 +496,7 @@
     check:
       templates:
         - build-centos
-        - juju-os
+        - ansible-os # juju-os
         - cleanup
     gate:
       templates:
