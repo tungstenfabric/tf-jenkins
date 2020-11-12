@@ -18,8 +18,6 @@ OPENSTACK_VERSIONS = ['ocata', 'pike', 'queens', 'rocky', 'stein', 'train', 'uss
 // base url for all jobs
 logs_url = ""
 logs_path = ""
-// set of result for each job
-job_results = [:]
 
 rnd = new Random()
 gerrit_url = null
@@ -75,53 +73,7 @@ timestamps {
         return
       }
 
-      def streams = [:]
-      def jobs = [:]
-      def post_jobs = [:]
-      pre_build_done = false
-      try {
-        time_start = (new Date()).getTime()
-        stage('Pre-build') {
-          evaluate_common_params()
-          if (env.GERRIT_CHANGE_ID) {
-            gerrit_utils.terminate_runs_by_review_number()
-            gerrit_utils.terminate_runs_by_depends_on_recursive(env.GERRIT_CHANGE_ID)
-          }
-          (streams, jobs, post_jobs) = evaluate_env()
-          gerrit_utils.gerrit_build_started()
-
-          desc = "<a href='${logs_url}'>${logs_url}</a>"
-          if (env.GERRIT_CHANGE_ID) {
-            desc += "<br>Project: ${env.GERRIT_PROJECT}"
-            desc += "<br>Branch: ${env.GERRIT_BRANCH}"
-          }
-          currentBuild.description = desc
-          pre_build_done = true
-        }
-
-        jobs_utils.run(jobs, streams, gate_utils, gerrit_utils)
-      } finally {
-        println(job_results)
-        stage('gerrit vote') {
-          // add gerrit voting +2 +1 / -1 -2
-          def results = jobs_utils.get_jobs_result_for_gerrit(jobs, job_results)
-          verified = gerrit_utils.publish_results(pre_build_done, streams, results, (new Date()).getTime() - time_start)
-          sh """#!/bin/bash -e
-            echo "export VERIFIED=${verified}" >> global.env
-          """
-          archiveArtifacts(artifacts: 'global.env')
-          gerrit_utils.report_timeline(job_results)
-          gerrit_utils.publish_results_to_monitoring(streams, results, verified)
-        }
-        if (pre_build_done) {
-          try {
-            jobs_utils.run_jobs(post_jobs, streams)
-          } catch (err) {
-          }
-        }
-
-        jobs_utils.save_pipeline_artifacts_to_logs(jobs, post_jobs)
-      }
+      jobs_utils.main(gate_utils, gerrit_utils, config_utils)
     }
   }
 }
@@ -140,106 +92,4 @@ def clone_self() {
       [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src/tungstenfabric/tf-jenkins']
     ]
   ])
-}
-
-def evaluate_common_params() {
-  // evaluate logs params
-  branch = 'master'
-  if (env.GERRIT_BRANCH)
-    branch = env.GERRIT_BRANCH.split('/')[-1].toLowerCase()
-  openstack_version = DEFAULT_OPENSTACK_VERSION
-  if (branch in OPENSTACK_VERSIONS)
-    openstack_version = branch
-  if (env.GERRIT_CHANGE_ID) {
-    contrail_container_tag = branch
-    // we have to avoid presense of 19xx, 20xx, ... in tag - apply some hack here to indicate current patchset and avoid those strings
-    // and we have to avoid 5.1 and 5.0 in tag
-    contrail_container_tag += '-' + env.GERRIT_CHANGE_NUMBER.split('').join('_')
-    contrail_container_tag += '-' + env.GERRIT_PATCHSET_NUMBER.split('').join('_')
-    hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
-    logs_path = "${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
-    logs_url = "${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
-  } else if (env.GERRIT_PIPELINE == 'nightly') {
-    contrail_container_tag = "nightly"
-    logs_path = "${LOGS_BASE_PATH}/nightly/pipeline_${BUILD_NUMBER}"
-    logs_url = "${LOGS_BASE_URL}/nightly/pipeline_${BUILD_NUMBER}"
-  } else {
-    contrail_container_tag = 'dev'
-    logs_path = "${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
-    logs_url = "${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
-  }
-  println("Logs URL: ${logs_url}")
-}
-
-def evaluate_env() {
-  try {
-    sh """#!/bin/bash -e
-      rm -rf global.env
-      echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
-      echo "export SLAVE=${SLAVE}" >> global.env
-      echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
-      echo "export LOGS_PATH=${logs_path}" >> global.env
-      echo "export LOGS_URL=${logs_url}" >> global.env
-      # store default registry params. jobs can redefine them if needed in own config (VARS).
-      echo "export OPENSTACK_VERSION=${openstack_version}" >> global.env
-      echo "export SITE_MIRROR=${SITE_MIRROR}" >> global.env
-      echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
-      echo "export DEPLOYER_CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
-      echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
-      echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG=${contrail_container_tag}" >> global.env
-      echo "export CONTAINER_REGISTRY_ORIGINAL=${CONTAINER_REGISTRY}" >> global.env
-      echo "export DEPLOYER_CONTAINER_REGISTRY_ORIGINAL=${CONTAINER_REGISTRY}" >> global.env
-      echo "export CONTRAIL_CONTAINER_TAG_ORIGINAL=${contrail_container_tag}" >> global.env
-      echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL=${contrail_container_tag}" >> global.env
-      echo "export GERRIT_PIPELINE=${env.GERRIT_PIPELINE}" >> global.env
-    """
-
-    // store gerrit input if present. evaluate jobs
-    println("Pipeline to run: ${env.GERRIT_PIPELINE}")
-    project_name = env.GERRIT_PROJECT
-    if (env.GERRIT_CHANGE_ID) {
-      sh """#!/bin/bash -e
-        echo "export GERRIT_URL=${gerrit_url}" >> global.env
-        echo "export GERRIT_CHANGE_ID=${env.GERRIT_CHANGE_ID}" >> global.env
-        echo "export GERRIT_BRANCH=${env.GERRIT_BRANCH}" >> global.env
-      """
-    } else if (env.GERRIT_PIPELINE == 'nightly') {
-      project_name = "tungstenfabric"
-      sh """#!/bin/bash -e
-        echo "export GERRIT_BRANCH=master" >> global.env
-      """
-    }
-    archiveArtifacts(artifacts: 'global.env')
-
-    if (env.GERRIT_PIPELINE != 'templates') {
-      // Get jobs for the whole project
-      (streams, jobs, post_jobs) = config_utils.get_project_jobs(project_name, env.GERRIT_PIPELINE, env.GERRIT_BRANCH)
-    } else {
-      // It triggers by comment "(check|recheck) template(s) name1 name2 ...".
-      def full_comment = env.GERRIT_EVENT_COMMENT_TEXT
-      def lines = full_comment.split("\n")
-      def needed_line = ""
-      for (line in lines) {
-        if (line.startsWith("check") || line.startsWith("recheck")) {
-          needed_line = line
-          break
-        }
-      }
-      if (needed_line == "") {
-        throw new Exception("ERROR: strange comment message: ${full_comment}")
-      }
-      def template_names = needed_line.split()[2..-1]
-      (streams, jobs, post_jobs) = config_utils.get_templates_jobs(template_names)
-    }
-    println("Streams from  config: ${streams}")
-    println("Jobs from config: ${jobs}")
-    println("Post Jobs from config: ${post_jobs}")
-  } catch (err) {
-    msg = err.getMessage()
-    if (err != null) {
-      println("ERROR: Failed set environment ${msg}")
-    }
-    throw(err)
-  }
-  return [streams, jobs, post_jobs]
 }
