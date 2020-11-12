@@ -158,11 +158,20 @@ def publish_plain_results_to_monitoring(streams, results, verified) {
     it.collect { /--$it.key $it.value/ } join " "
   }
 
+  def pipeline_result = verified > 0 ? "SUCCESS" : "FAILURE"
+  for (stream in results.keySet()) {
+    def result = _get_stream_result(results[stream]['results'])
+    if (result == 'ABORTED') {
+      pipeline_result = 'ABORTED'
+      break
+    }
+  }
+
   try {
     def path = "c/${env.GERRIT_PROJECT}/+/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}"
     def log_opts = [
       gerrit: env.GERRIT_PIPELINE,
-      status: verified > 0 ? "SUCCESS" : "FAILURE",
+      status: pipeline_result,
       started: currentBuild.startTimeInMillis,
       duration: (new Date()).getTime() - currentBuild.startTimeInMillis,
       patchset: "${resolve_gerrit_url()}${path}",

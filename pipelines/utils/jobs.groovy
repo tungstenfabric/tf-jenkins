@@ -30,7 +30,7 @@ def main(def gate_utils, def gerrit_utils, def config_utils) {
 
     _run(jobs, streams, gate_utils, gerrit_utils)
   } finally {
-    println(job_results)
+    println("Jobs results: ${job_results}")
     stage('gerrit vote') {
       // add gerrit voting +2 +1 / -1 -2
       def results = _get_jobs_result_for_gerrit(jobs, job_results)
