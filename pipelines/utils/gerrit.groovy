@@ -1,7 +1,7 @@
 // Gerrit utils
 
-VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2, 'nightly': 1]
-VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2, 'nightly': -1]
+VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2, 'nightly': 1, 'templates': 1]
+VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2, 'nightly': -1, 'templates': -1]
 
 def resolve_gerrit_url() {
   def url = "http://${env.GERRIT_HOST}/"
@@ -158,7 +158,7 @@ def publish_plain_results_to_monitoring(streams, results, verified) {
     it.collect { /--$it.key $it.value/ } join " "
   }
 
-  def pipeline_result = verified > 0 ? "SUCCESS" : "FAILURE"
+  def pipeline_result = verified < 0 ? "FAILURE" : "SUCCESS"
   for (stream in results.keySet()) {
     def result = _get_stream_result(results[stream]['results'])
     if (result == 'ABORTED') {
