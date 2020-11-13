@@ -349,7 +349,7 @@
     name: tungstenfabric/tf-charms
     check:
       templates:
-        # - test-tox-pep8
+        - test-tox-pep8
         - juju-k8s
         - juju-os
         - juju-os-1912

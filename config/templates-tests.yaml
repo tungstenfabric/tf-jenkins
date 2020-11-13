@@ -78,5 +78,16 @@
           - fetch-sources:
               inherit-keys:
                 - DEVENV_TAG
+
+- template:
+    name: test-tox-pep8
+    parents:
+      - prepare-sources
+    jobs:
+      test-unit-tox:
+        depends-on:
+          - fetch-sources:
+              inherit-keys:
+                - DEVENV_TAG
         vars:
-          TARGET: ui
+          TARGET_SET: pep8
