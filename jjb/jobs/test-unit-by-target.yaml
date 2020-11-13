@@ -123,5 +123,6 @@
       - ui
       - vcenter
       - containers
+      - tox
     jobs:
       - 'test-unit-{target}'

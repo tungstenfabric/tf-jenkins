@@ -68,6 +68,7 @@ export LINUX_DISTR_VER=${LINUX_DISTR_VER}
 export SITE_MIRROR=$SITE_MIRROR
 export GERRIT_URL=${GERRIT_URL}
 export GERRIT_BRANCH=${GERRIT_BRANCH}
+export GERRIT_PROJECT=${GERRIT_PROJECT}
 
 # devenvtag is passed from parent job
 export DEVENV_TAG=$DEVENV_TAG
