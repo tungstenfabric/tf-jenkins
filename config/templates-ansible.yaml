@@ -98,7 +98,7 @@
         stream: ansible-os
         depends-on:
           # temporary solution
-          - compile-centos
+          - package-centos
       deploy-tf-ansible-os:
         stream: ansible-os
         depends-on:
@@ -134,7 +134,7 @@
         stream: ansible-os-ha
         depends-on:
           # temporary solution
-          - compile-centos
+          - package-centos
         vars:
           NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
       deploy-tf-ansible-os-ha:
