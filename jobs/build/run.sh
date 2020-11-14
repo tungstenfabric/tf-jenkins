@@ -35,20 +35,20 @@ if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
   export DEVENV_TAG="sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
 fi
 
-#list for tf containers
+# list for tf containers
 mirror_list=""
-# list of repos for tf-dev-sandbox container
+# list of repos for building of tf-dev-sandbox container itself
 mirror_list_for_build=""
 if [[ ${LINUX_DISTR} == 'rhel7' ]]; then
-  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
-  mirror_list="mirror-google-chrome.repo"
+  mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
+  mirror_list="google-chrome.repo"
 elif [[ ${LINUX_DISTR} == 'centos' ]]; then
-  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo mirror-docker.repo mirror-base.repo "
+  mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-docker.repo mirror-base.repo "
   # epel must not be there - it cause incorrect installs and fails at runtime
-  mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo mirror-google-chrome.repo"
+  mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo google-chrome.repo"
 elif [[ "${LINUX_DISTR}" =~ 'ubi7' ]] ; then
-  mirror_list_for_build="mirror-epel.repo mirror-google-chrome.repo ubi.repo mirror-rhel7.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
-  mirror_list="mirror-google-chrome.repo ubi.repo mirror-rhel7.repo"
+  mirror_list_for_build="mirror-epel.repo google-chrome.repo ubi.repo mirror-rhel7.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
+  mirror_list="google-chrome.repo ubi.repo mirror-rhel7.repo"
 fi
 
 res=0
