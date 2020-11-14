@@ -97,16 +97,12 @@ def report_timeline(results) {
   def totalTime = 0
 
   for (stream in results.keySet()) {
-    if (!results[stream].containsKey('started') ||
-        !results[stream].containsKey('duration')) {
-          if (results[stream].containsKey('result')) {
-            output += String.format("|%48s | %5d h %2d m %2d s | %s\n",
-              stream, 0, 0, 0, results[stream]['result'])
-          } else {
-            output += String.format("|%48s | %5d h %2d m %2d s |\n",
-              stream, 0, 0, 0)
-          }
-    } else {
+    result = results[stream].get('result', 'NOT_BUILT')
+    hours = 0
+    minutes = 0
+    hours = 0
+    timeline = ''
+    if (results[stream].containsKey('started') && results[stream].containsKey('duration')) {
       if (results[stream]['started'] < startTime || startTime == 0) {
         startTime = results[stream]['started']
       }
@@ -120,9 +116,10 @@ def report_timeline(results) {
       seconds = (int) (duration % (60*1000) / 1000)
       minutes = (int) (duration / (60*1000)) % 60
       hours   = (int) (duration / (3600*1000))
-      output += String.format("|%48s | %5d h %2d m %2d s | %s%s\n",
-        stream, hours, minutes, seconds, "-"*dashesBefore, "="*equals)
+      timeline = "-"*dashesBefore + "="*equals
     }
+    output += String.format("| %42s | %10s | %5d h %2d m %2d s | %s\n",
+      stream, result, hours, minutes, seconds, timeline)
   }
   totalTime = endTime - startTime
   output += String.format("Total run time: %5d h %2d m %2d s\n",

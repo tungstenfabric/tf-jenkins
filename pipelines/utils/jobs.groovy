@@ -459,6 +459,7 @@ def _run_job(def job_set, def name, def streams) {
       if (job_number) {
         def job = Jenkins.getInstanceOrNull().getItemByFullName(job_name).getBuildByNumber(job_number)
         job_results[name]['number'] = job_number
+        job_results[name]['started'] = job.getStartTimeInMillis()
         job_results[name]['duration'] = job.getDuration()
         job_results[name]['result'] = job.getResult().toString()
       }
