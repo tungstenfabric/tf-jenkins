@@ -2,6 +2,10 @@
 
 - template:
     name: prepare-sources
+    streams:
+      prepare-sources:
+        vars:
+          LINUX_DISTR: centos
     jobs:
       prepare-sandbox-sources:
         # it creates worker
