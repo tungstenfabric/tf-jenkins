@@ -30,10 +30,10 @@ echo "INFO: Build started: ENVIRONMENT_OS=$ENVIRONMENT_OS LINUX_DISTR=$LINUX_DIS
 
 export DEVENV_TAG=${DEVENV_TAG:-stable${TAG_SUFFIX}}
 export BUILD_MODE="fast"
-if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
+#if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
   # changes in tf-dev-env - we have to rebuild it
-  export DEVENV_TAG="sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
-fi
+#  export DEVENV_TAG="sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
+#fi
 
 # list for tf containers
 mirror_list=""
