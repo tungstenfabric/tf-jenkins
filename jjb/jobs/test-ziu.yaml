@@ -4,6 +4,9 @@
     name: test-ziu
     description: "devstack test ziu"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 60
     parameters:
       - label:
           name: NODE_NAME
@@ -15,9 +18,6 @@
           name: PIPELINE_NAME
       - string:
           name: PIPELINE_NUMBER
-    properties:
-      - build-discarder:
-          num-to-keep: 50
     wrappers:
       - workspace-cleanup:
           disable-deferred-wipeout: true

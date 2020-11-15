@@ -2,6 +2,9 @@
     name: "test-lint"
     description: "lint"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 60
     parameters:
       - label:
           name: NODE_NAME

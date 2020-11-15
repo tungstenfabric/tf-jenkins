@@ -2,6 +2,9 @@
     name: "publish"
     description: "publish TF artifacts"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 60
     concurrent: false
     scm:
       - tf-jenkins

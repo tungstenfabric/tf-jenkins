@@ -4,6 +4,9 @@
     name: deploy-platform-{project}
     description: "devstack deploy platform for {project}"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 90
     parameters:
       - label:
           name: NODE_NAME
@@ -147,6 +150,9 @@
     name: deploy-tf-{project}
     description: "devstack deploy TF for {project}"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 90
     parameters:
       - label:
           name: NODE_NAME
@@ -225,7 +231,7 @@
     defaults: global
     properties:
       - build-discarder:
-          num-to-keep: 80
+          num-to-keep: 90
     parameters:
       - label:
           name: NODE_NAME
