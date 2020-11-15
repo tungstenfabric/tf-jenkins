@@ -112,8 +112,7 @@ done
 for mirror in $mirror_list ; do
   cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
 done
-# https://issues.sonatype.org/browse/NEXUS-25231
-#cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
+cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 
 echo "INFO: df -h"
 df -h
