@@ -3,6 +3,9 @@
     description: "scan published containers for security vulnerabilities"
     defaults: global
     concurrent: false
+    properties:
+      - build-discarder:
+          num-to-keep: 40
     scm:
       - tf-jenkins
     parameters:

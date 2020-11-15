@@ -4,6 +4,9 @@
     name: test-sanity
     description: "devstack test sanity"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 90
     parameters:
       - label:
           name: NODE_NAME
@@ -15,9 +18,6 @@
           name: PIPELINE_NAME
       - string:
           name: PIPELINE_NUMBER
-    properties:
-      - build-discarder:
-          num-to-keep: 50
     wrappers:
       - workspace-cleanup:
           disable-deferred-wipeout: true

@@ -4,6 +4,9 @@
     name: "test-unit-{target}"
     description: "unit tests of {target}"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 90
     scm:
       - tf-jenkins
       - tf-dev-env

@@ -2,6 +2,9 @@
     name: "cleanup-workers"
     description: "cleanup pipeline workers at the end of pipeline"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 90
     scm:
       - tf-jenkins
     parameters:
