@@ -43,7 +43,7 @@ class Session(object):
 
     def get(self, request, params=None):
         url = self._make_url(request)
-        res = requests.get(url, params=params, auth=self._auth)
+        res = requests.get(url, params=params, auth=self._auth, verify=False)
         if not res.ok:
             msg = "Failed request %s with code %s" % (res.url, res.status_code)
             raise GerritRequestError(msg)
@@ -52,7 +52,7 @@ class Session(object):
 
     def post(self, request, data=None):
         url = self._make_url(request)
-        res = requests.post(url, json=data, auth=self._auth)
+        res = requests.post(url, json=data, auth=self._auth, verify=False)
         if not res.ok:
             msg = "Failed request %s with code %s: %s" % (res.url, res.status_code, res.content)
             raise GerritRequestError(msg)
