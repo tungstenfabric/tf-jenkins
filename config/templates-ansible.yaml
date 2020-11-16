@@ -96,11 +96,16 @@
     jobs:
       deploy-platform-ansible-os:
         stream: ansible-os
+        vars:
+          CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
+          CONTRAIL_CONTAINER_TAG: nightly
         depends-on:
-          # temporary solution
-          - package-centos
+          - package-deployers-centos
       deploy-tf-ansible-os:
         stream: ansible-os
+        vars:
+          CONTAINER_REGISTRY: $CONTAINER_REGISTRY_ORIGINAL
+          CONTRAIL_CONTAINER_TAG: $CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
           - package-centos
           - deploy-platform-ansible-os
@@ -132,14 +137,18 @@
       deploy-platform-ansible-os-ha:
         job-name: deploy-platform-ansible-os
         stream: ansible-os-ha
-        depends-on:
-          # temporary solution
-          - package-centos
         vars:
           NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+          CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
+          CONTRAIL_CONTAINER_TAG: nightly
+        depends-on:
+          - package-deployers-centos
       deploy-tf-ansible-os-ha:
         job-name: deploy-tf-ansible-os
         stream: ansible-os-ha
+        vars:
+          CONTAINER_REGISTRY: $CONTAINER_REGISTRY_ORIGINAL
+          CONTRAIL_CONTAINER_TAG: $CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
           - package-centos
           - deploy-platform-ansible-os-ha
