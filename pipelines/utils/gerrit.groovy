@@ -91,17 +91,12 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
 }
 
 def report_timeline(job_results) {
-  def output = ""
+  def segment = 300 // 5 minutes for 
+
   def startTime = 0
   def endTime = 0
-  def totalTime = 0
-
+  // job_results are not sorted by time - calculate startTime and endTime first
   for (job in job_results.keySet()) {
-    result = job_results[job].get('result', 'NOT_BUILT')
-    hours = 0
-    minutes = 0
-    seconds = 0
-    timeline = ''
     if (job_results[job].containsKey('started') && job_results[job].containsKey('duration')) {
       if (job_results[job]['started'] < startTime || startTime == 0) {
         startTime = job_results[job]['started']
@@ -109,20 +104,30 @@ def report_timeline(job_results) {
       if (job_results[job]['started'] + job_results[job]['duration'] > endTime) {
         endTime = job_results[job]['started'] + job_results[job]['duration']
       }
+    }
+  }
 
-      duration = job_results[job]['duration']
-      dashesBefore = (int) (job_results[job]['started'] - startTime)/(300*1000)
-      equals = (int) 1 + duration/(300*1000)
-      seconds = (int) (duration % (60*1000) / 1000)
-      minutes = (int) (duration / (60*1000)) % 60
-      hours   = (int) (duration / (3600*1000))
+  def output = ""
+  for (job in job_results.keySet()) {
+    result = job_results[job].get('result', 'NOT_BUILT')
+    hours = 0
+    minutes = 0
+    seconds = 0
+    timeline = ''
+    if (job_results[job].containsKey('started') && job_results[job].containsKey('duration')) {
+      dashesBefore = (int) (job_results[job]['started'] - startTime) / segment / 1000
+      duration = (int) job_results[job]['duration'] / 1000
+      equals = (int) (duration + segment - 1) / segment
+      seconds = (int) (duration % 60)
+      minutes = (int) (duration / 60) % 60
+      hours   = (int) (duration / 3600)
       timeline = "-"*dashesBefore + "="*equals
     }
     output += String.format("| %42s | %10s | %5d h %2d m %2d s | %s\n",
       job, result, hours, minutes, seconds, timeline)
   }
 
-  totalTime = endTime - startTime
+  def totalTime = endTime - startTime
   output += String.format("Total run time: %5d h %2d m %2d s\n",
     (int) (totalTime / (3600*1000)),
     (int) (totalTime / (60*1000)) % 60,
