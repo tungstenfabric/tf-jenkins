@@ -1,22 +1,22 @@
 ---
 
 - template:
-    name: prepare-sources
+    name: prepare-ut-sources
     streams:
-      prepare-sources:
+      prepare-ut-sources:
         vars:
           LINUX_DISTR: centos
     jobs:
       prepare-sandbox-sources:
         # it creates worker
         job-name: build-prepare-sandbox
-        stream: prepare-sources
+        stream: prepare-ut-sources
         vars:
           PUBLISH_TYPE: stable
           VM_TYPE: small
       fetch-sources:
         job-name: build-fetch-sources
-        stream: prepare-sources
+        stream: prepare-ut-sources
         depends-on:
           - prepare-sandbox-sources
         vars:
@@ -24,7 +24,7 @@
       cleanup-worker-sources:
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
-        stream: prepare-sources
+        stream: prepare-ut-sources
         type: stream-post-hook
         depends-on:
           - fetch-sources
@@ -32,7 +32,7 @@
 - template:
     name: test-unit
     parents:
-      - prepare-sources
+      - prepare-ut-sources
     jobs:
       test-unit-agent:
         stream: test-unit
@@ -74,7 +74,7 @@
 - template:
     name: test-unit-ui
     parents:
-      - prepare-sources
+      - prepare-ut-sources
     jobs:
       test-unit-ui:
         depends-on:
@@ -85,7 +85,7 @@
 - template:
     name: test-tox-pep8
     parents:
-      - prepare-sources
+      - prepare-ut-sources
     jobs:
       test-unit-tox:
         depends-on:
