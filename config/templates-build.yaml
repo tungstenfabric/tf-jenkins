@@ -18,11 +18,16 @@
         stream: build-centos
         depends-on:
           - prepare-sandbox-centos
+      configure-centos:
+        job-name: build-configure
+        stream: build-centos
+        depends-on:
+          - fetch-sources-centos
       package-deployers-centos:
         job-name: build-package-deployers
         stream: build-centos
         depends-on:
-          - fetch-sources-centos
+          - configure-centos
       compile-centos:
         job-name: build-compile
         stream: build-centos
@@ -69,11 +74,16 @@
         stream: build-ubi
         depends-on:
           - prepare-sandbox-ubi
+      configure-ubi:
+        job-name: build-configure
+        stream: build-ubi
+        depends-on:
+          - fetch-sources-ubi
       package-deployers-ubi:
         job-name: build-package-deployers
         stream: build-ubi
         depends-on:
-          - fetch-sources-ubi
+          - configure-ubi
       compile-ubi:
         job-name: build-compile
         stream: build-ubi
@@ -113,11 +123,16 @@
         stream: build-rhel
         depends-on:
           - prepare-sandbox-rhel
+      configure-rhel:
+        job-name: build-configure
+        stream: build-rhel
+        depends-on:
+          - fetch-sources-rhel
       package-deployers-rhel:
         job-name: build-package-deployers
         stream: build-rhel
         depends-on:
-          - fetch-sources-rhel
+          - configure-rhel
       compile-rhel:
         job-name: build-compile
         stream: build-rhel
@@ -156,11 +171,16 @@
           stream: build-r1912-rhel
           depends-on:
             - prepare-sandbox-r1912-rhel
+        configure-r1912-rhel:
+          job-name: build-configure
+          stream: build-r1912-rhel
+          depends-on:
+            - fetch-sources-r1912-rhel
         package-deployers-r1912-rhel:
           job-name: build-package-deployers
           stream: build-r1912-rhel
           depends-on:
-            - fetch-sources-r1912-rhel
+            - configure-r1912-rhel
         compile-r1912-rhel:
           job-name: build-compile
           stream: build-r1912-rhel
@@ -199,11 +219,16 @@
           stream: build-r1912-ubi
           depends-on:
             - prepare-sandbox-r1912-ubi
+        configure-r1912-ubi:
+          job-name: build-configure
+          stream: build-r1912-ubi
+          depends-on:
+            - fetch-sources-r1912-ubi
         package-deployers-r1912-ubi:
           job-name: build-package-deployers
           stream: build-r1912-ubi
           depends-on:
-            - fetch-sources-r1912-ubi
+            - configure-r1912-ubi
         compile-r1912-ubi:
           job-name: build-compile
           stream: build-r1912-ubi
@@ -242,11 +267,16 @@
         stream: build-r1912
         depends-on:
           - prepare-sandbox-r1912
+      configure-r1912:
+        job-name: build-configure
+        stream: build-r1912
+        depends-on:
+          - fetch-sources-r1912
       package-deployers-r1912:
         job-name: build-package-deployers
         stream: build-r1912
         depends-on:
-          - fetch-sources-r1912
+          - configure-r1912
       compile-r1912:
         job-name: build-compile
         stream: build-r1912
@@ -285,11 +315,16 @@
         stream: build-r2011-centos
         depends-on:
           - prepare-sandbox-r2011-centos
+      configure-r2011-centos:
+        job-name: build-configure
+        stream: build-r2011-centos
+        depends-on:
+          - fetch-sources-r2011-centos
       package-deployers-r2011-centos:
         job-name: build-package-deployers
         stream: build-r2011-centos
         depends-on:
-          - fetch-sources-r2011-centos
+          - configure-r2011-centos
       compile-r2011-centos:
         job-name: build-compile
         stream: build-r2011-centos
