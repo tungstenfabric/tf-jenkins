@@ -15,7 +15,6 @@
           PUBLISH_TYPE: stable
           VM_TYPE: small
       fetch-sources:
-        # TODO: do not run configure stage - just fetch is required here
         job-name: build-fetch-sources
         stream: prepare-sources
         depends-on:

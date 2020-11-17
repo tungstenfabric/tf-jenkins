@@ -140,7 +140,10 @@
           stage: none
           target: ""
       - fetch-sources:
-          stage: ""
+          stage: fetch
+          target: ""
+      - configure:
+          stage: configure
           target: ""
       - package-deployers:
           stage: package

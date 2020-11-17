@@ -120,13 +120,7 @@ df -h
 echo "INFO: free -h"
 free -h
 
-if [[ -n "$STAGE" ]]; then
-  ./run.sh "$STAGE" "$TARGET"
-else
-  # default stage marked as finished in frozen image - call stages explicitly
-  ./run.sh fetch
-  ./run.sh configure
-fi
+./run.sh "$STAGE" "$TARGET"
 EOF
 
 if [[ "$res" != '0' ]] ; then
@@ -136,8 +130,8 @@ fi
 
 rm -rf build.env
 touch build.env
-if [[ -z "$STAGE" ]]; then
-  # default stage meams sync sources. after sync we have to copy this file to publish it for UT
+if [[ "$STAGE" == "fetch" ]]; then
+  # after fetching sources we have to copy this file to publish it for UT
   rsync -a -e "$ssh_cmd" $IMAGE_SSH_USER@$instance_ip:output/unittest_targets.lst $WORKSPACE/unittest_targets.lst || res=1
   echo "export UNITTEST_TARGETS=$(cat $WORKSPACE/unittest_targets.lst | tr '\n' ',')" >> build.env
 fi
