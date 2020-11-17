@@ -197,13 +197,13 @@ def publish_nightly_results_to_monitoring(streams, results) {
     it.collect { /--$it.key $it.value/ } join " "
   }
 
-  def log_opts = [
-    gerrit: env.GERRIT_PIPELINE,
-    status: "NOT_IMPLEMENTED",
-    duration: 0,
-    started: currentBuild.startTimeInMillis
-  ]
   for (stream in streams.keySet()) {
+    def log_opts = [
+      gerrit: env.GERRIT_PIPELINE,
+      status: "NOT_IMPLEMENTED",
+      duration: 0,
+      started: currentBuild.startTimeInMillis
+    ]
     if (results.containsKey(stream)) {
       log_opts['logs'] = "${logs_url}/${stream}"
       log_opts['status'] = _get_stream_result(results[stream]['results'])
