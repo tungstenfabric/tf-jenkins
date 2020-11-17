@@ -133,6 +133,7 @@ def report_timeline(job_results) {
     ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     writeFile(file: 'timeline.log', text: output)
     sh """#!/bin/bash
+      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
       rsync -a -e "${ssh_cmd}" timeline.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/
     """
   }
