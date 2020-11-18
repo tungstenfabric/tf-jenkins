@@ -1,71 +1,81 @@
 ---
 
 - template:
-    name: prepare-ut-sources
+    name: prepare-ut-sandbox
     streams:
-      prepare-ut-sources:
+      prepare-ut-sandbox:
         vars:
           LINUX_DISTR: centos
     jobs:
-      prepare-sandbox-sources:
+      prepare-sandbox-ut-sandbox:
         # it creates worker
         job-name: build-prepare-sandbox
-        stream: prepare-ut-sources
+        stream: prepare-ut-sandbox
         vars:
           PUBLISH_TYPE: stable
           VM_TYPE: small
-      fetch-sources:
+      # tox tests require just sources
+      fetch-sources-ut-sandbox:
         job-name: build-fetch-sources
-        stream: prepare-ut-sources
+        stream: prepare-ut-sandbox
         depends-on:
-          - prepare-sandbox-sources
+          - prepare-sandbox-ut-sandbox
         vars:
           PUBLISH_TYPE: build
-      cleanup-worker-sources:
+      # controller's UT requires a lot of stuff that is installed during configure stage
+      # UI UT requires build deps from contrail-web-core/contrail-web-controller
+      configure-ut-sandbox:
+        job-name: build-configure
+        stream: prepare-ut-sandbox
+        depends-on:
+          - fetch-sources-ut-sandbox
+        vars:
+          PUBLISH_TYPE: build
+      cleanup-worker-ut-sandbox:
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
-        stream: prepare-ut-sources
+        stream: prepare-ut-sandbox
         type: stream-post-hook
         depends-on:
-          - fetch-sources
+          - configure-ut-sandbox
 
 - template:
     name: test-unit
     parents:
-      - prepare-ut-sources
+      - prepare-ut-sandbox
     jobs:
       test-unit-agent:
         stream: test-unit
         depends-on:
-          - fetch-sources:
+          - configure-ut-sandbox:
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-opserver:
         stream: test-unit
         depends-on:
-          - fetch-sources:
+          - configure-ut-sandbox:
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-bgp:
         stream: test-unit
         depends-on:
-          - fetch-sources:
+          - configure-ut-sandbox:
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-group-one:
         stream: test-unit
         depends-on:
-          - fetch-sources:
+          - configure-ut-sandbox:
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
       test-unit-ungrouped:
         stream: test-unit
         depends-on:
-          - fetch-sources:
+          - configure-ut-sandbox:
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
@@ -74,22 +84,23 @@
 - template:
     name: test-unit-ui
     parents:
-      - prepare-ut-sources
+      - prepare-ut-sandbox
     jobs:
       test-unit-ui:
         depends-on:
-          - fetch-sources:
+          - configure-ut-sandbox:
               inherit-keys:
                 - DEVENV_TAG
 
+# TODO: think about moving this job into k8s cluster somehow
 - template:
     name: test-tox-pep8
     parents:
-      - prepare-ut-sources
+      - prepare-ut-sandbox
     jobs:
       test-unit-tox:
         depends-on:
-          - fetch-sources:
+          - fetch-sources-ut-sandbox:
               inherit-keys:
                 - DEVENV_TAG
         vars:
