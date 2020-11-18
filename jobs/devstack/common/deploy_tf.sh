@@ -1,11 +1,14 @@
 #!/bin/bash -eE
 set -o pipefail
+set -x
 
 deployer=$1
 
 [ "${DEBUG,,}" == "true" ] && set -x
 
 echo "INFO: Deploy TF with $deployer"
+echo "CONTAINER_REGISTRY is $CONTAINER_REGISTRY"
+echo "CONTRAIL_CONTAINER_TAG is $CONTRAIL_CONTAINER_TAG"
 
 cat <<EOF > $WORKSPACE/deploy_tf.sh
 #!/bin/bash -e
@@ -37,4 +40,6 @@ rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/deploy_tf.sh} $IMAGE_SSH_USER@
 eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./deploy_tf.sh || res=1
 
 echo "INFO: Deploy TF finished"
+echo "CONTAINER_REGISTRY is $CONTAINER_REGISTRY"
+echo "CONTRAIL_CONTAINER_TAG is $CONTRAIL_CONTAINER_TAG"
 exit $res
