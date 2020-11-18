@@ -116,7 +116,7 @@ def report_timeline(job_results) {
     timeline = ''
     if (job_results[job].containsKey('started') && job_results[job].containsKey('duration')) {
       dashesBefore = (int) (job_results[job]['started'] - startTime) / segment / 1000
-      duration = (int) job_results[job]['duration'] / 1000
+      duration = (int) (job_results[job]['duration'] / 1000)
       equals = (int) (duration + segment - 1) / segment
       seconds = (int) (duration % 60)
       minutes = (int) (duration / 60) % 60
