@@ -16,7 +16,7 @@
           trigger-on:
             - change-abandoned-event 
             - comment-added-contains-event:
-                comment-contains-value: '^(cancel)$'
+                comment-contains-value: '(?i)^(cancel)$'
           projects:
             - project-compare-type: 'ANT'
               project-pattern: '**'

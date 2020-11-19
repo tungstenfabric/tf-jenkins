@@ -29,9 +29,6 @@
             failed: true
             unstable: true
             notbuilt: true
-          trigger-on:
-            - comment-added-contains-event:
-                comment-contains-value: '^(check|recheck)\s?nightly$'
           trigger-for-unreviewed-patches: true
           projects:
             - project-compare-type: 'ANT'

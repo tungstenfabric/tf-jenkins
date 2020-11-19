@@ -30,7 +30,7 @@
                 approval-category: 'Verified'
                 approval-value: 2
             - comment-added-contains-event:
-                comment-contains-value: '^(submit)$'
+                comment-contains-value: '(?i)^(submit)$'
           trigger-for-unreviewed-patches: false
           projects:
             - project-compare-type: 'ANT'
