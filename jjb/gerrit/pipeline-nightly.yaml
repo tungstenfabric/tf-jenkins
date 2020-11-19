@@ -22,17 +22,3 @@
       lightweight-checkout: true
     triggers:
       - timed: "0 1 * * *"
-      - gerrit:
-          server-name: review.opencontrail.org
-          skip-vote:
-            successful: true
-            failed: true
-            unstable: true
-            notbuilt: true
-          trigger-for-unreviewed-patches: true
-          projects:
-            - project-compare-type: 'ANT'
-              project-pattern: '**'
-              branches:
-                - branch-compare-type: 'ANT'
-                  branch-pattern: '**'
