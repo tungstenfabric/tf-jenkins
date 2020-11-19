@@ -42,7 +42,7 @@
                 approval-category: 'Verified'
                 approval-value: 1
             - comment-added-contains-event:
-                comment-contains-value: '^(recheck gate|gate)$'
+                comment-contains-value: '(?i)^(recheck gate|gate)$'
           trigger-for-unreviewed-patches: false
           projects:
             - project-compare-type: 'ANT'
