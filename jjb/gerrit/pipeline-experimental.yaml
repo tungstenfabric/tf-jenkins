@@ -30,7 +30,7 @@
             notbuilt: true
           trigger-on:
             - comment-added-contains-event:
-                comment-contains-value: '(?i)^(check|recheck)\s?experimental$'
+                comment-contains-value: '(?i)^(foobar|experimental)$'
           trigger-for-unreviewed-patches: true
           projects:
             - project-compare-type: 'ANT'
