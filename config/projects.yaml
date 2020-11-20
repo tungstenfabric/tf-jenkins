@@ -466,11 +466,11 @@
     name: tungstenfabric/tf-deployment-test
     check:
       templates:
+        - test-tox-pep8
         - ansible-os # juju-os
         - cleanup
     gate:
       templates:
-        - test-tox-pep8
         - build-centos
         - ansible-k8s
         - ansible-os
