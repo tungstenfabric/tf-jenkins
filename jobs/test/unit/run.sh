@@ -59,6 +59,8 @@ cd src/tungstenfabric/tf-dev-env
 
 mkdir -p ./config/etc/yum.repos.d
 cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
+#sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker-daemon.json /etc/docker/daemon.json
+#sudo kill -SIGHUP $(pidof dockerd)
 # substitute repos only for centos7
 if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-base.repo ./config/etc/yum.repos.d/
