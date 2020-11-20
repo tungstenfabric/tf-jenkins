@@ -470,6 +470,7 @@
         - cleanup
     gate:
       templates:
+        - test-tox-pep8
         - build-centos
         - ansible-k8s
         - ansible-os
@@ -513,4 +514,5 @@
     check:
       templates:
         - build-centos
+        - test-tox-pep8
         - cleanup
