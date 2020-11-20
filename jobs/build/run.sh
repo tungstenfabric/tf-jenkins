@@ -114,6 +114,11 @@ for mirror in $mirror_list ; do
 done
 cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 
+sudo mkdir -p /etc/docker/
+sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker-daemon.json /etc/docker/daemon.json
+#sudo kill -SIGHUP $(pidof dockerd)
+
+
 echo "INFO: df -h"
 df -h
 echo "INFO: free -h"
