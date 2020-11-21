@@ -17,6 +17,8 @@ case $TARGET in
   "deployment" )
     script="src/tungstenfabric/tf-dev-test/deployment-test/run.sh"
     ;;
+  "smoke" )
+    script="src/tungstenfabric/tf-dev-test/smoke-test/run.sh"
   *)
     echo "Variable TARGET is unset or incorrect"
     exit 1
