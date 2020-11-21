@@ -322,7 +322,6 @@
           # TODO: think how to skip this job for some cases
           if [[ -n "$instance_ip" ]]; then
             "$WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh"
-            "$WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/test/sanity/collect_logs.sh"
             "$WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/devstack/${DEPLOYER}/remove_workers.sh"
           fi
     publishers:

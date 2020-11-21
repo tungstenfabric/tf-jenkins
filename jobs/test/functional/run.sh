@@ -23,7 +23,7 @@ case $TARGET in
     ;;
 esac
 
-cat << EOF > $WORKSPACE/functional-test.sh
+cat << EOF > $WORKSPACE/functional-test-$TARGET.sh
 #!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
@@ -38,12 +38,12 @@ export TF_TEST_IMAGE="$TF_TEST_IMAGE"
 export PATH=\$PATH:/usr/sbin
 $script
 EOF
-chmod a+x $WORKSPACE/functional-test.sh
+chmod a+x $WORKSPACE/functional-test-$TARGET.sh
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
-rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/functional-test.sh} $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/functional-test-$TARGET.sh} $IMAGE_SSH_USER@$instance_ip:./
 # run this via eval due to special symbols in ssh_cmd
-eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./functional-test.sh || res=1
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./functional-test-$TARGET.sh || res=1
 
 echo "INFO: Test $TARGET finished  $(date)"
 exit $res
