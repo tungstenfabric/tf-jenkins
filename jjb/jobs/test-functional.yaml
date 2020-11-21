@@ -1,8 +1,8 @@
 ---
 
 - job:
-    name: test-sanity
-    description: "devstack test sanity"
+    name: "test-{target}"
+    description: "Test suite {target}"
     defaults: global
     properties:
       - build-discarder:
@@ -50,14 +50,14 @@
       - tf-dev-test
     builders:
       - copyartifact:
-          project: ${PIPELINE_NAME}
+          project: ${{PIPELINE_NAME}}
           filter: "global.env,*.$JOB_RND.env,patchsets-info.json"
           which-build: upstream-build
       - shell: |
           source "$WORKSPACE/global.env"
-          source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
-          desc="Pipeline: ${PIPELINE_NAME}-${PIPELINE_NUMBER}  Random: ${JOB_RND}  Stream: ${STREAM}"
-          desc+="<br>Job logs: <a href=\"${LOGS_URL}/$JOB_LOGS_PATH\">${LOGS_URL}/$JOB_LOGS_PATH</a>"
+          source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
+          desc="Pipeline: $PIPELINE_NAME-$PIPELINE_NUMBER  Random: $JOB_RND  Stream: $STREAM"
+          desc+="<br>Job logs: <a href=\"$LOGS_URL/$JOB_LOGS_PATH\">$LOGS_URL/$JOB_LOGS_PATH</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
@@ -69,15 +69,27 @@
       - shell: |
           set -eo pipefail
           source "$WORKSPACE/global.env"
-          source ./src/tungstenfabric/tf-jenkins/infra/${SLAVE}/definitions
-          source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
+          source ./src/tungstenfabric/tf-jenkins/infra/$SLAVE/definitions
+          source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
           # do it as a latest source to override all exports
-          source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
+          source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
+
+          # TODO: make this smarter (in most cases we're wating for NTP sync)
           echo "INFO: wait 120s before tests run - give some time to cluster"
           sleep 120
-          ./src/tungstenfabric/tf-jenkins/jobs/test/sanity/run.sh || res=1
+
+          export TARGET={target}
+          ./src/tungstenfabric/tf-jenkins/jobs/test/functional/run.sh || res=1
           exit $res
     publishers:
       - archive:
           artifacts: '*.env'
+
+- project:
+    name: test-functional
+    target:
+      - sanity
+      - deployment
+    jobs:
+      - 'test-{target}'

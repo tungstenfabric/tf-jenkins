@@ -8,9 +8,22 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-echo "INFO: Test sanity started"
+echo "INFO: Test $TARGET started  $(date)"
 
-cat << EOF > $WORKSPACE/test-sanity.sh
+case $TARGET in
+  "sanity" )
+    script="src/tungstenfabric/tf-dev-test/contrail-sanity/run.sh"
+    ;;
+  "deployment" )
+    script="src/tungstenfabric/tf-dev-test/deployment-test/run.sh"
+    ;;
+  *)
+    echo "Variable TARGET is unset or incorrect"
+    exit 1
+    ;;
+esac
+
+cat << EOF > $WORKSPACE/functional-test.sh
 #!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
@@ -23,14 +36,14 @@ export CONTRAIL_CONTAINER_TAG_ORIGINAL="$CONTRAIL_CONTAINER_TAG_ORIGINAL$TAG_SUF
 export SSL_ENABLE=$SSL_ENABLE
 export TF_TEST_IMAGE="$TF_TEST_IMAGE"
 export PATH=\$PATH:/usr/sbin
-src/tungstenfabric/tf-dev-test/contrail-sanity/run.sh
+$script
 EOF
-chmod a+x $WORKSPACE/test-sanity.sh
+chmod a+x $WORKSPACE/functional-test.sh
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
-rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/test-sanity.sh} $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/functional-test.sh} $IMAGE_SSH_USER@$instance_ip:./
 # run this via eval due to special symbols in ssh_cmd
-eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./test-sanity.sh || res=1
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./functional-test.sh || res=1
 
-echo "INFO: Test sanity finished"
+echo "INFO: Test $TARGET finished  $(date)"
 exit $res
