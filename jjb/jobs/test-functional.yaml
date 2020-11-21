@@ -1,6 +1,6 @@
 ---
 
-- job:
+- job-template:
     name: "test-{target}"
     description: "Test suite {target}"
     defaults: global
