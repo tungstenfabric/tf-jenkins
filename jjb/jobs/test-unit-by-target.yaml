@@ -124,8 +124,6 @@
     name: test-unit-by-target
     target:
       - ui
-      - vcenter
-      - containers
       - tox
     jobs:
       - 'test-unit-{target}'
