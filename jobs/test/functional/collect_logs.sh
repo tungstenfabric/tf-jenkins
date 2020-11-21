@@ -14,6 +14,7 @@ mkdir -p $WORKSPACE/logs
 pushd $WORKSPACE/logs
 rsync -a -e "$ssh_cmd" $IMAGE_SSH_USER@$instance_ip:logs.tgz . || /bin/true
 tar -xvf logs.tgz
+rm logs.tgz
 popd
 
 FULL_LOGS_PATH="${LOGS_PATH}/${JOB_LOGS_PATH}/sanity"

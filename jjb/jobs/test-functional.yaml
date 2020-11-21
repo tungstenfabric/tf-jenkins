@@ -92,5 +92,6 @@
     target:
       - sanity
       - deployment
+      - smoke
     jobs:
       - 'test-{target}'
