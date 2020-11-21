@@ -35,6 +35,11 @@
         stream: ansible-k8s
         depends-on:
           - deploy-tf-ansible-k8s
+      test-deployment-ansible-k8s:
+        job-name: test-deployment
+        stream: ansible-k8s
+        depends-on:
+          - test-sanity-ansible-k8s
       collect-logs-and-cleanup-ansible-k8s:
         job-name: collect-logs-and-cleanup
         stream: ansible-k8s
@@ -43,6 +48,7 @@
           - deploy-platform-ansible-k8s
           - deploy-tf-ansible-k8s
           - test-sanity-ansible-k8s
+          - test-deployment-ansible-k8s
 
 - template:
     name: ansible-k8s-ha
