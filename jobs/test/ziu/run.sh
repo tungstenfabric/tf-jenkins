@@ -10,6 +10,11 @@ source "$my_dir/definitions"
 
 echo "INFO: Test ziu started"
 
+if [[ $DEPLOYER == 'juju' ]] ; then
+  run_path='src/tungstenfabric/tf-dev-test/ziu-test/run.sh'
+elif [[ $DEPLOYER == 'ansible' ]] ; then
+  run_path='src/tungstenfabric/tf-deployment-test/ansible/ansible_ziu/run.sh'
+fi
 cat << EOF > $WORKSPACE/test-ziu.sh
 #!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -21,7 +26,7 @@ export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX"
 export SSL_ENABLE=$SSL_ENABLE
 export CONTROLLER_NODES=$CONTROLLER_NODES
 export AGENT_NODES=$AGENT_NODES
-src/tungstenfabric/tf-dev-test/ziu-test/run.sh
+$run_path
 EOF
 chmod a+x $WORKSPACE/test-ziu.sh
 
