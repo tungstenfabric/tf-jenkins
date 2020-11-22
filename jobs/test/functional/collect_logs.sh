@@ -12,7 +12,11 @@ ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 rm -rf $WORKSPACE/logs
 mkdir -p $WORKSPACE/logs
 pushd $WORKSPACE/logs
-rsync -a -e "$ssh_cmd" $IMAGE_SSH_USER@$instance_ip:logs.tgz . || /bin/true
+if ! rsync -a -e "$ssh_cmd" $IMAGE_SSH_USER@$instance_ip:logs.tgz . ; then
+  echo "WARNING: logs.tgz is absent on worker"
+  exit
+fi
+
 tar -xvf logs.tgz
 rm logs.tgz
 popd
