@@ -162,3 +162,49 @@
           - deploy-platform-ansible-os-ha
           - deploy-tf-ansible-os-ha
           - test-sanity-ansible-os-ha
+
+- template:
+    name: ansible-os-ha-ziu
+    streams:
+      ansible-os-ha-ziu:
+        vars:
+          CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
+          CONTRAIL_CONTAINER_TAG: nightly-r2008
+          MONITORING_DEPLOY_TARGET: HA,ZIU
+          MONITORING_DEPLOYER: ansible
+          MONITORING_ORCHESTRATOR: os
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-ansible-os-ha-ziu:
+        job-name: deploy-platform-ansible-os
+        stream: ansible-os-ha-ziu
+        vars:
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-ansible-os-ha-ziu:
+        job-name: deploy-tf-ansible-os
+        stream: ansible-os-ha-ziu
+        depends-on:
+          - package-centos
+          - deploy-platform-ansible-os-ha-ziu
+      test-deployment-ansible-os-ha-ziu:
+        job-name: test-deployment
+        stream: ansible-os-ha-ziu
+        depends-on:
+          - deploy-tf-ansible-os-ha-ziu
+      test-sanity-ansible-os-ha-ziu:
+        job-name: test-sanity
+        stream: ansible-os-ha-ziu
+        vars:
+          TF_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/contrail-test-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
+        depends-on:
+          - deploy-tf-ansible-os-ha-ziu
+      collect-logs-and-cleanup-ansible-os-ha-ziu:
+        job-name: collect-logs-and-cleanup
+        stream: ansible-os-ha-ziu
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-ansible-os-ha-ziu
+          - deploy-tf-ansible-os-ha-ziu
+          - test-deployment-ansible-os-ha-ziu
+          - test-sanity-ansible-os-ha-ziu
