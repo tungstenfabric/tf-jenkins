@@ -313,6 +313,11 @@
         stream: juju-hybrid
         depends-on:
           - deploy-tf-juju-hybrid
+      test-deployment-juju-hybrid:
+        job-name: test-deployment
+        stream: juju-hybrid
+        depends-on:
+          - test-sanity-juju-hybrid
       collect-logs-and-cleanup-juju-hybrid:
         job-name: collect-logs-and-cleanup
         stream: juju-hybrid
@@ -321,3 +326,4 @@
           - deploy-platform-juju-hybrid
           - deploy-tf-juju-hybrid
           - test-sanity-juju-hybrid
+          - test-deployment-juju-hybrid
