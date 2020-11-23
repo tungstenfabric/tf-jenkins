@@ -11,6 +11,11 @@ cat <<EOF > $WORKSPACE/collect_logs.sh
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export ORCHESTRATOR=$ORCHESTRATOR
+export OPENSTACK_VERSION=$OPENSTACK_VERSION
+export CONTAINER_REGISTRY="$CONTAINER_REGISTRY"
+export DEPLOYER_CONTAINER_REGISTRY="$DEPLOYER_CONTAINER_REGISTRY"
+export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
+export CONTRAIL_DEPLOYER_CONTAINER_TAG="$CONTRAIL_DEPLOYER_CONTAINER_TAG$TAG_SUFFIX"
 export SSL_ENABLE=$SSL_ENABLE
 export CONTROLLER_NODES="$CONTROLLER_NODES"
 export AGENT_NODES="$AGENT_NODES"
@@ -21,10 +26,7 @@ if declare -f -F add_deployrc &>/dev/null ; then
   add_deployrc $WORKSPACE/collect_logs.sh
 fi
 
-cat <<EOF >> $WORKSPACE/collect_logs.sh
-./src/tungstenfabric/tf-devstack/${deployer}/run.sh logs
-EOF
-
+echo "src/tungstenfabric/tf-devstack/${deployer}/run.sh logs" >> $WORKSPACE/collect_logs.sh
 chmod a+x $WORKSPACE/collect_logs.sh
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
