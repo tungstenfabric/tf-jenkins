@@ -4,3 +4,12 @@ if [[ "$ORCHESTRATOR" != 'kubernetes' ]]; then
 fi
 
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
+
+function add_deployrc() {
+  local file="$1"
+  cat <<EOF >> "$file"
+export RHEL_OPENSHIFT_REGISTRY=$RHEL_OPENSHIFT_REGISTRY
+sudo setenforce 0
+EOF
+}
+export -f add_deployrc
