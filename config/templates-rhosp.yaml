@@ -175,3 +175,44 @@
           - deploy-platform-rhosp13-bmc
           - deploy-tf-rhosp13-bmc
           - test-sanity-rhosp13-bmc
+
+- template:
+    name: rhosp13-ha
+    parents:
+      - build-ubi
+    streams:
+      rhosp13-ha:
+        vars:
+          OPENSTACK_VERSION: queens
+          RHOSP_VERSION: rhosp13
+          TAG_SUFFIX: "-ubi7"
+          ENABLE_RHEL_REGISTRATION: false
+          OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:1
+          OPENSTACK_CONTROLLER_NODES: 'cn1'
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: rhosp13
+          MONITORING_ORCHESTRATOR: os
+    jobs:
+      deploy-platform-rhosp13-ha:
+        stream: rhosp13-ha
+        job-name: deploy-platform-rhosp13
+      deploy-tf-rhosp13-ha:
+        stream: rhosp13-ha
+        job-name: deploy-tf-rhosp13
+        depends-on:
+          - package-deployers-ubi
+          - deploy-platform-rhosp13-ha
+      test-sanity-rhosp13-ha:
+        job-name: test-sanity
+        stream: rhosp13-ha
+        depends-on:
+          - deploy-tf-rhosp13-ha
+      collect-logs-and-cleanup-rhosp13-ha:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp13-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-rhosp13-ha
+          - deploy-tf-rhosp13-ha
+          - test-sanity-rhosp13-ha
