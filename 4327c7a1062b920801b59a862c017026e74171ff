@@ -22,6 +22,30 @@
       "revId": "4327c7a1062b920801b59a862c017026e74171ff",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64234ab2_c557099d",
+        "filename": "config/templates-rhosp.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 958
+      },
+      "writtenOn": "2020-11-24T18:27:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b72f84a6_3ac6845c",
+      "range": {
+        "startLine": 193,
+        "startChar": 10,
+        "endLine": 193,
+        "endChar": 40
+      },
+      "revId": "4327c7a1062b920801b59a862c017026e74171ff",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
