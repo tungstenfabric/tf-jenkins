@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b72f84a6_3ac6845c",
+        "filename": "config/templates-rhosp.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-11-24T16:47:05Z",
+      "side": 1,
+      "message": "lets set to \"1\"",
+      "range": {
+        "startLine": 193,
+        "startChar": 10,
+        "endLine": 193,
+        "endChar": 40
+      },
+      "revId": "4327c7a1062b920801b59a862c017026e74171ff",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
