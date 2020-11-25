@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "00e541af_e8346809",
+        "filename": "config/templates-rhosp.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-11-25T11:30:23Z",
+      "side": 1,
+      "message": "NODES: \"OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1\"",
+      "range": {
+        "startLine": 191,
+        "startChar": 0,
+        "endLine": 192,
+        "endChar": 42
+      },
+      "revId": "1d821cd511a0db6aac7ad56964b58266a4d620ba",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
