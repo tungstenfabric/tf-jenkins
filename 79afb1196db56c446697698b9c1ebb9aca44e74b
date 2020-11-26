@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b8c6021e_52706ed4",
+        "filename": "jobs/devstack/rhosp/create_workers.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 958
+      },
+      "writtenOn": "2020-11-26T11:57:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "42859a7c_cba93623",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 51
+      },
+      "revId": "79afb1196db56c446697698b9c1ebb9aca44e74b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9aca8906_c2e19f61",
         "filename": "jobs/devstack/rhosp/create_workers.sh",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "79afb1196db56c446697698b9c1ebb9aca44e74b",
       "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99d22169_76eb9600",
+        "filename": "jobs/devstack/rhosp/create_workers.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 958
+      },
+      "writtenOn": "2020-11-26T11:57:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9aca8906_c2e19f61",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 2
+      },
+      "revId": "79afb1196db56c446697698b9c1ebb9aca44e74b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": false
     }
   ]
 }
