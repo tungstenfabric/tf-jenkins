@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "42859a7c_cba93623",
+        "filename": "jobs/devstack/rhosp/create_workers.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-11-26T11:49:50Z",
+      "side": 1,
+      "message": "actually.. if not needede. incase of empty NODES for loop just does nothing.\nyou can write like\nfor nodes in ${NODES//,/ } ; do",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 51
+      },
+      "revId": "79afb1196db56c446697698b9c1ebb9aca44e74b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9aca8906_c2e19f61",
+        "filename": "jobs/devstack/rhosp/create_workers.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-11-26T11:49:50Z",
+      "side": 1,
+      "message": "move inside the \"for (( i\u003d1; i\u003c\u003d$VM_RETRIES ; ++i )) ; do..\" below.\nsee, there is creation of stackrc file.\nso place your code right after \u0027echo \"export PROVIDER\u003d$PROVIDER\" \u003e\u003e \"$stackrc_file_path\"\u0027",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 2
+      },
+      "revId": "79afb1196db56c446697698b9c1ebb9aca44e74b",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
