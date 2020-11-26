@@ -29,6 +29,17 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
   echo "export OPENSTACK_CONTAINER_REGISTRY=$OPENSTACK_CONTAINER_REGISTRY" >> "$stackrc_file_path"
   echo "export PROVIDER=$PROVIDER" >> "$stackrc_file_path"
 
+  for nodes in ${NODES//,/ }; do
+    if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
+      echo "ERROR: inappropriate input \"$nodes\" in \"$NODES\""
+      exit 1
+    fi
+    node_name=$(echo $nodes | cut -d ':' -f1)
+    node_flavor=${VM_TYPES[$(echo $nodes | cut -d ':' -f2)]}
+    node_count=$(echo $nodes | cut -d ':' -f3)
+    echo "export $node_name=\"$node_flavor:$node_count\"" >> "$stackrc_file_path"
+  done
+
   if [[ -n "$CLOUD" ]]; then
       source "$my_dir/../../../infra/${CLOUD}/definitions"
       $my_dir/../../../infra/${CLOUD}/create_workers.sh
