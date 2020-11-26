@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d0a3d6ac_5be1685c",
+        "filename": "config/templates-rhosp.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-11-26T15:38:11Z",
+      "side": 1,
+      "message": "where are job_name for these two jobs?\n(check rhosp13-ha)",
+      "range": {
+        "startLine": 156,
+        "startChar": 0,
+        "endLine": 162,
+        "endChar": 38
+      },
+      "revId": "569db13290e818c568bd986dddcb4da0bc6429b7",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
