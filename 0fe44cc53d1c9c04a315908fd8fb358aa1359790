@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2b151a42_30b42ddb",
+        "filename": "config/templates-rhosp.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-11-26T11:54:59Z",
+      "side": 1,
+      "message": "job_name looks missing",
+      "range": {
+        "startLine": 156,
+        "startChar": 7,
+        "endLine": 156,
+        "endChar": 32
+      },
+      "revId": "0fe44cc53d1c9c04a315908fd8fb358aa1359790",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca1e8821_a6caa644",
+        "filename": "config/templates-rhosp.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-11-26T11:54:59Z",
+      "side": 1,
+      "message": "rhosp16-ha",
+      "range": {
+        "startLine": 165,
+        "startChar": 16,
+        "endLine": 165,
+        "endChar": 23
+      },
+      "revId": "0fe44cc53d1c9c04a315908fd8fb358aa1359790",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
