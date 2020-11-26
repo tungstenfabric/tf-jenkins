@@ -1,27 +1,27 @@
-[tf-nexus.progmaticlab.com_repository_centos7-os]
-name=added from: http://tf-nexus.progmaticlab.com/repository/centos7-os
-baseurl=http://tf-nexus.progmaticlab.com/repository/centos7-os
+[tf-mirrors.progmaticlab.com_repos_centos7-base]
+name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/base
+baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/base
 enabled=1
 gpgcheck=0
 cost = 500
 
-[tf-nexus.progmaticlab.com_repository_centos7-extras]
-name=added from: http://tf-nexus.progmaticlab.com/repository/centos7-extras
-baseurl=http://tf-nexus.progmaticlab.com/repository/centos7-extras
+[tf-mirrors.progmaticlab.com_repos_centos7-extras]
+name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/extras
+baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/extras
 enabled=1
 gpgcheck=0
 cost = 500
 
-[tf-nexus.progmaticlab.com_repository_centos7-updates]
-name=added from: http://tf-nexus.progmaticlab.com/repository/centos7-updates
-baseurl=http://tf-nexus.progmaticlab.com/repository/centos7-updates
+[tf-mirrors.progmaticlab.com_repos_centos7-updates]
+name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/updates/
+baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/updates/
 enabled=1
 gpgcheck=0
 cost = 500
 
 [tf-nexus.progmaticlab.com_repository_centos7-updates-old]
-name=added from: http://tf-nexus.progmaticlab.com/repository/centos7-updates-old
-baseurl=http://tf-nexus.progmaticlab.com/repository/centos7-updates-old
+name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/centosplus/
+baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/centosplus/
 enabled=1
 gpgcheck=0
 cost = 500
