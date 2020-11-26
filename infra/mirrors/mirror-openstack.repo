@@ -1,6 +1,6 @@
-[tf-nexus.progmaticlab.com_repository_openstack-queens]
-name=added from: http://tf-nexus.progmaticlab.com/repository/openstack-queens
-baseurl=http://tf-nexus.progmaticlab.com/repository/openstack-queens
+[tf-mirrors.progmaticlab.com_repos_centos-openstack-queens]
+name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/centos-openstack-queens/
+baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/centos-openstack-queens/
 enabled=1
 gpgcheck=0
 cost = 500
