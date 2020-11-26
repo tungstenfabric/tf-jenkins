@@ -12,6 +12,18 @@ stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 stackrc_file_path=$WORKSPACE/$stackrc_file
 export vexxrc="$stackrc_file_path"
 
+if [ -n "${NODES+set}" ]; then
+    for nodes in $( echo $NODES | tr ',' ' ' ) ; do
+        if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
+            echo "ERROR: inappropriate input \"$nodes\" in \"$NODES\""
+            exit 1
+        fi
+        node_name=$(echo $nodes | cut -d ':' -f1)
+        env_export+="export $node_name=\"$(echo $nodes | cut -d ':' -f 2-)\"\n"
+    done
+    echo -e "$env_export" >> $stackrc_file
+fi
+
 # TAG_SUFFIX is defined in vars.deploy-platform-rhosp13.23584.env
 # but CONTRAIL_CONTAINER_TAG is defined in global.env w/o suffix
 # So, global is sourced before vars and CONTRAIL_CONTAINER_TAG is w/o suffix here
