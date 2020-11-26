@@ -52,6 +52,17 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
   fi
   echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
+  for nodes in ${NODES//,/ }; do
+    if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
+      echo "ERROR: inappropriate input \"$nodes\" in \"$NODES\""
+      exit 1
+    fi
+    node_name=$(echo $nodes | cut -d ':' -f1)
+    node_flavor=${VM_TYPES[$(echo $nodes | cut -d ':' -f2)]}
+    node_count=$(echo $nodes | cut -d ':' -f3)
+    echo "export $node_name=\"$node_flavor:$node_count\"" >> "$stackrc_file_path"
+  done
+
   # to prepare rhosp-provisionin.sh
   source $stackrc_file_path
   if ./src/tungstenfabric/tf-devstack/rhosp/create_env.sh ; then
