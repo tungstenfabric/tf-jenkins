@@ -14,6 +14,18 @@ DEFAULT_OPENSTACK_VERSION = "queens"
 
 OPENSTACK_VERSIONS = ['ocata', 'pike', 'queens', 'rocky', 'stein', 'train', 'ussuri', 'victoria']
 
+// list of projects which will receive Verified label in gerrit instead of fake VerifiedTF
+VERIFIED_PROJECTS = [
+  'tungstenfabric/tf-container-builder',
+  'tungstenfabric/tf-ansible-deployer',
+  'tungstenfabric/tf-charms',
+  'tungstenfabric/tf-devstack',
+  'tungstenfabric/tf-devenv',
+  'tungstenfabric/tf-jenkins',
+  'tungstenfabric/tf-dev-test',
+  'tungstenfabric/tf-deployment-test'
+]
+
 // pipeline flow variables
 // base url for all jobs
 logs_url = ""
