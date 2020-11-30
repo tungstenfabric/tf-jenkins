@@ -19,8 +19,9 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 sudo cp -f ./pip.conf /etc/pip.conf
 sudo mkdir -p /etc/docker/
 sudo cp -f ./docker-daemon.json /etc/docker/daemon.json
-#sudo kill -SIGHUP $(pidof dockerd)
+
 echo "INFO: Update ubuntu OS"
+sudo sudo cp -f ./ubuntu18-sources.list /etc/apt/sources.list
 echo "APT::Acquire::Retries \"10\";" | sudo tee /etc/apt/apt.conf.d/80-retries
 sudo cp -f /usr/share/unattended-upgrades/20auto-upgrades-disabled /etc/apt/apt.conf.d/ || /bin/true
 EOF
