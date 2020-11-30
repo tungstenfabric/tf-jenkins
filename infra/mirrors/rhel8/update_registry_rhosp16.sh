@@ -94,6 +94,8 @@ openstack-nova-conductor
 openstack-nova-libvirt
 openstack-nova-novncproxy
 openstack-nova-scheduler
+openstack-novajoin-notifier
+openstack-novajoin-server
 openstack-octavia-api
 openstack-octavia-health-manager
 openstack-octavia-housekeeping
