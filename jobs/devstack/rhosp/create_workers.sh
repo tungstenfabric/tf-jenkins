@@ -28,6 +28,9 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
   echo "export ENABLE_NETWORK_ISOLATION=$ENABLE_NETWORK_ISOLATION" >> "$stackrc_file_path"
   echo "export OPENSTACK_CONTAINER_REGISTRY=$OPENSTACK_CONTAINER_REGISTRY" >> "$stackrc_file_path"
   echo "export PROVIDER=$PROVIDER" >> "$stackrc_file_path"
+  if [[ "${SSL_ENABLE,,}" == 'true' ; then 
+    echo "export ENABLE_TLS='ipa'" >> "$stackrc_file_path"
+  fi
 
   if [[ -n "$CLOUD" ]]; then
       source "$my_dir/../../../infra/${CLOUD}/definitions"
