@@ -286,7 +286,7 @@ def _notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, p
       usernameVariable: 'GERRIT_API_USER')]) {
     def opts = ""
 
-    // temporary hack to not vote for review.opencontrail.org
+    println("VERIFIED_PROJECTS: ${VERIFIED_PROJECTS}")    
     def label_name = 'VerifiedTF'
     if (env.GERRIT_HOST != 'review.opencontrail.org' || (env.GERRIT_PROJECT in VERIFIED_PROJECTS && env.GERRIT_BRANCH == 'master'))
       label_name = 'Verified'
