@@ -177,6 +177,7 @@
     check:
       templates:
         - ansible-os # juju-os
+        - test-tox-unit
         - cleanup
     gate:
       templates:
