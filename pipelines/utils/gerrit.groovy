@@ -1,7 +1,8 @@
 // Gerrit utils
 
-VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2, 'nightly': 1, 'templates': 1]
-VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2, 'nightly': -1, 'templates': -1]
+VERIFIED_STARTED_VALUES = ['check': 0, 'gate': 0, 'nightly': null, 'templates': null]
+VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2, 'nightly': 1, 'templates': null]
+VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2, 'nightly': -1, 'templates': null]
 
 def resolve_gerrit_url() {
   def url = "http://${env.GERRIT_HOST}/"
@@ -19,7 +20,7 @@ def resolve_gerrit_url() {
 def gerrit_build_started() {
   try {
     def msg = """TF CI Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
-    _notify_gerrit(msg)
+    _notify_gerrit(msg, VERIFIED_STARTED_VALUES[env.GERRIT_PIPELINE])
   } catch (err) {
     println("Failed to provide comment to gerrit")
     def msg = err.getMessage()
@@ -479,7 +480,7 @@ def _check_and_stop_builds(def check_func) {
 def _notify_terminated(def params) {
   try {
     def msg = """Run has been aborted due to new parent check ${env.GERRIT_CHANGE_ID} has been started."""
-    _notify_gerrit(msg, 0, false, params['change_id'], params['branch'], params['patchset_number'])
+    _notify_gerrit(msg, null, false, params['change_id'], params['branch'], params['patchset_number'])
   } catch (err) {
     println("Failed to provide comment to gerrit")
     def msg = err.getMessage()
