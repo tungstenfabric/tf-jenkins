@@ -105,3 +105,16 @@
                 - DEVENV_TAG
         vars:
           TARGET_SET: pep8
+
+- template:
+    name: test-tox-unit
+    parents:
+      - prepare-ut-sandbox
+    jobs:
+      test-unit-tox:
+        depends-on:
+          - fetch-sources-ut-sandbox:
+              inherit-keys:
+                - DEVENV_TAG
+        vars:
+          TARGET_SET: unit
