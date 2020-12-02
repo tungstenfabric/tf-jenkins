@@ -1,7 +1,6 @@
 #!/bin/bash -eE
 set -o pipefail
-
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
@@ -33,7 +32,7 @@ scp -i $WORKER_SSH_KEY $SSH_OPTIONS $env_file $my_dir/{scan.sh,excel.py,new_cves
 echo "INFO: Prepare the Aquasec environment"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP
 export WORKSPACE=\$HOME
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 export PATH=\$PATH:/usr/sbin
 
 DISTRO=$(cat /etc/*release | egrep '^ID=' | awk -F= '{print $2}' | tr -d \")

@@ -1,7 +1,6 @@
 #!/bin/bash -eE
 set -o pipefail
-
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
@@ -25,7 +24,7 @@ echo "INFO: UT started"
 function run_over_ssh() {
   res=0
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin

@@ -1,7 +1,6 @@
 #!/bin/bash -eE
 set -o pipefail
-
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
@@ -28,7 +27,7 @@ esac
 
 cat << EOF > $WORKSPACE/functional-test-$TARGET.sh
 #!/bin/bash -e
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export ORCHESTRATOR=$ORCHESTRATOR

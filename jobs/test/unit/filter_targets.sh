@@ -1,7 +1,6 @@
 #!/bin/bash -eE
 set -o pipefail
-
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 
 my_dir="$(realpath $(dirname "$0"))"
 

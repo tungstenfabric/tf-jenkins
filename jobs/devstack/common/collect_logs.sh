@@ -1,13 +1,11 @@
 #!/bin/bash
 set -o pipefail
-
+set -x
 deployer=$1
-
-[ "${DEBUG,,}" == "true" ] && set -x
 
 cat <<EOF > $WORKSPACE/collect_logs.sh
 #!/bin/bash -e
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export ORCHESTRATOR=$ORCHESTRATOR

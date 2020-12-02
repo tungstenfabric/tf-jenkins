@@ -1,7 +1,6 @@
 #!/bin/bash -eE
 set -o pipefail
-
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
@@ -28,7 +27,7 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER
 echo "INFO: Prepare worker"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 export WORKSPACE=\$HOME
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 export PATH=\$PATH:/usr/sbin
 export DEBUG=$DEBUG
 export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
