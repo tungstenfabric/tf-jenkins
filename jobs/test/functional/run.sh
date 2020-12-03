@@ -26,6 +26,11 @@ case $TARGET in
     ;;
 esac
 
+if [ ${RHOSP_VERSION+x} ]; then
+    deployer_version="export RHOSP_VERSION=$RHOSP_VERSION"
+else
+    deployer_version=""
+fi
 cat << EOF > $WORKSPACE/functional-test-$TARGET.sh
 #!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -41,6 +46,7 @@ export TF_TEST_IMAGE="$TF_TEST_IMAGE"
 export TF_DEPLOYMENT_TEST_IMAGE="$TF_DEPLOYMENT_TEST_IMAGE"
 export PATH=\$PATH:/usr/sbin
 export DEPLOYMENT_TEST_TAGS="$DEPLOYMENT_TEST_TAGS"
+$deployer_version
 $script
 EOF
 chmod a+x $WORKSPACE/functional-test-$TARGET.sh
