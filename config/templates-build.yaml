@@ -342,3 +342,51 @@
         type: stream-post-hook
         depends-on:
           - package-r2011-centos
+
+- template:
+    name: build-r2011-ubi
+    streams:
+      build-r2011-ubi:
+        vars:
+          LINUX_DISTR: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000/ubi7
+          LINUX_DISTR_VER: latest
+          TAG_SUFFIX: "-r2011-ubi7"
+          INSECURE_REGISTRIES: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000
+          GERRIT_BRANCH: "R2011"
+    jobs:
+        prepare-sandbox-r2011-ubi:
+          # it creates worker
+          job-name: build-prepare-sandbox
+          stream: build-r2011-ubi
+        fetch-sources-r2011-ubi:
+          job-name: build-fetch-sources
+          stream: build-r2011-ubi
+          depends-on:
+            - prepare-sandbox-r2011-ubi
+        configure-r2011-ubi:
+          job-name: build-configure
+          stream: build-r2011-ubi
+          depends-on:
+            - fetch-sources-r2011-ubi
+        package-deployers-r2011-ubi:
+          job-name: build-package-deployers
+          stream: build-r2011-ubi
+          depends-on:
+            - configure-r2011-ubi
+        compile-r2011-ubi:
+          job-name: build-compile
+          stream: build-r2011-ubi
+          depends-on:
+            - package-deployers-r2011-ubi
+        package-r2011-ubi:
+          job-name: build-package
+          stream: build-r2011-ubi
+          depends-on:
+            - compile-r2011-ubi
+        cleanup-r2011-ubi:
+          # it doesn't call devenv - it removes worker completly
+          job-name: build-cleanup
+          stream: build-r2011-ubi
+          type: stream-post-hook
+          depends-on:
+            - package-r2011-ubi
