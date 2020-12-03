@@ -21,6 +21,7 @@
       templates:
         - build-r1912
         - build-r1912-ubi
+        - build-r2008-ubi
         - build-r2011-centos
         - test-unit
         - test-unit-ui
@@ -43,9 +44,9 @@
         - juju-hybrid
         - rhosp13
         - rhosp13-1912
-        - rhosp13-ha
+        - rhosp13-ha-ziu
         - rhosp16
-        - rhosp16-ha
+        - rhosp16-ha-ziu
         - rhosp13-bmc
         - juju-os-not-implemented-targets
         - juju-k8s-not-implemented-targets
