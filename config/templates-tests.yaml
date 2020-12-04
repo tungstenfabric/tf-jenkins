@@ -98,7 +98,8 @@
     parents:
       - prepare-ut-sandbox
     jobs:
-      test-unit-tox:
+      test-unit-tox-pep8:
+        job-name: test-unit-tox
         depends-on:
           - fetch-sources-ut-sandbox:
               inherit-keys:
@@ -111,7 +112,8 @@
     parents:
       - prepare-ut-sandbox
     jobs:
-      test-unit-tox:
+      test-unit-tox-unit:
+        job-name: test-unit-tox
         depends-on:
           - fetch-sources-ut-sandbox:
               inherit-keys:
@@ -124,7 +126,8 @@
     parents:
       - prepare-ut-sandbox
     jobs:
-      test-unit-tox:
+      test-unit-tox-py36:
+        job-name: test-unit-tox
         depends-on:
           - fetch-sources-ut-sandbox:
               inherit-keys:
