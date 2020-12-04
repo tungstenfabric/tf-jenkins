@@ -29,7 +29,7 @@
         - ansible-k8s
         - ansible-k8s-ha
         - ansible-os
-        - ansible-os-ha
+        - ansible-os-ha-ziu
         - helm-k8s
         - helm-k8s-ha
         - helm-os
