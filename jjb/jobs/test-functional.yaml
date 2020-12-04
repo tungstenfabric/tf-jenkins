@@ -75,10 +75,6 @@
           source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
           export FULL_LOGS_PATH="$LOGS_PATH/$JOB_LOGS_PATH"
 
-          # TODO: make this smarter (in most cases we're wating for NTP sync)
-          echo "INFO: wait 120s before tests run - give some time to cluster"
-          sleep 120
-
           export TARGET={target}
           ./src/tungstenfabric/tf-jenkins/jobs/test/functional/run.sh || res=1
           ./src/tungstenfabric/tf-jenkins/jobs/test/functional/collect_logs.sh

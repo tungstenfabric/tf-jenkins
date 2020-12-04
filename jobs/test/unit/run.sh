@@ -13,7 +13,7 @@ mkdir -p $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
 if [ -e $WORKSPACE/unittest_targets.lst ]; then
   cp -f $WORKSPACE/unittest_targets.lst $WORKSPACE/src/tungstenfabric/tf-dev-env/input/
 fi
-# pass target_set as a additional key name for file names in log folder
+# pass target_set as a additional key name for file names in log folder or as a tox target
 echo $TARGET_SET > $WORKSPACE/src/tungstenfabric/tf-dev-env/input/target_set
 
 STAGE=${STAGE:-test}
