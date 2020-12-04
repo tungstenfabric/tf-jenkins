@@ -118,3 +118,16 @@
                 - DEVENV_TAG
         vars:
           TARGET_SET: unit
+
+- template:
+    name: test-tox-py36
+    parents:
+      - prepare-ut-sandbox
+    jobs:
+      test-unit-tox:
+        depends-on:
+          - fetch-sources-ut-sandbox:
+              inherit-keys:
+                - DEVENV_TAG
+        vars:
+          TARGET_SET: py36
