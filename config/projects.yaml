@@ -143,6 +143,7 @@
     names: [tungstenfabric/tf-ansible-deployer, Juniper/contrail-ansible-deployer]
     check:
       templates:
+        - test-tox-pep8
         - test-tox-py36
         - ansible-k8s
         - ansible-os
