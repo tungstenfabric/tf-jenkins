@@ -5,7 +5,7 @@
     streams:
       ansible-os-not-implemented-targets:
         vars:
-          MONITORING_DEPLOY_TARGET: ZIU,ISSU
+          MONITORING_DEPLOY_TARGET: ISSU
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: os
 
