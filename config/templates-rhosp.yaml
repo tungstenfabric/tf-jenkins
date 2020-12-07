@@ -5,7 +5,7 @@
     streams:
       rhosp13-os-not-implemented-targets:
         vars:
-          MONITORING_DEPLOY_TARGET: HA,ZIU,ISSU,SR-IOV,DPDK,CCImport
+          MONITORING_DEPLOY_TARGET: ZIU,ISSU,SR-IOV,DPDK,CCImport
           MONITORING_DEPLOYER: rhosp13
           MONITORING_ORCHESTRATOR: os
 
@@ -14,7 +14,7 @@
     streams:
       rhosp16-os-not-implemented-targets:
         vars:
-          MONITORING_DEPLOY_TARGET: HA,PROD,ZIU,ISSU,SR-IOV,DPDK,ILTS,CCImport
+          MONITORING_DEPLOY_TARGET: PROD,ZIU,ISSU,SR-IOV,DPDK,ILTS,CCImport
           MONITORING_DEPLOYER: rhosp16
           MONITORING_ORCHESTRATOR: os
 
