@@ -3,7 +3,7 @@ set -o pipefail
 
 deployer=$1
 
-[ "${DEBUG,,}" == "true" ] && set -x
+set -x
 
 echo "INFO: Deploy TF with $deployer"
 
