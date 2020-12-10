@@ -220,38 +220,87 @@ def _run_gating(def jobs, def streams, def gate_utils, def gerrit_utils) {
   }
 }
 
-def _run_jobs(def job_set, def streams) {
+def _set_stream_jobs_code(def job_set, def stream) {
+  println("_set_stream_jobs_code ${job_set}")
+  println("_set_stream_jobs_code ${stream}")
+
   def jobs_code = [:]
   job_set.keySet().each { name ->
-    job_results[name] = [:]
-    job_results[name]['job-rnd'] = "${rnd.nextInt(99999)}"
-    jobs_code[name] = {
-      stage(name) {
-        try {
-          def result = _wait_for_dependencies(job_set, name)
-          if (result) {
-            // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
-            _run_job(job_set, name, streams)
-          } else {
-            job_results[name]['number'] = -1
-            job_results[name]['duration'] = 0
-            job_results[name]['result'] = 'NOT_BUILT'
+    println("checking ${name} in stream ${stream}")
+    if (stream != null) {
+      println("stream is not null")
+      if (job_set[name].containsKey('stream')) {
+        println("job_set[${name}] contains 'stream' key")
+        if (job_set[name]['stream'] == stream) {
+          println("equals")
+        } else {
+          print("not equals")
+        }
+      } else {
+        println("No 'stream' key in jobs_set[${name}]")
+      }
+    } else {
+      println("stream is null")
+    }
+    def instream = (stream != null && job_set[name].containsKey('stream') && job_set[name]['stream'] == stream)
+    def nostream = (stream == null && !job_set[name].containsKey('stream'))
+    println(instream || nostream)
+
+    if ( instream || nostream ) {
+      prinln("getting job code for ${name} in stream ${stream}")
+      job_results[name] = [:]
+      job_results[name]['job-rnd'] = "${rnd.nextInt(99999)}"
+      jobs_code[name] = {
+        stage(name) {
+          try {
+            def result = _wait_for_dependencies(job_set, name)
+            if (result) {
+              // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
+              _run_job(job_set, name, streams)
+            } else {
+              job_results[name]['number'] = -1
+              job_results[name]['duration'] = 0
+              job_results[name]['result'] = 'NOT_BUILT'
+            }
+          } catch (err) {
+            println("JOB ${name}: error in job!!!")
+            println("JOB ${name}: Err - ${err}")
+            println("JOB ${name}: Message - ${err.getMessage()}")
+            println("JOB ${name}: Cause - ${err.getCause()}")
+            println("JOB ${name}: Stacktrace - ${err.getStackTrace()}")
+            throw(err)
           }
-        } catch (err) {
-          println("JOB ${name}: error in job!!!")
-          println("JOB ${name}: Err - ${err}")
-          println("JOB ${name}: Message - ${err.getMessage()}")
-          println("JOB ${name}: Cause - ${err.getCause()}")
-          println("JOB ${name}: Stacktrace - ${err.getStackTrace()}")
-          throw(err)
         }
       }
     }
   }
+  println("Returning code ${jobs_code}")
+  return jobs_code
+}
 
+def _run_jobs(def job_set, def streams) {
+  def jobs_by_stream_code = [:]
+  println("Running jobs: ${job_set}")
+  println("groupped by stream ${streams}")
+  streams.keySet().each { name ->
+    println("Collecting jobs for ${name}")
+    def jobs = _set_stream_jobs_code(job_set, name)
+    println("Jobs for stream ${name}: ${jobs}")
+    if (streams[name].containsKey('lock')) {
+      jobs_by_stream_code[name] = {
+        lock(resource: streams[name]['lock']) {
+          parallel(jobs)
+        }
+      }
+    } else {
+      jobs_by_stream_code[name] = parallel(jobs)
+    }
+  }
+  jobs_by_stream_code['jobs-with-no-stream-assigned'] = parallel(_set_stream_jobs_code(job_set, null))
+  println(jobs_by_stream_code)
   // run jobs in parallel
-  if (jobs_code.size() > 0)
-    parallel(jobs_code)
+  if (jobs_by_stream_code.size() > 0)
+    parallel(jobs_by_stream_code)
 }
 
 def _get_jobs_result_for_gerrit(job_set, job_results) {
