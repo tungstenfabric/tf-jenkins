@@ -14,9 +14,68 @@
     streams:
       juju-os-not-implemented-targets:
         vars:
-          MONITORING_DEPLOY_TARGET: ISSU,SR-IOV,DPDK,CCImport
+          MONITORING_DEPLOY_TARGET: ISSU,CCImport
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: juju-os-sequental-not-implemented-targets
+    streams:
+      juju-os-sequental-not-implemented-targets:
+        vars:
+          LINUX_DISTR: centos
+          MONITORING_DEPLOY_TARGET: SR-IOV,DPDK
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
+        lock: baremetalLab
+    jobs:
+      prepare-sandbox-centos:
+        # it creates worker
+        job-name: build-prepare-sandbox
+        stream: build-centos
+        vars:
+          DEVENV_TAG: frozen
+      fetch-sources-centos:
+        job-name: build-fetch-sources
+        stream: build-centos
+        depends-on:
+          - prepare-sandbox-centos
+      configure-centos:
+        job-name: build-configure
+        stream: build-centos
+        depends-on:
+          - fetch-sources-centos
+      package-deployers-centos:
+        job-name: build-package-deployers
+        stream: build-centos
+        depends-on:
+          - configure-centos
+      compile-centos:
+        job-name: build-compile
+        stream: build-centos
+        depends-on:
+          - package-deployers-centos
+      package-centos:
+        job-name: build-package
+        stream: build-centos
+        depends-on:
+          - compile-centos
+      freeze-centos:
+        job-name: build-freeze
+        stream: build-centos
+        depends-on:
+          - package-centos
+        vars:
+          PUBLISH_TYPE: frozen
+      cleanup-centos:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
+        stream: build-centos
+        type: stream-post-hook
+        depends-on:
+          - freeze-centos
+    post-jobs:
+      cleanup-workers:
 
 - template:
     name: juju-k8s-not-implemented-targets
