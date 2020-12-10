@@ -50,6 +50,11 @@
         stream: juju-k8s
         depends-on:
           - deploy-tf-juju-k8s
+      test-deployment-juju-k8s:
+        job-name: test-deployment
+        stream: juju-k8s
+        depends-on:
+          - test-sanity-juju-k8s
       collect-logs-and-cleanup-juju-k8s:
         job-name: collect-logs-and-cleanup
         stream: juju-k8s
@@ -58,6 +63,7 @@
           - deploy-platform-juju-k8s
           - deploy-tf-juju-k8s
           - test-sanity-juju-k8s
+          - test-deployment-juju-k8s
 
 - template:
     name: juju-k8s-ha
