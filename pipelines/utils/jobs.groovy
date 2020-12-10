@@ -128,7 +128,7 @@ def _evaluate_env(def config_utils) {
       (streams, jobs, post_jobs) = config_utils.get_project_jobs(project_name, env.GERRIT_PIPELINE, env.GERRIT_BRANCH)
     } else {
       // It triggers by comment "(check|recheck) template(s) name1 name2 ...".
-      def full_comment = env.GERRIT_EVENT_COMMENT_TEXT
+      def full_comment = env.GERRIT_EVENT_COMMENT_TEXT.toLowerCase()
       def lines = full_comment.split("\n")
       def needed_line = ""
       for (line in lines) {
