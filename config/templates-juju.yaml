@@ -14,9 +14,19 @@
     streams:
       juju-os-not-implemented-targets:
         vars:
-          MONITORING_DEPLOY_TARGET: ISSU,SR-IOV,DPDK,CCImport
+          MONITORING_DEPLOY_TARGET: ISSU,CCImport
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
+
+- template:
+    name: juju-os-sequental-not-implemented-targets
+    streams:
+      juju-os-sequental-not-implemented-targets:
+        vars:
+          MONITORING_DEPLOY_TARGET: SR-IOV,DPDK
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
+        lock: baremetalLab
 
 - template:
     name: juju-k8s-not-implemented-targets
