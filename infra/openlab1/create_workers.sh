@@ -13,12 +13,21 @@ cat <<EOF | ssh -i $OPENLAB1_SSH_KEY $SSH_OPTIONS -p 30001 jenkins@openlab.tf-je
 [ "${DEBUG,,}" == "true" ] && set -x
 export LIBVIRT_DEFAULT_URI=qemu:///system
 export PATH=\$PATH:/usr/sbin
-virsh destroy $VM_NAME || /bin/true
-virsh undefine $VM_NAME  || /bin/true
-rm -f $VM_NAME.qcow2
-virt-clone --original $ENVIRONMENT_OS --name $VM_NAME --auto-clone --file $VM_NAME.qcow2
-virsh start $VM_NAME
-echo "VM is spinned"
+function _run_vm() {
+  local origin=\$1
+  local vm=\$1
+  virsh destroy \$vm || /bin/true
+  virsh undefine \$vm  || /bin/true
+  rm -f \$vm.qcow2
+  virt-clone --original \$origin --name \$vm --auto-clone --file \$vm.qcow2
+  virsh start \$vm
+  echo "VM \$vm is spinned"
+}
+_run_vm $ORIGIN_VM_NAME $VM_NAME
+if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then
+  _run_vm $ORIGIN_IPA_VM_NAME $IPA_VM_NAME
+fi
+echo "VMs are started"
 EOF
 
 stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
@@ -26,14 +35,22 @@ stackrc_file_path=$WORKSPACE/$stackrc_file
 echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file"
 echo "export instance_ip=$instance_ip" >> "$stackrc_file"
 echo "export mgmt_ip=$instance_ip" >> "$stackrc_file"
+echo "export ipa_mgmt_ip=$ipa_mgmt_ip" >> "$stackrc_file"
 echo "export SSH_EXTRA_OPTIONS=\"-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -i \$OPENLAB1_SSH_KEY -l jenkins -p 30001 openlab.tf-jenkins.progmaticlab.com\\\"\"" >> "$stackrc_file"
 source "$stackrc_file"
 
-timeout 300 bash -c "\
-while /bin/true ; do \
-  ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$instance_ip 'uname -a' && break ; \
-  sleep 10 ; \
-done"
+function wait_machine() {
+  local addr="$1"
+  timeout 300 bash -c "\
+  while /bin/true ; do \
+    ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS $IMAGE_SSH_USER@$addr 'uname -a' && break ; \
+    sleep 10 ; \
+  done"
+}
 
+wait_machine $instance_ip
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$my_dir/instackenv.json} $IMAGE_SSH_USER@$instance_ip:./
+if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then
+  wait_machine $ipa_mgmt_ip
+fi
