@@ -146,6 +146,7 @@
           OPENSTACK_VERSION: train
           RHOSP_VERSION: rhosp16
           TAG_SUFFIX: "-ubi7"
+          SSL_ENABLE: true
           ENABLE_RHEL_REGISTRATION: false
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
           OPENSTACK_CONTAINER_REGISTRY: "rhel8-mirrors.tf-jenkins.progmaticlab.com:5000"
@@ -226,6 +227,7 @@
           OPENSTACK_VERSION: queens
           RHOSP_VERSION: rhosp13
           TAG_SUFFIX: "-ubi7"
+          SSL_ENABLE: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
