@@ -25,6 +25,17 @@ fi
 for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
   echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" > "$stackrc_file_path"
   echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
+  if [[ "$ENABLE_RHEL_REGISTRATION" == 'true' ]] ; then
+    cat << EOF >> >> "$stackrc_file_path"
+state="\$(set +o)"
+[[ "\$-" =~ e ]] && state+="; set -e"
+set +x
+export RHEL_USER="$RHEL_USER"
+export RHEL_PASSWORD="$RHEL_PASSWORD"
+export RHEL_POOL_ID="$RHEL_POOL_ID"
+eval "\$state"
+EOF
+  fi
   echo "export ENABLE_NETWORK_ISOLATION=$ENABLE_NETWORK_ISOLATION" >> "$stackrc_file_path"
   echo "export OPENSTACK_CONTAINER_REGISTRY=$OPENSTACK_CONTAINER_REGISTRY" >> "$stackrc_file_path"
   echo "export PROVIDER=$PROVIDER" >> "$stackrc_file_path"
