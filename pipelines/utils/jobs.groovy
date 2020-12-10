@@ -220,38 +220,59 @@ def _run_gating(def jobs, def streams, def gate_utils, def gerrit_utils) {
   }
 }
 
-def _run_jobs(def job_set, def streams) {
+def _set_stream_jobs_code(def job_set, def stream) {
   def jobs_code = [:]
   job_set.keySet().each { name ->
-    job_results[name] = [:]
-    job_results[name]['job-rnd'] = "${rnd.nextInt(99999)}"
-    jobs_code[name] = {
-      stage(name) {
-        try {
-          def result = _wait_for_dependencies(job_set, name)
-          if (result) {
-            // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
-            _run_job(job_set, name, streams)
-          } else {
-            job_results[name]['number'] = -1
-            job_results[name]['duration'] = 0
-            job_results[name]['result'] = 'NOT_BUILT'
+    if ( (stream != null && job_set[name].containsKey('stream') && job_set[name]['stream'] == stream) ||
+         (stream == null && !job_set[name].containsKey('stream'))) {
+      job_results[name] = [:]
+      job_results[name]['job-rnd'] = "${rnd.nextInt(99999)}"
+      jobs_code[name] = {
+        stage(name) {
+          try {
+            def result = _wait_for_dependencies(job_set, name)
+            if (result) {
+              // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
+              _run_job(job_set, name, streams)
+            } else {
+              job_results[name]['number'] = -1
+              job_results[name]['duration'] = 0
+              job_results[name]['result'] = 'NOT_BUILT'
+            }
+          } catch (err) {
+            println("JOB ${name}: error in job!!!")
+            println("JOB ${name}: Err - ${err}")
+            println("JOB ${name}: Message - ${err.getMessage()}")
+            println("JOB ${name}: Cause - ${err.getCause()}")
+            println("JOB ${name}: Stacktrace - ${err.getStackTrace()}")
+            throw(err)
           }
-        } catch (err) {
-          println("JOB ${name}: error in job!!!")
-          println("JOB ${name}: Err - ${err}")
-          println("JOB ${name}: Message - ${err.getMessage()}")
-          println("JOB ${name}: Cause - ${err.getCause()}")
-          println("JOB ${name}: Stacktrace - ${err.getStackTrace()}")
-          throw(err)
         }
       }
     }
   }
 
+  return jobs_code
+}
+
+def _run_jobs(def job_set, def streams) {
+  def jobs_by_stream_code = [:]
+  streams.keySet().each { name ->
+    def jobs = _set_stream_jobs_code(jobs_set, name)
+    if (streams[name].containsKey('lock')) {
+      jobs_by_stream_code[name] = {
+        lock(resource: streams[name]['lock']) {
+          parallel(jobs)
+        }
+      }
+    } else {
+      jobs_by_stream_code[name] = parallel(jobs)
+    }
+  }
+  jobs_by_stream_code['jobs-with-no-stream-assigned'] = parallel(_set_stream_jobs_code(jobs_set, null))
   // run jobs in parallel
-  if (jobs_code.size() > 0)
-    parallel(jobs_code)
+  if (jobs_by_stream_code.size() > 0)
+    parallel(jobs_by_stream_code)
 }
 
 def _get_jobs_result_for_gerrit(job_set, job_results) {

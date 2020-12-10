@@ -48,6 +48,7 @@
         - rhosp16-ha
         - rhosp13-bmc
         - juju-os-not-implemented-targets
+        - juju-os-sequental-not-implemented-targets
         - juju-k8s-not-implemented-targets
         - juju-hybrid-not-implemented-targets
         - rhosp13-os-not-implemented-targets
