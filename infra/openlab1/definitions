@@ -1,5 +1,9 @@
 export IMAGE_SSH_USER="stack"
+export ORIGIN_VM_NAME="$ENVIRONMENT_OS"
 export VM_NAME="undercloud"
+export ORIGIN_IPA_VM_NAME="${ENVIRONMENT_OS}-ipa"
+export IPA_VM_NAME="ipa"
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
 export instance_ip="10.10.50.10"
+export ipa_mgmt_ip="10.10.50.11"
