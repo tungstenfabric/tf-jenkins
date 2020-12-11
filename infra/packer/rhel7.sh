@@ -5,8 +5,8 @@ cat << EOF > local.repo
 
 # epel mirror disabled by default it is enabled explicitly only in tf-dev-env
 [epel]
-name=added from: http://tf-nexus.progmaticlab.com/repository/epel
-baseurl=http://tf-nexus.progmaticlab.com/repository/epel
+name=epel
+baseurl=http://tf-mirrors.progmaticlab.com/repos/yum7/epel
 enabled=0
 gpgcheck=0
 cost = 600
