@@ -303,7 +303,7 @@ class Expert(object):
     def is_eligible_for_gating(self, change_):
         return self.__is_eligible_general_test(change_) and \
             self.is_mergeable(change_) and self.is_approved(change_) and \
-            self.is_verified(change_, 1)
+            (self.is_verified(change_, 1) or self.is_verified(change_, -2))
 
     def is_eligible_for_submit(self, change_):
         return self.__is_eligible_general_test(change_) and \
