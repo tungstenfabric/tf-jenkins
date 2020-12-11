@@ -277,10 +277,9 @@ class Expert(object):
         return True
 
     def is_verified(self, change_, factor_):
-        f = abs(factor_)
         V = change_.labels.get('Verified', {}).get('all', [])
-        if 0 == len(list(filter(lambda r_: f == r_.get('value', 0), V))):
-            dbg("there is no Verified +%d" % f)
+        if 0 == len(list(filter(lambda r_: factor_ == r_.get('value', 0), V))):
+            dbg("there is no Verified +%d" % factor_)
             return False
 
         return True
