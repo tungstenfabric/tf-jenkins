@@ -17,6 +17,7 @@ def get_templates_jobs(template_names) {
   // Check if all deps point to real jobs
   _check_dependencies(jobs)
   _check_dependencies(post_jobs)
+  _fill_stream_jobs(streams, jobs)
 
   return [streams, jobs, post_jobs]
 }
@@ -70,6 +71,7 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
   // check if all deps point to real jobs
   _check_dependencies(jobs)
   _check_dependencies(post_jobs)
+  _fill_stream_jobs(streams, jobs)
 
   return [streams, jobs, post_jobs]
 }
@@ -187,6 +189,21 @@ def _update_map(items, new_items) {
           "has different value in current items: '${items[item.key]}' of type '${items[item.key].getClass()}")
       }
     }
+  }
+}
+
+def _fill_stream_jobs(def streams, def job_set) {
+  for (name in job_set.keySet()) {
+    if (!job_set[name].containsKey('stream'))
+      continue
+    stream = streams.get(job_set[name]['stream'])
+    if (!stream) {
+      throw new Exception("Invalid job in config - '${job_set[name]}'. It refers to unknown stream.")
+    }
+    if (!stream.containsKey('jobs')) {
+      stream['jobs'] = []
+    }
+    stream['jobs'] += name
   }
 }
 
