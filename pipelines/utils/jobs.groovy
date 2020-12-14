@@ -277,6 +277,7 @@ def _run_jobs(def job_set, def streams) {
   if (jobs.size() > 0) {
     jobs_by_stream_code['jobs-with-no-stream-assigned'] = parallel(jobs)
   }
+  println("Jobs by streams to run ${jobs_by_stream_code}")
   // run jobs in nested parallel
   if (jobs_by_stream_code.size() > 0)
     parallel(jobs_by_stream_code)
