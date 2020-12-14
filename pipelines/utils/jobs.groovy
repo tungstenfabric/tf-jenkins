@@ -28,7 +28,10 @@ def main(def gate_utils, def gerrit_utils, def config_utils) {
       pre_build_done = true
     }
 
-    _run(jobs, streams, gate_utils, gerrit_utils)
+    if (env.GERRIT_PIPELINE == 'gate')
+      _run_gating(jobs, streams, gate_utils, gerrit_utils)
+    else
+      _run_jobs(jobs, streams)
   } finally {
     println("Jobs results: ${job_results}")
     stage('gerrit vote') {
@@ -156,13 +159,6 @@ def _evaluate_env(def config_utils) {
   return [streams, jobs, post_jobs]
 }
 
-def _run(def jobs, def streams, def gate_utils, def gerrit_utils) {
-  if (env.GERRIT_PIPELINE == 'gate')
-    _run_gating(jobs, streams, gate_utils, gerrit_utils)
-  else
-    _run_jobs(jobs, streams)
-}
-
 def _run_gating(def jobs, def streams, def gate_utils, def gerrit_utils) {
   while (true) {
     def base_build_id = gate_utils.save_base_builds()
@@ -221,37 +217,72 @@ def _run_gating(def jobs, def streams, def gate_utils, def gerrit_utils) {
 }
 
 def _run_jobs(def job_set, def streams) {
-  def jobs_code = [:]
-  job_set.keySet().each { name ->
+  // initialize all results
+  def streams_to_run = []
+  for (name in job_set.keySet()) {
     job_results[name] = [:]
     job_results[name]['job-rnd'] = "${rnd.nextInt(99999)}"
-    jobs_code[name] = {
-      stage(name) {
-        try {
-          def result = _wait_for_dependencies(job_set, name)
-          if (result) {
-            // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
-            _run_job(job_set, name, streams)
-          } else {
-            job_results[name]['number'] = -1
-            job_results[name]['duration'] = 0
-            job_results[name]['result'] = 'NOT_BUILT'
-          }
-        } catch (err) {
-          println("JOB ${name}: error in job!!!")
-          println("JOB ${name}: Err - ${err}")
-          println("JOB ${name}: Message - ${err.getMessage()}")
-          println("JOB ${name}: Cause - ${err.getCause()}")
-          println("JOB ${name}: Stacktrace - ${err.getStackTrace()}")
-          throw(err)
-        }
-      }
-    }
+    println(job_set['name'])
+    if (job_set['name'].get('stream') != null)
+      streams_to_run += job_set['name'].get('stream')
+  }
+
+  def all_code = [:]
+  streams.keySet().each { stream_name ->
+    if (stream_name in streams_to_run)
+      all_code[stream_name] = { _process_stream(stream_name, job_set, streams) }
+  }
+
+  job_set.keySet().each { job_name ->
+    if (job_set[job_name].get('stream') == null)
+      all_code[job_name] = { _process_job(job_name, job_set, streams) }
   }
 
   // run jobs in parallel
-  if (jobs_code.size() > 0)
+  if (all_code.size() > 0)
+    parallel(all_code)
+}
+
+def _process_stream(def stream_name, def job_set, def streams) {
+  def jobs_code = [:]
+  job_set.keySet().each { name ->
+    if (job_set[name].get('stream') == stream_name)
+      jobs_code[name] = { _process_job(name, job_set, streams) }
+  }
+  if (jobs_code.size() == 0)
+    return
+
+  if (!streams[stream_name].containsKey('lock')) {
     parallel(jobs_code)
+  } else {
+    lock(resource: stream['lock']) {
+      parallel(jobs)
+    }
+  }
+}
+
+def _process_job(def job_name, def job_set, def streams) {
+  // using global variable job_results
+  stage(job_name) {
+    try {
+      def result = _wait_for_dependencies(job_set, job_name)
+      if (result) {
+        // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
+        _run_job(job_set, job_name, streams)
+      } else {
+        job_results[job_name]['number'] = -1
+        job_results[job_name]['duration'] = 0
+        job_results[job_name]['result'] = 'NOT_BUILT'
+      }
+    } catch (err) {
+      println("JOB ${job_name}: error in job!!!")
+      println("JOB ${job_name}: Err - ${err}")
+      println("JOB ${job_name}: Message - ${err.getMessage()}")
+      println("JOB ${job_name}: Cause - ${err.getCause()}")
+      println("JOB ${job_name}: Stacktrace - ${err.getStackTrace()}")
+      throw(err)
+    }
+  }
 }
 
 def _get_jobs_result_for_gerrit(job_set, job_results) {
