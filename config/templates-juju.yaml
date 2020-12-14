@@ -14,7 +14,7 @@
     streams:
       juju-os-not-implemented-targets:
         vars:
-          MONITORING_DEPLOY_TARGET: ISSU,SR-IOV,DPDK,CCImport
+          MONITORING_DEPLOY_TARGET: ISSU,CCImport
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
 
@@ -262,6 +262,7 @@
       - build-centos
     streams:
       juju-os-maas:
+        lock: bmlab
         vars:
           CLOUD: maas
           SSL_ENABLE: 'true'
@@ -295,6 +296,45 @@
           - deploy-platform-juju-os-maas
           - deploy-tf-juju-os-maas
           - test-sanity-juju-os-maas
+
+- template:
+    name: juju-os-maas-sriov-dpdk
+    parents:
+      - build-centos
+    streams:
+      juju-os-maas-sriov-dpdk:
+        lock: bmlab
+        vars:
+          ENABLE_DPDK_SRIOV: 'true'
+          CLOUD: maas
+          CONTROL_NETWORK: '192.168.51.0/24'
+          DATA_NETWORK: '10.0.0.0/16'
+          MONITORING_DEPLOY_TARGET: DPDK,SRIOV
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
+    jobs:
+      deploy-platform-juju-os-maas-sriov-dpdk:
+        job-name: deploy-platform-juju-os
+        stream: juju-os-maas-sriov-dpdk
+      deploy-tf-juju-os-maas-sriov-dpdk:
+        job-name: deploy-tf-juju-os
+        stream: juju-os-maas-sriov-dpdk
+        depends-on:
+          - package-centos
+          - deploy-platform-juju-os-maas-sriov-dpdk
+      test-sanity-juju-os-maas-sriov-dpdk:
+        job-name: test-sanity
+        stream: juju-os-maas-sriov-dpdk
+        depends-on:
+          - deploy-tf-juju-os-maas-sriov-dpdk
+      collect-logs-and-cleanup-juju-os-maas-sriov-dpdk:
+        job-name: collect-logs-and-cleanup
+        stream: juju-os-maas-sriov-dpdk
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-juju-os-maas-sriov-dpdk
+          - deploy-tf-juju-os-maas-sriov-dpdk
+          - test-sanity-juju-os-maas-sriov-dpdk
 
 - template:
     name: juju-hybrid
