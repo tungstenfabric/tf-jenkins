@@ -229,12 +229,12 @@ def _run_jobs(def job_set, def streams) {
   def all_code = [:]
   streams.keySet().each { stream_name ->
     if (stream_name in streams_to_run)
-      all_code[stream_name] = { _process_stream(stream_name, job_set, streams) }
+      all_code["stream-${stream_name}"] = { _process_stream(stream_name, job_set, streams) }
   }
 
   job_set.keySet().each { job_name ->
     if (job_set[job_name].get('stream') == null)
-      all_code[job_name] = { _process_job(job_name, job_set, streams) }
+      all_code["job-${job_name}"] = { _process_job(job_name, job_set, streams) }
   }
 
   // run jobs in parallel
@@ -254,7 +254,7 @@ def _process_stream(def stream_name, def job_set, def streams) {
   if (!streams[stream_name].containsKey('lock')) {
     parallel(jobs_code)
   } else {
-    lock(resource: stream['lock']) {
+    lock(resource: streams[stream_name]['lock']) {
       parallel(jobs)
     }
   }
