@@ -196,10 +196,9 @@ def _fill_stream_jobs(def streams, def job_set) {
   for (name in job_set.keySet()) {
     if (!job_set[name].containsKey('stream'))
       continue
-    stream = streams.get(job_set[name]['stream'])
-    if (!stream) {
-      throw new Exception("Invalid job in config - '${job_set[name]}'. It refers to unknown stream.")
-    }
+    if (!streams.containsKey(job_set[name]['stream']))
+      streams[job_set[name]['stream']] = [:]
+    stream = streams[job_set[name]['stream']]
     if (!stream.containsKey('jobs')) {
       stream['jobs'] = []
     }
