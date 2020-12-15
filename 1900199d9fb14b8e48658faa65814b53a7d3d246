@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff0dc576_0862e801",
+        "filename": "pipelines/utils/jobs.groovy",
+        "patchSetId": 5
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 980
+      },
+      "writtenOn": "2020-12-15T10:55:45Z",
+      "side": 1,
+      "message": "all_code[job_name] may discard all_code[stream_name] if job_name equals to any stream_name by chance",
+      "revId": "1900199d9fb14b8e48658faa65814b53a7d3d246",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53d6be75_d77f7396",
+        "filename": "pipelines/utils/jobs.groovy",
+        "patchSetId": 5
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 980
+      },
+      "writtenOn": "2020-12-15T10:55:45Z",
+      "side": 1,
+      "message": "stream seems to be undefined here",
+      "revId": "1900199d9fb14b8e48658faa65814b53a7d3d246",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
