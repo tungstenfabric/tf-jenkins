@@ -30,10 +30,10 @@ echo "INFO: Build started: ENVIRONMENT_OS=$ENVIRONMENT_OS LINUX_DISTR=$LINUX_DIS
 
 export DEVENV_TAG=${DEVENV_TAG:-stable${TAG_SUFFIX}}
 export BUILD_MODE="fast"
-#if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
+if grep -q "tungstenfabric/tf-dev-env" ./patchsets-info.json ; then
   # changes in tf-dev-env - we have to rebuild it
-#  export DEVENV_TAG="sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
-#fi
+  export DEVENV_TAG="sandbox-$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
+fi
 
 # list for tf containers
 mirror_list=""
@@ -46,6 +46,11 @@ elif [[ ${LINUX_DISTR} == 'centos' ]]; then
   mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-docker.repo mirror-base.repo "
   # epel must not be there - it cause incorrect installs and fails at runtime
   mirror_list="mirror-base.repo mirror-openstack.repo mirror-docker.repo google-chrome.repo"
+  # add empty CentOS repos to disable them
+  mirror_list_for_build+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
+  mirror_list_for_build+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
+  mirror_list+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
+  mirror_list+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
 elif [[ "${LINUX_DISTR}" =~ 'ubi7' ]] ; then
   mirror_list_for_build="mirror-epel.repo google-chrome.repo ubi.repo mirror-rhel7.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
   mirror_list="google-chrome.repo ubi.repo mirror-rhel7.repo"
