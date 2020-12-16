@@ -22,6 +22,21 @@ rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER
 
 echo "INFO: UT started"
 
+mirror_list=""
+# list of repos for building of tf-dev-sandbox container itself
+mirror_list_for_build=""
+# substitute repos only for centos7
+if [[ ${LINUX_DISTR} == 'centos' ]]; then
+  mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-docker.repo mirror-base.repo "
+  # epel must not be there - it cause incorrect installs and fails at runtime
+  mirror_list="mirror-base.repo"
+  # add empty CentOS repos to disable them
+  mirror_list_for_build+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
+  mirror_list_for_build+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
+  mirror_list+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
+  mirror_list+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
+fi
+
 function run_over_ssh() {
   res=0
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
@@ -55,20 +70,29 @@ sudo timedatectl set-timezone America/Los_Angeles
 timedatectl
 
 cd src/tungstenfabric/tf-dev-env
-# TODO: unify this with build/run.sh
 
+# TODO: unify this with build/run.sh
 mkdir -p ./config/etc/yum.repos.d
-cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
-sudo mkdir -p /etc/docker/
-sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker-daemon.json /etc/docker/daemon.json
-#sudo kill -SIGHUP $(pidof dockerd)
+
+for mirror in $mirror_list_for_build ; do
+  cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/\$mirror ./container/
+done
+for mirror in $mirror_list ; do
+  cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
+done
+
 # substitute repos only for centos7
 if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
-  cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-base.repo ./config/etc/yum.repos.d/
   # copy base & docker repo to local machine
   sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-base.repo /etc/yum.repos.d/
   sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
 fi
+
+cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
+
+sudo mkdir -p /etc/docker/
+sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker-daemon.json /etc/docker/daemon.json
+
 ./run.sh $@
 EOF
 return $res
