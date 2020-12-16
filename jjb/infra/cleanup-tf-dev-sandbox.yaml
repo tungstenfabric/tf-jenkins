@@ -1,0 +1,14 @@
+- job:
+    name: "cleanup-tf-dev-sandbox"
+    description: "Manually triggered job to remove tf-dev-sandbox image from tf-nexus registries"
+    defaults: global
+    node: vexxhost
+    scm:
+      - tf-jenkins
+    wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+    builders:
+      - shell: |
+          ./src/tungstenfabric/tf-jenkins/infra/cleanup-tf-dev-sandbox.sh
