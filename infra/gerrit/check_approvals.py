@@ -49,8 +49,15 @@ def main():
         dest="password", type=str)
     args = parser.parse_args()
 
-    log_level = logging.DEBUG if args.debug else logging.INFO
-    logging.basicConfig(level=log_level)
+    log_level = logging.NOTSET if args.debug else logging.INFO
+
+    h = logging.StreamHandler(sys.stdout)
+    h.setLevel(log_level)
+    h.setFormatter(logging.Formatter('%(asctime)s.%(msecs)03d %(levelname)s: %(message)s', datefmt='%m-%d %H:%M:%S'))
+
+    L = logging.getLogger()
+    L.handlers *= 0
+    L.addHandler(h)
 
     strategy_hooks = {
         'gate': 'is_eligible_for_gating',
