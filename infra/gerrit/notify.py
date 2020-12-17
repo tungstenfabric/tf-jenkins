@@ -32,6 +32,22 @@ def parse_labels(labels):
     return result
 
 
+def patch_labels(labels_, change_):
+    k = 'Verified'
+    if k not in labels_:
+        return labels_
+
+    if change_.is_active:
+        return labels_
+
+    V = change_.labels.get(k, {}).get('all', [])
+    v = min(list(map(lambda r_: int(r_.get('value', 0)), V)))
+    if v > int(labels_[k]):
+        del labels_[k]
+
+    return labels_
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="TF tool for pushing messages to Gerrit review")
@@ -61,7 +77,7 @@ def main():
     try:
         gerrit = gerrit_utils.Gerrit(args.gerrit, args.user, args.password)
         change = gerrit.get_current_change(args.review, args.branch, opened_only=False)
-        labels = parse_labels(args.labels)
+        labels = patch_labels(parse_labels(args.labels), change)
         gerrit.push_message(change, args.message, args.patchset, labels=labels)
         if args.submit:
             gerrit.submit(change, args.patchset)
