@@ -255,7 +255,7 @@ def _process_stream(def stream_name, def job_set, def streams) {
     parallel(jobs_code)
   } else {
     lock(resource: streams[stream_name]['lock']) {
-      parallel(jobs)
+      parallel(jobs_code)
     }
   }
 }
