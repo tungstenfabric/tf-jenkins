@@ -161,7 +161,7 @@ def publish_results_to_monitoring(streams, results, verified) {
 
 def publish_plain_results_to_monitoring(streams, results, verified) {
   def optstostring = {
-    it.collect { /--$it.key $it.value/ } join " "
+    it.collect { /--$it.key=\\"$it.value\\"/ } join " "
   }
 
   def pipeline_result = verified < 0 ? "FAILURE" : "SUCCESS"
@@ -200,7 +200,7 @@ def publish_plain_results_to_monitoring(streams, results, verified) {
 
 def publish_nightly_results_to_monitoring(streams, results) {
   def optstostring = {
-    it.collect { /--$it.key $it.value/ } join " "
+    it.collect { /--$it.key=\\"$it.value\\"/ } join " "
   }
 
   for (stream in streams.keySet()) {
@@ -232,10 +232,8 @@ def publish_nightly_results_to_monitoring(streams, results) {
       }
 
       logstring = optstostring(log_opts)
-      sh """
-        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
-          ${logstring}
-      """
+      sh $/${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py ${logstring}/$
+
     } catch (err) {
       println("Failed to send data to fluentd")
       err_msg = err.getMessage()
@@ -315,7 +313,7 @@ def _notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, p
         --review ${change_id} \
         --patchset ${patchset_number} \
         --branch ${branch} \
-        --message "${msg}" \
+        --message \\"${msg}\\" \
         ${opts}
     """
   }
