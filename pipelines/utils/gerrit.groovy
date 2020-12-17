@@ -139,8 +139,8 @@ def report_timeline(job_results) {
     ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     writeFile(file: 'timeline.log', text: output)
     sh """#!/bin/bash
-      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
-      rsync -a -e "${ssh_cmd}" timeline.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/
+      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST} "mkdir -p ${logs_path}"
+      rsync -a -e "${ssh_cmd}" timeline.log ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}:${logs_path}/
     """
   }
   return totalTime
@@ -289,7 +289,7 @@ def _notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, p
 
     // temporary hack to not vote for review.opencontrail.org
     def label_name = 'VerifiedTF'
-    if (env.GERRIT_HOST != 'review.opencontrail.org' || (env.GERRIT_PROJECT in VERIFIED_PROJECTS && env.GERRIT_BRANCH == 'master'))
+    if (env.GERRIT_HOST != 'review.opencontrail.org' || (env.GERRIT_PROJECT in constants.VERIFIED_PROJECTS && env.GERRIT_BRANCH == 'master'))
       label_name = 'Verified'
 
     if (verified != null) {
@@ -400,7 +400,7 @@ def has_gate_submits() {
   def result = _has_approvals('submit')
   println("INFO: has_submit_approvals = ${result}")
 
-  if (env.GERRIT_HOST != 'review.opencontrail.org' || (env.GERRIT_PROJECT in VERIFIED_PROJECTS && env.GERRIT_BRANCH == 'master'))
+  if (env.GERRIT_HOST != 'review.opencontrail.org' || (env.GERRIT_PROJECT in constants.VERIFIED_PROJECTS && env.GERRIT_BRANCH == 'master'))
     return result
 
   // TODO: remove return false and uncomment real result when we will be ready for this

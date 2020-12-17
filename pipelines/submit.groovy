@@ -1,5 +1,7 @@
+// constants
+constansts = null
 // gerrit utils
-gerrit = null
+gerrit_utils = null
 
 timestamps {
   timeout(time: 10, unit: 'MINUTES') {
@@ -8,9 +10,10 @@ timestamps {
         throw new Exception("ERROR: This pipeline only for submit trigger!")
 
       clone_self()
-      gerrit = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
-      if (gerrit.has_gate_submits()) {
-        gerrit.notify_gerrit("Submit for merge", null, true)
+      constansts = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/constants.groovy")
+      gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
+      if (gerrit_utils.has_gate_submits()) {
+        gerrit_uitls.notify_gerrit("Submit for merge", null, true)
       } else {
         println("There is no submit labels.. skip submit to merge")
       }

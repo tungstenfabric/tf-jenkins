@@ -61,8 +61,8 @@ def _evaluate_common_params() {
   branch = 'master'
   if (env.GERRIT_BRANCH)
     branch = env.GERRIT_BRANCH.split('/')[-1].toLowerCase()
-  openstack_version = DEFAULT_OPENSTACK_VERSION
-  if (branch in OPENSTACK_VERSIONS)
+  openstack_version = constants.DEFAULT_OPENSTACK_VERSION
+  if (branch in constants.OPENSTACK_VERSIONS)
     openstack_version = branch
   if (env.GERRIT_CHANGE_ID) {
     contrail_container_tag = branch
@@ -71,16 +71,16 @@ def _evaluate_common_params() {
     contrail_container_tag += '-' + env.GERRIT_CHANGE_NUMBER.split('').join('_')
     contrail_container_tag += '-' + env.GERRIT_PATCHSET_NUMBER.split('').join('_')
     hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
-    logs_path = "${LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
-    logs_url = "${LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
+    logs_path = "${constants.LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
+    logs_url = "${constants.LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
   } else if (env.GERRIT_PIPELINE == 'nightly') {
     contrail_container_tag = "nightly"
-    logs_path = "${LOGS_BASE_PATH}/nightly/pipeline_${BUILD_NUMBER}"
-    logs_url = "${LOGS_BASE_URL}/nightly/pipeline_${BUILD_NUMBER}"
+    logs_path = "${constants.LOGS_BASE_PATH}/nightly/pipeline_${BUILD_NUMBER}"
+    logs_url = "${constants.LOGS_BASE_URL}/nightly/pipeline_${BUILD_NUMBER}"
   } else {
     contrail_container_tag = 'dev'
-    logs_path = "${LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
-    logs_url = "${LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
+    logs_path = "${constants.LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
+    logs_url = "${constants.LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
   }
   println("Logs URL: ${logs_url}")
 }
@@ -91,18 +91,18 @@ def _evaluate_env(def config_utils) {
       rm -rf global.env
       echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
       echo "export SLAVE=${SLAVE}" >> global.env
-      echo "export LOGS_HOST=${LOGS_HOST}" >> global.env
+      echo "export LOGS_HOST=${constants.LOGS_HOST}" >> global.env
       echo "export LOGS_PATH=${logs_path}" >> global.env
       echo "export LOGS_URL=${logs_url}" >> global.env
       # store default registry params. jobs can redefine them if needed in own config (VARS).
       echo "export OPENSTACK_VERSION=${openstack_version}" >> global.env
-      echo "export SITE_MIRROR=${SITE_MIRROR}" >> global.env
-      echo "export CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
-      echo "export DEPLOYER_CONTAINER_REGISTRY=${CONTAINER_REGISTRY}" >> global.env
+      echo "export SITE_MIRROR=${constants.SITE_MIRROR}" >> global.env
+      echo "export CONTAINER_REGISTRY=${constants.CONTAINER_REGISTRY}" >> global.env
+      echo "export DEPLOYER_CONTAINER_REGISTRY=${constants.CONTAINER_REGISTRY}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
       echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG=${contrail_container_tag}" >> global.env
-      echo "export CONTAINER_REGISTRY_ORIGINAL=${CONTAINER_REGISTRY}" >> global.env
-      echo "export DEPLOYER_CONTAINER_REGISTRY_ORIGINAL=${CONTAINER_REGISTRY}" >> global.env
+      echo "export CONTAINER_REGISTRY_ORIGINAL=${constants.CONTAINER_REGISTRY}" >> global.env
+      echo "export DEPLOYER_CONTAINER_REGISTRY_ORIGINAL=${constants.CONTAINER_REGISTRY}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG_ORIGINAL=${contrail_container_tag}" >> global.env
       echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL=${contrail_container_tag}" >> global.env
       echo "export GERRIT_PIPELINE=${env.GERRIT_PIPELINE}" >> global.env
@@ -310,8 +310,8 @@ def _save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
     ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     sh """#!/bin/bash
       curl -s ${BUILD_URL}consoleText > pipelinelog.log
-      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}"
-      rsync -a -e "${ssh_cmd}" pipelinelog.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/
+      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST} "mkdir -p ${logs_path}"
+      rsync -a -e "${ssh_cmd}" pipelinelog.log ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}:${logs_path}/
     """
   }
   println("Output logs saved at ${logs_url}/pipelinelog.txt")
@@ -522,14 +522,14 @@ def _save_job_output(name, job_name, stream, job_number) {
     ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     sh """#!/bin/bash
       curl -s ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > output-${name}.log
-      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${LOGS_HOST} "mkdir -p ${logs_path}/${stream}/"
-      rsync -a -e "${ssh_cmd}" output-${name}.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/${stream}/
+      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST} "mkdir -p ${logs_path}/${stream}/"
+      rsync -a -e "${ssh_cmd}" output-${name}.log ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}:${logs_path}/${stream}/
     """
     // hack for better visibility of UT failures
     sh """#!/bin/bash
       if grep -q '^ERROR.*failed\$' output-${name}.log ; then
         grep '^ERROR.*failed\$' output-${name}.log > output-${name}-FAILED.log
-        rsync -a -e "${ssh_cmd}" output-${name}-FAILED.log ${LOGS_HOST_USERNAME}@${LOGS_HOST}:${logs_path}/${stream}/
+        rsync -a -e "${ssh_cmd}" output-${name}-FAILED.log ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}:${logs_path}/${stream}/
       fi
     """
   }
