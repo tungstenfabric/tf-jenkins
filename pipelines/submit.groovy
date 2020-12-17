@@ -9,7 +9,6 @@ timestamps {
 
       clone_self()
       gerrit = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
-      println("Verified value to report on success: ${gerrit.VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]}")
       if (gerrit.has_gate_submits()) {
         gerrit.notify_gerrit("Submit for merge", null, true)
       } else {

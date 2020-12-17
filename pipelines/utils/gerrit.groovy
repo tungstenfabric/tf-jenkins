@@ -399,9 +399,12 @@ def has_gate_approvals() {
 def has_gate_submits() {
   def result = _has_approvals('submit')
   println("INFO: has_submit_approvals = ${result}")
+
+  if (env.GERRIT_HOST != 'review.opencontrail.org' || (env.GERRIT_PROJECT in VERIFIED_PROJECTS && env.GERRIT_BRANCH == 'master'))
+    return result
+
   // TODO: remove return false and uncomment real result when we will be ready for this
   return false
-  //return result
 }
 
 // block for termination utils
