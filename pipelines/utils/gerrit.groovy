@@ -337,6 +337,7 @@ def _has_approvals(strategy) {
     try {
       output = sh(returnStdout: true, script: """
         ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/check_approvals.py \
+          --debug \
           --strategy ${strategy} \
           --gerrit ${url} \
           --user ${GERRIT_API_USER} \
