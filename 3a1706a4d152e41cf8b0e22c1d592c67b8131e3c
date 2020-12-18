@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a947d7f9_9d395351",
+        "filename": "config/projects.yaml",
+        "patchSetId": 11
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-12-18T11:22:51Z",
+      "side": 1,
+      "message": "lets in ziu use build-r1912-ub \u003d\u003e build-ubi ?\nto not to build more builds...\nor instead 2008 use 2011 because it is lts\nand do upgrade from 2011 to master",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 25
+      },
+      "revId": "3a1706a4d152e41cf8b0e22c1d592c67b8131e3c",
+      "serverId": "c72cd27d-1743-4a55-84a4-cd13b8400c52",
+      "unresolved": true
+    }
+  ]
+}
