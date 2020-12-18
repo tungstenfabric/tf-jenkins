@@ -52,29 +52,39 @@ EOF
       IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
       echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
+      total_nodes_count=0
+      total_vcpu_count=0
+      for nodes in ${NODES//,/ }; do
+        if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
+          echo "ERROR: inappropriate input \"$nodes\" in \"$NODES\""
+          exit 1
+        fi
+        node_name=$(echo $nodes | cut -d ':' -f1)
+        node_flavor=${VM_TYPES[$(echo $nodes | cut -d ':' -f2)]}
+        node_count=$(echo $nodes | cut -d ':' -f3)
+        echo "export $node_name=\"$node_flavor:$node_count\"" >> "$stackrc_file_path"
+        for (( i=1; i<=5 ; ++i )) ; do
+          if node_vcpu=$(openstack flavor show $node_flavor | awk '/vcpus/{print $4}') ; then
+            break
+          fi
+          sleep 10
+        done
+        total_nodes_count=$((total_nodes_count + node_count))
+        total_vcpu_count=$(( total_vcpu_count + node_count * node_vcpu ))
+      done
+
       # wait for free resource
       while true; do
-        [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') - 1))" -lt "$MAX_COUNT_VM" ]] && break
+        [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') + total_nodes_count ))" -lt "$MAX_COUNT_VM" ]] && break
         sleep 60
       done
 
       while true; do
-        [[ "$(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}')" -lt "$MAX_COUNT_VCPU" ]] && break
+        [[ "$(($(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}') + total_vcpu_count ))" -lt "$MAX_COUNT_VCPU" ]] && break
         sleep 60
       done
   fi
   echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
-
-  for nodes in ${NODES//,/ }; do
-    if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
-      echo "ERROR: inappropriate input \"$nodes\" in \"$NODES\""
-      exit 1
-    fi
-    node_name=$(echo $nodes | cut -d ':' -f1)
-    node_flavor=${VM_TYPES[$(echo $nodes | cut -d ':' -f2)]}
-    node_count=$(echo $nodes | cut -d ':' -f3)
-    echo "export $node_name=\"$node_flavor:$node_count\"" >> "$stackrc_file_path"
-  done
 
   # to prepare rhosp-provisionin.sh
   source $stackrc_file_path
