@@ -1,5 +1,5 @@
 // constants
-constansts = null
+constants = null
 // gerrit utils
 gerrit_utils = null
 
@@ -10,7 +10,7 @@ timestamps {
         throw new Exception("ERROR: This pipeline only for submit trigger!")
 
       clone_self()
-      constansts = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/constants.groovy")
+      constants = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/constants.groovy")
       gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
       if (gerrit_utils.has_gate_submits()) {
         gerrit_uitls.notify_gerrit("Submit for merge", null, true)

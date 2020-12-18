@@ -1,5 +1,5 @@
 // constants
-constansts = null
+constants = null
 // gerrit utils
 gerrit_utils
 
@@ -10,7 +10,7 @@ timestamps {
         throw new Exception("ERROR: This pipeline only for submit trigger!")
 
       clone_self()
-      constansts = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/constants.groovy")
+      constants = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/constants.groovy")
       gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
       gerrit_utils.submit_stale_reviews()
     }
