@@ -1,31 +1,3 @@
-// constansts
-TIMEOUT_HOURS = 6
-CONTAINER_REGISTRY="tf-nexus.progmaticlab.com:5001"
-SITE_MIRROR="http://tf-nexus.progmaticlab.com/repository"
-LOGS_HOST = "tf-nexus.progmaticlab.com"
-LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
-LOGS_BASE_URL = "http://tf-nexus.progmaticlab.com:8082/jenkins_logs"
-if (env.GERRIT_PIPELINE == 'nightly') {
-  TIMEOUT_HOURS = 9
-  CONTAINER_REGISTRY="tf-nexus.progmaticlab.com:5002"
-}
-// this is default LTS release for all deployers
-DEFAULT_OPENSTACK_VERSION = "queens"
-
-OPENSTACK_VERSIONS = ['ocata', 'pike', 'queens', 'rocky', 'stein', 'train', 'ussuri', 'victoria']
-
-// list of projects which will receive Verified label in gerrit instead of fake VerifiedTF
-VERIFIED_PROJECTS = [
-  'tungstenfabric/tf-container-builder',
-  'tungstenfabric/tf-ansible-deployer',
-  'tungstenfabric/tf-charms',
-  'tungstenfabric/tf-devstack',
-  'tungstenfabric/tf-dev-env',
-  'tungstenfabric/tf-jenkins',
-  'tungstenfabric/tf-dev-test',
-  'tungstenfabric/tf-deployment-test'
-]
-
 // pipeline flow variables
 // base url for all jobs
 logs_url = ""
@@ -34,12 +6,19 @@ logs_path = ""
 rnd = new Random()
 gerrit_url = null
 
+constants = null
 // gerrit utils
 gerrit_utils = null
 // config utils
 config_utils = null
 // jobs utils
 jobs_utils = null
+
+// local constants
+TIMEOUT_HOURS = 6
+if (env.GERRIT_PIPELINE == 'nightly') {
+  TIMEOUT_HOURS = 9
+}
 
 timestamps {
   timeout(time: TIMEOUT_HOURS, unit: 'HOURS') {
@@ -69,6 +48,7 @@ timestamps {
             gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
           }
 
+          constansts = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/constants.groovy")
           config_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/config.groovy")
           jobs_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/jobs.groovy")
           gate_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gate.groovy")
@@ -79,7 +59,7 @@ timestamps {
         }
       }
       if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
-        println("There is no gate approvals.. skip gate")
+        println("There is no gate approvals. skip gate")
         currentBuild.description = "Not ready to gate"
         currentBuild.result = 'UNSTABLE'
         return
@@ -89,7 +69,6 @@ timestamps {
     }
   }
 }
-
 
 def clone_self() {
   checkout([
