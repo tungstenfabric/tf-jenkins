@@ -13,7 +13,7 @@ timestamps {
       constants = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/constants.groovy")
       gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
       if (gerrit_utils.has_gate_submits()) {
-        gerrit_uitls.notify_gerrit("Submit for merge", null, true)
+        gerrit_utils.notify_gerrit("Submit for merge", null, true)
       } else {
         println("There is no submit labels.. skip submit to merge")
       }
