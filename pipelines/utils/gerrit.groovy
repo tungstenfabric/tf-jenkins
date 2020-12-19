@@ -20,7 +20,7 @@ def resolve_gerrit_url() {
 def gerrit_build_started() {
   try {
     def msg = """TF CI Build Started (${env.GERRIT_PIPELINE}) ${BUILD_URL}"""
-    _notify_gerrit(msg, VERIFIED_STARTED_VALUES[env.GERRIT_PIPELINE])
+    notify_gerrit(msg, VERIFIED_STARTED_VALUES[env.GERRIT_PIPELINE])
   } catch (err) {
     println("Failed to provide comment to gerrit")
     def msg = err.getMessage()
@@ -38,7 +38,7 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
         msg += "${err_msg}\n\n"
       msg += "Please check pipeline logs:\n"
       msg += "${BUILD_URL}\n${logs_url}\n"
-      _notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
+      notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
       return VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
 
@@ -79,7 +79,7 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
       check_msg = "TF CI Build ${stopping_cause} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + check_msg
       verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
-    _notify_gerrit(check_msg, verified)
+    notify_gerrit(check_msg, verified)
     return verified
   } catch (err) {
     println("Failed to provide vote to gerrit")
@@ -271,7 +271,7 @@ def _get_duration_string(duration) {
   return String.format("in %dh %dm %ds", (int)(d/3600), (int)(d/60)%60, d%60)
 }
 
-def _notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, patchset_number=null) {
+def notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, patchset_number=null) {
   println("Notify gerrit verified=${verified}, submit=${submit}, msg=\n${msg}")
   if (!env.GERRIT_HOST) {
     if (env.GERRIT_PIPELINE == 'nightly') {
@@ -484,7 +484,7 @@ def _check_and_stop_builds(def check_func) {
 def _notify_terminated(def params) {
   try {
     def msg = """Run has been aborted due to new parent check ${env.GERRIT_CHANGE_ID} has been started."""
-    _notify_gerrit(msg, null, false, params['change_id'], params['branch'], params['patchset_number'])
+    notify_gerrit(msg, null, false, params['change_id'], params['branch'], params['patchset_number'])
   } catch (err) {
     println("Failed to provide comment to gerrit")
     def msg = err.getMessage()
