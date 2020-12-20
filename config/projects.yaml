@@ -106,13 +106,15 @@
         #  vars:
         #    TAG_SUFFIX: "-r1912"
         #    PUBLISH_TAGS: "R1912"
-        publish-centos-r2011:
-          job-name: publish
-          depends-on:
-            - package-r2011-centos
-          vars:
-            TAG_SUFFIX: "-r2011-centos"
-            PUBLISH_TAGS: "R2011"
+
+        #publish-centos-r2011:
+        #  job-name: publish
+        #  depends-on:
+        #    - package-r2011-centos
+        #  vars:
+        #    TAG_SUFFIX: "-r2011-centos"
+        #    PUBLISH_TAGS: "R2011"
+
         aquascan-ubi-nightly:
           job-name: aquascan
           depends-on:
