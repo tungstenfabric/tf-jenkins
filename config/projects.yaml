@@ -72,6 +72,23 @@
           vars:
             DEBUGINFO: TRUE
       jobs:
+        # hack with dependecies due to lack of resources
+        deploy-platform-juju-os-ha-ziu:
+          depends-on:
+            - collect-logs-and-cleanup-juju-k8s-ha
+        deploy-platform-rhosp16-ha:
+          depends-on:
+            - collect-logs-and-cleanup-rhosp13-ha
+        deploy-platform-helm-k8s-ha:
+          depends-on:
+            - collect-logs-and-cleanup-helm-os-ha
+        deploy-platform-ansible-os-ha-ziu:
+          depends-on:
+            - collect-logs-and-cleanup-ansible-k8s-ha
+        deploy-platform-ansible-k8s-ha:
+          depends-on:
+            - collect-logs-and-cleanup-k8s-manifests
+
         publish-centos-nightly:
           job-name: publish
           depends-on:
