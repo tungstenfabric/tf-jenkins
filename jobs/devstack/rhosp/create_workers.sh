@@ -52,8 +52,14 @@ EOF
       IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
       echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
-      total_nodes_count=0
-      total_vcpu_count=0
+      # initial values for undercloud (v2-standard-4)
+      total_nodes_count=1
+      total_vcpu_count=4
+      if [ -z "$NODES"] ; then
+        # default aio (v2-standard-8)
+        total_nodes_count=$(( total_nodes_count + 1 ))
+        total_vcpu_count=$(( total_vcpu_count + 8 ))
+      fi
       for nodes in ${NODES//,/ }; do
         if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
           echo "ERROR: inappropriate input \"$nodes\" in \"$NODES\""
@@ -69,16 +75,21 @@ EOF
           fi
           sleep 10
         done
-        total_nodes_count=$((total_nodes_count + node_count))
+        total_nodes_count=$(( total_nodes_count + node_count ))
         total_vcpu_count=$(( total_vcpu_count + node_count * node_vcpu ))
       done
-
+      if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then
+        # ipa (v2-highcpu-2)
+        total_nodes_count=$(( total_nodes_count + 1 ))
+        total_vcpu_count=$(( total_vcpu_count + 2 ))
+      fi
+      echo "INFO: wait for enough resources for total_nodes_count=$total_nodes_count"
       # wait for free resource
       while true; do
         [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') + total_nodes_count ))" -lt "$MAX_COUNT_VM" ]] && break
         sleep 60
       done
-
+      echo "INFO: wait for enough resources for total_vcpu_count=$total_vcpu_count"
       while true; do
         [[ "$(($(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}') + total_vcpu_count ))" -lt "$MAX_COUNT_VCPU" ]] && break
         sleep 60
