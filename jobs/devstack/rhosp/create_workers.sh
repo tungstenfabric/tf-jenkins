@@ -79,9 +79,9 @@ EOF
         total_vcpu_count=$(( total_vcpu_count + node_count * node_vcpu ))
       done
       if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then
-        # ipa (v2-highcpu-2)
+        # ipa (v2-highcpu-4)
         total_nodes_count=$(( total_nodes_count + 1 ))
-        total_vcpu_count=$(( total_vcpu_count + 2 ))
+        total_vcpu_count=$(( total_vcpu_count + 4 ))
       fi
       echo "INFO: wait for enough resources for total_nodes_count=$total_nodes_count"
       # wait for free resource
