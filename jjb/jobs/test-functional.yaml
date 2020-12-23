@@ -4,9 +4,6 @@
     name: "test-{target}"
     description: "Test suite {target}"
     defaults: global
-    properties:
-      - build-discarder:
-          num-to-keep: 90
     parameters:
       - label:
           name: NODE_NAME

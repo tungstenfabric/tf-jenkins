@@ -4,6 +4,9 @@
     name: pipeline-templates-opencontrail
     description: pipeline-templates
     project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 500
     concurrent: true
     parameters:
       - choice:

@@ -2,6 +2,9 @@
     name: "update-prepared-images"
     description: "update-prepared-images"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 30
     node: vexxhost
 #    triggers:
 #      - timed: 'H H(3-4) * * 1'

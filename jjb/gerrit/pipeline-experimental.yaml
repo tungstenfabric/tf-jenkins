@@ -4,6 +4,9 @@
     name: pipeline-experimental-opencontrail
     description: pipeline-experimental
     project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 30
     concurrent: true
     parameters:
       - choice:

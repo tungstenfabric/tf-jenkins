@@ -4,6 +4,9 @@
     name: submit-stale-reviews
     description: Checks stale reviews that has all required flags for submit but still are not submitted
     project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 120
     concurrent: false
     parameters:
       - hidden:

@@ -4,6 +4,9 @@
     name: usage-report
     description: Generates report about too long locked VM-s
     project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 60
     concurrent: false
     pipeline-scm:
       scm:

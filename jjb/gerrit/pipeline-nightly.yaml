@@ -4,6 +4,9 @@
     name: pipeline-nightly
     description: pipeline-nightly
     project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 60
     concurrent: false
     parameters:
       - choice:

@@ -4,9 +4,6 @@
     name: "build-{build_job}"
     description: "{build_job}"
     defaults: global
-    properties:
-      - build-discarder:
-          num-to-keep: 90
     scm:
       - tf-jenkins
       - tf-dev-env

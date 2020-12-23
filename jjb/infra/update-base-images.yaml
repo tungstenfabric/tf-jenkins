@@ -2,6 +2,9 @@
     name: "update-base-images"
     description: "update-base-images"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 30
     node: vexxhost
     triggers:
       - timed: 'H H(2-5) 10 * *'

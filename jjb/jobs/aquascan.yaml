@@ -5,7 +5,7 @@
     concurrent: false
     properties:
       - build-discarder:
-          num-to-keep: 40
+          num-to-keep: 60
     scm:
       - tf-jenkins
     parameters:

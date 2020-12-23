@@ -4,6 +4,9 @@
     name: cleanup-stalled-workers
     description: cleanup-stalled-workers
     project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 120
     concurrent: false
     pipeline-scm:
       scm:

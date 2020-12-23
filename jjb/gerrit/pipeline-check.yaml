@@ -4,6 +4,9 @@
     name: pipeline-check-opencontrail
     description: Please do not run this manually
     project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 500
     concurrent: true
     parameters:
       - choice:

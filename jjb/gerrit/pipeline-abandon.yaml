@@ -4,6 +4,9 @@
     name: pipeline-abandon-opencontrail
     description: catches 'abandon' comment from gerrit for particular review
     project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 100
     concurrent: true
     triggers:
       - gerrit:

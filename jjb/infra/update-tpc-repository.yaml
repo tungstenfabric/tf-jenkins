@@ -4,6 +4,9 @@
     name: "update-tpc-source-repository"
     description: "Update tpc-source repository from tf-third-party-packages"
     defaults: global
+    properties:
+      - build-discarder:
+          num-to-keep: 30
     node: vexxhost
     concurrent: false
     scm:
