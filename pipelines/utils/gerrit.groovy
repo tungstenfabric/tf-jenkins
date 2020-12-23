@@ -407,6 +407,42 @@ def has_gate_submits() {
   return false
 }
 
+def is_merged() {
+  if (!env.GERRIT_HOST) {
+    // looks like it's a nightly pipeline
+    return false
+  }
+  withCredentials(
+    bindings: [
+      usernamePassword(credentialsId: env.GERRIT_HOST,
+      passwordVariable: 'GERRIT_API_PASSWORD',
+      usernameVariable: 'GERRIT_API_USER')]) {
+
+    def url = resolve_gerrit_url()
+    def output = ""
+    try {
+      output = sh(returnStdout: true, script: """
+        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/is_merged.py \
+          --debug \
+          --gerrit ${url} \
+          --user ${GERRIT_API_USER} \
+          --password ${GERRIT_API_PASSWORD} \
+          --review ${GERRIT_CHANGE_ID} \
+          --branch ${GERRIT_BRANCH}
+      """).trim()
+      println(output)
+      return true
+    } catch (err) {
+      println("is_merged.py returns non-zero code. It means that review is not merged for now.")
+      def msg = err.getMessage()
+      if (msg != null) {
+        println(msg)
+      }
+      return false
+    }
+  }
+}
+
 // block for termination utils
 
 def terminate_runs_by_review_number() {
