@@ -337,3 +337,42 @@
           - deploy-tf-juju-hybrid
           - test-sanity-juju-hybrid
           - test-deployment-juju-hybrid
+
+- template:
+    name: juju-hybrid-nrpe
+    parents:
+      - build-centos
+    streams:
+      juju-hybrid-nrpe:
+        vars:
+          DEPLOYMENT_TEST_TAGS: nrpe
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: hybrid
+    jobs:
+      deploy-platform-juju-hybrid-nrpe:
+        stream: juju-hybrid-nrpe
+      deploy-tf-juju-hybrid-nrpe:
+        stream: juju-hybrid-nrpe
+        depends-on:
+          - package-centos
+          - deploy-platform-juju-hybrid-nrpe
+      test-sanity-juju-hybrid-nrpe:
+        job-name: test-sanity
+        stream: juju-hybrid-nrpe
+        depends-on:
+          - deploy-tf-juju-hybrid-nrpe
+      test-deployment-juju-hybrid-nrpe:
+        job-name: test-deployment
+        stream: juju-hybrid-nrpe
+        depends-on:
+          - test-sanity-juju-hybrid-nrpe
+      collect-logs-and-cleanup-juju-hybrid-nrpe:
+        job-name: collect-logs-and-cleanup
+        stream: juju-hybrid-nrpe
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-juju-hybrid-nrpe
+          - deploy-tf-juju-hybrid-nrpe
+          - test-sanity-juju-hybrid-nrpe
+          - test-deployment-juju-hybrid-nrpe
