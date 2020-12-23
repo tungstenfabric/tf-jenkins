@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
+# run this under root account with
+# nohup /root/merger_monitor.py >/root/nohup.out 2>/root/nohup.err &
+
 from datetime import datetime
 import json
 import subprocess
 import time
+import os
 
 
 DELAY = 1
@@ -14,6 +18,7 @@ GERRIT_CMD = 'gerrit query --comments --patch-sets --format=JSON branch:' + BRAN
 
 # folder on nexus to store the tag
 # can be found here http://tf-nexus.progmaticlab.com:8082/frozen/tag
+# it must be create with 777 permissions
 TAG_FILE = '/var/www/logs/frozen/tag'
 
 
@@ -40,6 +45,7 @@ class Checker():
         log("Updating tag to {}".format(last_merge['tag']))
         with open(TAG_FILE, 'w') as f:
             f.write(last_merge['tag'])
+        os.chmod(TAG_FILE, 0o666)
 
     def _get_merged_reviews(self, limit=10):
         reviews = list()
