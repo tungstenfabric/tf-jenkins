@@ -76,10 +76,6 @@
           lock: juju-ha
         juju-k8s-ha:
           lock: juju-ha
-        rhosp16-ha:
-          lock: rhosp-ha
-        rhosp13-ha:
-          lock: rhosp-ha
         helm-k8s-ha:
           lock: helm-ha
         helm-os-ha:
