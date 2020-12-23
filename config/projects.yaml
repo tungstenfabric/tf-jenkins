@@ -21,6 +21,7 @@
       templates:
         - build-r1912
         - build-r1912-ubi
+        - build-r2011-ubi
         - build-r2011-centos
         - test-unit
         - test-unit-ui
@@ -66,6 +67,9 @@
           vars:
             DEBUGINFO: TRUE
         build-r1912-ubi:
+          vars:
+            DEBUGINFO: TRUE
+        build-r2011-ubi:
           vars:
             DEBUGINFO: TRUE
         build-r2011-centos:
