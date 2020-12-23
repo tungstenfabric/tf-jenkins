@@ -4,6 +4,9 @@
 job_results = [:]
 
 def main(def gate_utils, def gerrit_utils, def config_utils) {
+  if (!_check_prerequisites())
+    return
+
   def streams = [:]
   def jobs = [:]
   def post_jobs = [:]
@@ -19,12 +22,14 @@ def main(def gate_utils, def gerrit_utils, def config_utils) {
       (streams, jobs, post_jobs) = _evaluate_env(config_utils)
       gerrit_utils.gerrit_build_started()
 
-      desc = "<a href='${logs_url}'>${logs_url}</a>"
+      desc = []
       if (env.GERRIT_CHANGE_ID) {
-        desc += "<br>Project: ${env.GERRIT_PROJECT}"
-        desc += "<br>Branch: ${env.GERRIT_BRANCH}"
+        desc += "Branch: ${env.GERRIT_BRANCH}  Project: ${env.GERRIT_PROJECT}"
+        msg_header = new String(env.GERRIT_CHANGE_COMMIT_MESSAGE.decodeBase64()).split('\n')[0]
+        desc += "CommitMsg: ${msg_header.substring(0, msg_header.length() < 50 ? msg_header.length() : 50)}"
       }
-      currentBuild.description = desc
+      desc += "<a href='${logs_url}'>${logs_url}</a>"
+      currentBuild.description = desc.join('<br>')
       pre_build_done = true
     }
 
@@ -54,6 +59,24 @@ def main(def gate_utils, def gerrit_utils, def config_utils) {
 
     _save_pipeline_artifacts_to_logs(jobs, post_jobs)
   }
+}
+
+def _check_prerequisites() {
+  if (env.GERRIT_PIPELINE == 'gate' && !gerrit_utils.has_gate_approvals()) {
+    println("There is no gate approvals. skip gate")
+    currentBuild.description = "Not ready to gate"
+    currentBuild.result = 'UNSTABLE'
+    return false
+  }
+
+  if (env.GERRIT_PIPELINE in ['check', 'gate'] && gerrit_utils.is_merged()) {
+    println("Review already merged. skip ${env.GERRIT_PIPELINE}")
+    currentBuild.description = "Already merged"
+    currentBuild.result = 'UNSTABLE'
+    return false
+  }
+
+  return true
 }
 
 def _evaluate_common_params() {
