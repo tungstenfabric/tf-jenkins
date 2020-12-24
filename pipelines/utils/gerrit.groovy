@@ -1,8 +1,8 @@
 // Gerrit utils
 
-VERIFIED_STARTED_VALUES = ['check': 0, 'gate': 0, 'nightly': null, 'templates': null]
-VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2, 'nightly': 1, 'templates': null]
-VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2, 'nightly': -1, 'templates': null]
+VERIFIED_STARTED_VALUES = ['check': 0, 'gate': 0, 'nightly': null, 'templates': null, 'stage-repos': null]
+VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2, 'nightly': 1, 'templates': null, 'stage-repos': 1]
+VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2, 'nightly': -1, 'templates': null, 'stage-repos': -1]
 
 def resolve_gerrit_url() {
   def url = "http://${env.GERRIT_HOST}/"
@@ -155,7 +155,7 @@ def publish_results_to_monitoring(streams, results, verified) {
 
   if (env.GERRIT_PIPELINE == 'nightly')
     publish_nightly_results_to_monitoring(streams, results)
-  else
+  else if (env.GERRIT_PIPELINE in ['check', 'gate'])
     publish_plain_results_to_monitoring(streams, results, verified)
 }
 
@@ -280,6 +280,7 @@ def notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, pa
     }
     return
   }
+
   withCredentials(
     bindings: [
       usernamePassword(credentialsId: env.GERRIT_HOST,
@@ -323,7 +324,7 @@ def notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, pa
 
 def _has_approvals(strategy) {
   if (!env.GERRIT_HOST) {
-    // looks like it's a nightly pipeline
+    // looks like it's a nightly/stage pipeline
     return false
   }
   withCredentials(
@@ -409,7 +410,7 @@ def has_gate_submits() {
 
 def is_merged() {
   if (!env.GERRIT_HOST) {
-    // looks like it's a nightly pipeline
+    // looks like it's a nightly/stage pipeline
     return false
   }
   withCredentials(
