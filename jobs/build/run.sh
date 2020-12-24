@@ -39,6 +39,7 @@ fi
 mirror_list=""
 # list of repos for building of tf-dev-sandbox container itself
 mirror_list_for_build=""
+
 if [[ ${LINUX_DISTR} == 'rhel7' ]]; then
   mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
   mirror_list="google-chrome.repo"
@@ -54,6 +55,12 @@ elif [[ ${LINUX_DISTR} == 'centos' ]]; then
 elif [[ "${LINUX_DISTR}" =~ 'ubi7' ]] ; then
   mirror_list_for_build="mirror-epel.repo google-chrome.repo ubi.repo mirror-rhel7.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
   mirror_list="google-chrome.repo ubi.repo mirror-rhel7.repo"
+fi
+
+if [[ $REPOS_CHANNEL != 'latest' ]]; then
+  for repofile in $mirror_list_for_build $mirror_list; do
+    sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}
+  done
 fi
 
 res=0

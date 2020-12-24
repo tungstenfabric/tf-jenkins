@@ -1,0 +1,36 @@
+---
+
+- job:
+    name: update-stage-repos
+    description: "Update staged repos"
+    defaults: global
+    node: vexxhost
+    concurrent: false
+    scm:
+      - tf-jenkins
+    wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+    builders:
+      - copyartifact:
+          project: ${{PIPELINE_NAME}}
+          filter: "global.env,*.$JOB_RND.env"
+          which-build: upstream-build
+          optional: true
+      - shell: |
+          source "$WORKSPACE/global.env"
+          source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
+          source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
+          desc="Pipeline: $PIPELINE_NAME-$PIPELINE_NUMBER  Random: $JOB_RND<br>"
+          desc+="Stage: {stage}  Target: {target}<br>"
+          desc+="Job logs: <a href=\"$LOGS_URL/$STREAM\">$LOGS_URL/$STREAM</a>"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
+          echo "INFO: do repos update for repo "
+          $WORKSPACE/jobs/update-stage-repos/run.sh
+    publishers:
+      - archive:
+          artifacts: '*.env'
