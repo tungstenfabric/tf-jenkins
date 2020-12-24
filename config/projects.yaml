@@ -545,3 +545,12 @@
       templates:
         - build-centos
         - cleanup
+
+
+- project:
+    name: stage-repos
+    check-stage:
+      templates:
+        - stage-repos
+        - ansible-k8s
+        - cleanup
