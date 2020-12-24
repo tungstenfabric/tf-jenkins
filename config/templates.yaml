@@ -25,3 +25,13 @@
     name: cleanup
     post-jobs:
       cleanup-workers:
+
+- template:
+    name: check-stage-repo
+    jobs:
+      check-centos:
+        job-name: check-repo-mirror
+        vars:
+          CHECKREPO: centos7
+    post-jobs:
+      cleanup-workers:
