@@ -270,7 +270,6 @@
           TAG_SUFFIX: "-ubi7"
           CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
-          DEPLOYMENT_TEST_TAGS: ziu
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
@@ -290,6 +289,7 @@
         stream: rhosp13-ha-ziu
         job-name: test-deployment
         vars:
+          DEPLOYMENT_TEST_TAGS: ziu
           TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
           - package-ubi
@@ -323,7 +323,6 @@
           TAG_SUFFIX: "-ubi7"
           CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
-          DEPLOYMENT_TEST_TAGS: ziu
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "rhel8-mirrors.tf-jenkins.progmaticlab.com:5000"
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
@@ -343,6 +342,7 @@
         stream: rhosp16-ha-ziu
         job-name: test-deployment
         vars:
+          DEPLOYMENT_TEST_TAGS: ziu
           TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
           - package-ubi

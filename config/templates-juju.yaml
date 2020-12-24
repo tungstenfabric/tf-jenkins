@@ -218,7 +218,6 @@
           CLOUD: manual
           CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2008
-          DEPLOYMENT_TEST_TAGS: ziu
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
@@ -237,6 +236,7 @@
         job-name: test-deployment
         stream: juju-os-ha-ziu
         vars:
+          DEPLOYMENT_TEST_TAGS: ziu
           TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
           - package-centos
