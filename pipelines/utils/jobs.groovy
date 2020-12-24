@@ -146,6 +146,13 @@ def _evaluate_env(def config_utils) {
       sh """#!/bin/bash -e
         echo "export GERRIT_BRANCH=master" >> global.env
       """
+    } else if (env.GERRIT_PIPELINE == 'stage-repos') {
+      project_name = "stage-repos-${REPOS_TYPE}"
+      sh """#!/bin/bash -e
+        echo "export GERRIT_BRANCH=master" >> global.env
+        echo "export REPOS_TYPE=${REPOS_TYPE}" >> global.env
+        echo "export REPOS_CHANNEL=stage" >> global.env
+      """
     }
     archiveArtifacts(artifacts: 'global.env')
 

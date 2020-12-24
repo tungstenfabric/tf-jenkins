@@ -39,6 +39,16 @@ fi
 mirror_list=""
 # list of repos for building of tf-dev-sandbox container itself
 mirror_list_for_build=""
+
+if [[ $REPOS_CHANNEL != 'latest' ]]; then
+  case $REPOS_TYPE in
+    "centos7")
+      # TODO: replace latest to REPOS_CHANNEL in required files
+      # TODO: do the same thing in unittest jobs and everywhere for repo files (maybe in up.sh scripts for workers)
+      ;;
+  esac
+fi
+
 if [[ ${LINUX_DISTR} == 'rhel7' ]]; then
   mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
   mirror_list="google-chrome.repo"
