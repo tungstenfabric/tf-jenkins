@@ -39,6 +39,9 @@ fi
 mirror_list=""
 # list of repos for building of tf-dev-sandbox container itself
 mirror_list_for_build=""
+
+cp *.repo ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/ || true
+
 if [[ ${LINUX_DISTR} == 'rhel7' ]]; then
   mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-rhel8-baseos.repo mirror-rhel8-archive.repo"
   mirror_list="google-chrome.repo"
