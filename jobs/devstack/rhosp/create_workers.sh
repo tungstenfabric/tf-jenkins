@@ -7,6 +7,7 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
+source "$my_dir/../../../infra/${CLOUD}/definitions"
 
 stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 stackrc_file_path=$WORKSPACE/$stackrc_file
@@ -43,11 +44,9 @@ EOF
     echo "export ENABLE_TLS='ipa'" >> "$stackrc_file_path"
   fi
 
-  if [[ -n "$CLOUD" ]]; then
-      source "$my_dir/../../../infra/${CLOUD}/definitions"
+  if [[ "$CLOUD" == 'bmc' ]]; then
       $my_dir/../../../infra/${CLOUD}/create_workers.sh
   else
-      source "$my_dir/../../../infra/${SLAVE}/definitions"
       echo "export OS_REGION_NAME=${OS_REGION_NAME}" >> "$stackrc_file_path"
       IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
       echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
@@ -55,7 +54,7 @@ EOF
       # initial values for undercloud (v2-standard-4)
       total_nodes_count=1
       total_vcpu_count=4
-      if [ -z "$NODES"] ; then
+      if [ -z "$NODES" ] ; then
         # default aio (v2-standard-8)
         total_nodes_count=$(( total_nodes_count + 1 ))
         total_vcpu_count=$(( total_vcpu_count + 8 ))
