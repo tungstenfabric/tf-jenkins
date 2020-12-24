@@ -32,6 +32,7 @@
     streams:
       juju-k8s:
         vars:
+          ENABLE_NAGIOS: 'true'
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: k8s
