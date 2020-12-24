@@ -1,0 +1,24 @@
+---
+
+- job:
+    name: pipeline-stage-repos
+    description: pipeline-stage-repos
+    project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 60
+    concurrent: false
+    parameters:
+      - choice:
+          name: SLAVE
+          choices:
+            - vexxhost
+          description: "Slave where all jobs will be run: vexxhost"
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: stage-repos
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: pipelines/main.groovy
+      lightweight-checkout: true
