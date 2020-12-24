@@ -100,6 +100,10 @@ def _evaluate_common_params() {
     contrail_container_tag = "nightly"
     logs_path = "${constants.LOGS_BASE_PATH}/nightly/pipeline_${BUILD_NUMBER}"
     logs_url = "${constants.LOGS_BASE_URL}/nightly/pipeline_${BUILD_NUMBER}"
+  } else if (env.GERRIT_PIPELINE == 'stage-repos') {
+    contrail_container_tag = "stage-repos-${REPOS_TYPE}"
+    logs_path = "${constants.LOGS_BASE_PATH}/stage-repos-${REPOS_TYPE}/pipeline_${BUILD_NUMBER}"
+    logs_url = "${constants.LOGS_BASE_URL}/stage-repos-${REPOS_TYPE}/pipeline_${BUILD_NUMBER}"
   } else {
     contrail_container_tag = 'dev'
     logs_path = "${constants.LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
@@ -145,6 +149,13 @@ def _evaluate_env(def config_utils) {
       project_name = "tungstenfabric"
       sh """#!/bin/bash -e
         echo "export GERRIT_BRANCH=master" >> global.env
+      """
+    } else if (env.GERRIT_PIPELINE == 'stage-repos') {
+      project_name = "stage-repos-${REPOS_TYPE}"
+      sh """#!/bin/bash -e
+        echo "export GERRIT_BRANCH=master" >> global.env
+        echo "export REPOS_TYPE=${REPOS_TYPE}" >> global.env
+        echo "export REPOS_CHANNEL=stage" >> global.env
       """
     }
     archiveArtifacts(artifacts: 'global.env')
