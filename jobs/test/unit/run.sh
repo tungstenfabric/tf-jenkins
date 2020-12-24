@@ -36,6 +36,11 @@ if [[ ${LINUX_DISTR} == 'centos' ]]; then
   mirror_list+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
   mirror_list+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
 fi
+if [[ $REPOS_CHANNEL != 'latest' ]]; then
+  for repofile in $mirror_list_for_build $mirror_list; do
+    sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}
+  done
+fi
 
 function run_over_ssh() {
   res=0

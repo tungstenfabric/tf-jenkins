@@ -152,6 +152,33 @@
             - publish-centos-stable
 
 - project:
+    name: stage-repos-centos7
+    stage-repos:
+      templates:
+        - build-centos
+        - ansible-k8s
+        - cleanup
+      jobs:
+        update-stage-repos-centos7:
+          job-name: update-stage-repos
+          vars:
+            REPOS_TYPE: 'centos7'
+        prepare-sandbox-centos:
+          depends-on:
+            - update-stage-repos-centos7
+        deploy-platform-ansible-k8s:
+          depends-on:
+            - update-stage-repos-centos7
+      #post-jobs:
+      #  publish-stage-repos-centos7:
+      #    job-name: publish-stage-repos
+      #    vars:
+      #      REPOS_TYPE: 'centos7'
+      #?  cleanup-workers:
+      #?    depends-on:
+      #?      - publish-stage-repos-centos7
+
+- project:
     names: tungstenfabric/tf-vnc
     check:
       templates:

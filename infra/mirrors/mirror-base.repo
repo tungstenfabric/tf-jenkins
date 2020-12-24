@@ -1,27 +1,27 @@
 [tf-mirrors.progmaticlab.com_repos_yum7-base]
-name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/base
-baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/base
+name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/latest/base
+baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/latest/base
 enabled=1
 gpgcheck=0
 cost = 500
 
 [tf-mirrors.progmaticlab.com_repos_yum7-extras]
-name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/extras
-baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/extras
+name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/latest/extras
+baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/latest/extras
 enabled=1
 gpgcheck=0
 cost = 500
 
 [tf-mirrors.progmaticlab.com_repos_yum7-updates]
-name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/updates/
-baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/updates/
+name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/latest/updates/
+baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/latest/updates/
 enabled=1
 gpgcheck=0
 cost = 500
 
 [tf-mirrors.progmaticlab.com_repository_yum7-centosplus]
-name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/centosplus/
-baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/centosplus/
+name=added from: http://tf-mirrors.progmaticlab.com/repos/centos7/latest/centosplus/
+baseurl=http://tf-mirrors.progmaticlab.com/repos/centos7/latest/centosplus/
 enabled=1
 gpgcheck=0
 cost = 500
