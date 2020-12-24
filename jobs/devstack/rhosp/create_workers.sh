@@ -55,7 +55,7 @@ EOF
       # initial values for undercloud (v2-standard-4)
       total_nodes_count=1
       total_vcpu_count=4
-      if [ -z "$NODES"] ; then
+      if [ -z "$NODES" ] ; then
         # default aio (v2-standard-8)
         total_nodes_count=$(( total_nodes_count + 1 ))
         total_vcpu_count=$(( total_vcpu_count + 8 ))
