@@ -17,7 +17,12 @@ declare -A RHOSP_PROVIDERS=( \
   ['vexxhost']='vexx' \
   ['vexx']='vexx' \
   ['bmc']='bmc' \
-  ['kvm']='kvm' \
+  ['openlab1']='bmc' \
 )
 
 export PROVIDER="${RHOSP_PROVIDERS[$CLOUD]}"
+
+[ -z "$PROVIDER" ] || {
+  echo "ERROR: unsupported provider for CLOUD=$CLOUD"
+  exit 1
+}
