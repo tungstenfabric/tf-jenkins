@@ -22,7 +22,7 @@ declare -A RHOSP_PROVIDERS=( \
 
 export PROVIDER="${RHOSP_PROVIDERS[$CLOUD]}"
 
-[ -z "$PROVIDER" ] || {
+[ -n "$PROVIDER" ] || {
   echo "ERROR: unsupported provider for CLOUD=$CLOUD"
   exit 1
 }
