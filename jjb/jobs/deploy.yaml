@@ -312,8 +312,10 @@
           # deploy platform kills env in case of error - skip all things for this case
           # TODO: think how to skip this job for some cases
           if [[ -n "$instance_ip" ]]; then
-            "$WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh"
-            "$WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/devstack/${DEPLOYER}/remove_workers.sh"
+            if ! "$WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/devstack/${DEPLOYER}/collect_logs.sh" ; then
+              echo "WARNING: logs couldn't be collected"
+            fi
+            "$WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/devstack/${DEPLOYER}/remove_workers.sh" || /bin/true
           fi
     publishers:
       - archive:
