@@ -44,7 +44,7 @@ EOF
     echo "export ENABLE_TLS='ipa'" >> "$stackrc_file_path"
   fi
 
-  if [[ "$CLOUD" == 'bmc' ]]; then
+  if [[ "$PROVIDER" == 'bmc' ]]; then
       $my_dir/../../../infra/${CLOUD}/create_workers.sh
   else
       echo "export OS_REGION_NAME=${OS_REGION_NAME}" >> "$stackrc_file_path"
