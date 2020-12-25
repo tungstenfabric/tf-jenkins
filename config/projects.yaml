@@ -152,7 +152,7 @@
             - publish-centos-stable
 
 - project:
-    names: [tungstenfabric/tf-vnc, Juniper/contrail-vnc]
+    names: tungstenfabric/tf-vnc
     check:
       templates:
         - ansible-os # juju-os
@@ -165,7 +165,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-ansible-deployer, Juniper/contrail-ansible-deployer]
+    names: tungstenfabric/tf-ansible-deployer
     check:
       templates:
         - test-tox-pep8
@@ -180,7 +180,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-kolla-ansible, Juniper/contrail-kolla-ansible]
+    names: tungstenfabric/tf-kolla-ansible
     check:
       templates:
         - ansible-os
@@ -191,7 +191,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-deployers-containers, Juniper/contrail-deployers-containers]
+    names: tungstenfabric/tf-deployers-containers
     check:
       templates:
         - build-centos
@@ -202,7 +202,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-container-builder, Juniper/contrail-container-builder]
+    names: tungstenfabric/tf-container-builder
     check:
       templates:
         - ansible-os # juju-os
@@ -217,7 +217,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-controller, Juniper/contrail-controller]
+    names: tungstenfabric/tf-controller
     check:
       templates:
         - test-unit
@@ -232,7 +232,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-api-client, Juniper/contrail-api-client]
+    names: tungstenfabric/tf-api-client
     check:
       templates:
         - test-unit
@@ -247,7 +247,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-common, Juniper/contrail-common]
+    names: tungstenfabric/tf-common
     check:
       templates:
         - test-unit
@@ -262,7 +262,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-vrouter, Juniper/contrail-vrouter]
+    names: tungstenfabric/tf-vrouter
     check:
       templates:
         - test-unit
@@ -277,7 +277,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-analytics, Juniper/contrail-analytics]
+    names: tungstenfabric/tf-analytics
     check:
       templates:
         - test-unit
@@ -292,7 +292,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-packages, Juniper/contrail-packages]
+    names: tungstenfabric/tf-packages
     check:
       templates:
         - ansible-os # juju-os
@@ -306,7 +306,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-test, Juniper/contrail-test]
+    names: tungstenfabric/tf-test
     check:
       templates:
         - ansible-os # juju-os
@@ -319,7 +319,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-neutron-plugin, Juniper/contrail-neutron-plugin]
+    names: tungstenfabric/tf-neutron-plugin
     check:
       templates:
         - test-unit
@@ -348,7 +348,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-third-party-packages, Juniper/contrail-third-party-packages]
+    names: tungstenfabric/tf-third-party-packages
     check:
       templates:
         - ansible-os # juju-os
@@ -361,7 +361,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-third-party, Juniper/contrail-third-party]
+    names: tungstenfabric/tf-third-party
     check:
       templates:
         - ansible-os # juju-os
@@ -429,7 +429,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-openshift-ansible, Juniper/openshift-ansible]
+    names: tungstenfabric/tf-openshift-ansible
     check:
       templates:
         - openshift
@@ -440,7 +440,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-vcenter-fabric-manager, Juniper/contrail-vcenter-fabric-manager]
+    names: tungstenfabric/tf-vcenter-fabric-manager
     check:
       templates:
         - test-unit
@@ -453,7 +453,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-vcenter-manager, Juniper/contrail-vcenter-manager]
+    names: tungstenfabric/tf-vcenter-manager
     check:
       templates:
         - test-unit
@@ -466,7 +466,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-vcenter-plugin, Juniper/contrail-vcenter-plugin]
+    names: tungstenfabric/tf-vcenter-plugin
     check:
       templates:
         - build-centos
@@ -477,7 +477,7 @@
         - cleanup
 
 - project:
-    names: [tungstenfabric/tf-build, Juniper/contrail-build]
+    names: tungstenfabric/tf-build
     check:
       templates:
         - test-unit
