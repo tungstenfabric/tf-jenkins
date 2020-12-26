@@ -169,7 +169,7 @@
       ansible-os-ha-ziu:
         vars:
           CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
-          CONTRAIL_CONTAINER_TAG: nightly-r2011
+          CONTRAIL_CONTAINER_TAG: nightly-r2011-centos
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: os
