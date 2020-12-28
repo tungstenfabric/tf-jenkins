@@ -1,0 +1,32 @@
+---
+
+- template:
+    name: operator
+    streams:
+      operator:
+        vars:
+          MONITORING_DEPLOYER: k8s_manifests
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-centos
+    jobs:
+      deploy-platform-operator:
+        stream: operator
+      deploy-tf-operator:
+        stream: operator
+        depends-on:
+          - package-centos
+          - deploy-platform-operator
+      test-sanity-operator:
+        job-name: test-sanity
+        stream: operator
+        depends-on:
+          - deploy-tf-operator
+      collect-logs-and-cleanup-operator:
+        job-name: collect-logs-and-cleanup
+        stream: operator
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-operator
+          - deploy-tf-operator
+          - test-sanity-operator
