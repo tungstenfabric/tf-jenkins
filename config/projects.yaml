@@ -12,6 +12,7 @@
     - templates-juju.yaml
     - templates-k8s-manifests.yaml
     - templates-openshift.yaml
+    - templates-operator.yaml
     - templates-rhosp.yaml
     - templates-tests.yaml
 
