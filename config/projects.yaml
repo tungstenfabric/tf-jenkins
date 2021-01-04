@@ -158,7 +158,6 @@
       templates:
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -210,7 +209,6 @@
         - build-ubi
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -225,7 +223,6 @@
         - test-unit
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -240,7 +237,6 @@
         - test-unit
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -255,7 +251,6 @@
         - test-unit
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -270,7 +265,6 @@
         - test-unit
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -285,7 +279,6 @@
         - test-unit
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -299,7 +292,6 @@
         - build-ubi
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -312,7 +304,6 @@
       templates:
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -328,7 +319,6 @@
         - rhosp13
         - rhosp16
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -354,7 +344,6 @@
       templates:
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -369,7 +358,6 @@
         - build-centos
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -486,7 +474,6 @@
         - build-centos
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -501,7 +488,6 @@
         - build-centos
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 # infra projects
@@ -517,7 +503,6 @@
         - build-centos
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
@@ -533,7 +518,6 @@
         - build-centos
         - ansible-k8s
         - ansible-os
-        # - helm-os
         - cleanup
 
 - project:
