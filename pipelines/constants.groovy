@@ -25,4 +25,7 @@ VERIFIED_PROJECTS = [
   'tungstenfabric/tf-deployment-test'
 ]
 
+// in minutes
+JOB_TIMEOUT = 180
+
 return this
