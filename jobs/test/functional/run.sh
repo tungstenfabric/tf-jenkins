@@ -21,7 +21,7 @@ case $TARGET in
     script="src/tungstenfabric/tf-dev-test/smoke-test/run.sh"
     ;;
   *)
-    echo "Variable TARGET is unset or incorrect"
+    echo "Variable TARGET is not set or incorrect"
     exit 1
     ;;
 esac
