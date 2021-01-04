@@ -289,7 +289,6 @@ def _process_job(def job_name, def job_set, def streams) {
     try {
       def result = _wait_for_dependencies(job_set, job_name)
       if (result) {
-        // TODO: add optional timeout from config - timeout(time: 60, unit: 'MINUTES')
         _run_job(job_set, job_name, streams)
       } else {
         job_results[job_name]['number'] = -1
@@ -477,6 +476,7 @@ def _run_job(def job_set, def name, def streams) {
   // final cleanup job is not in config
   def job_name = job_set[name].get('job-name', name)
   def stream = job_set[name].get('stream', name)
+  def timeout = job_set[name].get('timeout', constants.JOB_TIMEOUT) as int
   def job_rnd = job_results[name]['job-rnd']
   def vars_env_file = "vars.${job_name}.${job_rnd}.env"
   def deps_env_file = "deps.${job_name}.${job_rnd}.env"
@@ -492,13 +492,15 @@ def _run_job(def job_set, def name, def streams) {
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]
     println("JOB ${name}: Starting job: ${job_name}  rnd: #${job_rnd}")
-    def job = build(job: job_name, parameters: params)
-    job_number = job.getNumber()
-    job_results[name]['number'] = job_number
-    job_results[name]['started'] = job.getStartTimeInMillis()
-    job_results[name]['duration'] = job.getDuration()
-    job_results[name]['result'] = job.getResult().toString()
-    println("JOB ${name}: Finished with SUCCESS")
+    timeout(time: timeout, unit: 'MINUTES') {
+      def job = build(job: job_name, parameters: params)
+      job_number = job.getNumber()
+      job_results[name]['number'] = job_number
+      job_results[name]['started'] = job.getStartTimeInMillis()
+      job_results[name]['duration'] = job.getDuration()
+      job_results[name]['result'] = job.getResult().toString()
+      println("JOB ${name}: Finished with SUCCESS")
+    }
   } catch (err) {
     run_err = err
     job_results[name]['result'] = 'FAILURE'
