@@ -15,11 +15,11 @@ result=0
 
 function repush() {
   local image=$1
-  if ! docker pull $image ; then
+  if ! sudo docker pull $image ; then
     echo "INFO: there is no image $image"
     continue
   fi
-  if ! docker push $image ; then
+  if ! sudo docker push $image ; then
     echo "ERROR: can't push image back $image"
     result=1
   fi

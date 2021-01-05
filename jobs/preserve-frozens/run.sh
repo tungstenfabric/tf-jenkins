@@ -34,6 +34,6 @@ else
   sudo yum install -y jq curl
 fi
 
-./preserve_fozens.sh
+./preserve_frozens.sh
 EOF
 echo "INFO: Update tpc finished"
