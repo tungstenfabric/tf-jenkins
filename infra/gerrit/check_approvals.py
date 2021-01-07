@@ -4,6 +4,8 @@ import argparse
 import logging
 import sys
 import traceback
+import warnings
+warnings.filterwarnings("ignore")
 
 import gerrit_utils
 
@@ -14,22 +16,6 @@ def dbg(msg):
 
 def err(msg):
     logging.error(msg)
-
-
-def is_eligible_for_gating(expert_, change_):
-    if not expert_.is_eligible_for_gating(change_):
-        dbg("Not Ready for gating")
-        sys.exit(2)
-
-    dbg("Ready to gate")
-
-
-def is_eligible_for_submit(expert_, change_):
-    if not expert_.is_eligible_for_submit(change_):
-        dbg("Not Ready to submit")
-        sys.exit(2)
-
-    dbg("Ready to submit")
 
 
 def main():

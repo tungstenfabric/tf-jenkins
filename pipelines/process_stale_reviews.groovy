@@ -1,18 +1,18 @@
 // constants
 constants = null
 // gerrit utils
-gerrit_utils
+gerrit_utils = null
 
 timestamps {
   timeout(time: 10, unit: 'MINUTES') {
     node('vexxhost') {
-      if (env.GERRIT_PIPELINE != 'submit')
-        throw new Exception("ERROR: This pipeline only for submit trigger!")
+      if (env.GERRIT_PIPELINE != 'submit' && env.GERRIT_PIPELINE != 'gate')
+        throw new Exception("ERROR: This pipeline only for gate/submit triggers!")
 
       clone_self()
       constants = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/constants.groovy")
       gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
-      gerrit_utils.submit_stale_reviews()
+      gerrit_utils.process_stale_reviews(env.GERRIT_PIPELINE)
     }
   }
 }

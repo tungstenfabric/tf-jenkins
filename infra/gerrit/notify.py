@@ -4,6 +4,8 @@ import argparse
 import logging
 import sys
 import traceback
+import warnings
+warnings.filterwarnings("ignore")
 
 import gerrit_utils
 

@@ -1,0 +1,49 @@
+---
+
+- job:
+    name: gerrit-gate-stale-reviews
+    description: Checks stale reviews that has all required flags for gate but gating is still not run
+    project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 120
+    concurrent: false
+    parameters:
+      - hidden:
+          name: GERRIT_HOST
+          default: review.opencontrail.org
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: gate
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: pipelines/process-stale-reviews.groovy
+      lightweight-checkout: true
+# TODO: enbale cron trigger
+#    triggers:
+#      - timed: '0 * * * *'
+
+- job:
+    name: gerrit-submit-stale-reviews
+    description: Checks stale reviews that has all required flags for submit but still are not submitted
+    project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 120
+    concurrent: false
+    parameters:
+      - hidden:
+          name: GERRIT_HOST
+          default: review.opencontrail.org
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: submit
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: pipelines/process_stale_reviews.groovy
+      lightweight-checkout: true
+# TODO: enbale cron trigger
+#    triggers:
+#      - timed: '0 * * * *'

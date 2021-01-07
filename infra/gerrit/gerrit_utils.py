@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from datetime import datetime
 import json
 import logging
 import re
@@ -101,6 +102,14 @@ class Change(object):
     @property
     def revision(self):
         return self._data['current_revision']
+
+    @property
+    def created(self):
+        return datetime.fromisoformat(self._data['created'].split('.')[0])
+
+    @property
+    def updated(self):
+        return datetime.fromisoformat(self._data['updated'].split('.')[0])
 
     @property
     def ref(self):
@@ -214,12 +223,15 @@ class Gerrit(object):
             return None
         raise GerritRequestError("Search for SHA %s has too many results" % sha)
 
-    def list_active_changes(self, branch_=None):
+    def list_active_changes(self, branch=None, labels=list()):
         spin = True
         start = 0
         q = 'n=5&o=CURRENT_COMMIT&o=CURRENT_REVISION&o=DETAILED_LABELS&q=status:NEW'
-        if branch_:
-            q += ' branch:%s' % branch_
+        if branch:
+            q += '+AND+branch:%s' % branch
+        if labels:
+            for label in labels:
+                q += '+AND+label:%s' % label
 
         while spin:
             m = self._session.get('/changes/', params='%s&S=%d' % (q, start))
@@ -237,6 +249,9 @@ class Gerrit(object):
         url = "/changes/%s/revisions/%s/review" % \
             (change.id, patchset)
         self._session.post(url, data=data)
+
+    def gate(self, change, patchset):
+        self.push_message(change, 'gate', patchset)
 
     def submit(self, change, patchset):
         data = {

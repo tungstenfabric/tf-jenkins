@@ -370,7 +370,7 @@ def resolve_patchsets() {
   archiveArtifacts(artifacts: 'patchsets-info.json')
 }
 
-def submit_stale_reviews() {
+def process_stale_reviews(strategy) {
   if (!env.GERRIT_HOST) {
     return
   }
@@ -382,7 +382,8 @@ def submit_stale_reviews() {
 
     def url = resolve_gerrit_url()
     sh """
-      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/submit_stale_reviews.py \
+      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/process_stale_reviews.py \
+        --strategy ${strategy} \
         --gerrit ${url} \
         --user ${GERRIT_API_USER} \
         --password ${GERRIT_API_PASSWORD}
