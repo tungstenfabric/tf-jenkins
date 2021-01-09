@@ -136,12 +136,14 @@ def report_timeline(job_results) {
   )
 
   withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
-    ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    ssh_cmd = "ssh -i $LOGS_HOST_SSH_KEY -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     writeFile(file: 'timeline.log', text: output)
-    sh """#!/bin/bash
-      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST} "mkdir -p ${logs_path}"
-      rsync -a -e "${ssh_cmd}" timeline.log ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}:${logs_path}/
-    """
+    withEnv(["LOGS_HOST_SSH_KEY=${LOGS_HOST_SSH_KEY}", "LOGS_HOST_USERNAME=${LOGS_HOST_USERNAME}"]) {
+      sh """#!/bin/bash
+        ${ssh_cmd} $LOGS_HOST_USERNAME@${constants.LOGS_HOST} "mkdir -p ${logs_path}"
+        rsync -a -e "${ssh_cmd}" timeline.log $LOGS_HOST_USERNAME@${constants.LOGS_HOST}:${logs_path}/
+      """
+    }
   }
   return totalTime
 }
@@ -307,17 +309,19 @@ def notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, pa
       patchset_number = env.GERRIT_PATCHSET_NUMBER
 
     // TODO: send comment by sha or patchset num
-    sh """
-      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/notify.py \
-        --gerrit ${url} \
-        --user ${GERRIT_API_USER} \
-        --password ${GERRIT_API_PASSWORD} \
-        --review ${change_id} \
-        --patchset ${patchset_number} \
-        --branch ${branch} \
-        --message "${msg}" \
-        ${opts}
-    """
+    withEnv(['GERRIT_API_USER=$GERRIT_API_USER', 'GERRIT_API_PASSWORD=$GERRIT_API_PASSWORD']) {
+      sh """
+        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/notify.py \
+          --gerrit ${url} \
+          --user $GERRIT_API_USER \
+          --password $GERRIT_API_PASSWORD \
+          --review ${change_id} \
+          --patchset ${patchset_number} \
+          --branch ${branch} \
+          --message "${msg}" \
+          ${opts}
+      """
+    }
   }
 }
 
@@ -335,17 +339,19 @@ def _has_approvals(strategy) {
     def url = resolve_gerrit_url()
     def output = ""
     try {
-      output = sh(returnStdout: true, script: """
-        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/check_approvals.py \
-          --debug \
-          --strategy ${strategy} \
-          --gerrit ${url} \
-          --user ${GERRIT_API_USER} \
-          --password ${GERRIT_API_PASSWORD} \
-          --review ${GERRIT_CHANGE_ID} \
-          --branch ${GERRIT_BRANCH}
-      """).trim()
-      println(output)
+      withEnv(["GERRIT_API_USER=$GERRIT_API_USER", "GERRIT_API_PASSWORD=$GERRIT_API_PASSWORD"]) {
+        output = sh(returnStdout: true, script: """
+          ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/check_approvals.py \
+            --debug \
+            --strategy ${strategy} \
+            --gerrit ${url} \
+            --user $GERRIT_API_USER \
+            --password $GERRIT_API_PASSWORD \
+            --review ${GERRIT_CHANGE_ID} \
+            --branch ${GERRIT_BRANCH}
+        """).trim()
+        println(output)
+      }
       return true
     } catch (err) {
       println("check_approvals.py returns non-zero code. It means there is no approvals for now.")
@@ -381,13 +387,15 @@ def process_stale_reviews(strategy) {
       usernameVariable: 'GERRIT_API_USER')]) {
 
     def url = resolve_gerrit_url()
-    sh """
-      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/process_stale_reviews.py \
-        --strategy ${strategy} \
-        --gerrit ${url} \
-        --user ${GERRIT_API_USER} \
-        --password ${GERRIT_API_PASSWORD}
-    """
+    withEnv(["GERRIT_API_USER=$GERRIT_API_USER", "GERRIT_API_PASSWORD=$GERRIT_API_PASSWORD"]) {
+      sh """
+        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/process_stale_reviews.py \
+          --strategy ${strategy} \
+          --gerrit ${url} \
+          --user $GERRIT_API_USER \
+          --password $GERRIT_API_PASSWORD
+      """
+    }
   }
 }
 
@@ -422,16 +430,18 @@ def is_merged() {
     def url = resolve_gerrit_url()
     def output = ""
     try {
-      output = sh(returnStdout: true, script: """
-        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/is_merged.py \
-          --debug \
-          --gerrit ${url} \
-          --user ${GERRIT_API_USER} \
-          --password ${GERRIT_API_PASSWORD} \
-          --review ${GERRIT_CHANGE_ID} \
-          --branch ${GERRIT_BRANCH}
-      """).trim()
-      println(output)
+      withEnv(['GERRIT_API_USER=$GERRIT_API_USER', 'GERRIT_API_PASSWORD=$GERRIT_API_PASSWORD']) {
+        output = sh(returnStdout: true, script: """
+          ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/is_merged.py \
+            --debug \
+            --gerrit ${url} \
+            --user $GERRIT_API_USER \
+            --password $GERRIT_API_PASSWORD \
+            --review ${GERRIT_CHANGE_ID} \
+            --branch ${GERRIT_BRANCH}
+        """).trim()
+        println(output)
+      }
       return true
     } catch (err) {
       println("is_merged.py returns non-zero code. It means that review is not merged for now.")
