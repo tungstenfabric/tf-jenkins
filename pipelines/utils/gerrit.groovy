@@ -422,16 +422,18 @@ def is_merged() {
     def url = resolve_gerrit_url()
     def output = ""
     try {
-      output = sh(returnStdout: true, script: """
-        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/is_merged.py \
-          --debug \
-          --gerrit ${url} \
-          --user ${GERRIT_API_USER} \
-          --password ${GERRIT_API_PASSWORD} \
-          --review ${GERRIT_CHANGE_ID} \
-          --branch ${GERRIT_BRANCH}
-      """).trim()
-      println(output)
+      withEnv(["WORKSPACE=${WORKSPACE}", "URL=${url}", "GERRIT_CHANGE_ID=${GERRIT_CHANGE_ID}", "GERRIT_BRANCH=${GERRIT_BRANCH}"]) {
+        output = sh(returnStdout: true, script: '''
+          $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/gerrit/is_merged.py \
+            --debug \
+            --gerrit $URL \
+            --user $GERRIT_API_USER \
+            --password $GERRIT_API_PASSWORD \
+            --review $GERRIT_CHANGE_ID \
+            --branch $GERRIT_BRANCH
+        ''').trim()
+        println(output)
+      }
       return true
     } catch (err) {
       println("is_merged.py returns non-zero code. It means that review is not merged for now.")
