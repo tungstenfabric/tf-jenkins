@@ -329,12 +329,14 @@ def _get_jobs_result_for_gerrit(job_set, job_results) {
 def _save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
   println("URL of console output = ${BUILD_URL}consoleText")
   withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
-    ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-    sh """#!/bin/bash
-      curl -s ${BUILD_URL}consoleText > pipelinelog.log
-      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST} "mkdir -p ${logs_path}"
-      rsync -a -e "${ssh_cmd}" pipelinelog.log ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}:${logs_path}/
-    """
+    ssh_cmd = "ssh -i $LOGS_HOST_SSH_KEY -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    withEnv(["LOGS_HOST_SSH_KEY=${LOGS_HOST_SSH_KEY}", "LOGS_HOST_USERNAME=${LOGS_HOST_USERNAME}"]) {
+      sh """#!/bin/bash
+        curl -s ${BUILD_URL}consoleText > pipelinelog.log
+        ${ssh_cmd} $LOGS_HOST_USERNAME@${constants.LOGS_HOST} "mkdir -p ${logs_path}"
+        rsync -a -e "${ssh_cmd}" pipelinelog.log $LOGS_HOST_USERNAME@${constants.LOGS_HOST}:${logs_path}/
+      """
+    }
   }
   println("Output logs saved at ${logs_url}/pipelinelog.txt")
 }
@@ -544,19 +546,21 @@ def _run_job(def job_set, def name, def streams) {
 
 def _save_job_output(name, job_name, stream, job_number) {
   withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
-    ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-    sh """#!/bin/bash
-      curl -s ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > output-${name}.log
-      ${ssh_cmd} ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST} "mkdir -p ${logs_path}/${stream}/"
-      rsync -a -e "${ssh_cmd}" output-${name}.log ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}:${logs_path}/${stream}/
-    """
-    // hack for better visibility of UT failures
-    sh """#!/bin/bash
-      if grep -q '^ERROR.*failed\$' output-${name}.log ; then
-        grep '^ERROR.*failed\$' output-${name}.log > output-${name}-FAILED.log
-        rsync -a -e "${ssh_cmd}" output-${name}-FAILED.log ${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}:${logs_path}/${stream}/
-      fi
-    """
+    ssh_cmd = "ssh -i $LOGS_HOST_SSH_KEY -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    withEnv(["LOGS_HOST_SSH_KEY=${LOGS_HOST_SSH_KEY}", "LOGS_HOST_USERNAME=${LOGS_HOST_USERNAME}"]) {
+      sh """#!/bin/bash
+        curl -s ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > output-${name}.log
+        ${ssh_cmd} $LOGS_HOST_USERNAME@${constants.LOGS_HOST} "mkdir -p ${logs_path}/${stream}/"
+        rsync -a -e "${ssh_cmd}" output-${name}.log $LOGS_HOST_USERNAME@${constants.LOGS_HOST}:${logs_path}/${stream}/
+      """
+      // hack for better visibility of UT failures
+      sh """#!/bin/bash
+        if grep -q '^ERROR.*failed\$' output-${name}.log ; then
+          grep '^ERROR.*failed\$' output-${name}.log > output-${name}-FAILED.log
+          rsync -a -e "${ssh_cmd}" output-${name}-FAILED.log $LOGS_HOST_USERNAME@${constants.LOGS_HOST}:${logs_path}/${stream}/
+        fi
+      """
+    }
   }
 }
 
