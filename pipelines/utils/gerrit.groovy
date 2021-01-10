@@ -136,8 +136,8 @@ def report_timeline(job_results) {
   )
 
   withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
-    ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-    ssh_dest = "${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}"
+    ssh_cmd = "ssh -i \$LOGS_HOST_SSH_KEY -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    ssh_dest = "\$LOGS_HOST_USERNAME@${constants.LOGS_HOST}"
     writeFile(file: 'timeline.log', text: output)
     sh """#!/bin/bash
       ${ssh_cmd} ${ssh_dest} "mkdir -p ${logs_path}"

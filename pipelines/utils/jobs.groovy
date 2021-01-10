@@ -329,8 +329,8 @@ def _get_jobs_result_for_gerrit(job_set, job_results) {
 def _save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
   println("URL of console output = ${BUILD_URL}consoleText")
   withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
-    ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-    ssh_dest = "${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}"
+    ssh_cmd = "ssh -i \$LOGS_HOST_SSH_KEY -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    ssh_dest = "\$LOGS_HOST_USERNAME@${constants.LOGS_HOST}"
     sh """#!/bin/bash
       curl -s ${BUILD_URL}consoleText > pipelinelog.log
       ${ssh_cmd} ${ssh_dest} "mkdir -p ${logs_path}"
@@ -545,8 +545,8 @@ def _run_job(def job_set, def name, def streams) {
 
 def _save_job_output(name, job_name, stream, job_number) {
   withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'logs_host', keyFileVariable: 'LOGS_HOST_SSH_KEY', usernameVariable: 'LOGS_HOST_USERNAME')]) {
-    ssh_cmd = "ssh -i ${LOGS_HOST_SSH_KEY} -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-    ssh_dest = "${LOGS_HOST_USERNAME}@${constants.LOGS_HOST}"
+    ssh_cmd = "ssh -i \$LOGS_HOST_SSH_KEY -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    ssh_dest = "\$LOGS_HOST_USERNAME@${constants.LOGS_HOST}"
     sh """#!/bin/bash
       curl -s ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > output-${name}.log
       ${ssh_cmd} ${ssh_dest} "mkdir -p ${logs_path}/${stream}/"
