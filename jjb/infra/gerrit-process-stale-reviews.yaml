@@ -18,7 +18,7 @@
     pipeline-scm:
       scm:
         - tf-jenkins
-      script-path: pipelines/process-stale-reviews.groovy
+      script-path: pipelines/process_stale_reviews.groovy
       lightweight-checkout: true
 # TODO: enbale cron trigger
 #    triggers:
