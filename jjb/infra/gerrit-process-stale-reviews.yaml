@@ -11,7 +11,7 @@
     parameters:
       - hidden:
           name: GERRIT_HOST
-          default: review.opencontrail.org
+          default: gerrit.tungsten.io
       - hidden:
           name: GERRIT_PIPELINE
           default: gate
@@ -35,7 +35,7 @@
     parameters:
       - hidden:
           name: GERRIT_HOST
-          default: review.opencontrail.org
+          default: gerrit.tungsten.io
       - hidden:
           name: GERRIT_PIPELINE
           default: submit
