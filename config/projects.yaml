@@ -361,6 +361,45 @@
         - cleanup
 
 - project:
+    names: tungstenfabric/tf-webui-third-party
+    check:
+      templates:
+        - test-unit-ui
+        - ansible-os # juju-os
+        - cleanup
+    gate:
+      templates:
+        - build-ubi
+        - build-centos
+        - cleanup
+
+- project:
+    names: tungstenfabric/tf-web-core
+    check:
+      templates:
+        - test-unit-ui
+        - ansible-os # juju-os
+        - cleanup
+    gate:
+      templates:
+        - build-ubi
+        - build-centos
+        - cleanup
+
+- project:
+    names: tungstenfabric/tf-web-controller
+    check:
+      templates:
+        - test-unit-ui
+        - ansible-os # juju-os
+        - cleanup
+    gate:
+      templates:
+        - build-ubi
+        - build-centos
+        - cleanup
+
+- project:
     name: tungstenfabric/tf-charms
     check:
       templates:
