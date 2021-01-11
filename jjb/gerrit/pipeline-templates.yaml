@@ -1,7 +1,7 @@
 ---
 
 - job:
-    name: pipeline-templates-opencontrail
+    name: pipeline-templates
     description: pipeline-templates
     project-type: pipeline
     properties:
@@ -25,25 +25,6 @@
       lightweight-checkout: true
     triggers:
       - gerrit:
-          server-name: review.opencontrail.org
-          skip-vote:
-            successful: true
-            failed: true
-            unstable: true
-            notbuilt: true
-          trigger-on:
-            - comment-added-contains-event:
-                comment-contains-value: '(?i)^(check|recheck) +(template|templates)( +[A-Za-z0-9\-]+)+\s*$'
-          comment-text-parameter-mode: PLAIN
-          trigger-for-unreviewed-patches: true
-          projects:
-            - project-compare-type: 'ANT'
-              project-pattern: '**'
-              branches:
-                - branch-compare-type: 'ANT'
-                  branch-pattern: '**'
-      - gerrit:
-          server-name: gerrit.tungsten.io
           skip-vote:
             successful: true
             failed: true

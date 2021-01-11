@@ -1,7 +1,7 @@
 ---
 
 - job:
-    name: pipeline-gate-opencontrail
+    name: pipeline-gate
     description: Please do not run this manually
     project-type: pipeline
     properties:
@@ -25,36 +25,6 @@
       lightweight-checkout: true
     triggers:
       - gerrit:
-          server-name: review.opencontrail.org
-          skip-vote:
-            successful: true
-            failed: true
-            unstable: true
-            notbuilt: true
-          trigger-on:
-            - comment-added-event:
-                approval-category: 'Code-Review'
-                approval-value: 2
-            - comment-added-event:
-                approval-category: 'Approved'
-                approval-value: 1
-            - comment-added-event:
-                approval-category: 'VerifiedTF'
-                approval-value: 1
-            - comment-added-event:
-                approval-category: 'Verified'
-                approval-value: 1
-            - comment-added-contains-event:
-                comment-contains-value: '(?i)^(recheck gate|gate)$'
-          trigger-for-unreviewed-patches: false
-          projects:
-            - project-compare-type: 'ANT'
-              project-pattern: '**'
-              branches:
-                - branch-compare-type: 'REG_EXP'
-                  branch-pattern: '^((?!R3\.|R4\.|R5\.).*)'
-      - gerrit:
-          server-name: gerrit.tungsten.io
           skip-vote:
             successful: true
             failed: true

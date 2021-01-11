@@ -1,7 +1,7 @@
 ---
 
 - job:
-    name: pipeline-abandon-opencontrail
+    name: pipeline-abandon
     description: catches 'abandon' comment from gerrit for particular review
     project-type: pipeline
     properties:
@@ -10,24 +10,6 @@
     concurrent: true
     triggers:
       - gerrit:
-          server-name: review.opencontrail.org
-          skip-vote:
-            successful: true
-            failed: true
-            unstable: true
-            notbuilt: true
-          trigger-on:
-            - change-abandoned-event 
-            - comment-added-contains-event:
-                comment-contains-value: '(?i)^(cancel)$'
-          projects:
-            - project-compare-type: 'ANT'
-              project-pattern: '**'
-              branches:
-                - branch-compare-type: 'ANT'
-                  branch-pattern: '**'
-      - gerrit:
-          server-name: gerrit.tungsten.io
           skip-vote:
             successful: true
             failed: true
