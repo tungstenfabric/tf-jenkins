@@ -285,7 +285,8 @@
     check:
       templates:
         - test-unit
-        - ansible-os # juju-os
+        - ansible-os
+        - juju-os
         - cleanup
     gate:
       templates:
