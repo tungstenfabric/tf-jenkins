@@ -105,11 +105,11 @@ class Change(object):
 
     @property
     def created(self):
-        return datetime.fromisoformat(self._data['created'].split('.')[0])
+        return datetime.strptime(self._data['created'].split('.')[0], "%Y-%m-%d %H:%M:%S")
 
     @property
     def updated(self):
-        return datetime.fromisoformat(self._data['updated'].split('.')[0])
+        return datetime.strptime(self._data['updated'].split('.')[0], "%Y-%m-%d %H:%M:%S")
 
     @property
     def ref(self):
