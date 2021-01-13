@@ -24,7 +24,6 @@ if [ -e $WORKSPACE/patchsets-info.json ]; then
 fi
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS"
-rsync -a -e "$ssh_cmd" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 echo "INFO: Build started: ENVIRONMENT_OS=$ENVIRONMENT_OS LINUX_DISTR=$LINUX_DISTR"
 
@@ -62,6 +61,9 @@ if [[ $REPOS_CHANNEL != 'latest' ]]; then
     sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}
   done
 fi
+
+# sync should be made after optional repo URLs updating
+rsync -a -e "$ssh_cmd" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 res=0
 cat <<EOF | $ssh_cmd $IMAGE_SSH_USER@$instance_ip || res=1
