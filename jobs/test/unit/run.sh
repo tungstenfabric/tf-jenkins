@@ -18,8 +18,6 @@ echo $TARGET_SET > $WORKSPACE/src/tungstenfabric/tf-dev-env/input/target_set
 
 STAGE=${STAGE:-test}
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
-
 echo "INFO: UT started"
 
 mirror_list=""
@@ -41,6 +39,9 @@ if [[ $REPOS_CHANNEL != 'latest' ]]; then
     sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}
   done
 fi
+
+# sync should be made after optional repo URLs updating
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 function run_over_ssh() {
   res=0

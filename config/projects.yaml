@@ -166,14 +166,14 @@
         deploy-platform-ansible-k8s:
           depends-on:
             - update-stage-repos-centos7
-      #post-jobs:
-      #  publish-stage-repos-centos7:
-      #    job-name: publish-stage-repos
-      #    vars:
-      #      REPOS_TYPE: 'centos7'
-      #?  cleanup-workers:
-      #?    depends-on:
-      #?      - publish-stage-repos-centos7
+        publish-stage-repos-centos7:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'centos7'
+          depends-on:
+            - deploy-platform-ansible-k8s
+      post-jobs:
+        cleanup-workers:
 
 - project:
     names: tungstenfabric/tf-vnc
