@@ -40,10 +40,18 @@ timestamps {
             // resolve patcchsets
             gerrit_utils.resolve_patchsets()
             // apply patchsets file onto tf-jenkins repo to get latest changes from review if exist
-            sh """#!/bin/bash -e
+            res = sh(returnStatus: true, script: """#!/bin/bash -e
               export GERRIT_URL=${gerrit_url}
-              ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-jenkins ./patchsets-info.json
-            """
+              ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-jenkins ./patchsets-info.json 2>script.err
+            """)
+            if (res != 0) {
+              msg = ''
+              if (fileExists('script.err'))
+                msg = readFile("script.err")
+              else
+                msg = "Unknown error from script apply_patchsets.sh. Please check pipeline output."
+              throw new Exception(msg)
+            }
             // always reload utils (if tf-jenkins in patchset's list)
             gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
           }
@@ -54,7 +62,8 @@ timestamps {
           gate_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gate.groovy")
         } catch (err) {
           println(err.getMessage())
-          verified = gerrit_utils.notify_gerrit(err.getMessage(), null)
+          msg = "TF CI Build Failed (${env.GERRIT_PIPELINE}) ${BUILD_URL}\n\n${err.getMessage()}"
+          verified = gerrit_utils.notify_gerrit(msg, null)
           throw(err)
         }
       }

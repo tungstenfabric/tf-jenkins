@@ -361,14 +361,23 @@ def _has_approvals(strategy) {
 }
 
 def resolve_patchsets() {
-  sh """
+  res = sh(returnStatus: true, script: """
     ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/resolve_patchsets.py \
       --gerrit ${gerrit_url} \
       --review ${GERRIT_CHANGE_ID} \
       --branch ${GERRIT_BRANCH} \
       --changed_files \
-      --output ${WORKSPACE}/patchsets-info.json
-  """
+      --output ${WORKSPACE}/patchsets-info.json \
+      2>script.err
+  """)
+  if (res != 0) {
+    msg = ''
+    if (fileExists('script.err'))
+      msg = readFile("script.err")
+    else
+      msg = "Unknown error from script resolve_patchsets.py. Please check pipeline output."
+    throw new Exception(msg)
+  }
   archiveArtifacts(artifacts: 'patchsets-info.json')
 }
 
