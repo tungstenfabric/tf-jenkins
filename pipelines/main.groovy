@@ -63,7 +63,7 @@ timestamps {
         } catch (err) {
           println(err.getMessage())
           msg = "TF CI Build Failed (${env.GERRIT_PIPELINE}) ${BUILD_URL}\n\n${err.getMessage()}"
-          verified = gerrit_utils.notify_gerrit(msg, null)
+          verified = gerrit_utils.notify_gerrit(msg, VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE])
           throw(err)
         }
       }
