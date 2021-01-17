@@ -208,15 +208,6 @@ def _run_gating(def jobs, def streams, def gate_utils, def gerrit_utils) {
         println("DEBUG: Project in serial list - run jobs")
         _run_jobs(jobs, streams)
       }
-    } catch(Exception err) {
-      println("DEBUG: Something fails ${err}")
-      if (!gate_utils.check_build_is_not_failed(env.BUILD_ID.toInteger())){
-        // If build has been failed - throw exection
-        println("DEBUG: This build has been failed")
-        throw err
-      } else {
-        println("DEBUG: This build was not failed - try again")
-      }
     } finally {
       // Finish the loop if pipeline was aborted
       def result = gate_utils.get_build_result_by_id(env.BUILD_ID.toInteger())
@@ -232,7 +223,7 @@ def _run_gating(def jobs, def streams, def gate_utils, def gerrit_utils) {
       println("DEBUG: We found base pipeline ${base_build_id} and are waiting for base pipeline")
       gate_utils.wait_pipeline_finished(base_build_id)
       println("DEBUG: Base pipeline has been finished")
-      if (gate_utils.check_build_is_not_failed(base_build_id)) {
+      if (gate_utils.check_build_successed(base_build_id)) {
         // Finish the pipeline if base build finished successfully
         // else try to find new base build
         println("DEBUG: Base pipeline has been verified")

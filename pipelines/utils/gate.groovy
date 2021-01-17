@@ -30,16 +30,16 @@ def save_base_builds() {
 
     if (build_data['status']) {
       // build has been finished
-      if (check_build_is_not_failed(build_id)) {
+      if (check_build_successed(build_id)) {
         // We do not need base build!
-        println("DEBUG: previous build is finished. Stop searching. Base build was not found. Just run.")
+        println("DEBUG: previous build is finished successfully. Stop searching. Base build is not found. Just run.")
         break
       }
       // else just skip the build
       println("DEBUG: build skipped")
     } else {
       // build is running
-      // Wait for build chain will be prepared
+      // Wait for build chain will be prepared - wait for BASE_BUILD_ID_LIST in base build
       println("DEBUG: calculate chain")
       base_chain = _wait_for_chain_calculated(build_id)
       if (base_chain == null) {
@@ -52,7 +52,7 @@ def save_base_builds() {
         base_chain = build_id.toString()
       } else {
         // base_chain is not empty string
-        if (!_check_base_chain_is_not_failed(base_chain)) {
+        if (_check_base_chain_failed(base_chain)) {
           // Some of base builds fails
           println("DEBUG: Something failed. build skipped")
           continue
@@ -145,10 +145,37 @@ def wait_pipeline_finished(Integer build_id) {
 }
 
 // Function check build using build_id is failed or not
+// The function get build's artifacts, find there VERIFIED,
+// and check if it is integer and more than 0 return SUCCESS
+// and return FAILRUE in another case
+// !!! Works only if build has been finished! Check getResult() before call this function
 @NonCPS
-def check_build_is_not_failed(Integer build_id) {
+def check_build_successed(Integer build_id) {
+  println("DEBUG: check_build_successed for ${build_id}")
   def build = _get_build_by_id(build_id)
-  return build.getResult() == null && _is_build_successed(build)
+  def artifactManager = build.getArtifactManager()
+  if (!artifactManager.root().isDirectory()) {
+    println("DEBUG: check_build_successed: root is not directory. return false")
+    return false
+  }
+
+  for (file in artifactManager.root().list()) {
+    if (!file.toString().contains('global.env'))
+      continue
+    // extract global.env artifact for each build if exists
+    def fileText = file.open().getText()
+    def line = fileText.readLines().find() { item -> item && item.split('=')[0].split()[-1] == 'VERIFIED' }
+    if (!line) {
+      println("DEBUG: check_build_successed: there is no VERIFIED line. return false")
+      return false
+    }
+    def verified = line.split('=').size() > 1 ? line.split('=')[1].trim().toInteger() : 0
+    println("DEBUG: check_build_successed: return ${verified} > 0")
+    return verified > 0
+  }
+
+  println("DEBUG: check_build_successed: There is no global.env file. return false")
+  return false
 }
 
 @NonCPS
@@ -171,16 +198,16 @@ def _get_build_by_id(Integer build_id) {
 // build and all its base builds remove from the chain (chain shortened)
 // Return true if it does NOT found failure build and chain
 // and false if it founds some failures
-def _check_base_chain_is_not_failed(base_chain) {
+def _check_base_chain_failed(base_chain) {
   if (base_chain.length() == 0)
-    return true
+    return false
   for (def build_id in base_chain.split(",")) {
-    // is not finished yes - skip the build
-    if (get_build_result_by_id(build_id.toInteger()) != null && !check_build_is_not_failed(build_id.toInteger()))
-      return false
+    // is not finished yet - skip the build
+    if (get_build_result_by_id(build_id.toInteger()) != null && !check_build_successed(build_id.toInteger()))
+      return true
   }
 
-  return true
+  return false
 }
 
 // Function return ordered map with builds with data needed for find
@@ -233,31 +260,6 @@ def _is_branch_fit(def branch) {
   }
 
   return true
-}
-
-// The function get build's artifacts, find there VERIFIED,
-// and check if it is integer and more than 0 return SUCCESS
-// and return FAILRUE in another case
-// !!! Works only if build has been finished! Check getResult() before call this function
-@NonCPS
-def _is_build_successed(def build) {
-  def artifactManager = build.getArtifactManager()
-  if (!artifactManager.root().isDirectory())
-    return false
-
-  for (file in artifactManager.root().list()) {
-    if (!file.toString().contains('global.env'))
-      continue
-    // extract global.env artifact for each build if exists
-    def fileText = file.open().getText()
-    def line = fileText.readLines().find() { item -> item && item.split('=')[0].split()[-1] == 'VERIFIED' }
-    if (!line)
-      return false
-    def verified = line.split('=').size() > 1 ? line.split('=')[1].trim().toInteger() : 0
-    return verified > 0
-  }
-
-  return false
 }
 
 // Check if pipeline with the same GERRIT_PROJECT is running
