@@ -327,15 +327,12 @@ def _get_result_patchset(Integer base_build_id) {
 // Function read global.env line by len and if met the line
 // with BASE_BUILD_ID_LIST remove it from file
 def cleanup_globalenv_vars() {
-  def new_patchset_info_text = readFile("global.env")
-  new_patchset_info_text.eachLine { line ->
-    if (!line.contains('BASE_BUILD_ID_LIST')) {
-      sh """#!/bin/bash -e
-          echo "${line}" >> global.env
-        """
-    }
-  }
-
+  def result = []
+  def global_env = readFile("global.env")
+  for (line in global_env.split('\n'))
+    if (!line.contains('BASE_BUILD_ID_LIST'))
+      result.add(line)
+  writeFile(file: "global.env", text: result.join('\n') + '\n')
   archiveArtifacts(artifacts: 'global.env')
 }
 

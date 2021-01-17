@@ -4,6 +4,7 @@
     name: openshift
     streams:
       openshift:
+        voting: False
         vars:
           TAG_SUFFIX: "-ubi7"
           MONITORING_DEPLOY_TARGET: AIO

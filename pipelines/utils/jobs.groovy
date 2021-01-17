@@ -212,10 +212,10 @@ def _run_gating(def jobs, def streams, def gate_utils, def gerrit_utils) {
       println("DEBUG: Something fails ${err}")
       if (!gate_utils.check_build_is_not_failed(env.BUILD_ID.toInteger())){
         // If build has been failed - throw exection
-        println("DEBUG: Build has been realy failed")
+        println("DEBUG: This build has been failed")
         throw err
       } else {
-        println("DEBUG: Build was not failed - try again")
+        println("DEBUG: This build was not failed - try again")
       }
     } finally {
       // Finish the loop if pipeline was aborted
