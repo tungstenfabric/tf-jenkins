@@ -180,9 +180,13 @@ def _update_map(items, new_items) {
     if (!items.containsKey(item.key) || items[item.key] == null)
       items[item.key] = item.value
     else if (item.value != null) {
-      if (item.value.getClass() == java.util.LinkedHashMap)
+      if (item.value.getClass() == java.util.LinkedHashMap) {
         _update_map(items[item.key], item.value)
-      else if(items[item.key] != item.value) {
+      } else if (item.value.getClass() == java.util.ArrayList) {
+        for (val in item.value)
+          if (!(val in items[item.key]))
+            items[item.key].add(val)
+      } else if (items[item.key] != item.value) {
         // it can be exception for some types but can be a normal situation for depends-on for example
         println("WARNING!!! " +
           "Invalid configuration - new item '${item}' with value type ${item.value.getClass()}' " +
