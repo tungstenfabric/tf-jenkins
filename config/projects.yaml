@@ -225,6 +225,84 @@
         cleanup-workers:
 
 - project:
+    name: stage-repos-rhel7
+    stage-repos:
+      templates:
+        - build-ubi
+        - rhosp13
+        - cleanup
+      jobs:
+        update-stage-repos-rhel7:
+          job-name: update-stage-repos
+          vars:
+            REPOS_TYPE: 'rhel7'
+        prepare-sandbox-rhel:
+          depends-on:
+            - update-stage-repos-rhel7
+        deploy-platform-rhosp13:
+          depends-on:
+            - update-stage-repos-rhel7
+        publish-stage-repos-rhel7:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'rhel7'
+          depends-on:
+            - deploy-platform-rhosp13
+      post-jobs:
+        cleanup-workers:
+
+- project:
+    name: stage-repos-rhel8
+    stage-repos:
+      templates:
+        - build-ubi
+        - rhosp16
+        - cleanup
+      jobs:
+        update-stage-repos-rhel8:
+          job-name: update-stage-repos
+          vars:
+            REPOS_TYPE: 'rhel8'
+        prepare-sandbox-rhel:
+          depends-on:
+            - update-stage-repos-rhel8
+        deploy-platform-rhosp16:
+          depends-on:
+            - update-stage-repos-rhel8
+        publish-stage-repos-rhel8:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'rhel8'
+          depends-on:
+            - deploy-platform-rhosp16
+      post-jobs:
+        cleanup-workers:
+
+- project:
+    name: stage-repos-ubuntu18
+    stage-repos:
+      templates:
+        - build-centos
+        - juju-os
+        - cleanup
+      jobs:
+        update-stage-repos-ubuntu18:
+          job-name: update-stage-repos
+          vars:
+            REPOS_TYPE: 'ubuntu18'
+        deploy-platform-juju-os:
+          depends-on:
+            - update-stage-repos-ubuntu18
+        publish-stage-repos-ubuntu18:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'ubuntu18'
+          depends-on:
+            - deploy-platform-juju-os
+      post-jobs:
+        cleanup-workers:
+
+- project:
     name: tungstenfabric/tf-vnc
     check:
       templates:

@@ -14,6 +14,9 @@ source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-pip.conf" ${IMAGE_SSH_USER}@${instance_ip}:./pip.conf
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-docker-daemon.json" ${IMAGE_SSH_USER}@${instance_ip}:./docker-daemon.json
+if [[ $REPOS_CHANNEL != 'latest' ]]; then
+  sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" "$my_dir/../../mirrors/ubuntu18-sources.list"
+fi
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/ubuntu18-sources.list" ${IMAGE_SSH_USER}@${instance_ip}:./ubuntu18-sources.list
 
 
