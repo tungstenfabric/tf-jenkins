@@ -154,19 +154,13 @@
             GERRIT_BRANCH: "R2011"
         # to use just built nightly images
         deploy-tf-juju-os-1912:
-          job-name: deploy-tf-juju-os
-          stream: juju-os-1912
+          # additional deps
           depends-on:
             - package-r1912
-            - package-deployers-centos
-            - deploy-platform-juju-os-1912
         deploy-tf-rhosp13-1912:
-          stream: rhosp13-1912
-          job-name: deploy-tf-rhosp13
+          # additional deps
           depends-on:
             - package-r1912-ubi
-            - package-deployers-ubi
-            - deploy-platform-rhosp13-1912
 
         #publish-centos-r1912:
         #  job-name: publish

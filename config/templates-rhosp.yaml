@@ -58,6 +58,7 @@
 
 - template:
     name: rhosp13-1912
+    # to use latest deployer's code
     parents:
       - build-ubi
     streams:
@@ -82,6 +83,7 @@
         stream: rhosp13-1912
         job-name: deploy-tf-rhosp13
         depends-on:
+          # to use latest deployer's code
           - package-deployers-ubi
           - deploy-platform-rhosp13-1912
       test-sanity-rhosp13-1912:
