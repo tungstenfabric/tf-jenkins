@@ -202,6 +202,7 @@
       deploy-tf-rhosp13-bmc:
         job-name: deploy-tf-rhosp13
         stream: rhosp13-bmc
+        timeout: 240
         depends-on:
           - package-ubi
           - deploy-platform-rhosp13-bmc
@@ -343,6 +344,7 @@
       test-deployment-rhosp16-ha-ziu:
         stream: rhosp16-ha-ziu
         job-name: test-deployment
+        timeout: 240
         vars:
           DEPLOYMENT_TEST_TAGS: ziu
           TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
