@@ -158,7 +158,7 @@
         stream: juju-os-1912
         depends-on:
           # to use latest deployer's code
-          - package-deployers-cento
+          - package-deployers-centos
           - deploy-platform-juju-os-1912
       test-sanity-juju-os-1912:
         job-name: test-sanity
