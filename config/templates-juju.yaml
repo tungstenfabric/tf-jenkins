@@ -113,6 +113,7 @@
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
+          OPENSTACK_VERSION: train
     jobs:
       deploy-platform-juju-os:
         stream: juju-os
@@ -185,6 +186,7 @@
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
+          OPENSTACK_VERSION: train
     jobs:
       deploy-platform-juju-os-ha:
         job-name: deploy-platform-juju-os
@@ -224,6 +226,7 @@
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
+          OPENSTACK_VERSION: train
     jobs:
       deploy-platform-juju-os-ha-ziu:
         job-name: deploy-platform-juju-os
