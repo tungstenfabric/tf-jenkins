@@ -19,9 +19,7 @@
           name: REPOS_TYPE
           choices:
             - centos7
-            - rhel7
-            - rhel8
-            - ubuntu18
+            - ubi7
             #- pip
       - hidden:
           name: GERRIT_PIPELINE

@@ -2,6 +2,6 @@
 Name=Red Hat Enterprise Linux 8.0 BaseOS
 enabled=0
 gpgcheck=0
-baseurl=http://tf-mirrors.progmaticlab.com/repos/rhel8/latest/rhel-8-for-x86_64-baseos-rpms/
+baseurl=http://rhel8-mirrors.tf-jenkins.progmaticlab.com/base/rhel-8-for-x86_64-baseos-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 500
