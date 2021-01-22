@@ -30,7 +30,7 @@
           TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
-          OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.progmaticlab.com:5005"
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: rhosp13
           MONITORING_ORCHESTRATOR: os
@@ -69,7 +69,7 @@
           TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
-          OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.progmaticlab.com:5005"
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
           CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5002'
           MONITORING_DEPLOY_TARGET: ILTS
@@ -112,7 +112,7 @@
           TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
-          OPENSTACK_CONTAINER_REGISTRY: "rhel8-mirrors.tf-jenkins.progmaticlab.com:5000"
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.progmaticlab.com:5005"
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: rhosp16
           MONITORING_ORCHESTRATOR: os
@@ -151,7 +151,7 @@
           SSL_ENABLE: true
           ENABLE_RHEL_REGISTRATION: false
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
-          OPENSTACK_CONTAINER_REGISTRY: "rhel8-mirrors.tf-jenkins.progmaticlab.com:5000"
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.progmaticlab.com:5005"
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: rhosp16
           MONITORING_ORCHESTRATOR: os
@@ -232,7 +232,7 @@
           TAG_SUFFIX: "-ubi7"
           SSL_ENABLE: true
           ENABLE_RHEL_REGISTRATION: false
-          OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.progmaticlab.com:5005"
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: rhosp13
@@ -274,7 +274,7 @@
           CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
           ENABLE_RHEL_REGISTRATION: false
-          OPENSTACK_CONTAINER_REGISTRY: "rhel7-mirrors.tf-jenkins.progmaticlab.com:5000"
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.progmaticlab.com:5005"
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: rhosp13
@@ -327,7 +327,7 @@
           CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
           ENABLE_RHEL_REGISTRATION: false
-          OPENSTACK_CONTAINER_REGISTRY: "rhel8-mirrors.tf-jenkins.progmaticlab.com:5000"
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.progmaticlab.com:5005"
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: rhosp16
