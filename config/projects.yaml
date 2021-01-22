@@ -196,7 +196,7 @@
     stage-repos:
       templates:
         - build-centos
-        - ansible-os
+        - ansible-k8s
         - cleanup
       jobs:
         update-stage-repos-centos7:
@@ -214,7 +214,7 @@
           vars:
             REPOS_TYPE: 'centos7'
           depends-on:
-            - test-sanity-ansible-os
+            - deploy-platform-ansible-k8s
       post-jobs:
         cleanup-workers:
 
@@ -230,7 +230,7 @@
           job-name: update-stage-repos
           vars:
             REPOS_TYPE: 'rhel7'
-        prepare-sandbox-ubi:
+        prepare-sandbox-rhel:
           depends-on:
             - update-stage-repos-rhel7
         deploy-platform-rhosp13:
@@ -241,7 +241,7 @@
           vars:
             REPOS_TYPE: 'rhel7'
           depends-on:
-            - test-sanity-rhosp13
+            - deploy-platform-rhosp13
       post-jobs:
         cleanup-workers:
 
@@ -257,7 +257,7 @@
           job-name: update-stage-repos
           vars:
             REPOS_TYPE: 'rhel8'
-        prepare-sandbox-ubi:
+        prepare-sandbox-rhel:
           depends-on:
             - update-stage-repos-rhel8
         deploy-platform-rhosp16:
@@ -268,7 +268,7 @@
           vars:
             REPOS_TYPE: 'rhel8'
           depends-on:
-            - test-sanity-rhosp16
+            - deploy-platform-rhosp16
       post-jobs:
         cleanup-workers:
 
@@ -292,7 +292,7 @@
           vars:
             REPOS_TYPE: 'ubuntu18'
           depends-on:
-            - test-sanity-juju-os
+            - deploy-platform-juju-os
       post-jobs:
         cleanup-workers:
 
