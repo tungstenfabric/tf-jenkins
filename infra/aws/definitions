@@ -16,9 +16,6 @@ IMAGE_CENTOS7_SSH_USER='ec2-user'
 IMAGE_RHEL7='ami-05508913d3360e9af'
 IMAGE_RHEL7_SSH_USER='ec2-user'
 
-IMAGE_UBUNTU16='ami-06a6f79d24f2b6a21'
-IMAGE_UBUNTU16_SSH_USER='ubuntu'
-
 IMAGE_UBUNTU18='ami-0a5d8bc3b2b741f1b'
 IMAGE_UBUNTU18_SSH_USER='ubuntu'
 
@@ -33,12 +30,10 @@ declare -A OS_IMAGES_UP=( ['CENTOS7']='centos' \
                           ['CENTOS8']='centos' \
                           ['RHEL7']='rhel' \
                           ['RHEL8']='rhel' \
-                          ['UBUNTU16']='ubuntu' \
                           ['UBUNTU18']='ubuntu' )
 
 declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['CENTOS8']='' \
                             ['RHEL7']='rhel' \
                             ['RHEL8']='rhel' \
-                            ['UBUNTU16']='' \
                             ['UBUNTU18']='' )
