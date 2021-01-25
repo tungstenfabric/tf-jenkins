@@ -13,26 +13,35 @@ source "$my_dir/definitions"
 
 # Get images
 if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'CENTOS7' ]]; then
+  echo "INFO: download centos7 from centos.org"
   curl -LOs "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2.xz"
+  echo "INFO: decompress centos7"
   xz --decompress CentOS-7-x86_64-GenericCloud.qcow2.xz
+  echo "INFO: upload centos7 to vexxhost"
   openstack image create --disk-format qcow2 --tag centos7 --file CentOS-7-x86_64-GenericCloud.qcow2 base-centos7-$(date +%Y%m%d%H%M)
+  rm -f CentOS-7-x86_64-GenericCloud.qcow2*
 fi
 
 if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'UBUNTU18' ]]; then
+  echo "INFO: download ubuntu18 from cloud-images"
   curl -LOs "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img"
   curl -Ls "https://cloud-images.ubuntu.com/bionic/current/SHA256SUMS" -o ubuntu18-SHA256SUMS
   sha256sum -c ubuntu18-SHA256SUMS --ignore-missing --status
+  echo "INFO: upload ubuntu18 to vexxhost"
   openstack image create --disk-format qcow2 --tag ubuntu18 --file bionic-server-cloudimg-amd64.img base-ubuntu18-$(date +%Y%m%d%H%M)
+  rm -f bionic-server-cloudimg-amd64.img
 fi
 
 # Remove previous images
 # this code leaves 4 latest images - so it can be run always
+echo "INFO: remove previous images"
 IMAGES_LIST=$(openstack image list -c Name -f value | grep "^base-")
 OS_NAMES=$(echo "$IMAGES_LIST" | awk -F "-" '{print $2}' | sort | uniq)
 
 for o in $OS_NAMES; do
   OLD_IMAGES=$(echo "$IMAGES_LIST" | grep "$o" | sort -nr | tail -n +4)
   for i in $OLD_IMAGES; do
+    echo "INFO: remove $i"
     openstack image delete $i
   done
 done

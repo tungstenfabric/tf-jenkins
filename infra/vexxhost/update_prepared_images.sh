@@ -12,10 +12,12 @@ for i in "${!OS_IMAGE_USERS[@]}"; do
     continue
   fi
 
+  echo "INFO: pack image for $i and upload it"
   packer build -machine-readable -var "os_image=${i,,}" -var "ssh_user=${OS_IMAGE_USERS[$i]}" \
       ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/packer/vexxhost.json
   OLD_IMAGES=$(openstack image list --tag prepared-${i,,} -c Name -f value | sort -nr | tail -n +4)
   for o in $OLD_IMAGES; do
+    echo "INFO: remove old image $o"
     openstack image delete $o
   done
 done

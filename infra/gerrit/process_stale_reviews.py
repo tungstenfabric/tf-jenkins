@@ -88,6 +88,7 @@ def main():
             break
         # if something was merged we have to try search again
         time.sleep(10)
+        info("Something were submitted. Do check again...")
 
 
 if __name__ == "__main__":

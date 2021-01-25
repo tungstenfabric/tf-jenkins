@@ -326,7 +326,6 @@ class Expert(object):
             (self.is_verified(change_, 1) or self.is_verified(change_, -2))
 
     def is_eligible_for_submit(self, change_):
-        print(change_.depends_on)
         return self.__is_eligible_general_test(change_) and \
             self.is_mergeable(change_) and self.is_approved(change_) and \
             self.is_verified(change_, 2) and not self.has_unmerged_parents(change_)
