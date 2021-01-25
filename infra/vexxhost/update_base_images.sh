@@ -12,23 +12,21 @@ source "$my_dir/definitions"
 # The image name should follow the example: base-rhel8-202012321201.
 
 # Get images
-curl -LOs "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2.xz"
-xz --decompress CentOS-7-x86_64-GenericCloud.qcow2.xz
+if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'CENTOS7' ]]
+  curl -LOs "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2.xz"
+  xz --decompress CentOS-7-x86_64-GenericCloud.qcow2.xz
+  openstack image create --disk-format qcow2 --tag centos7 --file CentOS-7-x86_64-GenericCloud.qcow2 base-centos7-$(date +%Y%m%d%H%M)
+fi
 
-curl -LOs "https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
-curl -Ls "https://cloud-images.ubuntu.com/xenial/current/SHA256SUMS" -o ubuntu16-SHA256SUMS
-sha256sum -c ubuntu16-SHA256SUMS --ignore-missing --status
-
-curl -LOs "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img"
-curl -Ls "https://cloud-images.ubuntu.com/bionic/current/SHA256SUMS" -o ubuntu18-SHA256SUMS
-sha256sum -c ubuntu18-SHA256SUMS --ignore-missing --status
-
-# Upload
-openstack image create --disk-format qcow2 --tag centos7 --file CentOS-7-x86_64-GenericCloud.qcow2 base-centos7-$(date +%Y%m%d%H%M)
-openstack image create --disk-format qcow2 --tag ubuntu16 --file xenial-server-cloudimg-amd64-disk1.img base-ubuntu16-$(date +%Y%m%d%H%M)
-openstack image create --disk-format qcow2 --tag ubuntu18 --file bionic-server-cloudimg-amd64.img base-ubuntu18-$(date +%Y%m%d%H%M)
+if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'UBUNTU18' ]]
+  curl -LOs "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img"
+  curl -Ls "https://cloud-images.ubuntu.com/bionic/current/SHA256SUMS" -o ubuntu18-SHA256SUMS
+  sha256sum -c ubuntu18-SHA256SUMS --ignore-missing --status
+  openstack image create --disk-format qcow2 --tag ubuntu18 --file bionic-server-cloudimg-amd64.img base-ubuntu18-$(date +%Y%m%d%H%M)
+fi
 
 # Remove previous images
+# this code leaves 4 latest images - so it can be run always
 IMAGES_LIST=$(openstack image list -c Name -f value | grep "^base-")
 OS_NAMES=$(echo "$IMAGES_LIST" | awk -F "-" '{print $2}' | sort | uniq)
 

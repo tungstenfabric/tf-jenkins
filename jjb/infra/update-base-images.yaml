@@ -8,6 +8,17 @@
     node: vexxhost
     triggers:
       - timed: 'H H(2-5) 10 * *'
+    parameters:
+      - choice:
+          name: IMAGE_TYPE
+          choices:
+            - ALL
+            - CENTOS7
+            - CENTOS8
+            - RHEL7
+            - RHEL8
+            - UBUNTU18
+          description: "Image type for update or ALL(default)"
     scm:
       - tf-jenkins
     wrappers:
