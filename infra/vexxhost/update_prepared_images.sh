@@ -8,7 +8,7 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
 for i in "${!OS_IMAGE_USERS[@]}"; do
-  if [[ ${IMAGE_TYPE^^} != 'ALL' && ${IMAGE_TYPE^^} != ${i^^} ]]
+  if [[ ${IMAGE_TYPE^^} != 'ALL' && ${IMAGE_TYPE^^} != ${i^^} ]]; then
     continue
   fi
 
