@@ -84,7 +84,7 @@ def main():
                     found = True
             except Exception as e:
                 info('failed to check review #{}/{}: {}'.format(commit.number, commit.revision_number, e))
-        if strategy_hooks != 'submit' or not found:
+        if args.strategy != 'submit' or not found:
             break
         # if something was merged we have to try search again
         time.sleep(10)
