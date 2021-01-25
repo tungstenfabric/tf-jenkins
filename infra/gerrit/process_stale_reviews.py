@@ -3,6 +3,7 @@
 import argparse
 import datetime
 import logging
+import time
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -68,17 +69,25 @@ def main():
         err("ERROR: Unknown strategy - {}".format(args.strategy))
         return 1
 
+    found = False
     check_op = strategy_hooks[args.strategy][0]
     process_op = strategy_hooks[args.strategy][1]
     labels = ['Code-Review=2', 'Approved=1']
-    for commit in gerrit.list_active_changes(args.branch, labels=labels):
-        try:
-            info('processing review #%s/%s' % (str(commit.number), str(commit.revision_number)))
-            if check_op(expert, commit):
-                info('review is ready to %s' % args.strategy)
-                process_op(commit, commit.revision_number)
-        except Exception as e:
-            info('failed to check review #{}/{}: {}'.format(commit.number, commit.revision_number, e))
+    while True:
+        for commit in gerrit.list_active_changes(args.branch, labels=labels):
+            try:
+                info('processing review #%s/%s' % (str(commit.number), str(commit.revision_number)))
+                if check_op(expert, commit):
+                    info('review is ready to %s' % args.strategy)
+                    process_op(commit, commit.revision_number)
+                    # set flag after operation to ensure successful operation
+                    found = True
+            except Exception as e:
+                info('failed to check review #{}/{}: {}'.format(commit.number, commit.revision_number, e))
+        if strategy_hooks != 'submit' or not found:
+            break
+        # if something was merged we have to try search again
+        time.sleep(10)
 
 
 if __name__ == "__main__":

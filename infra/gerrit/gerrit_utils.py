@@ -201,14 +201,20 @@ class Gerrit(object):
             # there is no active reviews
             return None
         if len(res) == 1:
-            # there is no ambiguite, so return the found change
-            return Change(res[0], self)
+            if branch == res[0].get('branch'):
+                # there is no ambiguite, so return the found change
+                return Change(res[0], self)
+            elif opened_only:
+                # reviews for other branches may be closed already
+                return None
         # there is ambiquity - try to resolve it by branch
         branches = {i.get('branch'): i for i in res}
         if branch in branches:
             return Change(branches[branch], self)
         # same branch is not found
         # TODO: choose DEFAULT_OPENSTACK_BRANCH if present, then latest openstack branch, then master
+        if opened_only:
+            return None
         raise GerritRequestError("Review {} (branch={}) not found. Count of result is {}".format(
             review_id, branch, len(res)))
 
@@ -320,6 +326,7 @@ class Expert(object):
             (self.is_verified(change_, 1) or self.is_verified(change_, -2))
 
     def is_eligible_for_submit(self, change_):
+        print(change_.depends_on)
         return self.__is_eligible_general_test(change_) and \
             self.is_mergeable(change_) and self.is_approved(change_) and \
             self.is_verified(change_, 2) and not self.has_unmerged_parents(change_)
