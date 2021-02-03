@@ -5,7 +5,8 @@
     streams:
       operator:
         vars:
-          MONITORING_DEPLOYER: k8s_manifests
+          MONITORING_DEPLOY_TARGET: AIO
+          MONITORING_DEPLOYER: operator
           MONITORING_ORCHESTRATOR: k8s
     parents:
       - build-centos

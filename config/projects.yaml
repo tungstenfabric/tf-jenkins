@@ -526,6 +526,17 @@
     name: tungstenfabric/tf-openshift-ansible
 
 - project:
+    name: tungstenfabric/tf-operator
+    check:
+      templates:
+        - operator
+        - cleanup
+    gate:
+      templates:
+        - operator
+        - cleanup
+
+- project:
     name: tungstenfabric/tf-vcenter-fabric-manager
     check:
       templates:
@@ -627,6 +638,7 @@
       templates:
         - ansible-os
         - juju-os
+        - operator
         - rhosp13
         - rhosp16
         - cleanup
