@@ -51,14 +51,6 @@ gpgcheck = 1
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
-[local-rhel-7-server-ose-3.11-rpms]
-name = Red Hat OSE 3.11 for RHEL 7 (RPMs) local
-baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-ose-3.11-rpms
-enabled = 1
-gpgcheck = 1
-gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-cost = 600
-
 [local-rhel-7-server-ansible-2.6-rpms]
 name = Red Hat Ansible 2.6 for RHEL 7 (RPMs) local
 baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-ansible-2.6-rpms

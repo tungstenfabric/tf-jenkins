@@ -31,6 +31,7 @@
 #
 # stream keys:
 #   vars - map of a key:value elements to use them as env vars in the job
+#   voting - boolean value to indicate if this stream should be included into overall vote result or not
 
 # job is a smallest unit of work. it refers to specific job of Jenkins
 #
@@ -60,7 +61,6 @@
     - templates-helm.yaml
     - templates-juju.yaml
     - templates-k8s-manifests.yaml
-    - templates-openshift.yaml
     - templates-operator.yaml
     - templates-rhosp.yaml
     - templates-tests.yaml
@@ -104,7 +104,6 @@
         - rhosp13-os-not-implemented-targets
         - rhosp16-os-not-implemented-targets
         - ansible-os-not-implemented-targets
-        - openshift-k8s-not-implemented-targets
         - cleanup
       streams:
         build-centos:
@@ -525,14 +524,6 @@
 
 - project:
     name: tungstenfabric/tf-openshift-ansible
-    check:
-      templates:
-        - openshift
-        - cleanup
-    gate:
-      templates:
-        - openshift
-        - cleanup
 
 - project:
     name: tungstenfabric/tf-vcenter-fabric-manager
@@ -639,3 +630,6 @@
         - rhosp13
         - rhosp16
         - cleanup
+
+- project:
+    name: tungstenfabric/tf-operator

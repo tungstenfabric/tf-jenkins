@@ -33,13 +33,6 @@ enabled = 1
 gpgcheck = 0
 cost = 600
 
-[local-rhel-7-server-ose-3.11-rpms]
-name = Red Hat OSE 3.11 for RHEL 7 (RPMs) local
-baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-ose-3.11-rpms
-enabled = 1
-gpgcheck = 0
-cost = 600
-
 [local-rhel-7-server-ansible-2.6-rpms]
 name = Red Hat Ansible 2.6 for RHEL 7 (RPMs) local
 baseurl = http://rhel7-mirrors.tf-jenkins.progmaticlab.com/rhel-7-server-ansible-2.6-rpms
