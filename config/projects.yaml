@@ -98,6 +98,7 @@
         - rhosp16
         - rhosp16-ha-ziu
         - rhosp13-bmc
+        - operator
         - juju-os-not-implemented-targets
         - juju-k8s-not-implemented-targets
         - juju-hybrid-not-implemented-targets
