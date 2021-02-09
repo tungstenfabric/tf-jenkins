@@ -150,6 +150,7 @@
           MONITORING_DEPLOY_TARGET: ILTS
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
+          OPENSTACK_VERSION: train
     jobs:
       deploy-platform-juju-os-1912:
         job-name: deploy-platform-juju-os
