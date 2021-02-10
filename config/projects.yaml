@@ -473,6 +473,9 @@
 - project:
     name: tungstenfabric/tf-charms
     check:
+      streams:
+        juju-os-1912:
+          voting: false
       templates:
         - test-tox-pep8
         - juju-k8s
