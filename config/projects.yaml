@@ -162,13 +162,13 @@
           depends-on:
             - package-r1912-ubi
 
-        #publish-centos-r1912:
-        #  job-name: publish
-        #  depends-on:
-        #    - package-r1912
-        #  vars:
-        #    TAG_SUFFIX: "-r1912"
-        #    PUBLISH_TAGS: "R1912"
+        publish-centos-r1912:
+          job-name: publish
+          depends-on:
+            - package-r1912
+          vars:
+            TAG_SUFFIX: "-r1912"
+            PUBLISH_TAGS: "R1912"
 
         #publish-centos-r2011:
         #  job-name: publish
