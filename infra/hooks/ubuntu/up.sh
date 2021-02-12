@@ -16,7 +16,6 @@ rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mir
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-docker-daemon.json" ${IMAGE_SSH_USER}@${instance_ip}:./docker-daemon.json
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/ubuntu18-sources.list" ${IMAGE_SSH_USER}@${instance_ip}:./ubuntu18-sources.list
 
-
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 sudo cp -f ./pip.conf /etc/pip.conf
 sudo mkdir -p /etc/docker/
@@ -27,3 +26,9 @@ sudo sudo cp -f ./ubuntu18-sources.list /etc/apt/sources.list
 echo "APT::Acquire::Retries \"10\";" | sudo tee /etc/apt/apt.conf.d/80-retries
 sudo cp -f /usr/share/unattended-upgrades/20auto-upgrades-disabled /etc/apt/apt.conf.d/ || /bin/true
 EOF
+
+if [ -f $my_dir/../../mirrors/ubuntu18-environment ]; then
+  echo "INFO: copy additional environment to host"
+  rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/ubuntu18-environment" ${IMAGE_SSH_USER}@${instance_ip}:./ubuntu18-environment
+  ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "cat ubuntu18-environment | sudo tee -a /etc/environment"
+fi
