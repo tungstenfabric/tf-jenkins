@@ -632,6 +632,7 @@
       templates:
         - build-ubi
         - build-centos
+        - build-r2011-centos
         - ansible-k8s
         - ansible-os
         - cleanup
