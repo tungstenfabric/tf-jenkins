@@ -534,10 +534,12 @@
     check:
       templates:
         - operator
+        - operator-ha
         - cleanup
     gate:
       templates:
         - operator
+        - operator-ha
         - cleanup
 
 - project:
