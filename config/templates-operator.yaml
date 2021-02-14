@@ -36,6 +36,7 @@
     name: operator-ha
     streams:
       operator-ha:
+        voting: false
         vars:
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: operator
