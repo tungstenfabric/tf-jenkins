@@ -5,6 +5,8 @@
     streams:
       operator:
         vars:
+          # operator is always ssl
+          SSL_ENABLE: true
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: operator
           MONITORING_ORCHESTRATOR: k8s
@@ -38,6 +40,8 @@
       operator-ha:
         voting: false
         vars:
+          # operator is always ssl
+          SSL_ENABLE: true
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: operator
           MONITORING_ORCHESTRATOR: k8s
