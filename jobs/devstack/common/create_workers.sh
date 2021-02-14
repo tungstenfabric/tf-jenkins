@@ -22,6 +22,7 @@ if [[ -z "$NODES" ]]; then
     exit 0
 fi
 
+rm -f new_key new_key.pub
 ssh-keygen -t rsa -N "" -f new_key
 pub_key=$(cat new_key.pub)
 env_export=""; instance_ip=""; ssh_user=""
