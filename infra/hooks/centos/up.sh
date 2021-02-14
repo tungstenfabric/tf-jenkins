@@ -22,3 +22,9 @@ sudo mkdir -p /etc/docker/
 sudo cp -f ./docker-daemon.json /etc/docker/daemon.json
 #sudo kill -SIGHUP $(pidof dockerd)
 EOF
+
+if [ -f $my_dir/../../mirrors/centos7-environment ]; then
+  echo "INFO: copy additional environment to host"
+  rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/centos7-environment" ${IMAGE_SSH_USER}@${instance_ip}:./centos7-environment
+  ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "cat centos7-environment | sudo tee -a /etc/environment"
+fi
