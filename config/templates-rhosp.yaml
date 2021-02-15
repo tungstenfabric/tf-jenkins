@@ -185,8 +185,9 @@
       - build-ubi
     streams:
       rhosp13-bmc:
+        lock: openlab1
         vars:
-          CLOUD: openlab1
+          JUMPHOST: openlab1
           ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: "-ubi7"
           ENABLE_RHEL_REGISTRATION: false

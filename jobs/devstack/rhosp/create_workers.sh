@@ -7,7 +7,7 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
-source "$my_dir/../../../infra/${CLOUD}/definitions"
+source "$my_dir/../../../infra/${JUMPHOST}/definitions"
 
 stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 stackrc_file_path=$WORKSPACE/$stackrc_file
@@ -46,54 +46,56 @@ EOF
   fi
 
   if [[ "$PROVIDER" == 'bmc' ]]; then
-      $my_dir/../../../infra/${CLOUD}/create_workers.sh
+    # openlab1
+    $my_dir/../../../infra/${JUMPHOST}/create_workers.sh
   else
-      echo "export OS_REGION_NAME=${OS_REGION_NAME}" >> "$stackrc_file_path"
-      IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
-      echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
+    # vexxhost
+    echo "export OS_REGION_NAME=${OS_REGION_NAME}" >> "$stackrc_file_path"
+    IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
+    echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
-      # initial values for undercloud (v2-standard-4)
-      total_nodes_count=1
-      total_vcpu_count=4
-      if [ -z "$NODES" ] ; then
-        # default aio (v2-standard-8)
-        total_nodes_count=$(( total_nodes_count + 1 ))
-        total_vcpu_count=$(( total_vcpu_count + 8 ))
+    # initial values for undercloud (v2-standard-4)
+    total_nodes_count=1
+    total_vcpu_count=4
+    if [ -z "$NODES" ] ; then
+      # default aio (v2-standard-8)
+      total_nodes_count=$(( total_nodes_count + 1 ))
+      total_vcpu_count=$(( total_vcpu_count + 8 ))
+    fi
+    for nodes in ${NODES//,/ }; do
+      if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
+        echo "ERROR: inappropriate input \"$nodes\" in \"$NODES\""
+        exit 1
       fi
-      for nodes in ${NODES//,/ }; do
-        if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
-          echo "ERROR: inappropriate input \"$nodes\" in \"$NODES\""
-          exit 1
+      node_name=$(echo $nodes | cut -d ':' -f1)
+      node_flavor=${VM_TYPES[$(echo $nodes | cut -d ':' -f2)]}
+      node_count=$(echo $nodes | cut -d ':' -f3)
+      echo "export $node_name=\"$node_flavor:$node_count\"" >> "$stackrc_file_path"
+      for (( i=1; i<=5 ; ++i )) ; do
+        if node_vcpu=$(openstack flavor show $node_flavor | awk '/vcpus/{print $4}') ; then
+          break
         fi
-        node_name=$(echo $nodes | cut -d ':' -f1)
-        node_flavor=${VM_TYPES[$(echo $nodes | cut -d ':' -f2)]}
-        node_count=$(echo $nodes | cut -d ':' -f3)
-        echo "export $node_name=\"$node_flavor:$node_count\"" >> "$stackrc_file_path"
-        for (( i=1; i<=5 ; ++i )) ; do
-          if node_vcpu=$(openstack flavor show $node_flavor | awk '/vcpus/{print $4}') ; then
-            break
-          fi
-          sleep 10
-        done
-        total_nodes_count=$(( total_nodes_count + node_count ))
-        total_vcpu_count=$(( total_vcpu_count + node_count * node_vcpu ))
+        sleep 10
       done
-      if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then
-        # ipa (v2-highcpu-4)
-        total_nodes_count=$(( total_nodes_count + 1 ))
-        total_vcpu_count=$(( total_vcpu_count + 4 ))
-      fi
-      echo "INFO: wait for enough resources for total_nodes_count=$total_nodes_count"
-      # wait for free resource
-      while true; do
-        [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') + total_nodes_count ))" -lt "$MAX_COUNT_VM" ]] && break
-        sleep 60
-      done
-      echo "INFO: wait for enough resources for total_vcpu_count=$total_vcpu_count"
-      while true; do
-        [[ "$(($(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}') + total_vcpu_count ))" -lt "$MAX_COUNT_VCPU" ]] && break
-        sleep 60
-      done
+      total_nodes_count=$(( total_nodes_count + node_count ))
+      total_vcpu_count=$(( total_vcpu_count + node_count * node_vcpu ))
+    done
+    if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then
+      # ipa (v2-highcpu-4)
+      total_nodes_count=$(( total_nodes_count + 1 ))
+      total_vcpu_count=$(( total_vcpu_count + 4 ))
+    fi
+    echo "INFO: wait for enough resources for total_nodes_count=$total_nodes_count"
+    # wait for free resource
+    while true; do
+      [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') + total_nodes_count ))" -lt "$MAX_COUNT_VM" ]] && break
+      sleep 60
+    done
+    echo "INFO: wait for enough resources for total_vcpu_count=$total_vcpu_count"
+    while true; do
+      [[ "$(($(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}') + total_vcpu_count ))" -lt "$MAX_COUNT_VCPU" ]] && break
+      sleep 60
+    done
   fi
   echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 

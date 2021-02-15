@@ -182,7 +182,6 @@
     streams:
       juju-os-ha:
         vars:
-          CLOUD: manual
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
@@ -220,7 +219,6 @@
     streams:
       juju-os-ha-ziu:
         vars:
-          CLOUD: manual
           CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011-centos
           MONITORING_DEPLOY_TARGET: HA,ZIU
@@ -271,8 +269,9 @@
       - build-centos
     streams:
       juju-os-maas:
+        lock: openlab2
         vars:
-          CLOUD: maas
+          JUMPHOST: openlab2
           SSL_ENABLE: 'true'
           CONTROLLER_NODES: "C1,C2,C3"
           AGENT_NODES: "A1,A2"

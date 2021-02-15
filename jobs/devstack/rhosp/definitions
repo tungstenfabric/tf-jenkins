@@ -11,7 +11,7 @@ export prov_net_cleanup=false
 
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
-export CLOUD=${CLOUD:-'vexxhost'}
+JUMPHOST=${JUMPHOST:-'vexxhost'}
 
 declare -A RHOSP_PROVIDERS=( \
   ['vexxhost']='vexx' \
@@ -20,9 +20,9 @@ declare -A RHOSP_PROVIDERS=( \
   ['openlab1']='bmc' \
 )
 
-export PROVIDER="${RHOSP_PROVIDERS[$CLOUD]}"
+export PROVIDER="${RHOSP_PROVIDERS[$JUMPHOST]}"
 
 [ -n "$PROVIDER" ] || {
-  echo "ERROR: unsupported provider for CLOUD=$CLOUD"
+  echo "ERROR: unsupported JUMPHOST: $JUMPHOST"
   exit 1
 }

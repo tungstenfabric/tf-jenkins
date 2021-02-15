@@ -6,7 +6,8 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-source "$my_dir/definitions${JUMPHOST:+.$JUMPHOST}"
+source "$my_dir/definitions"
+
 if [[ -z "$JUMPHOST" ]] ; then
   "$my_dir/../../../infra/${SLAVE}/remove_workers.sh"
 fi

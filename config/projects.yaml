@@ -49,6 +49,7 @@
 #   type - type of the job. possible values: stream-post-hook
 #   timeout - timeout in minutes. 180 by default
 
+# some type of deployments use special hardware. Please refer to JUMPHOST definition in templates/jobs
 
 # TODO: implement 'default' project with cleanup job
 
@@ -64,6 +65,7 @@
     - templates-operator.yaml
     - templates-rhosp.yaml
     - templates-tests.yaml
+    - templates-openshift4.yaml
 
 - project:
     name: tungstenfabric

@@ -1,0 +1,39 @@
+---
+
+- template:
+    name: openshift4-kvm
+    streams:
+      openshift4-kvm:
+        lock: openlab3
+        vars:
+          JUMPHOST: openlab3
+          CONTROLLER_NODES: "C1,C2,C3"
+          AGENT_NODES: "A1,A2"
+          MONITORING_DEPLOY_TARGET: PROD
+          MONITORING_DEPLOYER: openshift
+          MONITORING_ORCHESTRATOR: k8s
+    parents:
+      - build-ubi
+    jobs:
+      deploy-platform-openshift4-kvm:
+        job-name: deploy-platform-openshift4
+        stream: openshift4-kvm
+      deploy-tf-openshift4-kvm:
+        job-name: deploy-tf-openshift4
+        stream: openshift4-kvm
+        depends-on:
+          - package-ubi
+          - deploy-platform-openshift4-kvm
+      test-sanity-openshift4-kvm:
+        job-name: test-sanity
+        stream: openshift4-kvm
+        depends-on:
+          - deploy-tf-openshift4-kvm
+      collect-logs-and-cleanup-openshift4-kvm:
+        job-name: collect-logs-and-cleanup
+        stream: openshift4-kvm
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-openshift4-kvm
+          - deploy-tf-openshift4-kvm
+          - test-sanity-openshift4-kvm

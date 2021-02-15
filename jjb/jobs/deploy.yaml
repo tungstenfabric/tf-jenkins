@@ -368,6 +368,10 @@
           environment_os: centos7
           deployer: operator
           orchestrator: kubernetes
+      - openshift4:
+          environment_os: rhcos
+          deployer: openshift4
+          orchestrator: kubernetes
     jobs:
       - 'deploy-platform-{project}'
       - 'deploy-tf-{project}'
