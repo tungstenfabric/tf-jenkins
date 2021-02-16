@@ -39,6 +39,7 @@ EOF
   fi
   echo "export ENABLE_NETWORK_ISOLATION=$ENABLE_NETWORK_ISOLATION" >> "$stackrc_file_path"
   echo "export OPENSTACK_CONTAINER_REGISTRY=$OPENSTACK_CONTAINER_REGISTRY" >> "$stackrc_file_path"
+  echo "export OPENSTACK_CONTAINER_TAG=$OPENSTACK_CONTAINER_TAG" >> "$stackrc_file_path"
   echo "export PROVIDER=$PROVIDER" >> "$stackrc_file_path"
   if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then 
     echo "export ENABLE_TLS='ipa'" >> "$stackrc_file_path"
@@ -96,9 +97,13 @@ EOF
   fi
   echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
-  # to prepare rhosp-provisionin.sh
+  # to prepare rhosp-environment.sh
   source $stackrc_file_path
   if ./src/tungstenfabric/tf-devstack/rhosp/create_env.sh ; then
+    echo Running hooks
+    if [[ -e $my_dir/../../../infra/hooks/rhel/up.sh ]] ; then
+       ${my_dir}/../../../infra/hooks/rhel/up.sh
+    fi
     exit 0
   fi
   echo "ERROR: Instances creation is failed. Retry"

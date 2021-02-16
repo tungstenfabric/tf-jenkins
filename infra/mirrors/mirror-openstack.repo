@@ -1,6 +1,6 @@
 [tf-mirrors.progmaticlab.com_repos_centos-openstack-queens]
-name=added from: http://tf-mirrors.progmaticlab.com/repos/yum7/centos-openstack-queens/
-baseurl=http://tf-mirrors.progmaticlab.com/repos/yum7/centos-openstack-queens/
+name=added from: http://tf-mirrors.progmaticlab.com/repos/yum7/latest/centos-openstack-queens/
+baseurl=http://tf-mirrors.progmaticlab.com/repos/yum7/latest/centos-openstack-queens/
 enabled=1
 gpgcheck=0
 cost = 500

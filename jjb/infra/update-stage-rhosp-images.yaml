@@ -1,0 +1,161 @@
+---
+
+- job:
+    name: update-stage-rhosp-images
+    description: "Update staging rhosp docker images"
+    defaults: global
+    concurrent: false
+    scm:
+      - tf-jenkins
+      - tf-dev-env
+    parameters:
+      - label:
+          name: NODE_NAME
+      - string:
+          name: STREAM
+      - string:
+          name: JOB_RND
+      - string:
+          name: PIPELINE_NAME
+      - string:
+          name: PIPELINE_NUMBER
+    wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: tf-mirrors
+              key-file-variable: REPOUPDATER_SSH_KEY
+              username-variable: REPOUPDATER_USER_NAME
+              passphrase-variable: REPOUPDATER_PASSPHRASE
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
+    builders:
+      - copyartifact:
+          project: ${PIPELINE_NAME}
+          filter: "global.env,*.$JOB_RND.env,patchsets-info.json"
+          which-build: upstream-build
+          optional: true
+      - shell: |
+          source "$WORKSPACE/global.env"
+          source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
+          source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
+          desc="Pipeline: $PIPELINE_NAME-$PIPELINE_NUMBER  Random: $JOB_RND<br>"
+          desc+="Stage: {stage}  Target: {target}<br>"
+          desc+="Job logs: <a href=\"$LOGS_URL/$STREAM\">$LOGS_URL/$STREAM</a>"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
+          source "$WORKSPACE/global.env"
+          source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
+          source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
+          echo "INFO: pull rhosp docker images and tag them as staging "
+          $WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/update-stage-rhosp-images/run.sh
+    publishers:
+      - archive:
+          artifacts: '*.env'
+
+- job:
+    name: update-stage-rhosp-images
+    description: "Publish staging rhosp images"
+    defaults: global
+    concurrent: false
+    scm:
+      - tf-jenkins
+      - tf-dev-env
+    parameters:
+      - label:
+          name: NODE_NAME
+      - string:
+          name: STREAM
+      - string:
+          name: JOB_RND
+      - string:
+          name: PIPELINE_NAME
+      - string:
+          name: PIPELINE_NUMBER
+    wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: tf-mirrors
+              key-file-variable: REPOUPDATER_SSH_KEY
+              username-variable: REPOUPDATER_USER_NAME
+              passphrase-variable: REPOUPDATER_PASSPHRASE
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
+    builders:
+      - copyartifact:
+          project: ${PIPELINE_NAME}
+          filter: "global.env,*.$JOB_RND.env,patchsets-info.json"
+          which-build: upstream-build
+          optional: true
+      - shell: |
+          source "$WORKSPACE/global.env"
+          source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
+          source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
+          desc="Pipeline: $PIPELINE_NAME-$PIPELINE_NUMBER  Random: $JOB_RND<br>"
+          desc+="Stage: {stage}  Target: {target}<br>"
+          desc+="Job logs: <a href=\"$LOGS_URL/$STREAM\">$LOGS_URL/$STREAM</a>"
+          echo "DESCRIPTION $desc"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
+          source "$WORKSPACE/global.env"
+          source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
+          source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
+          echo "INFO: tag all rhosp images as "
+          $WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/update-stage-rhosp-images/publish.sh
+    publishers:
+      - archive:
+          artifacts: '*.env'
