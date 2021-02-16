@@ -77,7 +77,11 @@ class Checker():
                 timedelta = merge_timestamp - comment['timestamp']
                 if timedelta >= 0 and (not last_gating_comment or last_gating_comment['timestamp'] < comment['timestamp']):
                     last_gating_comment = comment
-            if not last_gating_comment or '- build-centos ' not in last_gating_comment['message']:
+            if not last_gating_comment:
+                continue
+            if merge_timestamp - last_gating_comment['timestamp'] > TIMDELTA_GATE_MERGE:
+                continue
+            if '- build-centos ' not in last_gating_comment['message']:
                 continue
 
             review = str(data['number'])
@@ -98,7 +102,6 @@ def main():
     # TODO: subscribe to stream and wait for events
     checker = Checker()
     last_merge = checker.get_last_merge()
-    return
     checker.update_tag(last_merge)
     while True:
         try:
