@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-baseurl_prefix=${BASEURL_PREFIX:-"rhel8-mirrors.tf-jenkins.progmaticlab.com"} 
+baseurl_prefix=${BASEURL_PREFIX:-"rhel8-mirrors.tf-jenkins.progmaticlab.com"}
 
 declare -A repos
 repos["rhel-8-for-x86_64-baseos-rpms"]="Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs) Extended Update Support"
@@ -41,7 +41,7 @@ if [ "$1" != "" ]; then
         echo | tee -a $1
     done
     exit
-fi    
+fi
 
 #Updating repositories
 mkdir -p /var/www/html/repos/{ansible,appstream,base,datapath,openstack,ha,satellite,virt}

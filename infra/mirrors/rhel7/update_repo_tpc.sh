@@ -15,7 +15,7 @@ fi
 }
 
 # make disabled tpc poiting to juniper
-cat << EOF | sudo tee /etc/yum.repos.d/external-tpc.repo 
+cat << EOF | sudo tee /etc/yum.repos.d/external-tpc.repo
 [external-tpc]
 name = External TPC Contrail repo
 baseurl = http://148.251.5.90/tpc/
@@ -28,7 +28,7 @@ stor=$(mktemp -d)
 pushd $stor
 yumdownloader --disablerepo=* --enablerepo="external-tpc" *
 
-for f in $(find . -type f -name "*.rpm" | grep "$filter" | sed 's/^\.\///g'); do 
+for f in $(find . -type f -name "*.rpm" | grep "$filter" | sed 's/^\.\///g'); do
   curl -s -u admin:$nexus_admin_password --upload-file $f http://tf-nexus.progmaticlab.com/repository/yum-tpc-binary/$f
 done
 

@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 cd
 source rhosp-environment.sh
