@@ -78,7 +78,7 @@ TODO
 
 We provide the ability to run jobs to check your patchsets sent for review.
 
-Each project is associated with several templates that are launched by default when a new patchset is loaded. You can see the list of projects and associated templates in the `config/projects.yaml` file.
+Each project is associated with several templates that are launched by default when a new patchset is loaded. You can see the list of projects and associated templates in the `config/main.yaml` file.
 
 To independently initiate the review of templates related to the current project, add a comment `check` to your review
 

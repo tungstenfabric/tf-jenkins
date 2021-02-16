@@ -1,0 +1,132 @@
+---
+
+- project:
+    name: stage-repos-centos7
+    stage-repos:
+      templates:
+        - build-centos
+        - ansible-os
+        - cleanup
+      jobs:
+        update-stage-repos-centos7:
+          job-name: update-stage-repos
+          vars:
+            REPOS_TYPE: 'centos7'
+        prepare-sandbox-centos:
+          depends-on:
+            - update-stage-repos-centos7
+        deploy-platform-ansible-k8s:
+          depends-on:
+            - update-stage-repos-centos7
+        publish-stage-repos-centos7:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'centos7'
+          depends-on:
+            - test-sanity-ansible-os
+      post-jobs:
+        cleanup-workers:
+
+- project:
+    name: stage-repos-rhel7
+    stage-repos:
+      templates:
+        - build-ubi
+        - rhosp13
+        - cleanup
+      jobs:
+        update-stage-repos-rhel7:
+          job-name: update-stage-repos
+          vars:
+            REPOS_TYPE: 'rhel7'
+        update-stage-images-rhel7:
+          job-name: update-stage-images
+          vars:
+            REPOS_TYPE: 'rhel7'
+        prepare-sandbox-ubi:
+          # it needs images job in deps cause contrail-general-base is based on clean ubi image
+          depends-on:
+            - update-stage-repos-rhel7
+            - update-stage-images-rhel7
+        deploy-platform-rhosp13:
+          depends-on:
+            - update-stage-repos-rhel7
+            - update-stage-images-rhel7
+        publish-stage-repos-rhel7:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'rhel7'
+          depends-on:
+            - test-sanity-rhosp13
+        publish-stage-images-rhel7:
+          job-name: publish-stage-images
+          vars:
+            REPOS_TYPE: 'rhel7'
+          depends-on:
+            - test-sanity-rhosp13
+      post-jobs:
+        cleanup-workers:
+
+- project:
+    name: stage-repos-rhel8
+    stage-repos:
+      templates:
+        - build-ubi
+        - rhosp16
+        - cleanup
+      jobs:
+        update-stage-repos-rhel8:
+          job-name: update-stage-repos
+          vars:
+            REPOS_TYPE: 'rhel8'
+        update-stage-images-rhel8:
+          job-name: update-stage-images
+          vars:
+            REPOS_TYPE: 'rhel8'
+        prepare-sandbox-ubi:
+          # it needs images job in deps cause contrail-general-base is based on clean ubi image
+          depends-on:
+            - update-stage-repos-rhel8
+            - update-stage-images-rhel8
+        deploy-platform-rhosp16:
+          depends-on:
+            - update-stage-repos-rhel8
+            - update-stage-images-rhel8
+        publish-stage-repos-rhel8:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'rhel8'
+          depends-on:
+            - test-sanity-rhosp16
+        publish-stage-images-rhel8:
+          job-name: publish-stage-images
+          vars:
+            REPOS_TYPE: 'rhel8'
+          depends-on:
+            - test-sanity-rhosp16
+      post-jobs:
+        cleanup-workers:
+
+- project:
+    name: stage-repos-ubuntu18
+    stage-repos:
+      templates:
+        - build-centos
+        - juju-os
+        - cleanup
+      jobs:
+        update-stage-repos-ubuntu18:
+          job-name: update-stage-repos
+          vars:
+            REPOS_TYPE: 'ubuntu18'
+        deploy-platform-juju-os:
+          depends-on:
+            - update-stage-repos-ubuntu18
+        publish-stage-repos-ubuntu18:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'ubuntu18'
+          depends-on:
+            - test-sanity-juju-os
+      post-jobs:
+        cleanup-workers:

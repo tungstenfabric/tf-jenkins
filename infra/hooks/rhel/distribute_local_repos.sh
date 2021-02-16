@@ -4,14 +4,13 @@ cd
 source rhosp-environment.sh
 
 SSH_USER=${SSH_USER:-'cloud-user'}
-nodes_list="$overcloud_cont_prov_ip, $overcloud_compute_prov_ip, $overcloud_ctrlcont_prov_ip, $ipa_prov_ip" 
+nodes_list="$overcloud_cont_prov_ip, $overcloud_compute_prov_ip, $overcloud_ctrlcont_prov_ip, $ipa_prov_ip"
 nodes=$(echo $nodes_list | sed -e s/,,//g | tr "," " ")
-echo nodes: $nodes
+echo "INFO: distribute_local_repos.sh - nodes: $nodes"
 for i in "$nodes"; do
     node=$(echo $i | tr -d ' ')
-    echo Copy file local.repo to the node $node
+    echo "INFO: Copy file local.repo to the node $node"
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ./local.repo ${SSH_USER}@${node}:
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${SSH_USER}@${node} 'sudo rm -f /etc/yum.repos.d/*'
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${SSH_USER}@${node} 'sudo cp -f ./local.repo /etc/yum.repos.d/local.repo'
 done
-

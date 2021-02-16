@@ -78,7 +78,7 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
 
 def _get_data() {
   // read main file
-  def data = readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/projects.yaml")
+  def data = readYaml(file: "${WORKSPACE}/src/tungstenfabric/tf-jenkins/config/main.yaml")
   // read includes
   def include_data = []
   for (item in data) {

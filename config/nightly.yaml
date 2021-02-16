@@ -1,0 +1,127 @@
+---
+
+- project:
+    name: tungstenfabric
+    nightly:
+      templates:
+        - build-r1912
+        - build-r1912-ubi
+        - build-r2011-ubi
+        - build-r2011-centos
+        - test-unit
+        - test-unit-ui
+        - k8s-manifests
+        - k8s-manifests-ha
+        - ansible-k8s
+        - ansible-k8s-ha
+        - ansible-os
+        - ansible-os-ha-ziu
+        - helm-k8s
+        - helm-k8s-ha
+        - helm-os
+        - helm-os-ha
+        - juju-k8s
+        - juju-k8s-ha
+        - juju-os
+        - juju-os-maas
+        - juju-os-ha-ziu
+        - juju-os-1912
+        - juju-hybrid
+        - rhosp13
+        - rhosp13-1912
+        - rhosp13-ha-ziu
+        - rhosp16
+        - rhosp16-ha-ziu
+        - rhosp13-bmc
+        - operator
+        - juju-os-not-implemented-targets
+        - juju-k8s-not-implemented-targets
+        - juju-hybrid-not-implemented-targets
+        - rhosp13-os-not-implemented-targets
+        - rhosp16-os-not-implemented-targets
+        - ansible-os-not-implemented-targets
+        - cleanup
+      streams:
+        build-centos:
+          vars:
+            DEBUGINFO: TRUE
+        build-ubi:
+          vars:
+            DEBUGINFO: TRUE
+        build-r1912:
+          vars:
+            DEBUGINFO: TRUE
+        build-r1912-ubi:
+          vars:
+            DEBUGINFO: TRUE
+        build-r2011-ubi:
+          vars:
+            DEBUGINFO: TRUE
+        build-r2011-centos:
+          vars:
+            DEBUGINFO: TRUE
+        # hack with locks due to lack of resources
+        juju-os-ha-ziu:
+          lock: juju-ha
+        juju-k8s-ha:
+          lock: juju-ha
+        helm-k8s-ha:
+          lock: helm-ha
+        helm-os-ha:
+          lock: helm-ha
+        ansible-os-ha-ziu:
+          lock: ansible-ha
+        ansible-k8s-ha:
+          lock: ansible-ha
+        k8s-manifests-ha:
+          lock: ansible-ha
+      jobs:
+        publish-centos-nightly:
+          job-name: publish
+          depends-on:
+            - package-centos
+        publish-r2011-centos-nightly:
+          job-name: publish
+          depends-on:
+            - package-r2011-centos
+          vars:
+            TAG_SUFFIX: "-r2011-centos"
+            GERRIT_BRANCH: "R2011"
+        # to use just built nightly images
+        deploy-tf-juju-os-1912:
+          # additional deps
+          depends-on:
+            - package-r1912
+        deploy-tf-rhosp13-1912:
+          # additional deps
+          depends-on:
+            - package-r1912-ubi
+
+        publish-centos-r1912:
+          job-name: publish
+          depends-on:
+            - package-r1912
+          vars:
+            TAG_SUFFIX: "-r1912"
+            PUBLISH_TAGS: "R1912"
+
+        #publish-centos-r2011:
+        #  job-name: publish
+        #  depends-on:
+        #    - package-r2011-centos
+        #  vars:
+        #    TAG_SUFFIX: "-r2011-centos"
+        #    PUBLISH_TAGS: "R2011"
+
+        aquascan-ubi-nightly:
+          job-name: aquascan
+          depends-on:
+            - package-ubi
+          vars:
+            TAG_SUFFIX: "-ubi7"
+      post-jobs:
+        publish-centos-stable:
+          job-name: publish
+        cleanup-workers:
+          depends-on:
+            - publish-centos-stable

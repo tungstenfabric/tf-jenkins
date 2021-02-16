@@ -1,13 +1,11 @@
-#!/bin/bash
+#!/bin/bash -e
 
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-#source $my_dir/common.sh
+[ -f $my_dir/rhel-account ] && source $my_dir/rhel-account
 
-[ -f $my_dir/rhel_account ] && source $my_dir/rhel-account
-
-MIRROR_REGISTRY="tf-mirrors.progmaticlab.com:5005"
+MIRROR_REGISTRY=${MIRROR_REGISTRY:-"tf-mirrors.progmaticlab.com:5005"}
 
 REDHAT_REGISTRY="registry.redhat.io"
 RHOSP_NAMESPACE="rhosp13"
@@ -17,9 +15,9 @@ REDHAT_TAG='13.0'
 LOCAL_TAG='13.0-staging'
 
 function sync_container() {
+  local c=$1
   local s=$REDHAT_REGISTRY/$c
   local d=$(echo $MIRROR_REGISTRY/$c | sed s/${REDHAT_TAG}$/${LOCAL_TAG}/)
-  echo $s => $d
   sudo docker pull $s && \
     sudo docker tag $s $d && \
     sudo docker push $d
@@ -32,7 +30,7 @@ if [[ -n "$RHEL_USER" && "$RHEL_PASSWORD" ]] ; then
   }
 fi
 
-rhosp_containers=(\
+rhosp_images=(\
 openstack-aodh-api \
 openstack-aodh-evaluator \
 openstack-aodh-listener \
@@ -80,13 +78,13 @@ openstack-swift-object \
 openstack-swift-proxy-server \
 )
 
-ceph_containers=(rhceph-3-rhel7:3)
+ceph_images=(rhceph-3-rhel7:3)
 
-all_containers+=$(printf "${RHOSP_NAMESPACE}/%s:$REDHAT_TAG " "${rhosp_containers[@]}")
-all_containers+=$(printf "${CEPH_NAMESPACE}/%s " "${ceph_containers[@]}")
+all_images+=$(printf "${RHOSP_NAMESPACE}/%s:$REDHAT_TAG " "${rhosp_images[@]}")
+all_images+=$(printf "${CEPH_NAMESPACE}/%s " "${ceph_images[@]}")
 
 res=0
-for c in ${all_containers} ; do
+for c in ${all_images} ; do
   echo "INFO: start sync $c"
   sync_container $c || res=1
 done
