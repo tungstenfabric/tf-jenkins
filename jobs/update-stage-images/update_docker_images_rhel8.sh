@@ -24,10 +24,13 @@ function sync_container() {
 }
 
 if [[ -n "$RHEL_USER" && "$RHEL_PASSWORD" ]] ; then
-  echo "INFO: logi to docker registry $REDHAT_REGISTRY"
-  sudo podman login -u $RHEL_USER -p $RHEL_PASSWORD "https://$REDHAT_REGISTRY" || {
+  echo "INFO: login to docker registry $REDHAT_REGISTRY"
+  sudo docker login -u $RHEL_USER -p $RHEL_PASSWORD "https://$REDHAT_REGISTRY" || {
     echo "ERROR: failed to login "
   }
+else
+  echo "ERROR: No RedHat credentials. Please define variables RHEL_USER and RHEL_PASSWORD. Exiting..."
+  exit 1
 fi
 
 rhosp_images=(\

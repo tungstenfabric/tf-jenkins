@@ -28,6 +28,9 @@ if [[ -n "$RHEL_USER" && "$RHEL_PASSWORD" ]] ; then
   sudo docker login --username $RHEL_USER --password $RHEL_PASSWORD $REDHAT_REGISTRY || {
     echo "ERROR: failed to login "
   }
+else
+  echo "ERROR: No RedHat credentials. Please define variables RHEL_USER and RHEL_PASSWORD. Exiting..."
+  exit 1
 fi
 
 rhosp_images=(\
