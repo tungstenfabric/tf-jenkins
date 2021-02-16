@@ -8,4 +8,4 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-${my_dir}/../common/deploy_platform.sh openshift
+${my_dir}/../common/run_stage.sh openshift platform

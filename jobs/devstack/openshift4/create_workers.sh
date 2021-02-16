@@ -11,11 +11,14 @@ source "$my_dir/definitions"
 if [[ -z "$JUMPHOST" ]] ; then
   # vexxhost/aws branch
   "$my_dir/../common/create_workers.sh"
-  exit
-fi
 
-"$my_dir/../../../infra/$JUMPHOST/create_workers.sh"
+  # TODO: think how below can be used for this branch
+
+else
+  "$my_dir/../../../infra/$JUMPHOST/create_workers.sh"
+fi
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 source "$ENV_FILE"
-$WORKSPACE/src/tungstenfabric/tf-devstack/openshift/create_env.sh
+
+${my_dir}/../common/run_stage.sh openshift machines

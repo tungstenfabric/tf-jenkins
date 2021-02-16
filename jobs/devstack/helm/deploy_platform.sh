@@ -22,4 +22,4 @@ EOF
 }
 export -f add_deployrc
 
-${my_dir}/../common/deploy_platform.sh helm
+${my_dir}/../common/run_stage.sh helm platform

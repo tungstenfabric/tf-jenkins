@@ -8,4 +8,4 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions${JUMPHOST:+.$JUMPHOST}"
 
-${my_dir}/../common/deploy_platform.sh juju
+${my_dir}/../common/run_stage.sh juju platform

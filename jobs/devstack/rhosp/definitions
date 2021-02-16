@@ -26,3 +26,9 @@ export PROVIDER="${RHOSP_PROVIDERS[$JUMPHOST]}"
   echo "ERROR: unsupported JUMPHOST: $JUMPHOST"
   exit 1
 }
+
+function add_deployrc() {
+  local file="$1"
+  cat "$WORKSPACE/$stackrc_file" >> "$file"
+}
+export -f add_deployrc

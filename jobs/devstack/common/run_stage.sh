@@ -2,12 +2,14 @@
 set -o pipefail
 
 deployer=$1
+# can be empty which means default set of stages in tf-devstack
+stage=$2
 
 [ "${DEBUG,,}" == "true" ] && set -x
 
-echo "INFO: Deploy TF with $deployer"
+echo "INFO: Deploy $deployer/$stage ($JOB_NAME)"
 
-cat <<EOF > $WORKSPACE/deploy_tf.sh
+cat <<EOF > $WORKSPACE/deploy_$stage.sh
 #!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
@@ -28,16 +30,16 @@ export PATH=\$PATH:/usr/sbin
 EOF
 
 if declare -f -F add_deployrc &>/dev/null ; then
-  add_deployrc $WORKSPACE/deploy_tf.sh
+  add_deployrc $WORKSPACE/deploy_$stage.sh
 fi
 
-echo "src/tungstenfabric/tf-devstack/${deployer}/run.sh" >> $WORKSPACE/deploy_tf.sh
-chmod a+x $WORKSPACE/deploy_tf.sh
+echo "src/tungstenfabric/tf-devstack/${deployer}/run.sh $stage" >> $WORKSPACE/deploy_$stage.sh
+chmod a+x $WORKSPACE/deploy_$stage.sh
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
-rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/deploy_tf.sh} $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/deploy_$stage.sh} $IMAGE_SSH_USER@$instance_ip:./
 # run this via eval due to special symbols in ssh_cmd
-eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./deploy_tf.sh || res=1
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./deploy_$stage.sh || res=1
 
-echo "INFO: Deploy TF finished"
+echo "INFO: Deploy $stage finished"
 exit $res

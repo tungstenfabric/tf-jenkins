@@ -9,9 +9,8 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 source "$my_dir/../../../infra/${JUMPHOST}/definitions"
 
-stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
+export stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 stackrc_file_path=$WORKSPACE/$stackrc_file
-export vexxrc="$stackrc_file_path"
 
 # TAG_SUFFIX is defined in vars.deploy-platform-rhosp13.23584.env
 # but CONTRAIL_CONTAINER_TAG is defined in global.env w/o suffix
@@ -101,8 +100,9 @@ EOF
 
   # to prepare rhosp-environment.sh
   source $stackrc_file_path
+  export vexxrc="$stackrc_file_path"
   if ./src/tungstenfabric/tf-devstack/rhosp/create_env.sh ; then
-    echo Running hooks
+    echo "INFO: Running up hooks"
     if [[ -e $my_dir/../../../infra/hooks/rhel/up.sh ]] ; then
        ${my_dir}/../../../infra/hooks/rhel/up.sh
     fi

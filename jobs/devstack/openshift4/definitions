@@ -4,3 +4,20 @@ if [[ "$ORCHESTRATOR" != 'kubernetes' ]]; then
 fi
 
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
+
+if [[ "$JUMPHOST" == 'openlab3' ]]; then
+  PROVIDER=kvm
+elif [[ -z "$JUMPHOST" ]]; then
+  PROVIDER=vexxhost
+else
+  echo "ERROR: unsupported JUMPHOST: $JUMPHOST"
+  exit 1
+fi
+
+function add_deployrc() {
+  local file="$1"
+  cat <<EOF >> "$file"
+export PROVIDER=$PROVIDER
+EOF
+}
+export -f add_deployrc
