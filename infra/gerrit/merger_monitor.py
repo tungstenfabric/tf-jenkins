@@ -16,6 +16,9 @@ SSH_DEST = '-p 29418 zuul-tf@gerrit.tungsten.io'
 BRANCH = 'master'
 GERRIT_CMD = 'gerrit query --comments --patch-sets --format=JSON branch:' + BRANCH + ' status:merged projects:tungstenfabric limit:{}'
 
+# end of gating must not be too far from merge event (seconds)
+TIMDELTA_GATE_MERGE = 30
+
 # folder on nexus to store the tag
 # can be found here http://tf-nexus.progmaticlab.com:8082/frozen/tag
 # it must be create with 777 permissions
@@ -47,13 +50,14 @@ class Checker():
             f.write(last_merge['tag'])
         os.chmod(TAG_FILE, 0o666)
 
-    def _get_merged_reviews(self, limit=10):
+    def _get_merged_reviews(self, limit=20):
         reviews = list()
         cmd = "{} {} {} 2>/dev/null".format(SSH_CMD, SSH_DEST, GERRIT_CMD)
         cmd = cmd.format(limit)
         output = subprocess.check_output(cmd, shell=True).decode()
         for line in output.splitlines():
             data = json.loads(line)
+            # search for merge event
             if 'id' not in data or data['status'] == 'ABANDONED':
                 # looks like it's a summary
                 continue
@@ -64,13 +68,25 @@ class Checker():
             else:
                 continue
 
+            # search for closest gating before merge
+            merge_timestamp = comment['timestamp']
+            last_gating_comment = None
+            for comment in data['comments']:
+                if 'Build Succeeded (gate)' not in comment['message']:
+                    continue
+                timedelta = merge_timestamp - comment['timestamp']
+                if timedelta >= 0 and (not last_gating_comment or last_gating_comment['timestamp'] < comment['timestamp']):
+                    last_gating_comment = comment
+            if not last_gating_comment or '- build-centos ' not in last_gating_comment['message']:
+                continue
+
             review = str(data['number'])
             patchset = max([patchset['number'] for patchset in data['patchSets']])
             tag = BRANCH
             tag += '-' + '_'.join([x for x in str(review)])
             tag += '-' + '_'.join([x for x in str(patchset)])
             reviews.append({
-                'timestamp': comment['timestamp'],
+                'timestamp': merge_timestamp,
                 'tag': tag
             })
         reviews.sort(key=lambda x: x['timestamp'])
@@ -82,6 +98,7 @@ def main():
     # TODO: subscribe to stream and wait for events
     checker = Checker()
     last_merge = checker.get_last_merge()
+    return
     checker.update_tag(last_merge)
     while True:
         try:
