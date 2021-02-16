@@ -18,6 +18,7 @@ function sync_container() {
   local c=$1
   local s=$REDHAT_REGISTRY/$c
   local d=$(echo $MIRROR_REGISTRY/$c | sed s/${REDHAT_TAG}$/${LOCAL_TAG}/)
+  echo "INFO: destination: $d"
   sudo docker pull $s && \
     sudo docker tag $s $d && \
     sudo docker push $d
