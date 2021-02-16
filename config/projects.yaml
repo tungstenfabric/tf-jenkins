@@ -1,15 +1,96 @@
 ---
 
+# just build projects
 - project:
-    name: tungstenfabric/tf-vnc
+    names:
+      - tungstenfabric/tf-deployers-containers
+      - tungstenfabric/tf-openshift-ansible
+      - tungstenfabric/tf-dpdk
+      - tungstenfabric/tf-java-api
+      - tungstenfabric/tf-vijava
+      - tungstenfabric/tf-vrouter-java-api
+      - tungstenfabric/tf-vro-plugin
     check:
       templates:
-        - ansible-os # juju-os
+        - build-centos
+        - cleanup
+    gate:
+      templates:
+        - build-centos
+        - cleanup
+
+# simple checks - no ubi
+- project:
+    names:
+      - tungstenfabric/tf-vnc
+      - tungstenfabric/tf-test
+      - tungstenfabric/tf-dev-test
+      - tungstenfabric/tf-third-party-packages
+      - tungstenfabric/tf-nova-vif-driver
+      - tungstenfabric/tf-heat-plugin
+    check:
+      templates:
+        - ansible-os
         - cleanup
     gate:
       templates:
         - ansible-k8s
         - ansible-os
+        - cleanup
+
+# simple checks with ubi in gating
+- project:
+    names:
+      - tungstenfabric/tf-packages
+      - tungstenfabric/tf-third-party
+    check:
+      templates:
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - build-ubi
+        - build-centos
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
+# core TF projects with old style UT
+- project:
+    names:
+      - tungstenfabric/tf-controller
+      - tungstenfabric/tf-api-client
+      - tungstenfabric/tf-common
+      - tungstenfabric/tf-analytics
+      - tungstenfabric/tf-neutron-plugin
+      - tungstenfabric/tf-build
+    check:
+      templates:
+        - test-unit
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - test-unit
+        - ansible-k8s
+        - ansible-os
+        - cleanup
+
+# old web UI projects
+- project:
+    names:
+      - tungstenfabric/tf-web-core
+      - tungstenfabric/tf-web-controller
+      - tungstenfabric/tf-webui-third-party
+    check:
+      templates:
+        - test-unit-ui
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - build-ubi
+        - build-centos
         - cleanup
 
 - project:
@@ -39,68 +120,15 @@
         - cleanup
 
 - project:
-    name: tungstenfabric/tf-deployers-containers
-    check:
-      templates:
-        - build-centos
-        - cleanup
-    gate:
-      templates:
-        - build-centos
-        - cleanup
-
-- project:
     name: tungstenfabric/tf-container-builder
     check:
       templates:
-        - ansible-os # juju-os
+        - ansible-os
         - test-tox-unit
         - cleanup
     gate:
       templates:
         - build-ubi
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-controller
-    check:
-      templates:
-        - test-unit
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - test-unit
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-api-client
-    check:
-      templates:
-        - test-unit
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - test-unit
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-common
-    check:
-      templates:
-        - test-unit
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - test-unit
         - ansible-k8s
         - ansible-os
         - cleanup
@@ -121,60 +149,6 @@
         - cleanup
 
 - project:
-    name: tungstenfabric/tf-analytics
-    check:
-      templates:
-        - test-unit
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - test-unit
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-packages
-    check:
-      templates:
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - build-ubi
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-test
-    check:
-      templates:
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-neutron-plugin
-    check:
-      templates:
-        - test-unit
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - test-unit
-        - rhosp13
-        - rhosp16
-        - ansible-os
-        - cleanup
-
-- project:
     name: tungstenfabric/tf-helm-deployer
     check:
       templates:
@@ -185,71 +159,6 @@
       templates:
         - helm-k8s
         - helm-os
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-third-party-packages
-    check:
-      templates:
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-third-party
-    check:
-      templates:
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - build-ubi
-        - build-centos
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-webui-third-party
-    check:
-      templates:
-        - test-unit-ui
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - build-ubi
-        - build-centos
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-web-core
-    check:
-      templates:
-        - test-unit-ui
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - build-ubi
-        - build-centos
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-web-controller
-    check:
-      templates:
-        - test-unit-ui
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - build-ubi
-        - build-centos
         - cleanup
 
 - project:
@@ -309,9 +218,6 @@
         - cleanup
 
 - project:
-    name: tungstenfabric/tf-openshift-ansible
-
-- project:
     name: tungstenfabric/tf-operator
     check:
       templates:
@@ -325,20 +231,9 @@
         - cleanup
 
 - project:
-    name: tungstenfabric/tf-vcenter-fabric-manager
-    check:
-      templates:
-        - test-unit
-        - build-centos
-        - cleanup
-    gate:
-      templates:
-        - test-unit
-        - build-centos
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-vcenter-manager
+    names:
+      - tungstenfabric/tf-vcenter-fabric-manager
+      - tungstenfabric/tf-vcenter-manager
     check:
       templates:
         - test-unit
@@ -362,26 +257,11 @@
         - cleanup
 
 - project:
-    name: tungstenfabric/tf-build
-    check:
-      templates:
-        - test-unit
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - build-ubi
-        - build-centos
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-
-- project:
     name: tungstenfabric/tf-deployment-test
     check:
       templates:
         - test-tox-pep8
-        - ansible-os # juju-os
+        - ansible-os
         - cleanup
     gate:
       templates:
@@ -393,24 +273,11 @@
 # infra projects
 
 - project:
-    name: tungstenfabric/tf-dev-test
-    check:
-      templates:
-        - ansible-os # juju-os
-        - cleanup
-    gate:
-      templates:
-        - build-centos
-        - ansible-k8s
-        - ansible-os
-        - cleanup
-
-- project:
     name: tungstenfabric/tf-dev-env
     check:
       templates:
         - build-centos
-        - ansible-os # juju-os
+        - ansible-os
         - cleanup
     gate:
       templates:
@@ -433,4 +300,4 @@
         - cleanup
 
 - project:
-    name: tungstenfabric/tf-operator
+    name: tungstenfabric/tf-devstack
