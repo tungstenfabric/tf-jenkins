@@ -42,6 +42,7 @@
         update-stage-images-rhel7:
           job-name: update-stage-images
           vars:
+            CONTAINER_REGISTRY: 'tf-mirrors.progmaticlab.com:5005'
             REPOS_TYPE: 'rhel7'
         prepare-sandbox-ubi:
           # it needs images job in deps cause contrail-general-base is based on clean ubi image
@@ -78,6 +79,7 @@
         update-stage-repos-rhel8:
           job-name: update-stage-repos
           vars:
+            CONTAINER_REGISTRY: 'tf-mirrors.progmaticlab.com:5005'
             REPOS_TYPE: 'rhel8'
         update-stage-images-rhel8:
           job-name: update-stage-images
