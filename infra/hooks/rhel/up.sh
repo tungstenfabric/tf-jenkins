@@ -13,6 +13,12 @@ source "$WORKSPACE/stackrc.$JOB_NAME.env" || /bin/true
 source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 
+#This hook is for VEXX only
+if [[ "$SLAVE" != 'vexxhost' ]]; then
+   echo Skipping hooks.
+   exit 0
+fi
+
 ENVIRONMENT_OS=${ENVIRONMENT_OS:-'rhel7'}
 OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
 
