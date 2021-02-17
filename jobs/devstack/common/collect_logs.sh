@@ -12,6 +12,7 @@ res=0
 ${my_dir}/run_stage.sh $deployer logs || res=1
 
 echo "INFO: Copy logs from host to workspace"
+ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 rsync -a -e "$ssh_cmd" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
 
 pushd $WORKSPACE
