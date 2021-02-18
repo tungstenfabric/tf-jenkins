@@ -38,7 +38,7 @@ else
 fi
 
 # Switch REPOS_CHANNEL
-if [[ $REPOS_CHANNEL != 'latest' ]]; then
+if [[ -n "$REPOS_CHANNEL" && "$REPOS_CHANNEL" != 'latest' ]]; then
   sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${repofile}
 fi
 
