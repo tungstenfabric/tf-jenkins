@@ -80,7 +80,7 @@
         - rhosp16
         - cleanup
       streams:
-        rhosp13:
+        rhosp16:
           vars:
             OPENSTACK_CONTAINER_TAG: '16.1-stage'
       jobs:
