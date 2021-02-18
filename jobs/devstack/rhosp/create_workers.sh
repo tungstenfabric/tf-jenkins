@@ -11,6 +11,11 @@ source "$my_dir/../../../infra/${JUMPHOST}/definitions"
 
 export stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 stackrc_file_path=$WORKSPACE/$stackrc_file
+# RHOSP_ID is a part of vm name - to be able to identify VM-s quickly
+export RHOSP_ID=$BUILD_NUMBER
+# pass versions from jenkins to devstack
+export RHEL_VERSION=$ENVIRONMENT_OS
+export RHOSP_VERSION
 
 # TAG_SUFFIX is defined in vars.deploy-platform-rhosp13.23584.env
 # but CONTRAIL_CONTAINER_TAG is defined in global.env w/o suffix
