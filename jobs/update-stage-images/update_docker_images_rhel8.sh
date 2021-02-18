@@ -12,7 +12,7 @@ RHOSP_NAMESPACE="rhosp-rhel8"
 CEPH_NAMESPACE="rhceph"
 
 REDHAT_TAG='16.1'
-LOCAL_TAG='16.1-staging'
+LOCAL_TAG='16.1-stage'
 
 function sync_container() {
   local c=$1

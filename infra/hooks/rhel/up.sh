@@ -29,14 +29,20 @@ rhel_os_repo_num=${RHEL_REPOS_MAP["${os_ver}"]}
 echo "INFO: Chosen for $rhel_ver and OS ${os_ver} repo number: ${rhel_os_repo_num}"
 
 if [[ $rhel_ver == 'rhel7' ]]; then
-  rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-rhel7.repo" ${IMAGE_SSH_USER}@${instance_ip}:./local.repo
+  repofile="$my_dir/../../mirrors/mirror-rhel7.repo"
 elif [[ $rhel_ver == 'rhel8' ]]; then
-  rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-rhel8-all.repo" ${IMAGE_SSH_USER}@${instance_ip}:./local.repo
+  repofile="$my_dir/../../mirrors/mirror-rhel8-all.repo"
 else
   echo "ERROR: unsupported RHEL version = $rhel_ver"
   exit 1
 fi
 
+# Switch REPOS_CHANNEL
+if [[ $REPOS_CHANNEL != 'latest' ]]; then
+  sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${repofile}
+fi
+
+rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "${repofile}" ${IMAGE_SSH_USER}@${instance_ip}:./local.repo
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/distribute_local_repos.sh" ${IMAGE_SSH_USER}@${instance_ip}:./distribute_local_repos.sh
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
