@@ -66,6 +66,7 @@
         publish-stage-images-rhel7:
           job-name: publish-stage-images
           vars:
+            CONTAINER_REGISTRY: 'tf-mirrors.progmaticlab.com:5005'
             REPOS_TYPE: 'rhel7'
           depends-on:
             - test-sanity-rhosp13
@@ -111,6 +112,7 @@
         publish-stage-images-rhel8:
           job-name: publish-stage-images
           vars:
+            CONTAINER_REGISTRY: 'tf-mirrors.progmaticlab.com:5005'
             REPOS_TYPE: 'rhel8'
           depends-on:
             - test-sanity-rhosp16

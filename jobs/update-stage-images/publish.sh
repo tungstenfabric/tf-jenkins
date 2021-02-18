@@ -20,14 +20,11 @@ export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"tf-mirrors.progmaticlab.com:500
 echo "INFO: update images started"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 #!/bin/bash -e
-echo "export RHEL_USER=$RHEL_USER" > rhel-account
-echo "export RHEL_PASSWORD=$RHEL_PASSWORD" >> rhel-account
-
 
 [ "${DEBUG,,}" == "true" ] && set -x
-export REPOS_TYPE=$REPOS_TYPE
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
+export REPOS_TYPE=$REPOS_TYPE
 export PATH=\$PATH:/usr/sbin
 
 export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
@@ -36,6 +33,6 @@ export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
 echo "INFO: cat /etc/docker/daemon.json"
 cat /etc/docker/daemon.json
 
-./update_docker_images.sh
+./publish_docker_images.sh
 EOF
-echo "INFO: Update docker images is finished for $REPOS_TYPE"
+echo "INFO: Publishing docker images is finished for $REPOS_TYPE"
