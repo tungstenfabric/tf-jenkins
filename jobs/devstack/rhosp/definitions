@@ -9,7 +9,7 @@ export mgmt_net_cleanup=false
 export provision_network_name=data
 export prov_net_cleanup=false
 
-export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
+export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o ServerAliveInterval=60"
 
 JUMPHOST=${JUMPHOST:-'vexxhost'}
 
