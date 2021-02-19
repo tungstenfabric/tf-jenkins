@@ -10,6 +10,7 @@
       - tungstenfabric/tf-vijava
       - tungstenfabric/tf-vrouter-java-api
       - tungstenfabric/tf-vro-plugin
+      - tungstenfabric/tf-vcenter-plugin
     check:
       templates:
         - build-centos
@@ -222,7 +223,6 @@
     check:
       templates:
         - operator
-        - operator-ha
         - cleanup
     gate:
       templates:
@@ -242,17 +242,6 @@
     gate:
       templates:
         - test-unit
-        - build-centos
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-vcenter-plugin
-    check:
-      templates:
-        - build-centos
-        - cleanup
-    gate:
-      templates:
         - build-centos
         - cleanup
 
