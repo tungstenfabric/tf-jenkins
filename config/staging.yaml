@@ -10,6 +10,7 @@
       jobs:
         update-stage-repos-centos7:
           job-name: update-stage-repos
+          timeout: 600
           vars:
             REPOS_TYPE: 'centos7'
         prepare-sandbox-centos:
@@ -41,6 +42,7 @@
       jobs:
         update-stage-repos-rhel7:
           job-name: update-stage-repos
+          timeout: 600
           vars:
             REPOS_TYPE: 'rhel7'
         update-stage-images-rhel7:
@@ -87,6 +89,7 @@
       jobs:
         update-stage-repos-rhel8:
           job-name: update-stage-repos
+          timeout: 600
           vars:
             REPOS_TYPE: 'rhel8'
         update-stage-images-rhel8:
@@ -129,6 +132,7 @@
       jobs:
         update-stage-repos-ubuntu18:
           job-name: update-stage-repos
+          timeout: 600
           vars:
             REPOS_TYPE: 'ubuntu18'
         deploy-platform-juju-os:
