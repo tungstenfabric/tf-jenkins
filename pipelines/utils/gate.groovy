@@ -301,7 +301,7 @@ def _get_result_patchset(Integer base_build_id) {
   def new_patchset_info_text = readFile("patchsets-info.json")
   def sl = new JsonSlurper()
   def new_patchset_info = sl.parseText(new_patchset_info_text)
-  def base_patchset_info = ""
+  def base_patchset_info_text = ""
   // Read patchsets-info from base build
   def base_build = _get_build_by_id(base_build_id)
   def artifactManager = base_build.getArtifactManager()
@@ -311,19 +311,25 @@ def _get_result_patchset(Integer base_build_id) {
       def file = it
       if (file.toString().contains('patchsets-info.json')) {
         // extract global.env artifact for each build if exists
-        base_patchset_info = it.open().getText()
+        base_patchset_info_text = it.open().getText()
         return true
       }
     }
   }
   def sl2 = new JsonSlurper()
-  def old_patchset_info = sl2.parseText(base_patchset_info)
-  if (old_patchset_info instanceof java.util.ArrayList) {
-    def result_patchset_info = old_patchset_info + new_patchset_info
-    def json_result_patchset_info = JsonOutput.toJson(result_patchset_info)
-    return json_result_patchset_info
-  }
-  return false
+  def base_patchset_info = sl2.parseText(base_patchset_info_text)
+  if (!(base_patchset_info instanceof java.util.ArrayList))
+    return false
+
+  // add absent items to base_patchset_info from new_patchset_info and return it
+  def ids = []
+  for (item in base_patchset_info)
+    ids.add(item['id'])
+  for (item in new_patchset_info)
+    if (!ids.contains(item['id'])
+      base_patchset_info.add(item)
+  def result_patchset_info_text = JsonOutput.toJson(base_patchset_info)
+  return result_patchset_info_text
 }
 
 // Function read global.env line by len and if met the line
