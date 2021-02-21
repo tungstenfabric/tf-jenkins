@@ -326,7 +326,7 @@ def _get_result_patchset(Integer base_build_id) {
   for (item in base_patchset_info)
     ids.add(item['id'])
   for (item in new_patchset_info)
-    if (!ids.contains(item['id'])
+    if (!ids.contains(item['id']))
       base_patchset_info.add(item)
   def result_patchset_info_text = JsonOutput.toJson(base_patchset_info)
   return result_patchset_info_text
