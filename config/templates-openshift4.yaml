@@ -4,9 +4,9 @@
     name: openshift4-kvm
     streams:
       openshift4-kvm:
-        lock: openlab3
+        lock: openlab4
         vars:
-          JUMPHOST: openlab3
+          JUMPHOST: openlab4
           CONTROLLER_NODES: "C1,C2,C3"
           AGENT_NODES: "A1,A2"
           MONITORING_DEPLOY_TARGET: PROD
