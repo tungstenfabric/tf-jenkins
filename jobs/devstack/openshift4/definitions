@@ -5,7 +5,7 @@ fi
 
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
-if [[ "$JUMPHOST" == 'openlab3' ]]; then
+if [[ "$JUMPHOST" == 'openlab3' || "$JUMPHOST" == 'openlab4' ]]; then
   PROVIDER=kvm
 elif [[ -z "$JUMPHOST" ]]; then
   PROVIDER=vexxhost
