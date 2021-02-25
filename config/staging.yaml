@@ -6,6 +6,7 @@
       templates:
         - build-centos
         - ansible-os
+        - ansible-k8s
         - cleanup
       jobs:
         update-stage-repos-centos7:
@@ -13,6 +14,9 @@
           vars:
             REPOS_TYPE: 'centos7'
         prepare-sandbox-centos:
+          depends-on:
+            - update-stage-repos-centos7
+        deploy-platform-ansible-os:
           depends-on:
             - update-stage-repos-centos7
         deploy-platform-ansible-k8s:
@@ -24,6 +28,7 @@
             REPOS_TYPE: 'centos7'
           depends-on:
             - test-sanity-ansible-os
+            - test-sanity-ansible-k8s
       post-jobs:
         cleanup-workers:
 
