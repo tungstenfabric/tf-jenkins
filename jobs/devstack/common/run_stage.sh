@@ -9,7 +9,8 @@ stage=$2
 
 echo "INFO: Deploy $deployer/$stage ($JOB_NAME)"
 
-cat <<EOF > $WORKSPACE/deploy_$stage.sh
+script="deploy_${stage:-all}.sh"
+cat <<EOF > $WORKSPACE/$script
 #!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
@@ -30,16 +31,16 @@ export PATH=\$PATH:/usr/sbin
 EOF
 
 if declare -f -F add_deployrc &>/dev/null ; then
-  add_deployrc $WORKSPACE/deploy_$stage.sh
+  add_deployrc $WORKSPACE/$script
 fi
 
-echo "src/tungstenfabric/tf-devstack/${deployer}/run.sh $stage" >> $WORKSPACE/deploy_$stage.sh
-chmod a+x $WORKSPACE/deploy_$stage.sh
+echo "src/tungstenfabric/tf-devstack/${deployer}/run.sh $stage" >> $WORKSPACE/$script
+chmod a+x $WORKSPACE/$script
 
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
-rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/deploy_$stage.sh} $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/$script} $IMAGE_SSH_USER@$instance_ip:./
 # run this via eval due to special symbols in ssh_cmd
-eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./deploy_$stage.sh || res=1
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./$script || res=1
 
 echo "INFO: Deploy $stage finished"
 exit $res
