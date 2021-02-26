@@ -12,8 +12,10 @@
           MONITORING_DEPLOY_TARGET: PROD
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
-    parents:
-      - build-ubi
+          CONTRAIL_CONTAINER_TAG: 'nightly-ubi7'
+          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
+    #parents:
+    #  - build-ubi
     jobs:
       deploy-platform-openshift4-kvm:
         job-name: deploy-platform-openshift4
@@ -22,7 +24,7 @@
         job-name: deploy-tf-openshift4
         stream: openshift4-kvm
         depends-on:
-          - package-ubi
+          #- package-ubi
           - deploy-platform-openshift4-kvm
       test-sanity-openshift4-kvm:
         job-name: test-sanity
