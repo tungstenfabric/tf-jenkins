@@ -75,6 +75,9 @@
           - text:
               credential-id: MAAS_API_KEY
               variable: MAAS_API_KEY
+          - text:
+              credential-id: OPENSHIFT_PULL_SECRET
+              variable: OPENSHIFT_PULL_SECRET
     scm:
       - tf-jenkins
       - tf-devstack
