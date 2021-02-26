@@ -18,6 +18,7 @@ function add_deployrc() {
   local file="$1"
   cat <<EOF >> "$file"
 export PROVIDER=$PROVIDER
+export OPENSHIFT_PULL_SECRET=$OPENSHIFT_PULL_SECRET
 EOF
 }
 export -f add_deployrc
