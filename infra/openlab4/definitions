@@ -1,4 +1,4 @@
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
-IMAGE_SSH_USER=jenkins
+IMAGE_SSH_USER=ubuntu
 instance_ip=slave04.jenkins.progmaticlab.com
