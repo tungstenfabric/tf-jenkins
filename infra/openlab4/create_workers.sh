@@ -9,7 +9,7 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
-ssh $SSH_OPTS $IMAGE_SSH_USER@$instance_ip "sudo rm -rf .tf src"
+ssh -i $WORKER_SSH_KEY $SSH_OPTS $IMAGE_SSH_USER@$instance_ip "sudo rm -rf .tf src"
 
 stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file"
