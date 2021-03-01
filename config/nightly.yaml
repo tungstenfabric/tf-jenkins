@@ -35,6 +35,7 @@
         - rhosp13-bmc
         - operator
         - operator-ha
+        - openshift4-slave04
         - juju-os-not-implemented-targets
         - juju-k8s-not-implemented-targets
         - juju-hybrid-not-implemented-targets
