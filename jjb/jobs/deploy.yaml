@@ -372,7 +372,7 @@
           deployer: operator
           orchestrator: kubernetes
       - openshift4:
-          environment_os: rhcos
+          environment_os: centos7
           deployer: openshift4
           orchestrator: kubernetes
     jobs:

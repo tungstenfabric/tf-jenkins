@@ -47,4 +47,8 @@
               variable: OS_AUTH_URL
     builders:
       - shell: |
+          echo "DESCRIPTION Image type=$IMAGE_TYPE"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
           ./src/tungstenfabric/tf-jenkins/infra/vexxhost/update_base_images.sh
