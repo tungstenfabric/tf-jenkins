@@ -32,6 +32,16 @@ if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'UBUNTU18' ]]; then
   rm -f bionic-server-cloudimg-amd64.img
 fi
 
+if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
+  echo "INFO: download RHCOS 4.5.6 from openshift mirror"
+  curl -LOs "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.5/4.5.6/rhcos-4.5.6-x86_64-openstack.x86_64.qcow2.gz"
+  curl -Ls "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.5/4.5.6/sha256sum.txt" -o rhcos45-SHA256SUMS
+  sha256sum -c rhcos45-SHA256SUMS --ignore-missing --status
+  echo "INFO: upload RHCOS45 to vexxhost"
+  openstack image create --disk-format qcow2 --tag rhcos45 --file rhcos-4.5.6-x86_64-openstack.x86_64.qcow2.gz rhcos45-$(date +%Y%m%d%H%M)
+  rm -f rhcos-4.5.6-x86_64-openstack.x86_64.qcow2.gz
+fi
+
 # Remove previous images
 # this code leaves 4 latest images - so it can be run always
 echo "INFO: remove previous images"

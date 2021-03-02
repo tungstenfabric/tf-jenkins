@@ -18,6 +18,7 @@
             - RHEL7
             - RHEL8
             - UBUNTU18
+            - RHCOS45
           description: "Image type for update or ALL(default)"
     scm:
       - tf-jenkins
