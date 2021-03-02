@@ -7,7 +7,16 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+if [[ ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
+  echo "INFO: prepared image doesn't require special preparation - it was created with base image. Exiting"
+  exit
+fi
+
 for i in "${!OS_IMAGE_USERS[@]}"; do
+  if [[ ${IMAGE_TYPE^^} == 'ALL' && ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
+    # skip preparation for RHCOS image
+    continue
+  fi
   if [[ ${IMAGE_TYPE^^} != 'ALL' && ${IMAGE_TYPE^^} != ${i^^} ]]; then
     continue
   fi
