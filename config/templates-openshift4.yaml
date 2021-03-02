@@ -89,7 +89,7 @@
 - template:
     name: openshift4-slave04
     streams:
-      openshift4-slave02:
+      openshift4-slave04:
         lock: openlab4
         vars:
           JUMPHOST: openlab4
@@ -106,25 +106,25 @@
     #parents:
     #  - build-ubi
     jobs:
-      deploy-platform-openshift4-slave02:
+      deploy-platform-openshift4-slave04:
         job-name: deploy-platform-openshift4
-        stream: openshift4-slave02
-      deploy-tf-openshift4-slave02:
+        stream: openshift4-slave04
+      deploy-tf-openshift4-slave04:
         job-name: deploy-tf-openshift4
-        stream: openshift4-slave02
+        stream: openshift4-slave04
         depends-on:
           #- package-ubi
-          - deploy-platform-openshift4-slave02
-      test-sanity-openshift4-slave02:
+          - deploy-platform-openshift4-slave04
+      test-sanity-openshift4-slave04:
         job-name: test-sanity
-        stream: openshift4-slave02
+        stream: openshift4-slave04
         depends-on:
-          - deploy-tf-openshift4-slave02
-      collect-logs-and-cleanup-openshift4-slave02:
+          - deploy-tf-openshift4-slave04
+      collect-logs-and-cleanup-openshift4-slave04:
         job-name: collect-logs-and-cleanup
-        stream: openshift4-slave02
+        stream: openshift4-slave04
         type: stream-post-hook
         depends-on:
-          - deploy-platform-openshift4-slave02
-          - deploy-tf-openshift4-slave02
-          - test-sanity-openshift4-slave02
+          - deploy-platform-openshift4-slave04
+          - deploy-tf-openshift4-slave04
+          - test-sanity-openshift4-slave04
