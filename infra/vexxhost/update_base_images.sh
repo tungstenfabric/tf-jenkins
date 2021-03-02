@@ -38,7 +38,8 @@ if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
   curl -Ls "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.5/4.5.6/sha256sum.txt" -o rhcos45-SHA256SUMS
   sha256sum -c rhcos45-SHA256SUMS --ignore-missing --status
   echo "INFO: upload RHCOS45 to vexxhost"
-  openstack image create --disk-format qcow2 --tag rhcos45 --file rhcos-4.5.6-x86_64-openstack.x86_64.qcow2.gz base-rhcos45-$(date +%Y%m%d%H%M)
+  gzip -d rhcos-4.5.6-x86_64-openstack.x86_64.qcow2.gz
+  openstack image create --disk-format qcow2 --tag rhcos45 --file rhcos-4.5.6-x86_64-openstack.x86_64.qcow2 base-rhcos45-$(date +%Y%m%d%H%M)
   rm -f rhcos-4.5.6-x86_64-openstack.x86_64.qcow2.gz
 fi
 
