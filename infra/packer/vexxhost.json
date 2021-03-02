@@ -22,7 +22,7 @@
          },
          "ssh_username":"{{user `ssh_user`}}",
          "use_blockstorage_volume":true,
-         "volume_size":"10",
+         "volume_size":"30",
          "networks":"{{user `net_id`}}",
          "security_groups":[
             "{{user `sg_group`}}"
