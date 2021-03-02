@@ -50,18 +50,19 @@
         lock: openlab3
         vars:
           JUMPHOST: openlab3
+          HUGEPAGES_ENABLED: false
           PROVIDER: "kvm"
           CONTROLLER_NODES: "C1,C2,C3"
           AGENT_NODES: "A1,A2"
           MONITORING_DEPLOY_TARGET: PROD
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
-          CONTRAIL_CONTAINER_TAG: 'nightly-ubi7'
-          CONTRAIL_DEPLOYER_CONTAINER_TAG: 'nightly-ubi7'
-          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
-    #parents:
-    #  - build-ubi
+          # need to use secure registries
+          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5101'
+          TAG_SUFFIX: "-ubi7"
+    parents:
+      - build-ubi
     jobs:
       deploy-platform-openshift4-slave01:
         job-name: deploy-platform-openshift4
@@ -70,7 +71,7 @@
         job-name: deploy-tf-openshift4
         stream: openshift4-slave01
         depends-on:
-          #- package-ubi
+          - package-ubi
           - deploy-platform-openshift4-slave01
       test-sanity-openshift4-slave01:
         job-name: test-sanity
@@ -99,12 +100,12 @@
           MONITORING_DEPLOY_TARGET: PROD
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
-          CONTRAIL_CONTAINER_TAG: 'nightly-ubi7'
-          CONTRAIL_DEPLOYER_CONTAINER_TAG: 'nightly-ubi7'
-          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
-    #parents:
-    #  - build-ubi
+          # need to use secure registries
+          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5101'
+          TAG_SUFFIX: "-ubi7"
+    parents:
+      - build-ubi
     jobs:
       deploy-platform-openshift4-slave04:
         job-name: deploy-platform-openshift4
@@ -113,7 +114,7 @@
         job-name: deploy-tf-openshift4
         stream: openshift4-slave04
         depends-on:
-          #- package-ubi
+          - package-ubi
           - deploy-platform-openshift4-slave04
       test-sanity-openshift4-slave04:
         job-name: test-sanity
