@@ -11,6 +11,8 @@ source "$my_dir/definitions"
 # Note: Base images centos8 rhel7 rhel8 must be updated manually.
 # The image name should follow the example: base-rhel8-202012321201.
 
+date_suffix=$(date +%Y%m%d%H%M)
+
 # Get images
 if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'CENTOS7' ]]; then
   echo "INFO: download centos7 from centos.org"
@@ -18,7 +20,7 @@ if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'CENTOS7' ]]; then
   echo "INFO: decompress centos7"
   xz --decompress CentOS-7-x86_64-GenericCloud.qcow2.xz
   echo "INFO: upload centos7 to vexxhost"
-  openstack image create --disk-format qcow2 --tag centos7 --file CentOS-7-x86_64-GenericCloud.qcow2 base-centos7-$(date +%Y%m%d%H%M)
+  openstack image create --disk-format qcow2 --tag centos7 --file CentOS-7-x86_64-GenericCloud.qcow2 base-centos7-$date_suffix
   rm -f CentOS-7-x86_64-GenericCloud.qcow2*
 fi
 
@@ -28,7 +30,7 @@ if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'UBUNTU18' ]]; then
   curl -Ls "https://cloud-images.ubuntu.com/bionic/current/SHA256SUMS" -o ubuntu18-SHA256SUMS
   sha256sum -c ubuntu18-SHA256SUMS --ignore-missing --status
   echo "INFO: upload ubuntu18 to vexxhost"
-  openstack image create --disk-format qcow2 --tag ubuntu18 --file bionic-server-cloudimg-amd64.img base-ubuntu18-$(date +%Y%m%d%H%M)
+  openstack image create --disk-format qcow2 --tag ubuntu18 --file bionic-server-cloudimg-amd64.img base-ubuntu18-$date_suffix
   rm -f bionic-server-cloudimg-amd64.img
 fi
 
@@ -38,10 +40,16 @@ if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
   curl -Ls "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.5/4.5.6/sha256sum.txt" -o rhcos45-SHA256SUMS
   sha256sum -c rhcos45-SHA256SUMS --ignore-missing --status
   echo "INFO: upload RHCOS45 to vexxhost"
+  ls -l
   gzip -d rhcos-4.5.6-x86_64-openstack.x86_64.qcow2.gz
-  openstack image create --disk-format qcow2 --tag rhcos45 --file rhcos-4.5.6-x86_64-openstack.x86_64.qcow2 base-rhcos45-$(date +%Y%m%d%H%M)
-  rm -f rhcos-4.5.6-x86_64-openstack.x86_64.qcow2.gz
+  ls -l
+  openstack image create --disk-format qcow2 --tag rhcos45 --file rhcos-4.5.6-x86_64-openstack.x86_64.qcow2 base-rhcos45-$date_suffix
+  rm -f rhcos-4.5.6-x86_64-openstack.x86_64.qcow2
 fi
+
+sleep 10
+echo "INFO: uploaded image"
+openstack image show base-${IMAGE_TYPE,,}-$date_suffix
 
 # Remove previous images
 # this code leaves 4 latest images - so it can be run always
