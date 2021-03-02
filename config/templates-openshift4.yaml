@@ -1,12 +1,56 @@
 ---
 
 - template:
+    name: openshift4-ha
+    streams:
+      openshift4-ha:
+        vars:
+          PROVIDER: "manual"
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: openshift
+          MONITORING_ORCHESTRATOR: k8s
+          CONTRAIL_CONTAINER_TAG: 'nightly-ubi7'
+          CONTRAIL_DEPLOYER_CONTAINER_TAG: 'nightly-ubi7'
+          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
+          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
+    #parents:
+    #  - build-ubi
+    jobs:
+      deploy-platform-openshift4-ha:
+        job-name: deploy-platform-openshift4
+        stream: openshift4-ha
+        vars:
+          NODES: JUMPHOST_NODES:xsmall:1
+          RHCOS_VERSION: rhcos45
+      deploy-tf-openshift4-ha:
+        job-name: deploy-tf-openshift4
+        stream: openshift4-ha
+        depends-on:
+          #- package-ubi
+          - deploy-platform-openshift4-ha
+      test-sanity-openshift4-ha:
+        job-name: test-sanity
+        stream: openshift4-ha
+        depends-on:
+          - deploy-tf-openshift4-ha
+      collect-logs-and-cleanup-openshift4-ha:
+        job-name: collect-logs-and-cleanup
+        stream: openshift4-ha
+        type: stream-post-hook
+        depends-on:
+          - deploy-platform-openshift4-ha
+          - deploy-tf-openshift4-ha
+          - test-sanity-openshift4-ha
+
+
+- template:
     name: openshift4-slave01
     streams:
-      openshift4-kvm:
+      openshift4-slave01:
         lock: openlab3
         vars:
           JUMPHOST: openlab3
+          PROVIDER: "kvm"
           CONTROLLER_NODES: "C1,C2,C3"
           AGENT_NODES: "A1,A2"
           MONITORING_DEPLOY_TARGET: PROD
@@ -19,36 +63,37 @@
     #parents:
     #  - build-ubi
     jobs:
-      deploy-platform-openshift4-kvm:
+      deploy-platform-openshift4-slave01:
         job-name: deploy-platform-openshift4
-        stream: openshift4-kvm
-      deploy-tf-openshift4-kvm:
+        stream: openshift4-slave01
+      deploy-tf-openshift4-slave01:
         job-name: deploy-tf-openshift4
-        stream: openshift4-kvm
+        stream: openshift4-slave01
         depends-on:
           #- package-ubi
-          - deploy-platform-openshift4-kvm
-      test-sanity-openshift4-kvm:
+          - deploy-platform-openshift4-slave01
+      test-sanity-openshift4-slave01:
         job-name: test-sanity
-        stream: openshift4-kvm
+        stream: openshift4-slave01
         depends-on:
-          - deploy-tf-openshift4-kvm
-      collect-logs-and-cleanup-openshift4-kvm:
+          - deploy-tf-openshift4-slave01
+      collect-logs-and-cleanup-openshift4-slave01:
         job-name: collect-logs-and-cleanup
-        stream: openshift4-kvm
+        stream: openshift4-slave01
         type: stream-post-hook
         depends-on:
-          - deploy-platform-openshift4-kvm
-          - deploy-tf-openshift4-kvm
-          - test-sanity-openshift4-kvm
+          - deploy-platform-openshift4-slave01
+          - deploy-tf-openshift4-slave01
+          - test-sanity-openshift4-slave01
 
 - template:
     name: openshift4-slave04
     streams:
-      openshift4-kvm:
+      openshift4-slave02:
         lock: openlab4
         vars:
           JUMPHOST: openlab4
+          PROVIDER: "kvm"
           CONTROLLER_NODES: "C1,C2,C3"
           AGENT_NODES: "A1,A2"
           MONITORING_DEPLOY_TARGET: PROD
@@ -61,25 +106,25 @@
     #parents:
     #  - build-ubi
     jobs:
-      deploy-platform-openshift4-kvm:
+      deploy-platform-openshift4-slave02:
         job-name: deploy-platform-openshift4
-        stream: openshift4-kvm
-      deploy-tf-openshift4-kvm:
+        stream: openshift4-slave02
+      deploy-tf-openshift4-slave02:
         job-name: deploy-tf-openshift4
-        stream: openshift4-kvm
+        stream: openshift4-slave02
         depends-on:
           #- package-ubi
-          - deploy-platform-openshift4-kvm
-      test-sanity-openshift4-kvm:
+          - deploy-platform-openshift4-slave02
+      test-sanity-openshift4-slave02:
         job-name: test-sanity
-        stream: openshift4-kvm
+        stream: openshift4-slave02
         depends-on:
-          - deploy-tf-openshift4-kvm
-      collect-logs-and-cleanup-openshift4-kvm:
+          - deploy-tf-openshift4-slave02
+      collect-logs-and-cleanup-openshift4-slave02:
         job-name: collect-logs-and-cleanup
-        stream: openshift4-kvm
+        stream: openshift4-slave02
         type: stream-post-hook
         depends-on:
-          - deploy-platform-openshift4-kvm
-          - deploy-tf-openshift4-kvm
-          - test-sanity-openshift4-kvm
+          - deploy-platform-openshift4-slave02
+          - deploy-tf-openshift4-slave02
+          - test-sanity-openshift4-slave02

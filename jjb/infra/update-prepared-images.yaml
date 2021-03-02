@@ -55,4 +55,8 @@
               variable: RHEL_POOL_ID
     builders:
       - shell: |
+          echo "DESCRIPTION Image type=$IMAGE_TYPE"
+      - description-setter:
+          regexp: "DESCRIPTION (.*)"
+      - shell: |
           ./src/tungstenfabric/tf-jenkins/infra/vexxhost/update_prepared_images.sh
