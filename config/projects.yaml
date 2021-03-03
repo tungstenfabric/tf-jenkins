@@ -35,7 +35,7 @@
         - cleanup
     gate:
       templates:
-        - ansible-k8s
+        - juju-k8s
         - ansible-os
         - cleanup
 
@@ -52,7 +52,7 @@
       templates:
         - build-ubi
         - build-centos
-        - ansible-k8s
+        - juju-k8s
         - ansible-os
         - cleanup
 
@@ -73,7 +73,7 @@
     gate:
       templates:
         - test-unit
-        - ansible-k8s
+        - juju-k8s
         - ansible-os
         - cleanup
 
@@ -130,7 +130,7 @@
     gate:
       templates:
         - build-ubi
-        - ansible-k8s
+        - juju-k8s
         - ansible-os
         - cleanup
 
@@ -145,7 +145,7 @@
     gate:
       templates:
         - test-unit
-        - ansible-k8s
+        - juju-k8s
         - ansible-os
         - cleanup
 
@@ -255,7 +255,7 @@
     gate:
       templates:
         - build-centos
-        - ansible-k8s
+        - juju-k8s
         - ansible-os
         - cleanup
 
@@ -273,7 +273,7 @@
         - build-ubi
         - build-centos
         - build-r2011-centos
-        - ansible-k8s
+        - juju-k8s
         - ansible-os
         - cleanup
 
