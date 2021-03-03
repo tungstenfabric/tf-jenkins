@@ -69,11 +69,11 @@ def main():
         err("ERROR: Unknown strategy - {}".format(args.strategy))
         return 1
 
-    found = False
     check_op = strategy_hooks[args.strategy][0]
     process_op = strategy_hooks[args.strategy][1]
     labels = ['Code-Review=2', 'Approved=1']
     while True:
+        found = False
         for commit in gerrit.list_active_changes(args.branch, labels=labels):
             try:
                 info('processing review #%s/%s' % (str(commit.number), str(commit.revision_number)))
