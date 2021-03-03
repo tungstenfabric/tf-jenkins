@@ -59,3 +59,10 @@
       - github:
           organization: tungstenfabric
           repo: tf-dev-test
+
+- scm:
+    name: tf-container-builder
+    scm:
+      - github:
+          organization: tungstenfabric
+          repo: tf-container-builder
