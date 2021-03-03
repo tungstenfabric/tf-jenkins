@@ -126,6 +126,9 @@ for mirror in $mirror_list ; do
   cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
 done
 
+mkdir -p ./config/etc/apt
+cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/ubuntu18-sources.list ./config/etc/apt/sources.list
+
 cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 
 sudo mkdir -p /etc/docker/
