@@ -1,5 +1,4 @@
 ---
-
 - job-template:
     name: deploy-platform-{project}
     description: "devstack deploy platform for {project}"
@@ -188,6 +187,10 @@
               credential-id: logs_host
               key-file-variable: LOGS_HOST_SSH_KEY
               username-variable: LOGS_HOST_USERNAME
+      - credentials-binding:
+          - text:
+              credential-id: OPENSHIFT_PULL_SECRET
+              variable: OPENSHIFT_PULL_SECRET
     scm:
       - tf-jenkins
       - tf-devstack
