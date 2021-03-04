@@ -5,7 +5,7 @@
     streams:
       juju-hybrid-not-implemented-targets:
         vars:
-          MONITORING_DEPLOY_TARGET: HA,CCImport
+          MONITORING_DEPLOY_TARGET: AIO,CCImport
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: hybrid
 
@@ -23,7 +23,7 @@
     streams:
       juju-k8s-not-implemented-targets:
         vars:
-          MONITORING_DEPLOY_TARGET: CCImport
+          MONITORING_DEPLOY_TARGET: HA,CCImport
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: k8s
 
@@ -360,7 +360,7 @@
         job-name: deploy-platform-juju-hybrid
         stream: juju-hybrid-ha
         vars:
-          NODES: JUJU_CONTROLLER_NODES:xsmall:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+          NODES: JUJU_CONTROLLER_NODES:xsmall:1,CONTROLLER_NODES:large:3,AGENT_NODES:small:2
       deploy-tf-juju-hybrid-ha:
         job-name: deploy-tf-juju-hybrid
         stream: juju-hybrid-ha
