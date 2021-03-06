@@ -12,16 +12,17 @@ sudo yum install -y wget curl
 
 # tf-container-build cache
 
-export CACHE_DIR='external_web_cache'
+export CACHE_DIR="$(pwd)/external_web_cache"
 echo "INFO: download cache for tf-container-builder/containers/populate_external_web_cache.sh"
 ./src/tungstenfabric/tf-container-builder/containers/populate_external_web_cache.sh
 
 echo "INFO: Upload external-web-cache files"
-cd $CACHE_DIR
+pushd $CACHE_DIR
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"
-  curl --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/external-web-cache/$file
+  curl -s --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/external-web-cache/$file
 done
+popd
 
 # tf-third-party and tf-webui-third-party caches
 
@@ -32,27 +33,29 @@ function update_third_party_cache() {
 
   echo "INFO: update cache for $folder/$xmlfile"
   mkdir -p $cache_folder
-  cd $folder
+  pushd $folder
   python3 populate_cache.py $cache_folder $xmlfile
+  popd
 }
 
-CACHE_DIR='third_party'
+CACHE_DIR="$(pwd)/third_party"
 update_third_party_cache src/tungstenfabric/tf-third-party packages.xml $CACHE_DIR
 update_third_party_cache src/tungstenfabric/tf-webui-third-party packages.xml $CACHE_DIR
 update_third_party_cache src/tungstenfabric/tf-webui-third-party packages_dev.xml $CACHE_DIR
 
 echo "INFO: Upload third-party cached files"
-cd $CACHE_DIR
+pushd $CACHE_DIR
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"
-  curl --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/contrail-third-party/$file
+  curl -s --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/contrail-third-party/$file
 done
+popd
 
 # tpc binary cache
 
-CACHE_DIR="tpc-binary"
+CACHE_DIR="$(pwd)/tpc-binary"
 mkdir -p $CACHE_DIR
-cd $CACHE_DIR
+pushd $CACHE_DIR
 
 kernels=( \
   https://vault.centos.org/7.7.1908/os/x86_64/Packages/kernel-3.10.0-1062.el7.x86_64.rpm \
@@ -77,5 +80,6 @@ done
 
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"
-  curl --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/yum-tpc-binary/$file
+  curl -s --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/yum-tpc-binary/$file
 done
+popd
