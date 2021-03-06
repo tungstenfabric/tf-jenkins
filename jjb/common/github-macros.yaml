@@ -66,3 +66,17 @@
       - github:
           organization: tungstenfabric
           repo: tf-container-builder
+
+- scm:
+    name: tf-third-party
+    scm:
+      - github:
+          organization: tungstenfabric
+          repo: tf-third-party
+
+- scm:
+    name: tf-webui-third-party
+    scm:
+      - github:
+          organization: tungstenfabric
+          repo: tf-webui-third-party

@@ -1,8 +1,8 @@
 ---
 
 - job:
-    name: "update-external-web-cache-repository"
-    description: "Update external-web-cache repository from tf-container-builder"
+    name: "update-static-cache"
+    description: "Update caches on nexus repository from tf-container-builder, tf-third-party, tf-web-third-party"
     defaults: global
     properties:
       - build-discarder:
@@ -12,6 +12,8 @@
     scm:
       - tf-jenkins
       - tf-container-builder
+      - tf-third-party
+      - tf-webui-third-party
     wrappers:
       - workspace-cleanup:
           disable-deferred-wipeout: true
@@ -56,17 +58,16 @@
       - shell: |
           # individual job - create global.env
           echo "export SLAVE=vexxhost" > $WORKSPACE/global.env
-          echo "export ENVIRONMENT_OS=centos7" >> $WORKSPACE/global.env
       - shell: |
           set -eo pipefail
           source "$WORKSPACE/global.env"
 
-          ./src/tungstenfabric/tf-jenkins/jobs/update-external-web-cache/create_workers.sh
+          ./src/tungstenfabric/tf-jenkins/jobs/update-static-cache/create_workers.sh
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           # main run
-          ./src/tungstenfabric/tf-jenkins/jobs/update-external-web-cache/run.sh || res=1
+          ./src/tungstenfabric/tf-jenkins/jobs/update-static-cache/run.sh || res=1
           # collect logs
-          ./src/tungstenfabric/tf-jenkins/jobs/update-external-web-cache/collect_logs.sh
+          ./src/tungstenfabric/tf-jenkins/jobs/update-static-cache/collect_logs.sh
           exit $res
     publishers:
       - postbuildscript:
