@@ -23,7 +23,7 @@
     streams:
       juju-k8s-not-implemented-targets:
         vars:
-          MONITORING_DEPLOY_TARGET: HA,CCImport
+          MONITORING_DEPLOY_TARGET: CCImport
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: k8s
 
@@ -354,7 +354,7 @@
           ENABLE_NAGIOS: 'true'
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: juju
-          MONITORING_ORCHESTRATOR: hybrid
+          MONITORING_ORCHESTRATOR: hybrid,k8s
     jobs:
       deploy-platform-juju-hybrid-ha:
         job-name: deploy-platform-juju-hybrid
