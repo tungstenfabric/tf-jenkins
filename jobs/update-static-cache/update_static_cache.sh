@@ -10,7 +10,7 @@ fi
 
 sudo yum install -y wget curl gcc python3 python3-setuptools python3-devel python3-lxml
 curl -s --retry 3 --retry-delay 10 https://bootstrap.pypa.io/get-pip.py | sudo python3
-python3 -m pip install urllib3
+sudo python3 -m pip install urllib3
 
 # tf-container-build cache
 
@@ -49,7 +49,8 @@ echo "INFO: Upload third-party cached files"
 pushd $CACHE_DIR
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"
-  curl -s --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/contrail-third-party/$file
+  # ontrail-third-party already in path of downloaded files
+  curl -s --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/$file
 done
 popd
 
@@ -59,20 +60,20 @@ CACHE_DIR="$(pwd)/tpc-binary"
 mkdir -p $CACHE_DIR
 pushd $CACHE_DIR
 
-kernels=( \
-  https://vault.centos.org/7.7.1908/os/x86_64/Packages/kernel-3.10.0-1062.el7.x86_64.rpm \
-  https://vault.centos.org/7.7.1908/os/x86_64/Packages/kernel-devel-3.10.0-1062.el7.x86_64.rpm \
-  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-3.10.0-1062.4.1.el7.x86_64.rpm \
-  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-devel-3.10.0-1062.4.1.el7.x86_64.rpm \
-  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-3.10.0-1062.9.1.el7.x86_64.rpm \
-  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-devel-3.10.0-1062.9.1.el7.x86_64.rpm \
-  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-3.10.0-1062.12.1.el7.x86_64.rpm \
-  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-devel-3.10.0-1062.12.1.el7.x86_64.rpm \
-  https://vault.centos.org/7.8.2003/os/x86_64/Packages/kernel-3.10.0-1127.el7.x86_64.rpm \
-  https://vault.centos.org/7.8.2003/os/x86_64/Packages/kernel-devel-3.10.0-1127.el7.x86_64.rpm \
-  https://vault.centos.org/7.8.2003/updates/x86_64/Packages/kernel-3.10.0-1127.18.2.el7.x86_64.rpm \
-  https://vault.centos.org/7.8.2003/updates/x86_64/Packages/kernel-devel-3.10.0-1127.18.2.el7.x86_64.rpm \
-)
+kernels="
+  https://vault.centos.org/7.7.1908/os/x86_64/Packages/kernel-3.10.0-1062.el7.x86_64.rpm
+  https://vault.centos.org/7.7.1908/os/x86_64/Packages/kernel-devel-3.10.0-1062.el7.x86_64.rpm
+  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-3.10.0-1062.4.1.el7.x86_64.rpm
+  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-devel-3.10.0-1062.4.1.el7.x86_64.rpm
+  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-3.10.0-1062.9.1.el7.x86_64.rpm
+  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-devel-3.10.0-1062.9.1.el7.x86_64.rpm
+  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-3.10.0-1062.12.1.el7.x86_64.rpm
+  https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-devel-3.10.0-1062.12.1.el7.x86_64.rpm
+  https://vault.centos.org/7.8.2003/os/x86_64/Packages/kernel-3.10.0-1127.el7.x86_64.rpm
+  https://vault.centos.org/7.8.2003/os/x86_64/Packages/kernel-devel-3.10.0-1127.el7.x86_64.rpm
+  https://vault.centos.org/7.8.2003/updates/x86_64/Packages/kernel-3.10.0-1127.18.2.el7.x86_64.rpm
+  https://vault.centos.org/7.8.2003/updates/x86_64/Packages/kernel-devel-3.10.0-1127.18.2.el7.x86_64.rpm
+"
 
 for kernel in $kernels ; do
   wget -nv $kernel
