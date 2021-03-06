@@ -8,7 +8,8 @@ if [[ -z ${TPC_REPO_USER} || -z ${TPC_REPO_PASS} ]] ; then
   exit 1
 fi
 
-sudo yum install -y wget curl
+sudo yum install -y wget curl gcc python3 python3-setuptools python3-devel python3-lxml
+curl --retry 3 --retry-delay 10 https://bootstrap.pypa.io/get-pip.py | sudo python3
 
 # tf-container-build cache
 
