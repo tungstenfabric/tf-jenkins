@@ -14,11 +14,13 @@ sudo python3 -m pip install urllib3
 
 # tf-container-build cache
 
-export CACHE_DIR="$(pwd)/external_web_cache"
-echo "INFO: download cache for tf-container-builder/containers/populate_external_web_cache.sh"
-./src/tungstenfabric/tf-container-builder/containers/populate_external_web_cache.sh
+export CACHE_DIR="$(pwd)/containers_cache"
+echo "INFO: download cache for tf-container-builder/containers/populate-cache.sh"
+./src/tungstenfabric/tf-container-builder/containers/populate-cache.sh
+echo "INFO: download cache for tf-dev-env/container/populate-cache.sh"
+./src/tungstenfabric/tf-dev-env/container/populate-cache.sh
 
-echo "INFO: Upload external-web-cache files"
+echo "INFO: Upload containers cache files"
 pushd $CACHE_DIR
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"
