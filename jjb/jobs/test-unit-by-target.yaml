@@ -122,5 +122,6 @@
     target:
       - ui
       - tox
+      - go
     jobs:
       - 'test-unit-{target}'

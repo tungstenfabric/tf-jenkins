@@ -80,7 +80,7 @@
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
 
-# TODO: think about moving this job into k8s cluster somehow
+# TODO: think about moving these below jobs into k8s cluster somehow
 - template:
     name: test-unit-ui
     parents:
@@ -92,7 +92,6 @@
               inherit-keys:
                 - DEVENV_TAG
 
-# TODO: think about moving this job into k8s cluster somehow
 - template:
     name: test-tox-pep8
     parents:
@@ -134,3 +133,14 @@
                 - DEVENV_TAG
         vars:
           TARGET_SET: py36
+
+- template:
+    name: test-unit-go
+    parents:
+      - prepare-ut-sandbox
+    jobs:
+      test-unit-go:
+        depends-on:
+          - fetch-sources-ut-sandbox:
+              inherit-keys:
+                - DEVENV_TAG
