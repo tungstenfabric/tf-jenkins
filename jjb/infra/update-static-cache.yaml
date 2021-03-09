@@ -12,6 +12,7 @@
     scm:
       - tf-jenkins
       - tf-container-builder
+      - tf-dev-env
       - tf-third-party
       - tf-webui-third-party
     wrappers:
