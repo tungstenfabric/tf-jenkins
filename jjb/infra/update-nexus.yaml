@@ -1,14 +1,21 @@
 ---
 
 - job:
-    name: "update-static-cache"
-    description: "Update caches on nexus repository from tf-container-builder, tf-third-party, tf-web-third-party"
+    name: "update-nexus-artifacts"
+    description: "Update caches in nexus repositories"
     defaults: global
     properties:
       - build-discarder:
           num-to-keep: 30
     node: vexxhost
     concurrent: false
+    parameters:
+      - choice:
+          name: ARTIFACT_TYPE
+          choices:
+            - THIRD_PARTY
+            - SANITY_IMAGES
+          description: "Artifact type for update"
     scm:
       - tf-jenkins
       - tf-container-builder
@@ -63,12 +70,12 @@
           set -eo pipefail
           source "$WORKSPACE/global.env"
 
-          ./src/tungstenfabric/tf-jenkins/jobs/update-static-cache/create_workers.sh
+          ./src/tungstenfabric/tf-jenkins/jobs/update-nexus/create_workers.sh
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           # main run
-          ./src/tungstenfabric/tf-jenkins/jobs/update-static-cache/run.sh || res=1
+          ./src/tungstenfabric/tf-jenkins/jobs/update-nexus/run.sh || res=1
           # collect logs
-          ./src/tungstenfabric/tf-jenkins/jobs/update-static-cache/collect_logs.sh
+          ./src/tungstenfabric/tf-jenkins/jobs/update-nexus/collect_logs.sh
           exit $res
     publishers:
       - postbuildscript:

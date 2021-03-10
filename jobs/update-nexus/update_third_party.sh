@@ -81,7 +81,7 @@ for kernel in $kernels ; do
   wget -nv $kernel
 done
 
-# todo: download TPC packages somewhere
+wget -nv -O - https://object-storage.public.mtl1.vexxhost.net/swift/v1/558a8ca6c0484c09b4dc140698842c7a/tf-ci/tpc.tar | tar -xv
 
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"

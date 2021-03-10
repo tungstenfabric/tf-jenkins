@@ -4,7 +4,7 @@ TF Jenkins is a common name of whole infra which serves:
 
 - checking and gating for reviews from <https://gerrit.tungsten.io>
 - running various checks for whole functionality (nightly)
-- publishing artefacts to dockerhub
+- publishing artifacts to dockerhub
 
 Whole infrastructure also has Nexus, some VM-s for mirrors, slaves for Jenkins, host for aquasec, logs storage, grafana for monitoring.
 
