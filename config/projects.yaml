@@ -221,8 +221,12 @@
 - project:
     name: tungstenfabric/tf-operator
     check:
+      streams:
+        test-unit-go:
+          voting: false
       templates:
         - operator
+        - test-unit-go
         - cleanup
     gate:
       templates:
