@@ -76,6 +76,14 @@
           lock: ansible-ha
         k8s-manifests-ha:
           lock: ansible-ha
+        openshift4-slave01:
+          vars:
+            CONTAINER_REGISTRY: $CONTAINER_REGISTRY
+            DEPLOYER_CONTAINER_REGISTRY: $DEPLOYER_CONTAINER_REGISTRY
+        openshift4-slave04:
+          vars:
+            CONTAINER_REGISTRY: $CONTAINER_REGISTRY
+            DEPLOYER_CONTAINER_REGISTRY: $DEPLOYER_CONTAINER_REGISTRY
       jobs:
         publish-centos-nightly:
           job-name: publish
