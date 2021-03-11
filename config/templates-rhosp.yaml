@@ -273,6 +273,7 @@
           OPENSTACK_VERSION: queens
           RHOSP_VERSION: rhosp13
           TAG_SUFFIX: "-ubi7"
+          SSL_ENABLE: true
           CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
           ENABLE_RHEL_REGISTRATION: false
@@ -326,6 +327,7 @@
           OPENSTACK_VERSION: train
           RHOSP_VERSION: rhosp16
           TAG_SUFFIX: "-ubi7"
+          SSL_ENABLE: true
           CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
           ENABLE_RHEL_REGISTRATION: false

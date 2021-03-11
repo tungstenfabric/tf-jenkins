@@ -58,10 +58,10 @@
     streams:
       build-ubi:
         vars:
-          LINUX_DISTR: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000/ubi7
+          LINUX_DISTR: tf-mirrors.progmaticlab.com:5005/ubi7
           LINUX_DISTR_VER: latest
           TAG_SUFFIX: "-ubi7"
-          INSECURE_REGISTRIES: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000
+          INSECURE_REGISTRIES: tf-mirrors.progmaticlab.com:5005
     jobs:
       prepare-sandbox-ubi:
         # it creates worker
@@ -204,10 +204,10 @@
     streams:
       build-r1912-ubi:
         vars:
-          LINUX_DISTR: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000/ubi7
+          LINUX_DISTR: tf-mirrors.progmaticlab.com:5005/ubi7
           LINUX_DISTR_VER: latest
           TAG_SUFFIX: "-r1912-ubi7"
-          INSECURE_REGISTRIES: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000
+          INSECURE_REGISTRIES: tf-mirrors.progmaticlab.com:5005
           GERRIT_BRANCH: "R1912"
     jobs:
         prepare-sandbox-r1912-ubi:
@@ -348,10 +348,10 @@
     streams:
       build-r2011-ubi:
         vars:
-          LINUX_DISTR: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000/ubi7
+          LINUX_DISTR: tf-mirrors.progmaticlab.com:5005/ubi7
           LINUX_DISTR_VER: latest
           TAG_SUFFIX: "-r2011-ubi7"
-          INSECURE_REGISTRIES: rhel7-mirrors.tf-jenkins.progmaticlab.com:5000
+          INSECURE_REGISTRIES: tf-mirrors.progmaticlab.com:5005
           GERRIT_BRANCH: "R2011"
     jobs:
         prepare-sandbox-r2011-ubi:
