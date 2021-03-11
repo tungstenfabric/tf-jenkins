@@ -49,7 +49,7 @@
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
         stream: build-centos
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - freeze-centos
 
@@ -98,7 +98,7 @@
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
         stream: build-ubi
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - package-ubi
 
@@ -147,7 +147,7 @@
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
         stream: build-rhel
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - package-rhel
 
@@ -195,7 +195,7 @@
           # it doesn't call devenv - it removes worker completly
           job-name: build-cleanup
           stream: build-r1912-rhel
-          type: stream-post-hook
+          type: post-hook
           depends-on:
             - package-r1912-rhel
 
@@ -243,7 +243,7 @@
           # it doesn't call devenv - it removes worker completly
           job-name: build-cleanup
           stream: build-r1912-ubi
-          type: stream-post-hook
+          type: post-hook
           depends-on:
             - package-r1912-ubi
 
@@ -291,7 +291,7 @@
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
         stream: build-r1912
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - package-r1912
 
@@ -339,7 +339,7 @@
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
         stream: build-r2011-centos
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - package-r2011-centos
 
@@ -387,6 +387,6 @@
           # it doesn't call devenv - it removes worker completly
           job-name: build-cleanup
           stream: build-r2011-ubi
-          type: stream-post-hook
+          type: post-hook
           depends-on:
             - package-r2011-ubi

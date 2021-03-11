@@ -43,7 +43,7 @@
       collect-logs-and-cleanup-ansible-k8s:
         job-name: collect-logs-and-cleanup
         stream: ansible-k8s
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-ansible-k8s
           - deploy-tf-ansible-k8s
@@ -83,7 +83,7 @@
       collect-logs-and-cleanup-ansible-k8s-ha:
         job-name: collect-logs-and-cleanup
         stream: ansible-k8s-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-ansible-k8s-ha
           - deploy-tf-ansible-k8s-ha
@@ -118,7 +118,7 @@
       collect-logs-and-cleanup-ansible-os:
         job-name: collect-logs-and-cleanup
         stream: ansible-os
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-ansible-os
           - deploy-tf-ansible-os
@@ -157,7 +157,7 @@
       collect-logs-and-cleanup-ansible-os-ha:
         job-name: collect-logs-and-cleanup
         stream: ansible-os-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-ansible-os-ha
           - deploy-tf-ansible-os-ha
@@ -205,7 +205,7 @@
       collect-logs-and-cleanup-ansible-os-ha-ziu:
         job-name: collect-logs-and-cleanup
         stream: ansible-os-ha-ziu
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-ansible-os-ha-ziu
           - deploy-tf-ansible-os-ha-ziu

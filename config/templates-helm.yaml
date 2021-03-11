@@ -26,7 +26,7 @@
       collect-logs-and-cleanup-helm-k8s:
         job-name: collect-logs-and-cleanup
         stream: helm-k8s
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-helm-k8s
           - deploy-tf-helm-k8s
@@ -62,7 +62,7 @@
       collect-logs-and-cleanup-helm-k8s-ha:
         job-name: collect-logs-and-cleanup
         stream: helm-k8s-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-helm-k8s-ha
           - deploy-tf-helm-k8s-ha
@@ -95,7 +95,7 @@
       collect-logs-and-cleanup-helm-os:
         job-name: collect-logs-and-cleanup
         stream: helm-os
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-helm-os
           - deploy-tf-helm-os
@@ -132,7 +132,7 @@
       collect-logs-and-cleanup-helm-os-ha:
         job-name: collect-logs-and-cleanup
         stream: helm-os-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-helm-os-ha
           - deploy-tf-helm-os-ha

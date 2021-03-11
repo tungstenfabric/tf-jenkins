@@ -59,7 +59,7 @@
       collect-logs-and-cleanup-juju-k8s:
         job-name: collect-logs-and-cleanup
         stream: juju-k8s
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-juju-k8s
           - deploy-tf-juju-k8s
@@ -96,7 +96,7 @@
       collect-logs-and-cleanup-juju-k8s-ha:
         job-name: collect-logs-and-cleanup
         stream: juju-k8s-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-juju-k8s-ha
           - deploy-tf-juju-k8s-ha
@@ -130,7 +130,7 @@
       collect-logs-and-cleanup-juju-os:
         job-name: collect-logs-and-cleanup
         stream: juju-os
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-juju-os
           - deploy-tf-juju-os
@@ -169,7 +169,7 @@
       collect-logs-and-cleanup-juju-os-1912:
         job-name: collect-logs-and-cleanup
         stream: juju-os-1912
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-juju-os-1912
           - deploy-tf-juju-os-1912
@@ -206,7 +206,7 @@
       collect-logs-and-cleanup-juju-os-ha:
         job-name: collect-logs-and-cleanup
         stream: juju-os-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-juju-os-ha
           - deploy-tf-juju-os-ha
@@ -256,7 +256,7 @@
       collect-logs-and-cleanup-juju-os-ha-ziu:
         job-name: collect-logs-and-cleanup
         stream: juju-os-ha-ziu
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-juju-os-ha-ziu
           - deploy-tf-juju-os-ha-ziu
@@ -299,7 +299,7 @@
       collect-logs-and-cleanup-juju-os-maas:
         job-name: collect-logs-and-cleanup
         stream: juju-os-maas
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-juju-os-maas
           - deploy-tf-juju-os-maas
@@ -337,7 +337,7 @@
       collect-logs-and-cleanup-juju-hybrid:
         job-name: collect-logs-and-cleanup
         stream: juju-hybrid
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-juju-hybrid
           - deploy-tf-juju-hybrid
@@ -375,7 +375,7 @@
       collect-logs-and-cleanup-juju-hybrid-ha:
         job-name: collect-logs-and-cleanup
         stream: juju-hybrid-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-juju-hybrid-ha
           - deploy-tf-juju-hybrid-ha

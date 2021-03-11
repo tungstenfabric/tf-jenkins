@@ -312,7 +312,7 @@ def _get_jobs_result_for_gerrit(job_set, job_results) {
   def results = [:]
   for (name in job_set.keySet()) {
     // do not include post job into report
-    if (job_set[name].get('type') == 'stream-post-hook')
+    if (job_set[name].get('type', '').contains('no-report'))
       continue
     def stream = job_set[name].get('stream', name)
     def job_result = job_results.get(name)
@@ -347,7 +347,7 @@ def _wait_for_dependencies(job_set, name) {
   if (deps == null || deps.size() == 0)
     return true
   println("JOB ${name}: waiting for dependecies")
-  def post_hook = job_set[name].get('type') == 'stream-post-hook'
+  def post_hook = job_set[name].get('type', '').contains('post-hook')
   def overall_result = true
   waitUntil(initialRecurrencePeriod: 15000) {
     def result_map = [:]
@@ -358,11 +358,11 @@ def _wait_for_dependencies(job_set, name) {
     println("JOB ${name}: waiting for dependecy ${result_map}")
     results = result_map.values()
     if (post_hook) {
-      // wait while 'null' is still in results
+      // wait while 'null' is still in any result of stream
       println("JOB ${name}: waiting for all = ${!results.contains(null)}")
       return !results.contains(null)
     }
-    // stop waiting if someone failed
+    // otherwise stop waiting if someone failed
     if ('FAILURE' in results || 'UNSTABLE' in results || 'NOT_BUILT'in results || 'ABORTED' in results) {
       overall_result = false
       return true
