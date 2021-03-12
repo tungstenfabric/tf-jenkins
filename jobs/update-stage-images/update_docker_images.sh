@@ -34,8 +34,11 @@ function retry() {
 
 function sync_container() {
   local c=$1
-  local s=$REDHAT_REGISTRY/$c
-  local d=$(echo $MIRROR_REGISTRY/$c | sed s/${REDHAT_TAG}$/${STAGE_TAG}/)
+  local orig_registry=$2
+  local orig_tag=$3
+  local new_tag=$4
+  local s=$orig_registry/$c
+  local d=$(echo $MIRROR_REGISTRY/$c | sed s/${orig_tag}$/${new_tag}/)
   echo "INFO: destination: $d"
   retry sudo docker pull $s && \
     sudo docker tag $s $d && \
@@ -58,8 +61,16 @@ all_images+=$(printf "${CEPH_NAMESPACE}/%s " "${ceph_images[@]}")
 res=0
 for c in ${all_images} ; do
   echo "INFO: start sync $c"
-  sync_container $c || res=1
+  sync_container $c $REDHAT_REGISTRY $REDHAT_TAG $STAGE_TAG || res=1
 done
+
+if [[ -n "$UBI_REDHAT_REGISTRY" && "$UBI_NAMESPACE" && "$UBI_REDHAT_TAG" && $UBI_STAGE_TAG ]] ; then
+   ubi_images_list+=$(printf "${UBI_NAMESPACE}/%s:$UBI_REDHAT_TAG " "${ubi_images[@]}")
+   for c in ${ubi_images_list} ; do
+      echo "INFO: ubi start sync $c"
+      sync_container $c $UBI_REDHAT_REGISTRY $UBI_REDHAT_TAG $UBI_STAGE_TAG || res=1
+   done
+fi
 
 if [[ $res != 0 ]] ; then
   echo "ERROR: sync failed"

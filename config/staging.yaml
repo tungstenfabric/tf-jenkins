@@ -44,6 +44,9 @@
         rhosp13:
           vars:
             OPENSTACK_CONTAINER_TAG: '13.0-stage'
+        build-ubi:
+          vars:
+            LINUX_DISTR_VER: 'stage'
       jobs:
         update-stage-repos-rhel7:
           job-name: update-stage-repos

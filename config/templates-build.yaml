@@ -58,8 +58,8 @@
     streams:
       build-ubi:
         vars:
-          LINUX_DISTR: tf-mirrors.progmaticlab.com:5005/ubi7
-          LINUX_DISTR_VER: latest
+          LINUX_DISTR: tf-mirrors.progmaticlab.com:5005/ubi7/ubi
+          LINUX_DISTR_VER: stable
           TAG_SUFFIX: "-ubi7"
           INSECURE_REGISTRIES: tf-mirrors.progmaticlab.com:5005
     jobs:
@@ -204,8 +204,8 @@
     streams:
       build-r1912-ubi:
         vars:
-          LINUX_DISTR: tf-mirrors.progmaticlab.com:5005/ubi7
-          LINUX_DISTR_VER: latest
+          LINUX_DISTR: tf-mirrors.progmaticlab.com:5005/ubi7/ubi
+          LINUX_DISTR_VER: stable
           TAG_SUFFIX: "-r1912-ubi7"
           INSECURE_REGISTRIES: tf-mirrors.progmaticlab.com:5005
           GERRIT_BRANCH: "R1912"
@@ -348,8 +348,8 @@
     streams:
       build-r2011-ubi:
         vars:
-          LINUX_DISTR: tf-mirrors.progmaticlab.com:5005/ubi7
-          LINUX_DISTR_VER: latest
+          LINUX_DISTR: tf-mirrors.progmaticlab.com:5005/ubi7/ubi
+          LINUX_DISTR_VER: stable
           TAG_SUFFIX: "-r2011-ubi7"
           INSECURE_REGISTRIES: tf-mirrors.progmaticlab.com:5005
           GERRIT_BRANCH: "R2011"
