@@ -28,7 +28,7 @@
       collect-logs-and-cleanup-operator:
         job-name: collect-logs-and-cleanup
         stream: operator
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-operator
           - deploy-tf-operator
@@ -67,7 +67,7 @@
       collect-logs-and-cleanup-operator-ha:
         job-name: collect-logs-and-cleanup
         stream: operator-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-operator-ha
           - deploy-tf-operator-ha

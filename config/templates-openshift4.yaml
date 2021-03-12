@@ -38,7 +38,7 @@
       collect-logs-and-cleanup-openshift4-ha:
         job-name: collect-logs-and-cleanup
         stream: openshift4-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-openshift4-ha
           - deploy-tf-openshift4-ha
@@ -83,7 +83,7 @@
       collect-logs-and-cleanup-openshift4-slave01:
         job-name: collect-logs-and-cleanup
         stream: openshift4-slave01
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-openshift4-slave01
           - deploy-tf-openshift4-slave01
@@ -126,7 +126,7 @@
       collect-logs-and-cleanup-openshift4-slave04:
         job-name: collect-logs-and-cleanup
         stream: openshift4-slave04
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-openshift4-slave04
           - deploy-tf-openshift4-slave04

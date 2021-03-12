@@ -50,7 +50,7 @@
       collect-logs-and-cleanup-rhosp13:
         job-name: collect-logs-and-cleanup
         stream: rhosp13
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-rhosp13
           - deploy-tf-rhosp13
@@ -94,7 +94,7 @@
       collect-logs-and-cleanup-rhosp13-1912:
         job-name: collect-logs-and-cleanup
         stream: rhosp13-1912
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-rhosp13-1912
           - deploy-tf-rhosp13-1912
@@ -132,7 +132,7 @@
       collect-logs-and-cleanup-rhosp16:
         job-name: collect-logs-and-cleanup
         stream: rhosp16
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-rhosp16
           - deploy-tf-rhosp16
@@ -173,7 +173,7 @@
       collect-logs-and-cleanup-rhosp16-ha:
         job-name: collect-logs-and-cleanup
         stream: rhosp16-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-rhosp16-ha
           - deploy-tf-rhosp16-ha
@@ -216,7 +216,7 @@
       collect-logs-and-cleanup-rhosp13-bmc:
         job-name: collect-logs-and-cleanup
         stream: rhosp13-bmc
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-rhosp13-bmc
           - deploy-tf-rhosp13-bmc
@@ -257,7 +257,7 @@
       collect-logs-and-cleanup-rhosp13-ha:
         job-name: collect-logs-and-cleanup
         stream: rhosp13-ha
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-rhosp13-ha
           - deploy-tf-rhosp13-ha
@@ -310,7 +310,7 @@
       collect-logs-and-cleanup-rhosp13-ha-ziu:
         job-name: collect-logs-and-cleanup
         stream: rhosp13-ha-ziu
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-rhosp13-ha-ziu
           - deploy-tf-rhosp13-ha-ziu
@@ -365,7 +365,7 @@
       collect-logs-and-cleanup-rhosp16-ha-ziu:
         job-name: collect-logs-and-cleanup
         stream: rhosp16-ha-ziu
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - deploy-platform-rhosp16-ha-ziu
           - deploy-tf-rhosp16-ha-ziu

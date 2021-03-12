@@ -1,8 +1,8 @@
 ---
 
 - job-template:
-    name: "test-unit-{target}"
-    description: "unit tests of {target}"
+    name: "test-unit-ui"
+    description: "unit tests of ui"
     defaults: global
     scm:
       - tf-jenkins
@@ -59,7 +59,7 @@
               variable: OS_AUTH_URL
     builders:
       - copyartifact:
-          project: ${{PIPELINE_NAME}}
+          project: $PIPELINE_NAME
           filter: "global.env,*.$JOB_RND.env,patchsets-info.json"
           which-build: upstream-build
           optional: true
@@ -67,7 +67,7 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
           desc="Pipeline: $PIPELINE_NAME-$PIPELINE_NUMBER  Random: $JOB_RND<br>"
-          desc+="Target: {target}<br>"
+          desc+="Target: ui<br>"
           desc+="Job logs: <a href=\"$LOGS_URL/$STREAM\">$LOGS_URL/$STREAM</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
@@ -79,25 +79,40 @@
           ./src/tungstenfabric/tf-jenkins/infra/gerrit/apply_patchsets.sh ./src tungstenfabric/tf-dev-env ./patchsets-info.json
       - shell: |
           set -eo pipefail
-          export TARGET={target}
+          export TARGET=ui
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
           source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
 
+          export ENVIRONMENT_OS=centos7
           export FULL_LOGS_PATH="$LOGS_PATH/$STREAM"
+          ./src/tungstenfabric/tf-jenkins/jobs/test/unit/create_workers.sh
+          source "$WORKSPACE/stackrc.$JOB_NAME.env"
           # main run
           ./src/tungstenfabric/tf-jenkins/jobs/test/unit/run.sh || res=1
           # collect logs
           ./src/tungstenfabric/tf-jenkins/jobs/test/unit/collect_logs.sh
           exit $res
     publishers:
+      - postbuildscript:
+          builders:
+            - role: SLAVE
+              build-on:
+                - SUCCESS
+                - FAILURE
+                - ABORTED
+                - NOT_BUILT
+                - UNSTABLE
+              build-steps:
+                - shell: |
+                    source "$WORKSPACE/global.env"
+                    if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ]; then
+                      echo "INFO: stackrc file found. remove workers."
+                      source "$WORKSPACE/stackrc.$JOB_NAME.env"
+                      ./src/tungstenfabric/tf-jenkins/infra/$SLAVE/remove_workers.sh
+                    else
+                      echo "INFO: stackrc file could not be found."
+                    fi
+                    rm -f "$WORKSPACE/stackrc.$JOB_NAME.env"
       - archive:
           artifacts: '*.env'
-
-- project:
-    name: test-unit-by-target
-    target:
-      - tox
-      - go
-    jobs:
-      - 'test-unit-{target}'

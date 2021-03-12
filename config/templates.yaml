@@ -4,7 +4,7 @@
 # 2. shouldn't be included into report
 # 3. should not dictate how to wait - wait_for_deps should exit on first fail and do not wait for all
 #      collect-logs-and-cleanup-k8s-manifests:
-#        type: stream-post-hook
+#        type: post-hook
 
 - template:
     name: cleanup

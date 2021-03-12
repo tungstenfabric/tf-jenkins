@@ -1,5 +1,8 @@
 ---
 
+# this is sandbox for old style UT - scons and webui
+# this template prepares sandbox, run fetch & configure and then pushes it to registry
+# next jobs will create new workers, pull prepared sandbox and run tests
 - template:
     name: prepare-ut-sandbox
     streams:
@@ -20,8 +23,6 @@
         stream: prepare-ut-sandbox
         depends-on:
           - prepare-sandbox-ut-sandbox
-        vars:
-          PUBLISH_TYPE: build
       # controller's UT requires a lot of stuff that is installed during configure stage
       # UI UT requires build deps from contrail-web-core/contrail-web-controller
       configure-ut-sandbox:
@@ -35,7 +36,7 @@
         # it doesn't call devenv - it removes worker completly
         job-name: build-cleanup
         stream: prepare-ut-sandbox
-        type: stream-post-hook
+        type: post-hook
         depends-on:
           - configure-ut-sandbox
 
@@ -92,55 +93,84 @@
               inherit-keys:
                 - DEVENV_TAG
 
+# this is sandbox for tox and go test of new style (without scons)
+# it prepares sandbox, runs fetch only and leave it for next jobs which will be run parallel
+- template:
+    name: prepare-test-sandbox
+    jobs:
+      prepare-sandbox-test-sandbox:
+        # it creates worker
+        job-name: build-prepare-sandbox
+        type: no-report
+        vars:
+          LINUX_DISTR: centos
+          PUBLISH_TYPE: stable
+          VM_TYPE: small
+      fetch-sources-test-sandbox:
+        job-name: build-fetch-sources
+        type: no-report
+        depends-on:
+          - prepare-sandbox-test-sandbox
+      cleanup-worker-test-sandbox:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
+        type: no-report,post-hook
+        depends-on:
+          - fetch-sources-test-sandbox
+
 - template:
     name: test-tox-pep8
     parents:
-      - prepare-ut-sandbox
+      - prepare-test-sandbox
     jobs:
       test-unit-tox-pep8:
         job-name: test-unit-tox
         depends-on:
-          - fetch-sources-ut-sandbox:
-              inherit-keys:
-                - DEVENV_TAG
+          - fetch-sources-test-sandbox
         vars:
           TARGET_SET: pep8
+      cleanup-worker-test-sandbox:
+        depends-on:
+          - test-unit-tox-pep8
 
 - template:
     name: test-tox-unit
     parents:
-      - prepare-ut-sandbox
+      - prepare-test-sandbox
     jobs:
       test-unit-tox-unit:
         job-name: test-unit-tox
         depends-on:
-          - fetch-sources-ut-sandbox:
-              inherit-keys:
-                - DEVENV_TAG
+          - fetch-sources-test-sandbox
         vars:
           TARGET_SET: unit
+      cleanup-worker-test-sandbox:
+        depends-on:
+          - test-unit-tox-unit
 
 - template:
     name: test-tox-py36
     parents:
-      - prepare-ut-sandbox
+      - prepare-test-sandbox
     jobs:
       test-unit-tox-py36:
         job-name: test-unit-tox
         depends-on:
-          - fetch-sources-ut-sandbox:
-              inherit-keys:
-                - DEVENV_TAG
+          - fetch-sources-test-sandbox
         vars:
           TARGET_SET: py36
+      cleanup-worker-test-sandbox:
+        depends-on:
+          - test-unit-tox-py36
 
 - template:
     name: test-unit-go
     parents:
-      - prepare-ut-sandbox
+      - prepare-test-sandbox
     jobs:
       test-unit-go:
         depends-on:
-          - fetch-sources-ut-sandbox:
-              inherit-keys:
-                - DEVENV_TAG
+          - fetch-sources-test-sandbox
+      cleanup-worker-test-sandbox:
+        depends-on:
+          - test-unit-go
