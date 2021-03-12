@@ -22,7 +22,7 @@
         - helm-os-ha
         - juju-k8s
         - juju-os
-        - juju-os-maas
+        #- juju-os-maas
         - juju-os-ha-ziu
         - juju-os-1912
         - juju-hybrid-ha
