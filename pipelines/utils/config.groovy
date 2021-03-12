@@ -155,9 +155,9 @@ def _resolve_templates(def config_data) {
           continue
         }
         parents_resolved = true
-        item.value['streams'] += templates[parent]['streams']
-        item.value['jobs'] += templates[parent]['jobs']
-        item.value['post-jobs'] += templates[parent]['post-jobs']
+        _update_map(item.value['streams'], templates[parent]['streams'])
+        _update_map(item.value['jobs'], templates[parent]['jobs'])
+        _update_map(item.value['post-jobs'], templates[parent]['post-jobs'])
       }
       if (new_parents.size() > 0)
         item.value['parents'] = new_parents
