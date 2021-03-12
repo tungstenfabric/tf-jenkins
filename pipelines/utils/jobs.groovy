@@ -430,7 +430,8 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
       for (def j = 0; j < files.size(); ++j) {
         println("JOB ${name}: file #${j} with path ${files[j].getPath()}")
         def data = readFile(files[j].getPath()).split('\n')
-        if (stream == null || dep_stream == null || stream != dep_stream) {
+        // env should be filtered if any jobs is a stream job (but not both) or they from different streams
+        if (stream != dep_stream) {
           // simple loop to avoid java.io.NotSerializableException: org.codehaus.groovy.util.ArrayIterator
           // https://issues.jenkins-ci.org/browse/JENKINS-47730
           def filtered_data = []
