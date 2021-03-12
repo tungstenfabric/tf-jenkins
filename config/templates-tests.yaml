@@ -125,6 +125,7 @@
     jobs:
       test-unit-tox-pep8:
         job-name: test-unit-tox
+        lock: tox
         depends-on:
           - fetch-sources-test-sandbox
         vars:
@@ -140,6 +141,7 @@
     jobs:
       test-unit-tox-unit:
         job-name: test-unit-tox
+        lock: tox
         depends-on:
           - fetch-sources-test-sandbox
         vars:
@@ -155,6 +157,7 @@
     jobs:
       test-unit-tox-py36:
         job-name: test-unit-tox
+        lock: tox
         depends-on:
           - fetch-sources-test-sandbox
         vars:

@@ -30,6 +30,7 @@
 # to be able to use variable of job from different template you have to use 'inherit-keys' property.
 #
 # stream keys:
+#   lock - name of jenkins lockable resource. if set then infra will obtain this lock for whole stream
 #   vars - map of a key:value elements to use them as env vars in the job
 #   voting - boolean value to indicate if this stream should be included into overall vote result or not
 
@@ -41,6 +42,7 @@
 #              and define real job name as a parameter.
 #   stream - identifier to group several jobs as one. it influences to logs colelcting,
 #            cleanup jobs (as a stream post hook), inheritance of env vars
+#   lock - name of jenkins lockable resource. if set then infra will obtain this lock for the job
 #   vars - map of a key:value elements to use them as env vars in the job
 #   depends-on - list of jobs that should be finished successfully to run this job.
 #                may have inherit-keys list of keys of env vars that can be inherited
