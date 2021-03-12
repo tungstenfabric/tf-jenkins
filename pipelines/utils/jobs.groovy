@@ -312,12 +312,12 @@ def _get_jobs_result_for_gerrit(job_set, job_results) {
   def results = [:]
   for (name in job_set.keySet()) {
     // do not include post job into report
-    if (job_set[name].get('type', '').contains('no-report'))
+    if (job_set[name].getOrDefault('type', '').contains('no-report'))
       continue
-    def stream = job_set[name].get('stream', name)
+    def stream = job_set[name].getOrDefault('stream', name)
     def job_result = job_results.get(name)
-    def result = job_result != null ? job_result.get('result', 'NOT_BUILT') : 'NOT_BUILT'
-    def duration = job_result != null ? job_result.get('duration', 0) : 0
+    def result = job_result != null ? job_result.getOrDefault('result', 'NOT_BUILT') : 'NOT_BUILT'
+    def duration = job_result != null ? job_result.getOrDefault('duration', 0) : 0
     if (!results.containsKey(stream)) {
       results[stream] = ['results': [result], 'duration': duration]
     } else {
@@ -347,7 +347,7 @@ def _wait_for_dependencies(job_set, name) {
   if (deps == null || deps.size() == 0)
     return true
   println("JOB ${name}: waiting for dependecies")
-  def post_hook = job_set[name].get('type', '').contains('post-hook')
+  def post_hook = job_set[name].getOrDefault('type', '').contains('post-hook')
   def overall_result = true
   waitUntil(initialRecurrencePeriod: 15000) {
     def result_map = [:]
@@ -383,7 +383,7 @@ def _job_params_to_file(def job_set, def name, def streams, def env_file) {
   if (!job_set.containsKey(name))
     return
 
-  def job_name = job_set[name].get('job-name', name)
+  def job_name = job_set[name].getOrDefault('job-name', name)
   def env_text = ""
   def vars = [:]
   if (job_set[name].containsKey('stream')) {
@@ -414,7 +414,7 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
   if (deps == null || deps.size() == 0)
     return
   def stream = job_set[name].get('stream')
-  println("JOB ${name}: deps: ${deps}")
+  println("JOB ${name} / stream ${stream} : deps: ${deps}")
   def raw_data = []
   // simple loop to avoid java.io.NotSerializableException: org.codehaus.groovy.util.ArrayIterator
   for (def i = 0; i < deps.size(); ++i) {
@@ -422,7 +422,7 @@ def _collect_dependent_env_files(job_set, name, deps_env_file) {
     def dep_name = dep instanceof String ? dep : dep.keySet().toArray()[0]
     def dep_keys = dep instanceof String ? [] : dep[dep_name].get('inherit-keys', [])
     def dep_stream = job_set[dep_name].get('stream')
-    def dep_job_name = job_set[dep_name].get('job-name', dep_name)
+    def dep_job_name = job_set[dep_name].getOrDefault('job-name', dep_name)
     def dep_job_rnd = job_results[dep_name]['job-rnd']
     dir("${WORKSPACE}") {
       def files = findFiles(glob: "${dep_job_name}-${dep_job_rnd}/*.env")
@@ -479,9 +479,9 @@ def _get_job_number_from_exception(def run_err) {
 def _run_job(def job_set, def name, def streams) {
   println("JOB ${name}: entering run_job")
   // final cleanup job is not in config
-  def job_name = job_set[name].get('job-name', name)
-  def stream = job_set[name].get('stream', name)
-  def timeout_value = job_set[name].get('timeout', constants.JOB_TIMEOUT) as int
+  def job_name = job_set[name].getOrDefault('job-name', name)
+  def stream = job_set[name].getOrDefault('stream', name)
+  def timeout_value = job_set[name].getOrDefault('timeout', constants.JOB_TIMEOUT) as int
   def job_rnd = job_results[name]['job-rnd']
   def vars_env_file = "vars.${job_name}.${job_rnd}.env"
   def deps_env_file = "deps.${job_name}.${job_rnd}.env"

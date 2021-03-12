@@ -59,9 +59,9 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
     _add_templates_jobs(project[gerrit_pipeline].templates, templates, streams, jobs, post_jobs)
   }
   // merge info from templates with project's jobs
-  _update_map(streams, project[gerrit_pipeline].get('streams', [:]))
-  _update_map(jobs, project[gerrit_pipeline].get('jobs', [:]))
-  _update_map(post_jobs, project[gerrit_pipeline].get('post-jobs', [:]))
+  _update_map(streams, project[gerrit_pipeline].getOrDefault('streams', [:]))
+  _update_map(jobs, project[gerrit_pipeline].getOrDefault('jobs', [:]))
+  _update_map(post_jobs, project[gerrit_pipeline].getOrDefault('post-jobs', [:]))
 
   // set empty dict for dicts without params
   _set_default_values(streams)
@@ -98,9 +98,9 @@ def _add_templates_jobs(template_names, templates, streams, jobs, post_jobs) {
       throw new Exception("ERROR: template ${template_name} is absent in configuration")
     }
     template = templates[template_name]
-    _update_map(streams, template.get('streams', [:]))
-    _update_map(jobs, template.get('jobs', [:]))
-    _update_map(post_jobs, template.get('post-jobs', [:]))
+    _update_map(streams, template.getOrDefault('streams', [:]))
+    _update_map(jobs, template.getOrDefault('jobs', [:]))
+    _update_map(post_jobs, template.getOrDefault('post-jobs', [:]))
   }
 }
 

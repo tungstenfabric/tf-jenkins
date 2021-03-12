@@ -110,7 +110,7 @@ def report_timeline(job_results) {
 
   def output = ""
   for (job in job_results.keySet()) {
-    result = job_results[job].get('result', 'NOT_BUILT')
+    result = job_results[job].getOrDefault('result', 'NOT_BUILT')
     hours = 0
     minutes = 0
     seconds = 0
@@ -222,7 +222,7 @@ def publish_nightly_results_to_monitoring(streams, results) {
       }
     }
     try {
-      vars = streams[stream].get('vars', [:])
+      vars = streams[stream].getOrDefault('vars', [:])
       if (vars.containsKey('MONITORING_DEPLOY_TARGET') &&
           vars.containsKey('MONITORING_DEPLOYER') &&
           vars.containsKey('MONITORING_ORCHESTRATOR')) {
