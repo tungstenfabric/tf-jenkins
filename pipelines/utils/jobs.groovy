@@ -258,8 +258,11 @@ def _run_jobs(def job_set, def streams) {
   }
 
   job_set.keySet().each { job_name ->
-    if (job_set[job_name].get('stream') == null)
-      all_code["job-${job_name}"] = { _process_job(job_name, job_set, streams) }
+    if (job_set[job_name].get('stream') == null) {
+      all_code["job-${job_name}"] = {
+        _process_job(job_name, job_set, streams)
+      }
+    }
   }
 
   // run jobs in parallel
@@ -271,7 +274,9 @@ def _process_stream(def stream_name, def job_set, def streams) {
   def jobs_code = [:]
   job_set.keySet().each { name ->
     if (job_set[name].get('stream') == stream_name)
-      jobs_code[name] = { _process_job(name, job_set, streams) }
+      jobs_code[name] = {
+        _process_job(name, job_set, streams)
+      }
   }
   if (jobs_code.size() == 0)
     return
@@ -291,7 +296,13 @@ def _process_job(def job_name, def job_set, def streams) {
     try {
       def result = _wait_for_dependencies(job_set, job_name)
       if (result) {
-        _run_job(job_set, job_name, streams)
+        if (!job_set[job_name].containsKey('lock')) {
+          _run_job(job_set, job_name, streams)
+        } else {
+          lock(resource: job_set[job_name]['lock']) {
+            _run_job(job_set, job_name, streams)
+          }
+        }
       } else {
         job_results[job_name]['number'] = -1
         job_results[job_name]['duration'] = 0
