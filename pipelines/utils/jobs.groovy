@@ -17,7 +17,9 @@ def main(def gate_utils, def gerrit_utils, def config_utils) {
       _evaluate_common_params()
       if (env.GERRIT_CHANGE_ID) {
         gerrit_utils.terminate_runs_by_review_number()
-        gerrit_utils.terminate_runs_by_depends_on_recursive(env.GERRIT_CHANGE_ID)
+        // cancel dependent jobs (by Depends-On) only if new patchset was created
+        if (env.GERRIT_EVENT_TYPE == 'patchset-created')
+          gerrit_utils.terminate_runs_by_depends_on_recursive(env.GERRIT_CHANGE_ID)
       }
       (streams, jobs, post_jobs) = _evaluate_env(config_utils)
       gerrit_utils.gerrit_build_started()

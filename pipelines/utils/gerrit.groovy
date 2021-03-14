@@ -491,6 +491,7 @@ def _terminate_runs_by_depends_on(def change_id) {
   // returns terminated build's properties
   def check = { action ->
     def gerrit_change_commit_message = action.getParameter("GERRIT_CHANGE_COMMIT_MESSAGE")
+    // TODO: check for same branch or related branches
     if (gerrit_change_commit_message) {
       // decodeBase64 return byte array
       def commit_message = new String(gerrit_change_commit_message.value.decodeBase64())
