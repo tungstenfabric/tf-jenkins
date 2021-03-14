@@ -55,13 +55,14 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
     print("WARNING: project ${project_name} doesn't define pipeline ${gerrit_pipeline}")
     return [streams, jobs, post_jobs]
   }
-  if (project[gerrit_pipeline].containsKey('templates')) {
-    _add_templates_jobs(project[gerrit_pipeline].templates, templates, streams, jobs, post_jobs)
-  }
   // merge info from templates with project's jobs
   _update_map(streams, project[gerrit_pipeline].getOrDefault('streams', [:]))
   _update_map(jobs, project[gerrit_pipeline].getOrDefault('jobs', [:]))
   _update_map(post_jobs, project[gerrit_pipeline].getOrDefault('post-jobs', [:]))
+  // then add templates to maintain higher precedence for job's definitions
+  if (project[gerrit_pipeline].containsKey('templates')) {
+    _add_templates_jobs(project[gerrit_pipeline].templates, templates, streams, jobs, post_jobs)
+  }
 
   // set empty dict for dicts without params
   _set_default_values(streams)
