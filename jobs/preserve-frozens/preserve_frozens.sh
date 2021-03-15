@@ -44,7 +44,7 @@ done
 
 # re-push all containers
 frozen_tag=''
-if curl -sI "http://tf-nexus.progmaticlab.com:8082/frozen/tag" | grep -q "HTTP/1.1 200 OK" ; then
+if curl -sIS "http://tf-nexus.progmaticlab.com:8082/frozen/tag" | grep -q "HTTP/1.1 200 OK" ; then
   frozen_tag=$(curl -s "http://tf-nexus.progmaticlab.com:8082/frozen/tag")
 fi
 

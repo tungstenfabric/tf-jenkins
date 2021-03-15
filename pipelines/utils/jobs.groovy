@@ -347,7 +347,7 @@ def _save_pipeline_artifacts_to_logs(def jobs, def post_jobs) {
     ssh_cmd = "ssh -i \$LOGS_HOST_SSH_KEY -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     ssh_dest = "\$LOGS_HOST_USERNAME@${constants.LOGS_HOST}"
     sh """#!/bin/bash
-      curl -s ${BUILD_URL}consoleText > pipelinelog.log
+      curl -sS ${BUILD_URL}consoleText > pipelinelog.log
       ${ssh_cmd} ${ssh_dest} "mkdir -p ${logs_path}"
       rsync -a -e "${ssh_cmd}" pipelinelog.log ${ssh_dest}:${logs_path}/
     """
@@ -565,7 +565,7 @@ def _save_job_output(name, job_name, stream, job_number) {
     ssh_cmd = "ssh -i \$LOGS_HOST_SSH_KEY -T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     ssh_dest = "\$LOGS_HOST_USERNAME@${constants.LOGS_HOST}"
     sh """#!/bin/bash
-      curl -s ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > output-${name}.log
+      curl -sS ${JENKINS_URL}job/${job_name}/${job_number}/consoleText > output-${name}.log
       ${ssh_cmd} ${ssh_dest} "mkdir -p ${logs_path}/${stream}/"
       rsync -a -e "${ssh_cmd}" output-${name}.log ${ssh_dest}:${logs_path}/${stream}/
     """

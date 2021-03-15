@@ -19,5 +19,5 @@ echo "INFO: Upload packages"
 for pfile in $(find ./RPMS -type f -name "*.rpm"); do
   package=$(echo $pfile | awk -F '/' '{print $NF}')
   echo "INFO: Upload $pfile as $package"
-  curl -s -u ${TPC_REPO_USER}:${TPC_REPO_PASS} --upload-file $pfile $REPO_SOURCE/$package
+  curl -sS -u ${TPC_REPO_USER}:${TPC_REPO_PASS} --upload-file $pfile $REPO_SOURCE/$package
 done
