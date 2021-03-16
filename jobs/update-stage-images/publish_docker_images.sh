@@ -56,7 +56,6 @@ echo "INFO: retaining succeeded"
 for c in ${all_stage_images} ; do
   echo "INFO: start publish $c"
   tag_container $c $STAGE_TAG $REDHAT_TAG || res=1
-  publish_container $c || res=1
 done
 
 if [[ -n "$UBI_REDHAT_REGISTRY" && "$UBI_NAMESPACE" && "$UBI_STABLE_TAG" && $UBI_STAGE_TAG ]] ; then
