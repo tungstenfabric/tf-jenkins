@@ -75,6 +75,9 @@ kernels="
   https://vault.centos.org/7.8.2003/os/x86_64/Packages/kernel-devel-3.10.0-1127.el7.x86_64.rpm
   https://vault.centos.org/7.8.2003/updates/x86_64/Packages/kernel-3.10.0-1127.18.2.el7.x86_64.rpm
   https://vault.centos.org/7.8.2003/updates/x86_64/Packages/kernel-devel-3.10.0-1127.18.2.el7.x86_64.rpm
+  https://vault.centos.org/8.2.2004/BaseOS/x86_64/os/Packages/kernel-4.18.0-193.28.1.el8_2.x86_64.rpm
+  https://vault.centos.org/8.2.2004/BaseOS/x86_64/os/Packages/kernel-core-4.18.0-193.28.1.el8_2.x86_64.rpm
+  https://vault.centos.org/8.2.2004/BaseOS/x86_64/os/Packages/kernel-devel-4.18.0-193.28.1.el8_2.x86_64.rpm
 "
 
 for kernel in $kernels ; do
