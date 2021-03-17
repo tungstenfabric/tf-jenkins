@@ -43,19 +43,21 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
     }
 
     def passed = true
-    def check_msg = ''
+    def check_msg_failed = ''
+    def check_msg_succeeded = ''
     def stopping_cause = 'Failed'
     for (stream in results.keySet()) {
       println("Evaluated results for ${stream} = ${results[stream]}")
       def result = _get_stream_result(results[stream]['results'])
+      def current_line = ''
 
       if (result == 'ABORTED') {
         stopping_cause = 'Aborted'
       }
       if (result == 'NOT_BUILT') {
-        check_msg += "\n- ${stream} : NOT_BUILT"
+        current_line = "\n- ${stream} : NOT_BUILT"
       } else {
-        check_msg += "\n- " + _get_gerrit_msg_for_job(stream, result, results[stream]['duration'])
+        current_line = "\n- " + _get_gerrit_msg_for_job(stream, result, results[stream]['duration'])
       }
       def voting = true
       if (streams.containsKey(stream) && streams[stream].containsKey('voting')) {
@@ -64,19 +66,29 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
         voting = jobs[stream]['voting']
       }
       if (!voting) {
-        check_msg += ' (non-voting)'
+        current_line += ' (non-voting)'
       }
       if (voting && result != 'SUCCESS') {
         passed = false
       }
+      if (result != 'SUCCESS') {
+        check_msg_failed += current_line
+        // TODO: add name of failed job
+      } else {
+        check_msg_succeeded += current_line
+      }
     }
+    def check_msg = ''
+    if (check_msg_failed)
+      check_msg = "Failed checks:${check_msg_failed}\n\nSucceeded checks:"
+    check_msg += check_msg_succeeded
 
     def duration_string = _get_duration_string(full_duration)
     def verified = VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]
     if (passed) {
-      check_msg = "TF CI Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n" + check_msg
+      check_msg = "TF CI Build Succeeded (${env.GERRIT_PIPELINE}) ${duration_string}\n\n" + check_msg
     } else {
-      check_msg = "TF CI Build ${stopping_cause} (${env.GERRIT_PIPELINE}) ${duration_string}\n" + check_msg
+      check_msg = "TF CI Build ${stopping_cause} (${env.GERRIT_PIPELINE}) ${duration_string}\n\n" + check_msg
       verified = VERIFIED_FAIL_VALUES[env.GERRIT_PIPELINE]
     }
     notify_gerrit(check_msg, verified)
