@@ -28,3 +28,9 @@ if [ -f $my_dir/../../mirrors/centos7-environment ]; then
   rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/centos7-environment" ${IMAGE_SSH_USER}@${instance_ip}:./centos7-environment
   ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "cat centos7-environment | sudo tee -a /etc/environment"
 fi
+
+if [ -f $my_dir/../../mirrors/mirror-base.repo ]; then
+  echo "INFO: copy mirror-base.repo to host"
+  rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-base.repo" ${IMAGE_SSH_USER}@${instance_ip}:./mirror-base.repo
+  ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "sudo rm -f /etc/yum.repos.d/*; sudo cp mirror-base.repo /etc/yum.repos.d/"
+fi
