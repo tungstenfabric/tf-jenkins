@@ -15,6 +15,7 @@ source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 # Switch REPOS_CHANNEL
 if [[ -n "$REPOS_CHANNEL" && "$REPOS_CHANNEL" != 'latest' ]]; then
   sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" $my_dir/../../mirrors/ubuntu18-sources.list
+  sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" $my_dir/../../mirrors/ubuntu18-environment
 fi
 
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-pip.conf" ${IMAGE_SSH_USER}@${instance_ip}:./pip.conf
