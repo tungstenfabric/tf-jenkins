@@ -2,7 +2,7 @@
 
 - job:
     name: pipeline-stage-repos
-    description: pipeline-stage-repos
+    description: Pipeline to check new repos by repo type
     project-type: pipeline
     properties:
       - build-discarder:
