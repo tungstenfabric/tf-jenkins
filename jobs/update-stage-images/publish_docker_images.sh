@@ -26,14 +26,11 @@ function tag_container() {
     sudo docker push $d
 }
 
-
 all_stage_images+=$(printf "${RHOSP_NAMESPACE}/%s:$STAGE_TAG " "${rhosp_images[@]}")
 all_stage_images+=$(printf "${CEPH_NAMESPACE}/%s " "${ceph_images[@]}")
 
 all_stable_images+=$(printf "${RHOSP_NAMESPACE}/%s:$REDHAT_TAG " "${rhosp_images[@]}")
 all_stable_images+=$(printf "${CEPH_NAMESPACE}/%s " "${ceph_images[@]}")
-
-
 
 res=0
 
@@ -49,7 +46,6 @@ if [[ -n "$UBI_REDHAT_REGISTRY" && "$UBI_NAMESPACE" && "$UBI_STABLE_TAG" && $UBI
       tag_container $c $UBI_STABLE_TAG $UBI_RETAIN_TAG || res=1
    done
 fi
-
 
 echo "INFO: retaining succeeded"
 
