@@ -130,7 +130,7 @@ mkdir -p ./config/etc/apt
 cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/ubuntu18-sources.list ./config/etc/apt/sources.list
 
 cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
-cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./container/
+cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./container/pip.conf
 
 sudo mkdir -p /etc/docker/
 sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker-daemon.json /etc/docker/daemon.json
