@@ -1,5 +1,5 @@
-deb http://tf-mirrors.progmaticlab.com/repos/ubuntu18/latest/mirror/archive.ubuntu.com/ubuntu bionic main restricted universe multiverse
-deb http://tf-mirrors.progmaticlab.com/repos/ubuntu18/latest/mirror/archive.ubuntu.com/ubuntu bionic-security main restricted universe multiverse
-deb http://tf-mirrors.progmaticlab.com/repos/ubuntu18/latest/mirror/archive.ubuntu.com/ubuntu bionic-updates main restricted universe multiverse
-deb http://tf-mirrors.progmaticlab.com/repos/ubuntu18/latest/mirror/archive.ubuntu.com/ubuntu bionic-proposed main restricted universe multiverse
-deb http://tf-mirrors.progmaticlab.com/repos/ubuntu18/latest/mirror/archive.ubuntu.com/ubuntu bionic-backports main restricted universe multiverse
+deb http://tf-mirrors.tfci.progmaticlab.com/repos/ubuntu18/latest/mirror/archive.ubuntu.com/ubuntu bionic main restricted universe multiverse
+deb http://tf-mirrors.tfci.progmaticlab.com/repos/ubuntu18/latest/mirror/archive.ubuntu.com/ubuntu bionic-security main restricted universe multiverse
+deb http://tf-mirrors.tfci.progmaticlab.com/repos/ubuntu18/latest/mirror/archive.ubuntu.com/ubuntu bionic-updates main restricted universe multiverse
+deb http://tf-mirrors.tfci.progmaticlab.com/repos/ubuntu18/latest/mirror/archive.ubuntu.com/ubuntu bionic-proposed main restricted universe multiverse
+deb http://tf-mirrors.tfci.progmaticlab.com/repos/ubuntu18/latest/mirror/archive.ubuntu.com/ubuntu bionic-backports main restricted universe multiverse

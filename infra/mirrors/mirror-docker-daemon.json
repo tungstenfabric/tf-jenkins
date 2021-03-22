@@ -1,8 +1,8 @@
 {
   "registry-mirrors": [
-    "http://tf-mirrors.progmaticlab.com:5000"
+    "http://tf-mirrors.tfci.progmaticlab.com:5000"
   ],
   "insecure-registries": [
-    "tf-mirrors.progmaticlab.com:5000"
+    "tf-mirrors.tfci.progmaticlab.com:5000"
   ]
 }
