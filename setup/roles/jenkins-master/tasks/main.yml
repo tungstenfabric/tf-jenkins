@@ -1,8 +1,9 @@
 - name: Install required packages
   apt:
-    name: "{{ required_pkgs }}"
+    name: "{{ item }}"
     state: present
     update_cache: yes
+  with_items: "{{ required_pkgs }}"
 
 - name: Install pip packages
   pip:
@@ -24,11 +25,27 @@
     dest: "{{ docker_build_dir.path }}/Dockerfile"
   when: jenkins_custom_docker_image
 
+- name: Copy jenkins Dockerfile
+  template:
+    src: "jenkins-Dockerfile.j2"
+    dest: "{{ docker_build_dir.path }}/Dockerfile"
+  when: jenkins_custom_docker_image
+
+- name: Copy entrypoint to build directory
+  copy:
+    src: "{{ item }}"
+    dest: "{{ docker_build_dir.path }}/{{ item }}"
+  when: jenkins_custom_docker_image 
+  with_items:
+    - entrypoint.sh
+
 - name: Copy plug-in list to build directory
   copy:
-    src: "plugins.txt"
-    dest: "{{ docker_build_dir.path }}/plugins.txt"
+    src: "{{ item }}"
+    dest: "{{ docker_build_dir.path }}/{{ item }}"
   when: jenkins_custom_docker_image and jenkins_new_deploy
+  with_items:
+    - plugins.txt
 
 - name: Copy JCasC config to build directory
   template:
@@ -37,6 +54,14 @@
   when: jenkins_custom_docker_image and jenkins_new_deploy
   vars:
     jenkins_id_ssh_rsa: "{{lookup('file', 'jenkins_id_ssh_rsa')}}"
+
+- name: Add credentials to JCasC
+  blockinfile:
+    block: "{{ lookup('file', 'jenkins-credentials.yaml') }}"
+    path: "{{ docker_build_dir.path }}/jenkins.yaml"
+    marker: ""
+  when: jenkins_custom_docker_image and jenkins_new_deploy
+  ignore_errors: yes
 
 - name: Build jenkins image
   docker_image:
@@ -51,10 +76,10 @@
   when: jenkins_custom_docker_image
   register: jenkins_image
 
-- name: Delete temporary directory
-  file:
-    state: absent
-    path: "{{ docker_build_dir.path }}"
+#- name: Delete temporary directory
+#  file:
+#    state: absent
+#    path: "{{ docker_build_dir.path }}"
 
 - name: Create nginx-proxy container
   docker_container:
@@ -119,11 +144,11 @@
   delay: 5
   when: jenkins_new_deploy
 
-- name: Clean JCasC config file after jenkins deploy
-  file:
-    state: absent
-    path: "{{ volume_jenkins.volume.Mountpoint }}/jenkins.yaml"
-  when: jenkins_new_deploy
+#- name: Clean JCasC config file after jenkins deploy
+#  file:
+#    state: absent
+#    path: "{{ volume_jenkins.volume.Mountpoint }}/jenkins.yaml"
+#  when: jenkins_new_deploy
 
 - name: Create daily backup script
   template:
@@ -132,3 +157,7 @@
     owner: root
     group: root
     mode: '0755'
+
+- name: Populate jobs
+  include: populate-jobs.yaml
+  when: jenkins_new_deploy

@@ -1,22 +1,3 @@
-credentials:
-  system:
-    domainCredentials:
-    - credentials:
-      - basicSSHUserPrivateKey:
-          description: "jenkins slaves"
-          id: "jenkins-ssh-key"
-          privateKeySource:
-            directEntry:
-              privateKey: |
-                  {{ jenkins_id_ssh_rsa | indent (18) }}
-          scope: SYSTEM
-          username: "jenkins"
-      - usernamePassword:
-          description: "jjb login"
-          id: "{{ jenkins_default_user }}"
-          password: "{{ jenkins_defaut_user_password }}"
-          scope: GLOBAL
-          username: "self-jenkins"
 jenkins:
   systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
   numExecutors: 2
@@ -38,6 +19,7 @@ jenkins:
     enabled: true
 {% if ('aws' in groups and groups['aws']) or ('vexxhost' in groups and groups['vexxhost']) %}
   nodes:
+{% if ('aws' in groups and groups['aws']) %}
 {% for host in groups['aws'] %}
     - permanent:
         labelString: "aws"
@@ -52,6 +34,8 @@ jenkins:
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
 {% endfor %}
+{% endif %}
+{% if ('vexxhost' in groups and groups['vexxhost']) %}
 {% for host in groups['vexxhost'] %}
     - permanent:
         labelString: "vexxhost vexx"
@@ -65,12 +49,30 @@ jenkins:
         numExecutors: 20
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
+        nodeProperties:
+        - envVars:
+            env:
+            - key: "MAX_COUNT_VCPU"
+              value: "480"
+            - key: "MAX_COUNT_VM"
+              value: "80"
+            - key: "OS_NETWORK"
+              value: "management"
+            - key: "OS_NETWORK_ID"
+              value: "73828ad8-043d-42b0-8716-9732e10f7e3f"
+            - key: "OS_REGION_NAME"
+              value: "ca-ymq-1"
+            - key: "OS_SG"
+              value: "default"
 {% endfor %}
+{% endif %}
 {% endif %}
 unclassified:
   location:
     adminAddress: "{{ jenkins_admin_email }}"
     url: "https://{{ jenkins_fqdn }}/"
+  shell:
+    shell: "/bin/bash"
 security:
   scriptApproval:
     approvedSignatures:
