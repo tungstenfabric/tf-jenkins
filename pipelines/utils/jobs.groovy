@@ -90,24 +90,24 @@ def _evaluate_common_params() {
   if (branch in constants.OPENSTACK_VERSIONS)
     openstack_version = branch
   if (env.GERRIT_CHANGE_ID) {
-    contrail_container_tag = branch
+    tf_container_tag = branch
     // we have to avoid presense of 19xx, 20xx, ... in tag - apply some hack here to indicate current patchset and avoid those strings
     // and we have to avoid 5.1 and 5.0 in tag
-    contrail_container_tag += '-' + env.GERRIT_CHANGE_NUMBER.split('').join('_')
-    contrail_container_tag += '-' + env.GERRIT_PATCHSET_NUMBER.split('').join('_')
+    tf_container_tag += '-' + env.GERRIT_CHANGE_NUMBER.split('').join('_')
+    tf_container_tag += '-' + env.GERRIT_PATCHSET_NUMBER.split('').join('_')
     hash = env.GERRIT_CHANGE_NUMBER.reverse().take(2).reverse()
     logs_path = "${constants.LOGS_BASE_PATH}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
     logs_url = "${constants.LOGS_BASE_URL}/gerrit/${hash}/${env.GERRIT_CHANGE_NUMBER}/${env.GERRIT_PATCHSET_NUMBER}/${env.GERRIT_PIPELINE}_${BUILD_NUMBER}"
   } else if (env.GERRIT_PIPELINE == 'nightly') {
-    contrail_container_tag = "nightly"
+    tf_container_tag = "nightly"
     logs_path = "${constants.LOGS_BASE_PATH}/nightly/pipeline_${BUILD_NUMBER}"
     logs_url = "${constants.LOGS_BASE_URL}/nightly/pipeline_${BUILD_NUMBER}"
   } else if (env.GERRIT_PIPELINE == 'stage-repos') {
-    contrail_container_tag = "stage-repos-${REPOS_TYPE}"
+    tf_container_tag = "stage-repos-${REPOS_TYPE}"
     logs_path = "${constants.LOGS_BASE_PATH}/stage-repos-${REPOS_TYPE}/pipeline_${BUILD_NUMBER}"
     logs_url = "${constants.LOGS_BASE_URL}/stage-repos-${REPOS_TYPE}/pipeline_${BUILD_NUMBER}"
   } else {
-    contrail_container_tag = 'dev'
+    tf_container_tag = 'dev'
     logs_path = "${constants.LOGS_BASE_PATH}/manual/pipeline_${BUILD_NUMBER}"
     logs_url = "${constants.LOGS_BASE_URL}/manual/pipeline_${BUILD_NUMBER}"
   }
@@ -128,12 +128,12 @@ def _evaluate_env(def config_utils) {
       echo "export SITE_MIRROR=${constants.SITE_MIRROR}" >> global.env
       echo "export CONTAINER_REGISTRY=${constants.CONTAINER_REGISTRY}" >> global.env
       echo "export DEPLOYER_CONTAINER_REGISTRY=${constants.CONTAINER_REGISTRY}" >> global.env
-      echo "export CONTRAIL_CONTAINER_TAG=${contrail_container_tag}" >> global.env
-      echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG=${contrail_container_tag}" >> global.env
+      echo "export CONTRAIL_CONTAINER_TAG=${tf_container_tag}" >> global.env
+      echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG=${tf_container_tag}" >> global.env
       echo "export CONTAINER_REGISTRY_ORIGINAL=${constants.CONTAINER_REGISTRY}" >> global.env
       echo "export DEPLOYER_CONTAINER_REGISTRY_ORIGINAL=${constants.CONTAINER_REGISTRY}" >> global.env
-      echo "export CONTRAIL_CONTAINER_TAG_ORIGINAL=${contrail_container_tag}" >> global.env
-      echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL=${contrail_container_tag}" >> global.env
+      echo "export CONTRAIL_CONTAINER_TAG_ORIGINAL=${tf_container_tag}" >> global.env
+      echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL=${tf_container_tag}" >> global.env
       echo "export GERRIT_PIPELINE=${env.GERRIT_PIPELINE}" >> global.env
     """
 
