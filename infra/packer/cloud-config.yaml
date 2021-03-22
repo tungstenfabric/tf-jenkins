@@ -1,0 +1,4 @@
+#cloud-config
+manage_resolv_conf: true
+resolv_conf:
+  nameservers: ['199.204.45.99']
