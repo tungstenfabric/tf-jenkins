@@ -12,7 +12,7 @@ echo "INFO: Test $TARGET started  $(date)"
 
 case $TARGET in
   "sanity" )
-    script="src/tungstenfabric/tf-dev-test/contrail-sanity/run.sh"
+    script="src/tungstenfabric/tf-dev-test/tf-sanity/run.sh"
     ;;
   "deployment" )
     script="src/tungstenfabric/tf-dev-test/deployment-test/run.sh"
