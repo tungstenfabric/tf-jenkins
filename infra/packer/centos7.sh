@@ -1,7 +1,8 @@
 #!/bin/bash -eE
-sudo cat <<EOF > /etc/resolv.conf
+set -o pipefail
+set -x
+
+sudo cat > /etc/resolv.conf <<EOF 
 nameserver 199.204.45.99
 EOF
-set -o pipefail
-
 sudo yum update -y
