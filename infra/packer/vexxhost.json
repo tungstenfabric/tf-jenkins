@@ -27,7 +27,6 @@
          "security_groups":[
             "{{user `sg_group`}}"
          ],
-         "user_data_file": "{{user `workspace`}}/src/baukin/tf-jenkins/infra/packer/cloud-config.yaml",
          "image_tags": "prepared-{{user `os_image`}}"
       }
    ],
