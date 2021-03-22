@@ -51,4 +51,4 @@
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          ./src/tungstenfabric/tf-jenkins/infra/vexxhost/update_base_images.sh
+          ./src/baukin/tf-jenkins/infra/vexxhost/update_base_images.sh

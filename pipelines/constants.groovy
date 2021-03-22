@@ -20,7 +20,7 @@ VERIFIED_PROJECTS = [
   'tungstenfabric/tf-charms',
   'tungstenfabric/tf-devstack',
   'tungstenfabric/tf-dev-env',
-  'tungstenfabric/tf-jenkins',
+  'baukin/tf-jenkins',
   'tungstenfabric/tf-dev-test',
   'tungstenfabric/tf-deployment-test'
 ]

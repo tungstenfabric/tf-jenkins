@@ -189,7 +189,7 @@
       - shell: |
           export ENVIRONMENT_OS=centos7
           source "$WORKSPACE/global.env"
-          $WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/update-stage-images/create_workers.sh
+          $WORKSPACE/src/baukin/tf-jenkins/jobs/update-stage-images/create_workers.sh
       - shell: |
           set -eo pipefail
           source "$WORKSPACE/global.env"

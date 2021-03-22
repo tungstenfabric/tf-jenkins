@@ -58,7 +58,7 @@ fi
 
 if [[ $REPOS_CHANNEL != 'latest' ]]; then
   for repofile in $mirror_list_for_build $mirror_list; do
-    sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}
+    sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${WORKSPACE}/src/baukin/tf-jenkins/infra/mirrors/${repofile}
   done
 fi
 
@@ -116,24 +116,24 @@ case "${LINUX_DISTR}" in
     ;;
   "centos")
     # copy docker repo to local machine
-    sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
+    sudo cp \${WORKSPACE}/src/baukin/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
     ;;
 esac
 for mirror in $mirror_list_for_build ; do
-  cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/\$mirror ./container/
+  cp \${WORKSPACE}/src/baukin/tf-jenkins/infra/mirrors/\$mirror ./container/
 done
 for mirror in $mirror_list ; do
-  cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
+  cp \${WORKSPACE}/src/baukin/tf-jenkins/infra/mirrors/\$mirror ./config/etc/yum.repos.d/
 done
 
 mkdir -p ./config/etc/apt
-cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/ubuntu18-sources.list ./config/etc/apt/sources.list
+cp \${WORKSPACE}/src/baukin/tf-jenkins/infra/mirrors/ubuntu18-sources.list ./config/etc/apt/sources.list
 
-cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
-cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./container/pip.conf
+cp \${WORKSPACE}/src/baukin/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
+cp \${WORKSPACE}/src/baukin/tf-jenkins/infra/mirrors/mirror-pip.conf ./container/pip.conf
 
 sudo mkdir -p /etc/docker/
-sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker-daemon.json /etc/docker/daemon.json
+sudo cp \${WORKSPACE}/src/baukin/tf-jenkins/infra/mirrors/mirror-docker-daemon.json /etc/docker/daemon.json
 
 echo "INFO: df -h"
 df -h
