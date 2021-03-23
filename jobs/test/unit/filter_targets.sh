@@ -12,8 +12,8 @@ rm -f "$targets_file"
 touch "$targets_file"
 
 # hardcoded sets of targets
-agent=",controller/src/agent:test,controller/src/cat:test,"
-bgp=",controller/src/bgp:test,controller/src/cat:test_upgrade,"
+agent=",controller/src/agent:test,controller/src/cat:test,controller/src/config/vnc_openstack:test,"
+bgp=",controller/src/bgp:test,controller/src/cat:test_upgrade,controller/src/config/api-server:test,"
 opserver=",src/contrail-analytics/contrail-opserver:test,"
 
 group_one=",controller/src/stats:test,contrail-nodemgr:test,vrouter-py-ut:test,"
