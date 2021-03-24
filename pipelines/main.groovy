@@ -15,7 +15,7 @@ config_utils = null
 jobs_utils = null
 
 // local constants
-TIMEOUT_HOURS = 6
+TIMEOUT_HOURS = 8
 if (env.GERRIT_PIPELINE == 'nightly') {
   TIMEOUT_HOURS = 9
 }
