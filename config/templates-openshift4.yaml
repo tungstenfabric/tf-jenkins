@@ -13,8 +13,8 @@
           MONITORING_ORCHESTRATOR: k8s
           CONTRAIL_CONTAINER_TAG: 'nightly-ubi7'
           CONTRAIL_DEPLOYER_CONTAINER_TAG: 'nightly-ubi7'
-          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
+          CONTAINER_REGISTRY: 'tf-nexus.tfci.progmaticlab.com:5102'
+          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.tfci.progmaticlab.com:5102'
     #parents:
     #  - build-ubi
     jobs:
@@ -60,8 +60,8 @@
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
           # need to use secure registries
-          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5101'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5101'
+          CONTAINER_REGISTRY: 'tf-nexus.tfci.progmaticlab.com:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.tfci.progmaticlab.com:5101'
           TAG_SUFFIX: "-ubi7"
     parents:
       - build-ubi
@@ -103,8 +103,8 @@
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
           # need to use secure registries
-          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5101'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5101'
+          CONTAINER_REGISTRY: 'tf-nexus.tfci.progmaticlab.com:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.tfci.progmaticlab.com:5101'
           TAG_SUFFIX: "-ubi7"
     parents:
       - build-ubi
@@ -146,8 +146,8 @@
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
           # need to use secure registries
-          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5101'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5101'
+          CONTAINER_REGISTRY: 'tf-nexus.tfci.progmaticlab.com:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.tfci.progmaticlab.com:5101'
           TAG_SUFFIX: "-ubi7"
           OPENSHIFT_VERSION: "4.5"
     parents:

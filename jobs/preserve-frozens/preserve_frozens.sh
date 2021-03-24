@@ -4,7 +4,7 @@ set -o pipefail
 [ "${DEBUG,,}" == "true" ] && set -x
 
 CONTAINER_REGISTRY_INSECURE=${CONTAINER_REGISTRY_INSECURE:-"true"}
-CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"tf-nexus.progmaticlab.com:5001"}
+CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"tf-nexus.tfci.progmaticlab.com:5001"}
 CONTAINERS_INCLUDE_REGEXP=${CONTAINERS_INCLUDE_REGEXP:-"contrail-\|tf-"}
 
 # tags of tf-dev-sandbox image to re-push
@@ -44,8 +44,8 @@ done
 
 # re-push all containers
 frozen_tag=''
-if curl -sIS "http://tf-nexus.progmaticlab.com:8082/frozen/tag" | grep -q "HTTP/1.1 200 OK" ; then
-  frozen_tag=$(curl -s "http://tf-nexus.progmaticlab.com:8082/frozen/tag")
+if curl -sIS "http://tf-nexus.tfci.progmaticlab.com:8082/frozen/tag" | grep -q "HTTP/1.1 200 OK" ; then
+  frozen_tag=$(curl -s "http://tf-nexus.tfci.progmaticlab.com:8082/frozen/tag")
 fi
 
 if [[ -n "$frozen_tag" ]]; then

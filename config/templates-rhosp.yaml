@@ -71,7 +71,7 @@
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.tfci.progmaticlab.com:5005"
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
-          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5002'
+          CONTAINER_REGISTRY: 'tf-nexus.tfci.progmaticlab.com:5002'
           MONITORING_DEPLOY_TARGET: ILTS
           MONITORING_DEPLOYER: rhosp13
           MONITORING_ORCHESTRATOR: os
@@ -274,7 +274,7 @@
           RHOSP_VERSION: rhosp13
           TAG_SUFFIX: "-ubi7"
           SSL_ENABLE: true
-          CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
+          CONTAINER_REGISTRY: tf-nexus.tfci.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.tfci.progmaticlab.com:5005"
@@ -328,7 +328,7 @@
           RHOSP_VERSION: rhosp16
           TAG_SUFFIX: "-ubi7"
           SSL_ENABLE: true
-          CONTAINER_REGISTRY: tf-nexus.progmaticlab.com:5002
+          CONTAINER_REGISTRY: tf-nexus.tfci.progmaticlab.com:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.tfci.progmaticlab.com:5005"
