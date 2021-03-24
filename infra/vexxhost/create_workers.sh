@@ -96,23 +96,14 @@ if [[ -z "$instance_vcpu" ]]; then
   echo "ERROR: can't retrieve flavor details to boot VM"
   exit 1
 fi
-total_vcpu=$(( instance_vcpu * $NODES_COUNT ))
+required_cores=$(( instance_vcpu * $NODES_COUNT ))
 
-for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
+for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
   ready_nodes=0
   INSTANCE_IDS=""
   INSTANCE_IPS=""
-  while true; do
-    [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') + NODES_COUNT ))" -lt "$MAX_COUNT_VM" ]] && break
-    echo "INFO: waiting for free worker"
-    sleep 60
-  done
 
-  while true; do
-    [[ "$(($(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}') + total_vcpu ))" -lt "$MAX_COUNT_VCPU" ]] && break
-    echo "INFO: waiting for CPU resources"
-    sleep 60
-  done
+  wait_for_free_resources $NODES_COUNT $required_cores
 
   res=0
   nova boot --flavor ${INSTANCE_TYPE} \
@@ -128,7 +119,7 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
   if [[ $res == 1 ]]; then
     echo "ERROR: Instances creation is failed on nova boot. Retry"
     cleanup ${group_tag}
-    sleep 60
+    sleep $VM_BOOT_DELAY
     continue
   fi
   INSTANCE_IDS="$( list_instances ${group_tag} )"

@@ -77,7 +77,7 @@ group_tag="${PREFIX}${BUILD_TAG}"
 
 bdm='{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":120,"DeleteOnTermination":true}}'
 
-for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
+for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
   ready_nodes=0
   INSTANCE_IDS=""
   INSTANCE_IPS=""
@@ -123,6 +123,8 @@ for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
     INSTANCE_IDS+="$instance_id,"
     INSTANCE_IPS+="$instance_ip,"
   done
+
+  # TODO: handle instance creation errors
 
   if (( ready_nodes == NODES_COUNT )) ; then
     echo "export INSTANCE_IDS=$INSTANCE_IDS" >> "$ENV_FILE"

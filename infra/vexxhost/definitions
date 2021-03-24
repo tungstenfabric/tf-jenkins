@@ -3,9 +3,11 @@ export OS_REGION_NAME
 export OS_NETWORK="${OS_NETWORK:-management}"
 export OS_NETWORK_ID
 export OS_SG="${OS_SG:-default}"
-export MAX_COUNT_VM
-export MAX_COUNT_VCPU
-export VM_RETRIES="${VM_RETRIES:-5}"
+export RESERVED_INSTANCES_COUNT=3
+export RESERVED_CORES_COUNT=16
+
+export VM_BOOT_RETRIES="${VM_BOOT_RETRIES:-120}"
+export VM_BOOT_DELAY="${VM_BOOT_DELAY:-60}"
 
 #                CPU     Memory     AWS (Canada)   vm_type
 # v2-standard-1   1       4 GB      t2.small       xsmall
