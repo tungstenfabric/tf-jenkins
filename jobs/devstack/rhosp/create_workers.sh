@@ -77,7 +77,7 @@ EOF
       node_flavor=${VM_TYPES[$(echo $nodes | cut -d ':' -f2)]}
       node_count=$(echo $nodes | cut -d ':' -f3)
       echo "export $node_name=\"$node_flavor:$node_count\"" >> "$stackrc_file_path"
-      for (( i=1; i<=5 ; ++i )) ; do
+      for j in {1..5}; do
         if node_vcpu=$(openstack flavor show $node_flavor | awk '/vcpus/{print $4}') ; then
           break
         fi
