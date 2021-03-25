@@ -24,7 +24,8 @@ echo "INFO: Upload containers cache files"
 pushd $CACHE_DIR
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"
-  curl -sS --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/external-web-cache/$file
+  echo "curl -sS --user ${TPC_REPO_USER}:${TPC_REPO_PASS} --ftp-create-dirs -T $file $REPO_SOURCE/external-web-cache/$file"
+  curl --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/external-web-cache/$file
 done
 popd
 
