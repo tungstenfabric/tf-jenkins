@@ -10,8 +10,12 @@ jenkins:
         - id: "{{ jenkins_default_user }}"
           password: "{{ jenkins_defaut_user_password }}"
   authorizationStrategy:
-    loggedInUsersCanDoAnything:
-      allowAnonymousRead: false
+    globalMatrix:
+      permissions:
+      - "Job/Read:anonymous"
+      - "Overall/Administer:authenticated"
+      - "Overall/Read:anonymous"
+      - "View/Read:anonymous"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
