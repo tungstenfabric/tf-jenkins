@@ -27,5 +27,5 @@
           echo "--------------------------------------------------------------------- test"
           make test
           echo "--------------------------------------------------------------------- update"
-          echo "$USER:$PASSWORD"
+          echo "Creds $USER:$PASSWORD"
           make update

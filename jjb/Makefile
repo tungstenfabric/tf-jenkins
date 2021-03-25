@@ -24,4 +24,4 @@ test: clean
 	@$(jenkins_jobs) --conf $(jenkins_jobs_ini) --user $(USER) --password $(PASSWORD) test -o $(outdir) common:jobs:gerrit:infra
 
 update: clean
-	@$(jenkins_jobs) --conf $(jenkins_jobs_ini) --user $(USER) --password $(PASSWORD) --ignore-cache update common:jobs:gerrit:infra
+	@$(jenkins_jobs) -l debug --conf $(jenkins_jobs_ini) --user $(USER) --password $(PASSWORD) --ignore-cache update common:jobs:gerrit:infra
