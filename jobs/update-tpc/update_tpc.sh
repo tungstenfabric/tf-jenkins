@@ -4,7 +4,6 @@ set -o pipefail
 [ "${DEBUG,,}" == "true" ] && set -x
 
 echo "INFO: run dev-env and sync sources"
-sleep 600
 ./src/tungstenfabric/tf-dev-env/run.sh fetch
 
 echo "INFO: List packages"

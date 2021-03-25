@@ -23,7 +23,7 @@ if (env.GERRIT_PIPELINE == 'nightly') {
 timestamps {
   timeout(time: TIMEOUT_HOURS, unit: 'HOURS') {
     node("${SLAVE}") {
-      if (!env.GERRIT_CHANGE_ID && !(env.GERRIT_PIPELINE in ['nightly', 'stage-repos'])) {
+      if (!env.GERRIT_CHANGE_ID && !(env.GERRIT_PIPELINE in ['nightly'])) {
         println("Manual run is forbidden")
         return
       }
