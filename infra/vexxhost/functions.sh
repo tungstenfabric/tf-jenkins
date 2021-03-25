@@ -49,7 +49,7 @@ function wait_for_free_resources() {
   local required_instances=$1
   local required_cores=$2
   local project_id=$(openstack project show $OS_PROJECT_NAME | awk '/ id /{print $4}')
-  echo "INFO: wait for enough resources for required_instances=$required_instances and required_cores=$required_cores"
+  echo "INFO: wait for enough resources for required_instances=$required_instances and required_cores=$required_cores  $(date)"
   while true ; do
     local quotas=$(openstack quota list --project $project_id --detail --compute)
     local instances_used=$(echo "$quotas" | awk '/ instances /{print $4}')
@@ -60,9 +60,10 @@ function wait_for_free_resources() {
         (( cores_used + required_cores + RESERVED_CORES_COUNT < cores_limit )) ; then
       break
     fi
-    echo "INFO: waiting for free resources..."
+    echo "INFO: waiting for free resources...  $(date)"
     echo "INFO: instances used=$instances_used  required=$NODES_COUNT  reserved=$RESERVED_INSTANCES_COUNT  limit=$instances_limit"
     echo "INFO: cores used=$cores_used  required=$required_cores  reserved=$RESERVED_CORES_COUNT  limit=$cores_limit"
     sleep $VM_BOOT_DELAY
   done
+  echo "INFO: waiting for resources is finished  $(date)"
 }
