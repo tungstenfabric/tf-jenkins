@@ -72,7 +72,7 @@
           source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
           source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
           desc="Pipeline: $PIPELINE_NAME-$PIPELINE_NUMBER  Random: $JOB_RND<br>"
-          desc+="Stage: {stage}  Target: {target}<br>"
+          desc+="Repos type: $REPOS_TYPE<br>"
           desc+="Job logs: <a href=\"$LOGS_URL/$STREAM\">$LOGS_URL/$STREAM</a>"
           echo "DESCRIPTION $desc"
       - description-setter:
@@ -181,7 +181,7 @@
           source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
           source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
           desc="Pipeline: $PIPELINE_NAME-$PIPELINE_NUMBER  Random: $JOB_RND<br>"
-          desc+="Stage: {stage}  Target: {target}<br>"
+          desc+="Repos type: $REPOS_TYPE<br>"
           desc+="Job logs: <a href=\"$LOGS_URL/$STREAM\">$LOGS_URL/$STREAM</a>"
           echo "DESCRIPTION $desc"
       - description-setter:

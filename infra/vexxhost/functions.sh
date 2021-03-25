@@ -44,3 +44,25 @@ function down_instances() {
     wait $i || true
   done
 }
+
+function wait_for_free_resources() {
+  local required_instances=$1
+  local required_cores=$2
+  local project_id=$(openstack project show $OS_PROJECT_NAME | awk '/ id /{print $4}')
+  echo "INFO: wait for enough resources for required_instances=$required_instances and required_cores=$required_cores"
+  while true ; do
+    local quotas=$(openstack quota list --project $project_id --detail --compute)
+    local instances_used=$(echo "$quotas" | awk '/ instances /{print $4}')
+    local instances_limit=$(echo "$quotas" | awk '/ instances /{print $8}')
+    local cores_used=$(echo "$quotas" | awk '/ cores /{print $4}')
+    local cores_limit=$(echo "$quotas" | awk '/ cores /{print $8}')
+    if (( instances_used + required_instances + RESERVED_INSTANCES_COUNT < instances_limit )) &&
+        (( cores_used + required_cores + RESERVED_CORES_COUNT < cores_limit )) ; then
+      break
+    fi
+    echo "INFO: waiting for free resources..."
+    echo "INFO: instances used=$instances_used  required=$NODES_COUNT  reserved=$RESERVED_INSTANCES_COUNT  limit=$instances_limit"
+    echo "INFO: cores used=$cores_used  required=$required_cores  reserved=$RESERVED_CORES_COUNT  limit=$cores_limit"
+    sleep $VM_BOOT_DELAY
+  done
+}

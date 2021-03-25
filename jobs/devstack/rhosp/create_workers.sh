@@ -27,7 +27,7 @@ if [ -n "$TAG_SUFFIX" ] ; then
   export CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL="$CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX"
 fi
 
-for (( i=1; i<=$VM_RETRIES ; ++i )) ; do
+for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
   echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" > "$stackrc_file_path"
   echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
   if [[ "$ENABLE_RHEL_REGISTRATION" == 'true' ]] ; then
@@ -54,17 +54,19 @@ EOF
     $my_dir/../../../infra/${JUMPHOST}/create_workers.sh
   else
     # vexxhost
+    source $my_dir/../../../infra/${SLAVE}/definitions
+    source $my_dir/../../../infra/${SLAVE}/functions.sh
     echo "export OS_REGION_NAME=${OS_REGION_NAME}" >> "$stackrc_file_path"
     IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
     echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
     # initial values for undercloud (v2-standard-4)
-    total_nodes_count=1
-    total_vcpu_count=4
+    required_instances=1
+    required_cores=4
     if [ -z "$NODES" ] ; then
       # default aio (v2-standard-8)
-      total_nodes_count=$(( total_nodes_count + 1 ))
-      total_vcpu_count=$(( total_vcpu_count + 8 ))
+      required_instances=$(( required_instances + 1 ))
+      required_cores=$(( required_cores + 8 ))
     fi
     for nodes in ${NODES//,/ }; do
       if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
@@ -81,25 +83,15 @@ EOF
         fi
         sleep 10
       done
-      total_nodes_count=$(( total_nodes_count + node_count ))
-      total_vcpu_count=$(( total_vcpu_count + node_count * node_vcpu ))
+      required_instances=$(( required_instances + node_count ))
+      required_cores=$(( required_cores + node_count * node_vcpu ))
     done
     if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then
       # ipa (v2-highcpu-4)
-      total_nodes_count=$(( total_nodes_count + 1 ))
-      total_vcpu_count=$(( total_vcpu_count + 4 ))
+      required_instances=$(( required_instances + 1 ))
+      required_cores=$(( required_cores + 4 ))
     fi
-    echo "INFO: wait for enough resources for total_nodes_count=$total_nodes_count"
-    # wait for free resource
-    while true; do
-      [[ "$(($(nova list --tags "SLAVE=$SLAVE"  --field status | grep -c 'ID\|ACTIVE') + total_nodes_count ))" -lt "$MAX_COUNT_VM" ]] && break
-      sleep 60
-    done
-    echo "INFO: wait for enough resources for total_vcpu_count=$total_vcpu_count"
-    while true; do
-      [[ "$(($(nova quota-show --detail | grep cores | sed 's/}.*/}/'| tr -d "}" | awk '{print $NF}') + total_vcpu_count ))" -lt "$MAX_COUNT_VCPU" ]] && break
-      sleep 60
-    done
+    wait_for_free_resources $required_instances $required_cores
   fi
   echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
@@ -115,8 +107,8 @@ EOF
   fi
   echo "ERROR: Instances creation is failed. Retry"
   $my_dir/remove_workers.sh || true
-  sleep 60
+  sleep $VM_BOOT_DELAY
 done
 
-echo "ERROR: Instances creation is failed at $VM_RETRIES attempts."
+echo "ERROR: Instances creation is failed at $VM_BOOT_RETRIES attempts."
 exit -1

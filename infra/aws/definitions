@@ -22,7 +22,8 @@ IMAGE_UBUNTU18_SSH_USER='ubuntu'
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
 MAX_COUNT='20'
-VM_RETRIES="${VM_RETRIES:-5}"
+export VM_BOOT_RETRIES="${VM_BOOT_RETRIES:-120}"
+export VM_BOOT_DELAY="${VM_BOOT_DELAY:-60}"
 
 ENVIRONMENT_OS=${ENVIRONMENT_OS:-'centos7'}
 
