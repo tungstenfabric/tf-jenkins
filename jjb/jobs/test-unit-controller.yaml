@@ -129,6 +129,7 @@
       - bgp
       - opserver
       - group-one
+      - group-two
       - ungrouped
     jobs:
       - 'test-unit-{target_set}'

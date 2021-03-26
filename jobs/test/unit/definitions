@@ -1,4 +1,4 @@
-declare -A vm_types=(['agent']='large' ['bgp']='large' ['opserver']='medium' ['group-one']='medium' ['ungrouped']='medium')
+declare -A vm_types=(['agent']='large' ['bgp']='large' ['opserver']='medium' ['group-one']='medium' ['group-two']='medium' ['ungrouped']='medium')
 if [[ -n "$TARGET_SET" ]]; then
     export VM_TYPE=${vm_types[$TARGET_SET]}
 else

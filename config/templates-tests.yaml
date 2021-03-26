@@ -73,6 +73,13 @@
               inherit-keys:
                 - DEVENV_TAG
                 - UNITTEST_TARGETS
+      test-unit-group-two:
+        stream: test-unit
+        depends-on:
+          - configure-ut-sandbox:
+              inherit-keys:
+                - DEVENV_TAG
+                - UNITTEST_TARGETS
       test-unit-ungrouped:
         stream: test-unit
         depends-on:

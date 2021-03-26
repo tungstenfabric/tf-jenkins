@@ -12,14 +12,20 @@ rm -f "$targets_file"
 touch "$targets_file"
 
 # hardcoded sets of targets
-agent=",controller/src/agent:test,controller/src/cat:test,controller/src/config/vnc_openstack:test,"
-bgp=",controller/src/bgp:test,controller/src/cat:test_upgrade,controller/src/config/api-server:test,"
+agent=",controller/src/agent:test,controller/src/cat:test,"
+bgp=",controller/src/bgp:test,controller/src/cat:test_upgrade,"
 opserver=",src/contrail-analytics/contrail-opserver:test,"
 
-group_one=",controller/src/stats:test,contrail-nodemgr:test,vrouter-py-ut:test,"
+group_one=",src/contrail-analytics/contrail-collector:test,"
+group_one+="src/contrail-analytics/contrail-query-engine:test,"
+group_one+="src/contrail-analytics/tf-topology:test,"
+group_one+="controller/src/stats:test,contrail-nodemgr:test,vrouter-py-ut:test,"
 group_one+="controller/src/vcenter-import:test,vcenter-manager:test,vcenter-fabric-manager:test,"
 group_one+="controller/src/config/svc_monitor:test,controller/src/config/schema-transformer:test,"
 group_one+="controller/src/container/kube-manager:test,"
+
+group_two=",controller/src/config/vnc_openstack:test,controller/src/config/api-server:test,"
+group_two+="controller/src/config/utils:test,controller/src/config/device-manager:test,"
 
 if [[ "$TARGET_SET" == "agent" ]]; then
   for target in $(echo $agent | tr ',' ' ') ; do
@@ -40,16 +46,19 @@ elif [[ "$TARGET_SET" == "opserver" ]]; then
     fi
   done
 elif [[ "$TARGET_SET" == "group-one" ]]; then
-  # all analytics except opserver + some targets
-  for target in $(echo "$UNITTEST_TARGETS" | tr ',' ' ') ; do
-    if [[ "$target" =~ ^src/contrail-analytics/.*$ && ! "$opserver" =~ "$target" ]] ; then
+  for target in $(echo $group_one | tr ',' ' ') ; do
+    if echo ",$UNITTEST_TARGETS," | grep -q ",$target," ; then
       echo "$target" >> "$targets_file"
-    elif echo ",$group_one," | grep -q ",$target," ; then
+    fi
+  done
+elif [[ "$TARGET_SET" == "group-two" ]]; then
+  for target in $(echo $group_two | tr ',' ' ') ; do
+    if echo ",$UNITTEST_TARGETS," | grep -q ",$target," ; then
       echo "$target" >> "$targets_file"
     fi
   done
 elif [[ "$TARGET_SET" == "ungrouped" ]]; then
-  excludes="${agent}${bgp}${opserver}${group_one}"
+  excludes="${agent}${bgp}${opserver}${group_one}${group_two}"
   for target in $(echo "$UNITTEST_TARGETS" | tr ',' ' ') ; do
     if [[ ! "$target" =~ ^src/contrail-analytics/.*$ ]] && ! echo "$excludes" | grep -q ",$target," ; then
       echo "$target" >> "$targets_file"
