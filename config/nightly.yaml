@@ -30,7 +30,7 @@
         - rhosp13-1912
         - rhosp13-ha-ziu
         - rhosp16
-        - rhosp16-ha
+        - rhosp16-ha-ziu
         - rhosp13-bmc
         - operator
         - operator-ha
