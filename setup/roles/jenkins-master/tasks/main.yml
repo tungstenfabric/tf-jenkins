@@ -10,7 +10,7 @@
     name:
       - docker
       - requests
-    executable: "/usr/bin/pip3"
+#    executable: "/usr/bin/pip3"
 
 - name: Create temporary build directory
   tempfile:
@@ -76,10 +76,10 @@
   when: jenkins_custom_docker_image
   register: jenkins_image
 
-#- name: Delete temporary directory
-#  file:
-#    state: absent
-#    path: "{{ docker_build_dir.path }}"
+- name: Delete temporary directory
+  file:
+    state: absent
+    path: "{{ docker_build_dir.path }}"
 
 - name: Create nginx-proxy container
   docker_container:
@@ -119,9 +119,9 @@
     ports:
       - "8080:8080"
     env:
-      VIRTUAL_HOST: "{{ jenkins_fqdn }}"
+      VIRTUAL_HOST: "{{ jenkins_fqdn }},{{ jenkins_region_fqdn }}"
       VIRTUAL_PORT: "8080"
-      LETSENCRYPT_HOST: "{{ jenkins_fqdn }}"
+      LETSENCRYPT_HOST: "{{ jenkins_fqdn }},{{ jenkins_region_fqdn }}"
       LETSENCRYPT_EMAIL: "{{ jenkins_admin_email }}"
     volumes:
       - jenkins_home:/var/jenkins_home
@@ -144,11 +144,11 @@
   delay: 5
   when: jenkins_new_deploy
 
-#- name: Clean JCasC config file after jenkins deploy
-#  file:
-#    state: absent
-#    path: "{{ volume_jenkins.volume.Mountpoint }}/jenkins.yaml"
-#  when: jenkins_new_deploy
+- name: Clean JCasC config file after jenkins deploy
+  file:
+    state: absent
+    path: "{{ volume_jenkins.volume.Mountpoint }}/jenkins.yaml"
+  when: jenkins_new_deploy
 
 - name: Create daily backup script
   template:
