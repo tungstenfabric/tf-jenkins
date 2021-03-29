@@ -19,8 +19,8 @@ export DEBUG=$DEBUG
 export TPC_REPO_USER=$TPC_REPO_USER
 export TPC_REPO_PASS=$TPC_REPO_PASS
 
-export REPO_SOURCE=http://tf-nexus.progmaticlab.com/repository/yum-tpc-source
-export CONTAINER_REGISTRY=tf-nexus.progmaticlab.com:5001
+export REPO_SOURCE=http://tf-nexus.tfci.progmaticlab.com/repository/yum-tpc-source
+export CONTAINER_REGISTRY=tf-nexus.tfci.progmaticlab.com:5001
 export DEVENV_TAG=stable
 export CONTRAIL_DEPLOY_REGISTRY=0
 

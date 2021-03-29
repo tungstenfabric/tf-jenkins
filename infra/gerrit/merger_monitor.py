@@ -20,7 +20,7 @@ GERRIT_CMD = 'gerrit query --comments --patch-sets --format=JSON branch:' + BRAN
 TIMDELTA_GATE_MERGE = 30
 
 # folder on nexus to store the tag
-# can be found here http://tf-nexus.progmaticlab.com:8082/frozen/tag
+# can be found here http://tf-nexus.tfci.progmaticlab.com:8082/frozen/tag
 # it must be create with 777 permissions
 TAG_FILE = '/var/www/logs/frozen/tag'
 

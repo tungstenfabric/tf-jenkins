@@ -1,12 +1,12 @@
 // infra and product constants
 
-CONTAINER_REGISTRY="tf-nexus.progmaticlab.com:5001"
-SITE_MIRROR="http://tf-nexus.progmaticlab.com/repository"
-LOGS_HOST = "tf-nexus.progmaticlab.com"
+CONTAINER_REGISTRY="tf-nexus.tfci.progmaticlab.com:5001"
+SITE_MIRROR="http://tf-nexus.tfci.progmaticlab.com/repository"
+LOGS_HOST = "tf-nexus.tfci.progmaticlab.com"
 LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
-LOGS_BASE_URL = "http://tf-nexus.progmaticlab.com:8082/jenkins_logs"
+LOGS_BASE_URL = "http://tf-nexus.tfci.progmaticlab.com:8082/jenkins_logs"
 if (env.GERRIT_PIPELINE == 'nightly') {
-  CONTAINER_REGISTRY="tf-nexus.progmaticlab.com:5002"
+  CONTAINER_REGISTRY="tf-nexus.tfci.progmaticlab.com:5002"
 }
 // this is default LTS release for all deployers
 DEFAULT_OPENSTACK_VERSION = "queens"

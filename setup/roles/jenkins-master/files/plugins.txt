@@ -18,3 +18,4 @@ rebuild
 ssh-slaves
 timestamper
 ws-cleanup
+hidden-parameter

@@ -1,22 +1,3 @@
-credentials:
-  system:
-    domainCredentials:
-    - credentials:
-      - basicSSHUserPrivateKey:
-          description: "jenkins slaves"
-          id: "jenkins-ssh-key"
-          privateKeySource:
-            directEntry:
-              privateKey: |
-                  {{ jenkins_id_ssh_rsa | indent (18) }}
-          scope: SYSTEM
-          username: "jenkins"
-      - usernamePassword:
-          description: "jjb login"
-          id: "{{ jenkins_default_user }}"
-          password: "{{ jenkins_defaut_user_password }}"
-          scope: GLOBAL
-          username: "self-jenkins"
 jenkins:
   systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
   numExecutors: 2
@@ -29,8 +10,12 @@ jenkins:
         - id: "{{ jenkins_default_user }}"
           password: "{{ jenkins_defaut_user_password }}"
   authorizationStrategy:
-    loggedInUsersCanDoAnything:
-      allowAnonymousRead: false
+    globalMatrix:
+      permissions:
+      - "Job/Read:anonymous"
+      - "Overall/Administer:authenticated"
+      - "Overall/Read:anonymous"
+      - "View/Read:anonymous"
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
@@ -38,6 +23,7 @@ jenkins:
     enabled: true
 {% if ('aws' in groups and groups['aws']) or ('vexxhost' in groups and groups['vexxhost']) %}
   nodes:
+{% if ('aws' in groups and groups['aws']) %}
 {% for host in groups['aws'] %}
     - permanent:
         labelString: "aws"
@@ -52,6 +38,8 @@ jenkins:
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
 {% endfor %}
+{% endif %}
+{% if ('vexxhost' in groups and groups['vexxhost']) %}
 {% for host in groups['vexxhost'] %}
     - permanent:
         labelString: "vexxhost vexx"
@@ -65,21 +53,52 @@ jenkins:
         numExecutors: 20
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
+        nodeProperties:
+        - envVars:
+            env:
+            - key: "MAX_COUNT_VCPU"
+              value: "480"
+            - key: "MAX_COUNT_VM"
+              value: "80"
+            - key: "OS_NETWORK"
+              value: "management"
+            - key: "OS_NETWORK_ID"
+              value: "73828ad8-043d-42b0-8716-9732e10f7e3f"
+            - key: "OS_REGION_NAME"
+              value: "ca-ymq-1"
+            - key: "OS_SG"
+              value: "default"
 {% endfor %}
+{% endif %}
 {% endif %}
 unclassified:
   location:
     adminAddress: "{{ jenkins_admin_email }}"
     url: "https://{{ jenkins_fqdn }}/"
+  shell:
+    shell: "/bin/bash"
 security:
   scriptApproval:
     approvedSignatures:
-      - "method hudson.model.Actionable getAction java.lang.Class"
-      - "method hudson.model.ParametersAction getParameters"
-      - "method java.util.concurrent.Semaphore acquire"
-      - "method java.util.concurrent.Semaphore release"
-      - "method java.util.concurrent.locks.Lock lock"
-      - "method java.util.concurrent.locks.Lock unlock"
-      - "new java.util.concurrent.Semaphore int"
-      - "new java.util.concurrent.locks.ReentrantLock"
-      - "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods next java.lang.String"
+    - "method hudson.model.Actionable getAction java.lang.Class"
+    - "method hudson.model.Job getBuildByNumber int"
+    - "method hudson.model.ParametersAction getParameters"
+    - "method hudson.model.Run getDuration"
+    - "method hudson.model.Run getResult"
+    - "method hudson.model.Run getStartTimeInMillis"
+    - "method java.lang.Throwable getStackTrace"
+    - "method java.util.Collection toArray"
+    - "method java.util.List addAll int java.util.Collection"
+    - "method java.util.concurrent.Semaphore acquire"
+    - "method java.util.concurrent.Semaphore release"
+    - "method java.util.concurrent.locks.Lock lock"
+    - "method java.util.concurrent.locks.Lock unlock"
+    - "method jenkins.model.CauseOfInterruption getShortDescription"
+    - "method jenkins.model.Jenkins getItemByFullName java.lang.String"
+    - "method org.jenkinsci.plugins.workflow.steps.FlowInterruptedException getCauses"
+    - "new java.util.concurrent.Semaphore int"
+    - "new java.util.concurrent.locks.ReentrantLock"
+    - "staticMethod jenkins.model.Jenkins getInstanceOrNull"
+    - "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods addAll java.util.List int java.lang.Object[]"
+    - "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods next java.lang.String"
+

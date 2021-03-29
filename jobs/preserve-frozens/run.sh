@@ -10,7 +10,7 @@ source "$my_dir/definitions"
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" {$WORKSPACE/src,$my_dir/preserve_frozens.sh} $IMAGE_SSH_USER@$instance_ip:./
 
-export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"tf-nexus.progmaticlab.com:5001"}
+export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"tf-nexus.tfci.progmaticlab.com:5001"}
 
 echo "INFO: preserve frozens started"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip

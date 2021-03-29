@@ -51,7 +51,7 @@ Nginx is deployed on nexus to provide https access to those CI registries on por
 ### Logs storage
 
 Currently resides on Nexus VM.
-URL: <http://tf-nexus.progmaticlab.com:8082/jenkins_logs/>
+URL: <http://tf-nexus.tfci.progmaticlab.com:8082/jenkins_logs/>
 
 Contains logs for most jobs. Divived into nightly, review, infra folders.
 Clean up policy - one month.
