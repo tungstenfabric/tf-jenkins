@@ -36,7 +36,7 @@
     name: tf-jenkins
     scm:
       - github:
-          organization: baukin
+          organization: tungstenfabric
           repo: tf-jenkins
 
 - scm:
