@@ -32,7 +32,7 @@ export MAAS_PROFILE="$MAAS_PROFILE"
 export MAAS_API_KEY="$MAAS_API_KEY"
 export MAAS_ENDPOINT="$MAAS_ENDPOINT"
 export VIRTUAL_IPS="$VIRTUAL_IPS"
-src/baukin/tf-jenkins/infra/$JUMPHOST/prepare_maas.sh \$HOME/maas.vars
+src/tungstenfabric/tf-jenkins/infra/$JUMPHOST/prepare_maas.sh \$HOME/maas.vars
 EOF
 chmod a+x $WORKSPACE/run_prepare_maas.sh
 

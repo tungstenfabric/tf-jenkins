@@ -70,12 +70,12 @@
           set -eo pipefail
           source "$WORKSPACE/global.env"
 
-          ./src/baukin/tf-jenkins/jobs/update-nexus/create_workers.sh
+          ./src/tungstenfabric/tf-jenkins/jobs/update-nexus/create_workers.sh
           source "$WORKSPACE/stackrc.$JOB_NAME.env"
           # main run
-          ./src/baukin/tf-jenkins/jobs/update-nexus/run.sh || res=1
+          ./src/tungstenfabric/tf-jenkins/jobs/update-nexus/run.sh || res=1
           # collect logs
-          ./src/baukin/tf-jenkins/jobs/update-nexus/collect_logs.sh
+          ./src/tungstenfabric/tf-jenkins/jobs/update-nexus/collect_logs.sh
           exit $res
     publishers:
       - postbuildscript:
@@ -93,7 +93,7 @@
                     if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ]; then
                       echo "INFO: stackrc file found. remove workers."
                       source "$WORKSPACE/stackrc.$JOB_NAME.env"
-                      ./src/baukin/tf-jenkins/infra/$SLAVE/remove_workers.sh
+                      ./src/tungstenfabric/tf-jenkins/infra/$SLAVE/remove_workers.sh
                     else
                       echo "INFO: stackrc file could not be found."
                     fi

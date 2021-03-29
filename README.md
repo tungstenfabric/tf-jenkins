@@ -17,7 +17,7 @@ For now it's a bit outdated - we're working on actualisation.
 
 Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 500Gb for root volume.
 URL: <https://tf-jenkins.progmaticlab.com/>
-Source code: <https://github.com/baukin/tf-jenkins>
+Source code: <https://github.com/tungstenfabric/tf-jenkins>
 
 Jenkins master is deployed as a docker container. All further configuration (user, plugins, ...) is applied inside Jenkins itself.
 

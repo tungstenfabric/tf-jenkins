@@ -38,7 +38,7 @@
             "RHEL_PASSWORD={{user `rhel_pass`}}",
             "RHEL_POOL_ID={{user `rhel_pool`}}"
          ],
-         "script":"{{user `workspace`}}/src/baukin/tf-jenkins/infra/packer/{{user `os_image`}}.sh"
+         "script":"{{user `workspace`}}/src/tungstenfabric/tf-jenkins/infra/packer/{{user `os_image`}}.sh"
       }
    ]
 }

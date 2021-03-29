@@ -279,7 +279,7 @@
         - cleanup
 
 - project:
-    name: baukin/tf-jenkins
+    name: tungstenfabric/tf-jenkins
     check:
       templates:
         - ansible-os

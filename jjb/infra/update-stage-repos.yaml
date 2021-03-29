@@ -79,7 +79,7 @@
           source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
           source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
           echo "INFO: do repos update for repo "
-          $WORKSPACE/src/baukin/tf-jenkins/jobs/update-stage-repos/run.sh
+          $WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/update-stage-repos/run.sh
     publishers:
       - archive:
           artifacts: '*.env'
@@ -163,7 +163,7 @@
           source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
           source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
           echo "INFO: publish checked repo as latest "
-          $WORKSPACE/src/baukin/tf-jenkins/jobs/update-stage-repos/publish.sh
+          $WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/update-stage-repos/publish.sh
     publishers:
       - archive:
           artifacts: '*.env'

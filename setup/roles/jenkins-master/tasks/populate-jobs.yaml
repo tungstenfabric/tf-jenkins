@@ -10,7 +10,7 @@
 
 - name: Clone tf-jenkins repo
   git:
-    repo: https://github.com/baukin/tf-jenkins.git
+    repo: https://github.com/tungstenfabric/tf-jenkins.git
     dest: "{{ tf_jenkins_repo_dir.path }}"
 
 - name: Update jenkins_jobs.ini

@@ -199,7 +199,7 @@ def publish_plain_results_to_monitoring(streams, results, verified) {
 
     logstring = optstostring(log_opts)
     sh """
-      ${WORKSPACE}/src/baukin/tf-jenkins/infra/fluentd/log.py \
+      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
         ${logstring}
     """
   } catch (err) {
@@ -246,7 +246,7 @@ def publish_nightly_results_to_monitoring(streams, results) {
 
       logstring = optstostring(log_opts)
       sh """
-        ${WORKSPACE}/src/baukin/tf-jenkins/infra/fluentd/log.py \
+        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
           ${logstring}
       """
     } catch (err) {
@@ -322,7 +322,7 @@ def notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, pa
 
     // TODO: send comment by sha or patchset num
     sh """
-      ${WORKSPACE}/src/baukin/tf-jenkins/infra/gerrit/notify.py \
+      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/notify.py \
         --gerrit ${url} \
         --user \$GERRIT_API_USER \
         --password \$GERRIT_API_PASSWORD \
@@ -350,7 +350,7 @@ def _has_approvals(strategy) {
     def output = ""
     try {
       output = sh(returnStdout: true, script: """
-        ${WORKSPACE}/src/baukin/tf-jenkins/infra/gerrit/check_approvals.py \
+        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/check_approvals.py \
           --debug \
           --strategy ${strategy} \
           --gerrit ${url} \
@@ -374,7 +374,7 @@ def _has_approvals(strategy) {
 
 def resolve_patchsets() {
   res = sh(returnStatus: true, script: """
-    ${WORKSPACE}/src/baukin/tf-jenkins/infra/gerrit/resolve_patchsets.py \
+    ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/resolve_patchsets.py \
       --gerrit ${gerrit_url} \
       --review ${GERRIT_CHANGE_ID} \
       --branch ${GERRIT_BRANCH} \
@@ -405,7 +405,7 @@ def process_stale_reviews(strategy) {
 
     def url = resolve_gerrit_url()
     sh """
-      ${WORKSPACE}/src/baukin/tf-jenkins/infra/gerrit/process_stale_reviews.py \
+      ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/process_stale_reviews.py \
         --strategy ${strategy} \
         --gerrit ${url} \
         --user \$GERRIT_API_USER \
@@ -446,7 +446,7 @@ def is_merged() {
     def output = ""
     try {
       output = sh(returnStdout: true, script: """
-        ${WORKSPACE}/src/baukin/tf-jenkins/infra/gerrit/is_merged.py \
+        ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/gerrit/is_merged.py \
           --debug \
           --gerrit ${url} \
           --user \$GERRIT_API_USER \
