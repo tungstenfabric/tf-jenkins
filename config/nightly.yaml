@@ -62,20 +62,26 @@
           vars:
             DEBUGINFO: TRUE
         # hack with locks due to lack of resources
+        operator-ha:
+          lock: group-two-ha
         juju-os-ha-ziu:
-          lock: juju-ha
+          lock: group-two-ha
         juju-k8s-ha:
-          lock: juju-ha
+          lock: group-two-ha
+        juju-hybrid-ha:
+          lock: group-two-ha
         helm-k8s-ha:
-          lock: helm-ha
+          lock: group-one-ha
         helm-os-ha:
-          lock: helm-ha
+          lock: group-one-ha
+        ansible-os-ha:
+          lock: group-one-ha
         ansible-os-ha-ziu:
-          lock: ansible-ha
+          lock: group-one-ha
         ansible-k8s-ha:
-          lock: ansible-ha
+          lock: group-one-ha
         k8s-manifests-ha:
-          lock: ansible-ha
+          lock: group-one-ha
         openshift4-slave01:
           vars:
             CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
