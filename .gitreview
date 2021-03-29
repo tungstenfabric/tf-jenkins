@@ -1,5 +1,5 @@
 [gerrit]
 host=gerrit.tungsten.io
 port=29418
-project=baukin/tf-jenkins.git
+project=tungstenfabric/tf-jenkins.git
 defaultbranch=master
