@@ -25,11 +25,14 @@
         - juju-os-maas
         - juju-os-ha-ziu
         - juju-os-1912
+        - juju-os-2011
         - juju-hybrid-ha
         - rhosp13
         - rhosp13-1912
+        - rhosp13-2011
         - rhosp13-ha-ziu
         - rhosp16
+        - rhosp16-2011
         - rhosp16-ha-ziu
         - rhosp13-bmc
         - operator
@@ -107,10 +110,22 @@
           # additional deps
           depends-on:
             - package-r1912
+        deploy-tf-juju-os-2011:
+          # additional deps
+          depends-on:
+            - package-r2011-centos
         deploy-tf-rhosp13-1912:
           # additional deps
           depends-on:
             - package-r1912-ubi
+        deploy-tf-rhosp13-2011:
+          # additional deps
+          depends-on:
+            - package-r2011-ubi
+        deploy-tf-rhosp16-2011:
+          # additional deps
+          depends-on:
+            - package-r2011-ubi
 
         publish-centos-r1912:
           job-name: publish

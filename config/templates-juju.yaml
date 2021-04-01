@@ -176,6 +176,45 @@
           - test-sanity-juju-os-1912
 
 - template:
+    name: juju-os-2011
+    # to use latest deployer's code
+    parents:
+      - build-centos
+    streams:
+      juju-os-2011:
+        vars:
+          CONTRAIL_CONTAINER_TAG: 'nightly-r2011-centos'
+          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5002'
+          SSL_ENABLE: 'true'
+          MONITORING_DEPLOY_TARGET: ILTS
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
+    jobs:
+      deploy-platform-juju-os-2011:
+        job-name: deploy-platform-juju-os
+        stream: juju-os-2011
+      deploy-tf-juju-os-2011:
+        job-name: deploy-tf-juju-os
+        stream: juju-os-2011
+        depends-on:
+          # to use latest deployer's code
+          - package-deployers-centos
+          - deploy-platform-juju-os-2011
+      test-sanity-juju-os-2011:
+        job-name: test-sanity
+        stream: juju-os-2011
+        depends-on:
+          - deploy-tf-juju-os-2011
+      collect-logs-and-cleanup-juju-os-2011:
+        job-name: collect-logs-and-cleanup
+        stream: juju-os-2011
+        type: post-hook
+        depends-on:
+          - deploy-platform-juju-os-2011
+          - deploy-tf-juju-os-2011
+          - test-sanity-juju-os-2011
+
+- template:
     name: juju-os-ha
     parents:
       - build-centos

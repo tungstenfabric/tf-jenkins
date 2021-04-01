@@ -101,6 +101,50 @@
           - test-sanity-rhosp13-1912
 
 - template:
+    name: rhosp13-2011
+    # to use latest deployer's code
+    parents:
+      - build-ubi
+    streams:
+      rhosp13-2011:
+        vars:
+          OPENSTACK_VERSION: queens
+          RHOSP_VERSION: rhosp13
+          TAG_SUFFIX: "-ubi7"
+          DEPLOY_COMPACT_AIO: true
+          ENABLE_RHEL_REGISTRATION: false
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.progmaticlab.com:5005"
+          CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
+          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5002'
+          MONITORING_DEPLOY_TARGET: ILTS
+          MONITORING_DEPLOYER: rhosp13
+          MONITORING_ORCHESTRATOR: os
+    jobs:
+      deploy-platform-rhosp13-2011:
+        stream: rhosp13-2011
+        job-name: deploy-platform-rhosp13
+      deploy-tf-rhosp13-2011:
+        stream: rhosp13-2011
+        job-name: deploy-tf-rhosp13
+        depends-on:
+          # to use latest deployer's code
+          - package-deployers-ubi
+          - deploy-platform-rhosp13-2011
+      test-sanity-rhosp13-2011:
+        job-name: test-sanity
+        stream: rhosp13-2011
+        depends-on:
+          - deploy-tf-rhosp13-2011
+      collect-logs-and-cleanup-rhosp13-2011:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp13-2011
+        type: post-hook
+        depends-on:
+          - deploy-platform-rhosp13-2011
+          - deploy-tf-rhosp13-2011
+          - test-sanity-rhosp13-2011
+
+- template:
     name: rhosp16
     parents:
       - build-ubi
@@ -137,6 +181,50 @@
           - deploy-platform-rhosp16
           - deploy-tf-rhosp16
           - test-sanity-rhosp16
+
+- template:
+    name: rhosp16-2011
+    # to use latest deployer's code
+    parents:
+      - build-ubi
+    streams:
+      rhosp16-2011:
+        vars:
+          OPENSTACK_VERSION: train
+          RHOSP_VERSION: rhosp16
+          TAG_SUFFIX: "-ubi7"
+          DEPLOY_COMPACT_AIO: true
+          ENABLE_RHEL_REGISTRATION: false
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.progmaticlab.com:5005"
+          CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
+          CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5002'
+          MONITORING_DEPLOY_TARGET: ILTS
+          MONITORING_DEPLOYER: rhosp16
+          MONITORING_ORCHESTRATOR: os
+    jobs:
+      deploy-platform-rhosp16-2011:
+        stream: rhosp16-2011
+        job-name: deploy-platform-rhosp16
+      deploy-tf-rhosp16-2011:
+        stream: rhosp16-2011
+        job-name: deploy-tf-rhosp16
+        depends-on:
+          # to use latest deployer's code
+          - package-deployers-ubi
+          - deploy-platform-rhosp16-2011
+      test-sanity-rhosp16-2011:
+        job-name: test-sanity
+        stream: rhosp16-2011
+        depends-on:
+          - deploy-tf-rhosp16-2011
+      collect-logs-and-cleanup-rhosp16-2011:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp16-2011
+        type: post-hook
+        depends-on:
+          - deploy-platform-rhosp16-2011
+          - deploy-tf-rhosp16-2011
+          - test-sanity-rhosp16-2011
 
 - template:
     name: rhosp16-ha
