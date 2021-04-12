@@ -120,6 +120,7 @@ def _evaluate_env(def config_utils) {
       rm -rf global.env
       echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
       echo "export SLAVE=${SLAVE}" >> global.env
+      echo "export CI_DOMAIN=${CI_DOMAIN}" >> global.env
       echo "export LOGS_HOST=${constants.LOGS_HOST}" >> global.env
       echo "export LOGS_PATH=${logs_path}" >> global.env
       echo "export LOGS_URL=${logs_url}" >> global.env
@@ -140,6 +141,7 @@ def _evaluate_env(def config_utils) {
     // store gerrit input if present. evaluate jobs
     println("Pipeline to run: ${env.GERRIT_PIPELINE}")
     project_name = env.GERRIT_PROJECT
+    repos_channel = 'latest'
     if (env.GERRIT_CHANGE_ID) {
       sh """#!/bin/bash -e
         echo "export GERRIT_URL=${gerrit_url}" >> global.env
@@ -157,9 +159,12 @@ def _evaluate_env(def config_utils) {
       sh """#!/bin/bash -e
         echo "export GERRIT_BRANCH=master" >> global.env
         echo "export REPOS_TYPE=${REPOS_TYPE}" >> global.env
-        echo "export REPOS_CHANNEL=stage" >> global.env
       """
+      repos_channel = 'stage'
     }
+    sh """#!/bin/bash -e
+      echo "export REPOS_CHANNEL=${repos_channel}" >> global.env
+    """
     archiveArtifacts(artifacts: 'global.env')
 
     if (env.GERRIT_PIPELINE != 'templates') {
@@ -414,7 +419,7 @@ def _job_params_to_file(def job_set, def name, def streams, def env_file) {
   }
   // simple for-loop to avoid non-Serializable exception
   for (def i = 0; i < vars_keys.size(); ++i) {
-    env_text += "export ${vars_keys[i]}='${vars[vars_keys[i]]}'\n"
+    env_text += "export ${vars_keys[i]}=\"${vars[vars_keys[i]]}\"\n"
   }
   writeFile(file: env_file, text: env_text)
   archiveArtifacts(artifacts: env_file)

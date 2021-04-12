@@ -12,15 +12,12 @@ source "$WORKSPACE/stackrc.$JOB_NAME.env" || /bin/true
 source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 
-# Switch REPOS_CHANNEL
-if [[ -n "$REPOS_CHANNEL" && "$REPOS_CHANNEL" != 'latest' ]]; then
-  sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" $my_dir/../../mirrors/ubuntu18-sources.list
-  sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" $my_dir/../../mirrors/ubuntu18-environment
-fi
-
-rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-pip.conf" ${IMAGE_SSH_USER}@${instance_ip}:./pip.conf
-rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-docker-daemon.json" ${IMAGE_SSH_USER}@${instance_ip}:./docker-daemon.json
-rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/ubuntu18-sources.list" ${IMAGE_SSH_USER}@${instance_ip}:./ubuntu18-sources.list
+cat $my_dir/../../mirrors/mirror-pip.conf | envsubst > "$WORKSPACE/mirror-pip.conf"
+rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/mirror-pip.conf" ${IMAGE_SSH_USER}@${instance_ip}:./pip.conf
+cat $my_dir/../../mirrors/mirror-docker-daemon.json | envsubst > "$WORKSPACE/mirror-docker-daemon.json"
+rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/mirror-docker-daemon.json" ${IMAGE_SSH_USER}@${instance_ip}:./docker-daemon.json
+cat $my_dir/../../mirrors/ubuntu18-sources.list | envsubst > "$WORKSPACE/ubuntu18-sources.list"
+rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/ubuntu18-sources.list" ${IMAGE_SSH_USER}@${instance_ip}:./ubuntu18-sources.list
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 sudo cp -f ./pip.conf /etc/pip.conf
@@ -35,6 +32,7 @@ EOF
 
 if [ -f $my_dir/../../mirrors/ubuntu18-environment ]; then
   echo "INFO: copy additional environment to host"
-  rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/ubuntu18-environment" ${IMAGE_SSH_USER}@${instance_ip}:./ubuntu18-environment
+  cat $my_dir/../../mirrors/ubuntu18-environment | envsubst > "$WORKSPACE/ubuntu18-environment"
+  rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/ubuntu18-environment" ${IMAGE_SSH_USER}@${instance_ip}:./ubuntu18-environment
   ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "cat ubuntu18-environment | sudo tee -a /etc/environment"
 fi

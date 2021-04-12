@@ -87,12 +87,12 @@
           lock: group-one-ha
         openshift4-slave01:
           vars:
-            CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
-            DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
+            CONTAINER_REGISTRY: 'tf-nexus.$CI_DOMAIN:5102'
+            DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$CI_DOMAIN:5102'
         openshift4-slave04:
           vars:
-            CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
-            DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.progmaticlab.com:5102'
+            CONTAINER_REGISTRY: 'tf-nexus.$CI_DOMAIN:5102'
+            DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$CI_DOMAIN:5102'
       jobs:
         publish-centos-nightly:
           job-name: publish

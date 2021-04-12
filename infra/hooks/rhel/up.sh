@@ -37,12 +37,8 @@ else
   exit 1
 fi
 
-# Switch REPOS_CHANNEL
-if [[ -n "$REPOS_CHANNEL" && "$REPOS_CHANNEL" != 'latest' ]]; then
-  sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${repofile}
-fi
-
-rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "${repofile}" ${IMAGE_SSH_USER}@${instance_ip}:./local.repo
+cat $repofile | envsubst > $WORKSPACE/local.repo
+rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/local.repo" ${IMAGE_SSH_USER}@${instance_ip}:./local.repo
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/distribute_local_repos.sh" ${IMAGE_SSH_USER}@${instance_ip}:./distribute_local_repos.sh
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip

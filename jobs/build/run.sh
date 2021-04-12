@@ -56,11 +56,11 @@ elif [[ "${LINUX_DISTR}" =~ 'ubi7' ]] ; then
   mirror_list="google-chrome.repo ubi.repo mirror-rhel7.repo"
 fi
 
-if [[ $REPOS_CHANNEL != 'latest' ]]; then
-  for repofile in $mirror_list_for_build $mirror_list; do
-    sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}
-  done
-fi
+for repofile in $mirror_list_for_build $mirror_list mirror-base.repo mirror-docker.repo mirror-pip.conf mirror-docker-daemon.json ubuntu18-sources.list ; do
+  file="${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}"
+  cat $file | envsubst > $file.tmp
+  mv $file.tmp $file
+done
 
 # sync should be made after optional repo URLs updating
 rsync -a -e "$ssh_cmd" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
@@ -103,8 +103,8 @@ cd src/tungstenfabric/tf-dev-env
 export BASE_EXTRA_RPMS=''
 rm -rf ./config/etc
 mkdir -p ./config/etc/yum.repos.d
-case "${LINUX_DISTR}" in
-  "rhel7")
+case "${ENVIRONMENT_OS,,}" in
+  rhel* )
     export RHEL_HOST_REPOS=''
     # TODO: now no way to put gpg keys into containers for repo mirrors
     # disable gpgcheck as keys are not available inside the contianers
@@ -114,9 +114,10 @@ case "${LINUX_DISTR}" in
       cp -f ./config/etc/yum.repos.d/\$frepo ./container/\$frepo
     done
     ;;
-  "centos")
-    # copy docker repo to local machine
+  centos* )
+    # copy docker and base repos to local machine
     sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
+    sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-base.repo /etc/yum.repos.d/
     ;;
 esac
 for mirror in $mirror_list_for_build ; do

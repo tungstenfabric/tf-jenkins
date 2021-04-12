@@ -34,11 +34,11 @@ if [[ ${LINUX_DISTR} == 'centos' ]]; then
   mirror_list+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
   mirror_list+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
 fi
-if [[ $REPOS_CHANNEL != 'latest' ]]; then
-  for repofile in $mirror_list_for_build $mirror_list; do
-    sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}
-  done
-fi
+for repofile in $mirror_list_for_build $mirror_list mirror-base.repo mirror-docker.repo mirror-pip.conf mirror-docker-daemon.json ; do
+  file="${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}"
+  cat $file | envsubst > $file.tmp
+  mv $file.tmp $file
+done
 
 # sync should be made after optional repo URLs updating
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./

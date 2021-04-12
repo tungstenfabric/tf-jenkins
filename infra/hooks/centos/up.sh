@@ -12,8 +12,10 @@ source "$WORKSPACE/stackrc.$JOB_NAME.env" || /bin/true
 source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 
-rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-pip.conf" ${IMAGE_SSH_USER}@${instance_ip}:./pip.conf
-rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-docker-daemon.json" ${IMAGE_SSH_USER}@${instance_ip}:./docker-daemon.json
+cat $my_dir/../../mirrors/mirror-pip.conf | envsubst > "$WORKSPACE/mirror-pip.conf"
+rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/mirror-pip.conf" ${IMAGE_SSH_USER}@${instance_ip}:./pip.conf
+cat $my_dir/../../mirrors/mirror-docker-daemon.json | envsubst > "$WORKSPACE/mirror-docker-daemon.json"
+rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/mirror-docker-daemon.json" ${IMAGE_SSH_USER}@${instance_ip}:./docker-daemon.json
 
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 sudo cp -f ./pip.conf /etc/pip.conf
@@ -24,17 +26,12 @@ EOF
 
 if [ -f $my_dir/../../mirrors/centos7-environment ]; then
   echo "INFO: copy additional environment to host"
-  rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/centos7-environment" ${IMAGE_SSH_USER}@${instance_ip}:./centos7-environment
+  cat $my_dir/../../mirrors/centos7-environment | envsubst > "$WORKSPACE/centos7-environment"
+  rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/centos7-environment" ${IMAGE_SSH_USER}@${instance_ip}:./centos7-environment
   ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "cat centos7-environment | sudo tee -a /etc/environment"
 fi
 
-# Switch REPOS_CHANNEL
-if [[ -n "$REPOS_CHANNEL" && "$REPOS_CHANNEL" != 'latest' ]]; then
-  sed -i "s|/latest/|/${REPOS_CHANNEL}/|g" $my_dir/../../mirrors/mirror-base.repo
-fi
-
-if [ -f $my_dir/../../mirrors/mirror-base.repo ]; then
-  echo "INFO: copy mirror-base.repo to host"
-  rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$my_dir/../../mirrors/mirror-base.repo" ${IMAGE_SSH_USER}@${instance_ip}:./mirror-base.repo
-  ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "sudo rm -f /etc/yum.repos.d/*; sudo cp mirror-base.repo /etc/yum.repos.d/"
-fi
+echo "INFO: copy mirror-base.repo to host"
+cat $my_dir/../../mirrors/mirror-base.repo | envsubst > "$WORKSPACE/mirror-base.repo"
+rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/mirror-base.repo" ${IMAGE_SSH_USER}@${instance_ip}:./mirror-base.repo
+ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "sudo rm -f /etc/yum.repos.d/*; sudo cp mirror-base.repo /etc/yum.repos.d/"
