@@ -1,7 +1,13 @@
 
 function get_instance_ip() {
   local instance_id=$1
-  openstack server show $instance_id -c addresses -f value | cut -f 2 -d '='
+  local net=${2:-"$OS_NETWORK"}
+  local substr
+  for substr in $(openstack server show $instance_id -c addresses -f value | tr ' ' '\n' | sed 's/;//'); do
+    if [[ " $substr" =~ " $net=" ]]; then
+      echo $substr | cut -d "=" -f 2
+    fi
+  done
 }
 
 function list_instances() {
