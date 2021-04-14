@@ -23,6 +23,10 @@ ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
 echo "export OS_REGION_NAME=${OS_REGION_NAME}" > "$ENV_FILE"
 echo "export ENVIRONMENT_OS=${ENVIRONMENT_OS}" >> "$ENV_FILE"
+echo "export OS_API_NETWORK_CIDR=$(get_network_cidr $OS_NETWORK)" >> "$ENV_FILE"
+if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
+  echo "export OS_DATA_NETWORK_CIDR=$(get_network_cidr $OS_DATA_NETWORK)" >> "$ENV_FILE"
+fi
 
 IMAGE_TEMPLATE_NAME="${OS_IMAGES["${ENVIRONMENT_OS^^}"]}"
 for (( i=1; i<=5 ; ++i )) ; do
