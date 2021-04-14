@@ -11,7 +11,7 @@ ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 if [[ -z "$NODES" ]]; then
     echo "NODES declaration error: \"$NODES\""
     echo "creating one controller"
-    NODES="CONTROLLER_NODES::1"
+    NODES="CONTROLLER_NODES:$VM_TYPE:1"
 fi
 
 rm -f new_key new_key.pub
