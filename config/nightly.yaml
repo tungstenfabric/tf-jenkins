@@ -34,7 +34,7 @@
         - rhosp16
         - rhosp16-2011
         - rhosp16-ha-ziu
-        - rhosp13-bmc
+        #- rhosp13-bmc
         - operator
         - operator-ha
         - openshift4-slave04
