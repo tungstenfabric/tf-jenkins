@@ -127,21 +127,13 @@
           depends-on:
             - package-r2011-ubi
 
-        publish-centos-r1912:
-          job-name: publish
-          depends-on:
-            - package-r1912
-          vars:
-            TAG_SUFFIX: "-r1912"
-            PUBLISH_TAGS: "R1912"
-
-        #publish-centos-r2011:
+        #publish-centos-r1912:
         #  job-name: publish
         #  depends-on:
-        #    - package-r2011-centos
+        #    - package-r1912
         #  vars:
-        #    TAG_SUFFIX: "-r2011-centos"
-        #    PUBLISH_TAGS: "R2011"
+        #    TAG_SUFFIX: "-r1912"
+        #    PUBLISH_TAGS: "R1912"
 
         aquascan-ubi-nightly:
           job-name: aquascan

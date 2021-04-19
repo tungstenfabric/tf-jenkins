@@ -14,7 +14,7 @@
     streams:
       rhosp16-os-not-implemented-targets:
         vars:
-          MONITORING_DEPLOY_TARGET: PROD,ISSU,SR-IOV,DPDK,ILTS,CCImport
+          MONITORING_DEPLOY_TARGET: PROD,ISSU,SR-IOV,DPDK,CCImport
           MONITORING_DEPLOYER: rhosp16
           MONITORING_ORCHESTRATOR: os
 
@@ -72,9 +72,6 @@
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$CI_DOMAIN:5005"
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
           CONTAINER_REGISTRY: 'tf-nexus.$CI_DOMAIN:5002'
-          MONITORING_DEPLOY_TARGET: ILTS
-          MONITORING_DEPLOYER: rhosp13
-          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-rhosp13-1912:
         stream: rhosp13-1912

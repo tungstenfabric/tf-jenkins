@@ -147,9 +147,6 @@
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
           CONTAINER_REGISTRY: 'tf-nexus.$CI_DOMAIN:5002'
           SSL_ENABLE: 'true'
-          MONITORING_DEPLOY_TARGET: ILTS
-          MONITORING_DEPLOYER: juju
-          MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-juju-os-1912:
         job-name: deploy-platform-juju-os

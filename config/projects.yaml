@@ -282,11 +282,8 @@
     name: tungstenfabric/tf-jenkins
     check:
       templates:
-        - ansible-os
-        - juju-os
+        - build-centos
         - operator
-        - rhosp13
-        - rhosp16
         - cleanup
 
 - project:
