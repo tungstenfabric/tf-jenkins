@@ -15,8 +15,8 @@ source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 
 #This hook is for VEXX only
 if [[ "$PROVIDER" != 'vexx' ]]; then
-   echo Skipping hooks.
-   exit 0
+  echo "INFO: Skipping hooks. RHEL hooks for vexxhost only"
+  exit 0
 fi
 
 ENVIRONMENT_OS=${ENVIRONMENT_OS:-'rhel7'}

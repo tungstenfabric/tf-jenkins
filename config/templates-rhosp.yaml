@@ -351,6 +351,46 @@
           - test-sanity-rhosp16-bmc
 
 - template:
+    name: rhosp16-slave01
+    parents:
+      - build-ubi
+    streams:
+      rhosp16-slave01:
+        lock: openlab3
+        vars:
+          DEBUG: true
+          JUMPHOST: openlab3
+          OPENSTACK_VERSION: train
+          ENVIRONMENT_OS: rhel8
+          TAG_SUFFIX: "-ubi7"
+          ENABLE_RHEL_REGISTRATION: true
+          ENABLE_NETWORK_ISOLATION: false
+    jobs:
+      deploy-platform-rhosp16-slave01:
+        job-name: deploy-platform-rhosp16
+        stream: rhosp16-slave01
+      deploy-tf-rhosp16-slave01:
+        job-name: deploy-tf-rhosp16
+        stream: rhosp16-slave01
+        timeout: 240
+        depends-on:
+          - package-ubi
+          - deploy-platform-rhosp16-slave01
+      test-sanity-rhosp16-slave01:
+        job-name: test-sanity
+        stream: rhosp16-slave01
+        depends-on:
+          - deploy-tf-rhosp16-slave01
+      collect-logs-and-cleanup-rhosp16-slave01:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp16-slave01
+        type: post-hook
+        depends-on:
+          - deploy-platform-rhosp16-slave01
+          - deploy-tf-rhosp16-slave01
+          - test-sanity-rhosp16-slave01
+
+- template:
     name: rhosp13-ha
     parents:
       - build-ubi

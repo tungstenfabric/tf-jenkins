@@ -19,9 +19,12 @@ declare -A RHOSP_PROVIDERS=( \
   ['vexx']='vexx' \
   ['bmc']='bmc' \
   ['openlab1']='bmc' \
+  ['openlab2']='bmc' \
+  ['openlab3']='kvm' \
+  ['openlab4']='kvm' \
 )
 
-export PROVIDER="${RHOSP_PROVIDERS[$JUMPHOST]}"
+export PROVIDER="${PROVIDER:-${RHOSP_PROVIDERS[$JUMPHOST]}}"
 
 [ -n "$PROVIDER" ] || {
   echo "ERROR: unsupported JUMPHOST: $JUMPHOST"
