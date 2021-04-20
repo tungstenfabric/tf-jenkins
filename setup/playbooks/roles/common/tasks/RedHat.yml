@@ -1,0 +1,16 @@
+---
+
+#- name: update curl
+#  yum:
+#    name: "{{ item }}"
+#    state: latest
+#    update_cache: yes
+#  with_items:
+#    - nss
+#    - curl
+
+- name: install epel
+  yum:
+    name: epel-release
+    state: present
+    update_cache: yes

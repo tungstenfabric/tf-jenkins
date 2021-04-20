@@ -1,0 +1,26 @@
+#!/bin/bash
+
+export LOGFILE=/tmp/zuul-log-rotate.log
+
+exec > >(tee -a $LOGFILE)
+exec 2>&1
+echo "=================== $(date) ==================="
+set -xv
+
+logdir="{{ logserver_data_directory }}"
+if [ -z "$logdir" ] ; then
+  echo "ERROR: empty log dir"
+  exit -1
+fi
+
+exclude_dir="$logdir/static*"
+
+df -h
+du -hs $logdir
+
+find $logdir/jenkins_logs/nightly/ -maxdepth 1 -type d -ctime +30 -exec rm -rf {} \;
+find $logdir -type f,l ! -path "$exclude_dir" -ctime +30 -execdir rm -f {} \;
+find $logdir -type d ! -path "$exclude_dir" -ctime +5 -empty -delete
+
+du -hs $logdir
+df -h

@@ -1,0 +1,20 @@
+---
+nexus_user: "admin"
+nexus_password: "admin123"
+nexus_restricted_dir_allowed_cidrs:
+  - "10.0.0.0/16"
+  - "66.129.239.10/31"
+  - "66.129.239.12/30"
+  - "66.129.239.16/30"
+  - "66.129.242.10/31"
+  - "66.129.242.12/30"
+  - "66.129.242.16/30"
+  - "213.208.163.170/32"
+  - "116.197.184.10/31"
+  - "116.197.184.12/30"
+  - "116.197.184.16/30"
+  - "3.15.7.230/32"
+
+# Do not prefix with /. Nexus rejects double slashes
+nexus_restricted_paths:
+  - "repository/rhel"

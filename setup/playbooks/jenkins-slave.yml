@@ -1,0 +1,9 @@
+---
+- name: Configure jenkins slave
+  hosts: jenkins_slave
+  remote_user: "{{ remote_user }}"
+  gather_facts: true
+  become: yes
+  roles:
+    - jenkins-common
+    - jenkins-slave

@@ -1,0 +1,3 @@
+devpi-server==5.5.1
+devpi-client
+devpi-web

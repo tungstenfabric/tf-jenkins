@@ -1,0 +1,159 @@
+- name: Create dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - /opt/mirrors/
+    - /var/local/mirror/repos
+    - /var/local/mirror/dockerhub
+    - /var/local/mirror/pypi/data
+
+- name: Copy config files
+  copy:
+    src: "files/{{ item }}/"
+    dest: /opt/mirrors/{{ item }}/
+  with_items:
+    - traefik
+    - dockerhub
+    - nginx
+
+- name: Copy image build data
+  copy:
+    src: "files/{{ item }}/"
+    dest: /opt/mirrors/{{ item }}/
+  with_items:
+    - devpi
+    - centos7
+    - rhel7
+    - rhel8
+    - ubuntu18
+
+- name: Install required python modules
+  pip:
+    name: ['requests', 'docker']
+
+- name: Build devpi image
+  docker_image:
+    build:
+      path: "/opt/mirrors/{{ item }}"
+    name: "{{ item }}"
+    tag: latest
+    source: build
+  with_items:
+    - devpi
+
+- name: Make synrepos.sh executable
+  file:
+    path: "/opt/mirrors/{{ item }}/syncrepos.sh"
+    mode: '0755'
+  with_items:
+    - centos7
+    - rhel7
+    - rhel8
+    - ubuntu18
+
+- name: Build repos images
+  docker_image:
+    build:
+      path: "/opt/mirrors/{{ item }}"
+    name: "{{ item }}repos"
+    tag: latest
+    source: build
+  with_items:
+    - centos7
+    - rhel7
+    - rhel8
+    - ubuntu18
+
+- name: Set devpi secret
+  copy:
+    content: "{{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=16') }}"
+    dest: /var/local/mirror/pypi/data/.secret
+
+- name: Init devpi
+  docker_container:
+    name: devpi-init
+    image: devpi:latest
+    command: "devpi-init"
+    restart_policy: no
+    volumes:
+      - /var/local/mirror/pypi:/devpi
+
+- name: Start traefik
+  docker_container:
+    name: traefik
+    image: traefik:2.3
+    restart_policy: unless-stopped
+    recreate: true
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "5000:5000"
+    volumes:
+      - /opt/mirrors/traefik/traefik.yml:/etc/traefik/traefik.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+
+- name: Start docker registry mirror
+  docker_container:
+    name: dockerhub
+    image: registry:2
+    volumes:
+      - /opt/mirrors/dockerhub/config.yml:/etc/docker/registry/config.yml
+      - /var/local/mirror/dockerhub:/var/lib/registry
+
+- name: Start devpi
+  docker_container:
+    name: devpi
+    image: devpi:latest
+    volumes:
+      - /var/local/mirror/pypi:/devpi
+    labels:
+      traefik.http.routers.pypi.entrypoints: web
+      traefik.http.routers.pypi.rule: PathPrefix(`/root`)
+
+- name: Start repos nginx
+  docker_container:
+    name: repos
+    image: nginx:latest
+    volumes:
+      - /var/local/mirror/repos:/usr/share/nginx/html/repos
+      - /opt/mirrors/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    labels:
+      traefik.http.routers.repos.entrypoints: web
+      traefik.http.routers.repos.rule: PathPrefix(`/repos`)
+
+- name: Copy management scripts
+  copy:
+    src: "files/{{ item }}"
+    dest: "/opt/mirrors/{{ item }}"
+    mode: 0755
+  with_items:
+    - sync.sh
+    - publish_stage.sh
+
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Create repoupdater user
+  user:
+    name: repoupdater
+    group: wheel
+    state: present
+    createhome: yes
+
+- name: set up authorized key
+  authorized_key:
+    user: repoupdater
+    key: "{{ lookup('file', '{{ ssh_keys_dir }}/mirrors_rsa.pub') }}"
+

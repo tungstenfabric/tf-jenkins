@@ -1,0 +1,76 @@
+---
+- name: install python modules
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - influxdb
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+    mode: 0755
+  with_items:
+    - /opt/monitoring
+
+- name: copy files
+  copy:
+    src: "files/{{ item }}"
+    dest: "/opt/monitoring/{{ item }}"
+    mode: 0644
+  with_items:
+    - Dockerfile
+    - docker-compose.yaml
+
+- name: apply configuration
+  template:
+    src: "{{ item }}.j2"
+    dest: "/opt/monitoring/{{ item }}"
+    mode: 0644
+  with_items:
+    - fluent.conf
+
+- name: start apps
+  docker_service:
+    project_src: /opt/monitoring
+
+- name: Pause play until influxdb becomes reachable
+  uri:
+    url: "http://localhost:8086/ping"
+    follow_redirects: none
+    method: GET
+    status_code: 204
+  register: _result
+  until: _result.status == 204
+  retries: 10
+  delay: 5
+
+- name: Create database
+  influxdb_database:
+    hostname: "localhost"
+    database_name: "{{ database }}"
+    udp_port: 4444 # fixed in later ansible versions
+
+#- name: Create influxdb datasource
+#  grafana_datasource:
+#    name: "influxdb"
+#    grafana_url: "http://localhost:3000"
+#    grafana_user: "admin"
+#    grafana_password: "{{ grafana_password }}"
+#    org_id: "1"
+#    ds_type: "influxdb"
+#    ds_url: "http://influxdb:8086"
+#    database: "{{ database }}"
+#    time_interval: ">10s"
+
+#- name: Create dashboard
+#  uri:
+#    url: http://localhost:3000/api/dashboards/db
+#    user: admin
+#    password: "{{ grafana_password }}"
+#    method: POST
+#    force_basic_auth: yes
+#    status_code: 200
+#    body_format: json
+#    body: "{\"overwrite\": true, \"dashboard\": {{ lookup('file', 'dashboard.json') }} }"

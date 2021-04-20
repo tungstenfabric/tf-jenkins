@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  become: no
+  roles:
+    - ssh-keys

@@ -1,0 +1,20 @@
+## traefik.yml
+
+# Docker configuration backend
+providers:
+  docker:
+    #defaultRule: "PathPrefix(`/`)"
+    defaultRule: "Host(`{{ trimPrefix `/` .Name }}.docker.localhost`)"
+
+entryPoints:
+  web:
+    address: ":80"
+  dockerhub:
+    address: ":5000"
+
+# API and dashboard configuration
+api:
+  insecure: true
+
+log:
+  level: DEBUG

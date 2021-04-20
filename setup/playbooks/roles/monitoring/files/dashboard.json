@@ -1,0 +1,1054 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 1,
+  "iteration": 1597998513438,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 10,
+      "panels": [],
+      "repeat": "target",
+      "scopedVars": {
+        "target": {
+          "selected": true,
+          "text": "AIO",
+          "value": "AIO"
+        }
+      },
+      "title": "$target",
+      "type": "row"
+    },
+    {
+      "datasource": "InfluxDB",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 0,
+              "text": "",
+              "to": "",
+              "type": 1
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(0, 0, 0)",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 0,
+        "y": 1
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": "deployer",
+      "scopedVars": {
+        "deployer": {
+          "selected": true,
+          "text": "Juju",
+          "value": "Juju"
+        },
+        "target": {
+          "selected": true,
+          "text": "AIO",
+          "value": "AIO"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_orchestrator",
+          "groupBy": [
+            {
+              "params": [
+                "orchestrator"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "Jenkins.pipeline",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "deployer",
+              "operator": "=~",
+              "value": "/^$deployer$/"
+            },
+            {
+              "condition": "AND",
+              "key": "target",
+              "operator": "=~",
+              "value": "/^$target$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$deployer",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "^[^T].*$"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 0,
+              "text": "",
+              "to": "",
+              "type": 1
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(0, 0, 0)",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 8,
+        "y": 1
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": null,
+      "repeatIteration": 1597998513438,
+      "repeatPanelId": 5,
+      "scopedVars": {
+        "deployer": {
+          "selected": true,
+          "text": "RHOSP16",
+          "value": "RHOSP16"
+        },
+        "target": {
+          "selected": true,
+          "text": "AIO",
+          "value": "AIO"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_orchestrator",
+          "groupBy": [
+            {
+              "params": [
+                "orchestrator"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "Jenkins.pipeline",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "deployer",
+              "operator": "=~",
+              "value": "/^$deployer$/"
+            },
+            {
+              "condition": "AND",
+              "key": "target",
+              "operator": "=~",
+              "value": "/^$target$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$deployer",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "^[^T].*$"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 0,
+              "text": "",
+              "to": "",
+              "type": 1
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(0, 0, 0)",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 16,
+        "y": 1
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": null,
+      "repeatIteration": 1597998513438,
+      "repeatPanelId": 5,
+      "scopedVars": {
+        "deployer": {
+          "selected": true,
+          "text": "ansible",
+          "value": "ansible"
+        },
+        "target": {
+          "selected": true,
+          "text": "AIO",
+          "value": "AIO"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_orchestrator",
+          "groupBy": [
+            {
+              "params": [
+                "orchestrator"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "Jenkins.pipeline",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "deployer",
+              "operator": "=~",
+              "value": "/^$deployer$/"
+            },
+            {
+              "condition": "AND",
+              "key": "target",
+              "operator": "=~",
+              "value": "/^$target$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$deployer",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "^[^T].*$"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 11,
+      "panels": [],
+      "repeat": null,
+      "repeatIteration": 1597998513438,
+      "repeatPanelId": 10,
+      "scopedVars": {
+        "target": {
+          "selected": true,
+          "text": "HA",
+          "value": "HA"
+        }
+      },
+      "title": "$target",
+      "type": "row"
+    },
+    {
+      "datasource": "InfluxDB",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 0,
+              "text": "",
+              "to": "",
+              "type": 1
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(0, 0, 0)",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 0,
+        "y": 5
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": "deployer",
+      "repeatIteration": 1597998513438,
+      "repeatPanelId": 5,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "deployer": {
+          "selected": true,
+          "text": "Juju",
+          "value": "Juju"
+        },
+        "target": {
+          "selected": true,
+          "text": "HA",
+          "value": "HA"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_orchestrator",
+          "groupBy": [
+            {
+              "params": [
+                "orchestrator"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "Jenkins.pipeline",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "deployer",
+              "operator": "=~",
+              "value": "/^$deployer$/"
+            },
+            {
+              "condition": "AND",
+              "key": "target",
+              "operator": "=~",
+              "value": "/^$target$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$deployer",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "^[^T].*$"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 0,
+              "text": "",
+              "to": "",
+              "type": 1
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(0, 0, 0)",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 8,
+        "y": 5
+      },
+      "id": 15,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": null,
+      "repeatIteration": 1597998513438,
+      "repeatPanelId": 12,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "deployer": {
+          "selected": true,
+          "text": "RHOSP16",
+          "value": "RHOSP16"
+        },
+        "target": {
+          "selected": true,
+          "text": "HA",
+          "value": "HA"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_orchestrator",
+          "groupBy": [
+            {
+              "params": [
+                "orchestrator"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "Jenkins.pipeline",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "deployer",
+              "operator": "=~",
+              "value": "/^$deployer$/"
+            },
+            {
+              "condition": "AND",
+              "key": "target",
+              "operator": "=~",
+              "value": "/^$target$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$deployer",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "^[^T].*$"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [
+            {
+              "from": "",
+              "id": 0,
+              "text": "",
+              "to": "",
+              "type": 1
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(0, 0, 0)",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 8,
+        "x": 16,
+        "y": 5
+      },
+      "id": 16,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.3",
+      "repeat": null,
+      "repeatIteration": 1597998513438,
+      "repeatPanelId": 12,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "deployer": {
+          "selected": true,
+          "text": "ansible",
+          "value": "ansible"
+        },
+        "target": {
+          "selected": true,
+          "text": "HA",
+          "value": "HA"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_orchestrator",
+          "groupBy": [
+            {
+              "params": [
+                "orchestrator"
+              ],
+              "type": "tag"
+            }
+          ],
+          "hide": false,
+          "measurement": "Jenkins.pipeline",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "deployer",
+              "operator": "=~",
+              "value": "/^$deployer$/"
+            },
+            {
+              "condition": "AND",
+              "key": "target",
+              "operator": "=~",
+              "value": "/^$target$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$deployer",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "^[^T].*$"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    }
+  ],
+  "refresh": "1h",
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "nightly",
+          "value": [
+            "nightly"
+          ]
+        },
+        "datasource": "InfluxDB",
+        "definition": "show tag values with key=\"gerrit_tag\"",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": true,
+        "name": "gerrit_tag",
+        "options": [],
+        "query": "show tag values with key=\"gerrit_tag\"",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "Juju + RHOSP16 + ansible",
+          "value": [
+            "Juju",
+            "RHOSP16",
+            "ansible"
+          ]
+        },
+        "datasource": "InfluxDB",
+        "definition": "show tag values with key=\"deployer\"",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": true,
+        "name": "deployer",
+        "options": [],
+        "query": "show tag values with key=\"deployer\"",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "pipeline-1",
+          "value": [
+            "pipeline-1"
+          ]
+        },
+        "datasource": "InfluxDB",
+        "definition": "show tag values with key=\"pipeline\"",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": true,
+        "name": "pipeline",
+        "options": [],
+        "query": "show tag values with key=\"pipeline\"",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "k8s + os",
+          "value": [
+            "k8s",
+            "os"
+          ]
+        },
+        "datasource": "InfluxDB",
+        "definition": "show tag values with key=\"orchestrator\"",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": true,
+        "name": "orchestrator",
+        "options": [],
+        "query": "show tag values with key=\"orchestrator\"",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "AIO + HA",
+          "value": [
+            "AIO",
+            "HA"
+          ]
+        },
+        "datasource": "InfluxDB",
+        "definition": "show tag values with key=\"target\"",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": true,
+        "name": "target",
+        "options": [],
+        "query": "show tag values with key=\"target\"",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Build status",
+  "uid": "uwaTf7NMz",
+  "version": 42
+}

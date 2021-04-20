@@ -1,0 +1,70 @@
+---
+- name: Ensure jq installed
+  package:
+    name: jq
+    state: present
+
+- name: create required directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+    mode: 0755
+    owner: zuul
+    group: zuul
+  with_items:
+    - /opt/aquasec
+    - /opt/aquasec/aqua-db
+    - /opt/aquasec/tmp
+
+- name: login into aquasec docker repo
+  command: docker login registry.aquasec.com -u '{{ aqua_cloud_user }}' -p '{{ aqua_cloud_password }}'
+  no_log: yes
+
+- name: apply aquasec docker compose file
+  template:
+    src: docker-compose.yaml.j2
+    dest: /opt/aquasec/docker-compose.yaml
+    mode: 0644
+
+- name: start aquasec services
+  docker_service:
+    project_src: /opt/aquasec
+
+- name: wait for API up
+  wait_for:
+    host: 127.0.0.1
+    port: 8080
+
+- name: get auth token
+  shell: >-
+    curl -s --request POST
+    --url http://localhost:8080/api/v1/login
+    --header 'accept: application/json'
+    --header 'content-type: application/json'
+    --data '{ "id": "administrator", "password": "{{ aqua_admin_password }}" }'
+    | jq -rcM .token
+  register: aquasec_token
+  failed_when: aquasec_token.stdout | length < 1
+  changed_when: false
+
+- name: apply aqua license
+  shell: >-
+    curl --request POST
+    --url http://localhost:8080/api/v2/license
+    --header 'accept: application/json'
+    --header 'content-type: application/json'
+    --header 'Authorization: Bearer {{ aquasec_token.stdout }}'
+    --data '{ "telemetry_enabled": false, "token": "{{ aqua_license }}" }'
+
+- name: ensure scanner user
+  shell: >-
+    curl --request POST
+    --url http://localhost:8080/api/v1/users
+    --header 'accept: application/json'
+    --header 'content-type: application/json'
+    --header 'Authorization: Bearer {{ aquasec_token.stdout }}'
+    --data '{ "id": "{{ aqua_scanner_user }}", "password": "{{ aqua_scanner_pass }}", "email": "zuul@opencontrail.org", "role": "scanner"  }'
+  register: aquasec_scanner_user
+  failed_when: aquasec_scanner_user.stdout| length > 0 and "already exists" not in aquasec_scanner_user.stdout
+  changed_when: aquasec_scanner_user.stdout | length == 0

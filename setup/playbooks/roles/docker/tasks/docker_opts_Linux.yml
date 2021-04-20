@@ -1,0 +1,85 @@
+---
+
+- name: create docker config directory
+  file:
+    path: "{{ nix_docker_config_directory }}"
+    state: directory
+    mode: 0755
+
+- name: ensure docker config file exists
+  file:
+    path: "{{ nix_docker_config_file }}"
+    state: touch
+
+- name: read docker config file
+  shell: "cat {{ nix_docker_config_file }}"
+  register: docker_daemon_file
+
+- name: convert config file entries to json
+  set_fact:
+    docker_daemon: "{{ docker_daemon_file.stdout | default('{}', true) | from_json }}"
+
+- name: register parameters
+  set_fact:
+    live_restore: "{{ docker_daemon['live-restore'] | default(false) }}"
+    mtu: "{{ docker_daemon['mtu'] | default(0) }}"
+    config_changed: false
+
+- name: read docker runtime
+  shell: "docker network inspect bridge"
+  register: docker_runtime_output
+
+- name: convert docker runtime entries to json
+  set_fact:
+    docker_runtime: "{{ docker_runtime_output.stdout | default('[]', true) | from_json }}"
+
+- name: set default value for runtime mtu
+  set_fact:
+    runtime_mtu: 0
+- name: get mtu value from runtime
+  set_fact:
+    runtime_mtu: "{{ docker_runtime[0]['Options']['com.docker.network.driver.mtu'] }}"
+  when:
+    - docker_runtime is defined
+    - docker_runtime|length > 0
+    - "'Options' in docker_runtime[0]"
+    - "'com.docker.network.driver.mtu' in docker_runtime[0]['Options']"
+
+- name: add live-restore to docker config
+  block:
+    - name: insert or update live-restore
+      set_fact:
+        docker_daemon: "{{ docker_daemon | combine({ 'live-restore': true }) }}"
+    - name: set changed flag
+      set_fact:
+        config_changed: true
+  when: not live_restore
+
+- name: add mtu to docker config
+  block:
+    - name: insert or update mtu
+      set_fact:
+        docker_daemon: "{{ docker_daemon | combine({ 'mtu': ansible_default_ipv4.mtu }) }}"
+    - name: set changed flag
+      set_fact:
+        config_changed: true
+  when: mtu|int != ansible_default_ipv4.mtu|int
+
+- name: store docker config and reload daemon
+  block:
+    - name: write config to daemon.json
+      copy:
+        content: "{{ docker_daemon | to_nice_json }}"
+        dest: "{{ nix_docker_config_file }}"
+
+    - name: reload systemd
+      shell: systemctl daemon-reload
+      when: ansible_os_family == 'RedHat'
+
+    - name: restart docker daemon
+      service:
+        enabled: yes
+        name: docker
+        state: restarted
+  when: config_changed or runtime_mtu|int != ansible_default_ipv4.mtu|int
+

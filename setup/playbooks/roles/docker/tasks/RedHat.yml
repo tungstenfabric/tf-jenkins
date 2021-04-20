@@ -1,0 +1,21 @@
+---
+- name: create docker repo
+  yum_repository:
+    name: dockerrepo
+    description: Docker Repository
+    baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    gpgcheck: yes
+
+- name: install docker
+  yum:
+    name: docker-ce-18.06.3.ce
+
+- name: install easy_install
+  package:
+    name: python-setuptools
+    state: present
+  register: res
+  retries: 5
+  until: res is success
+

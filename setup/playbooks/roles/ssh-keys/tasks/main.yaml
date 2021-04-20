@@ -1,0 +1,18 @@
+---
+- name: check if ssh_keys_dir variable is set
+  fail:
+    msg: ssh_keys_dir is not defined
+  when: ssh_keys_dir is not defined
+
+- name: "create {{ ssh_keys_dir }} directory"
+  file:
+    path: "{{ ssh_keys_dir }}"
+    state: directory
+    recurse: yes
+
+- name: generate ssh keys
+  include: "generate_key.yaml key_name={{ item }}"
+  with_items:
+    - logserver
+    - mirrors
+

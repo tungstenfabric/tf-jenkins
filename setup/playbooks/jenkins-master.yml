@@ -1,0 +1,10 @@
+---
+- name: Configure jenkins master
+  hosts: jenkins_master
+  remote_user: "{{ remote_user }}"
+  gather_facts: true
+  become: yes
+  roles:
+    - pip
+    - jenkins-common
+    - jenkins-master

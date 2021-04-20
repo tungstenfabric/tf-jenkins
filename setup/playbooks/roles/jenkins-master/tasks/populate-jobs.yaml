@@ -1,0 +1,37 @@
+---
+
+- name: Create temporary build directory
+  tempfile:
+    state: directory
+    suffix: tf_jenkins_repo
+  register: tf_jenkins_repo_dir
+  when: jenkins_custom_docker_image
+
+
+- name: Clone tf-jenkins repo
+  git:
+    repo: https://github.com/tungstenfabric/tf-jenkins.git
+    dest: "{{ tf_jenkins_repo_dir.path }}"
+
+- name: Update jenkins_jobs.ini
+  template:
+    src: jenkins_jobs.ini.j2
+    dest: "{{ tf_jenkins_repo_dir.path }}/jjb/jenkins_jobs.ini"
+
+- name: Populate jobs
+  shell: |
+    cd "{{ tf_jenkins_repo_dir.path }}/jjb"
+    python3 -m venv .venv
+    source .venv/bin/activate
+    pip3 install setuptools wheel --upgrade
+    pip3 install jenkins-job-builder
+    make test
+    make update
+  environment:
+    USER: "{{ jenkins_default_user }}"
+    PASSWORD: "{{ jenkins_default_user_password }}"
+
+- name: Remove tmp dir
+  file:
+    path: "{{ tf_jenkins_repo_dir.path }}"
+    state: absent

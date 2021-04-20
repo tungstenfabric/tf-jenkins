@@ -1,0 +1,268 @@
+diff --git a/extpypi.py b/extpypi.py
+index 97b2ad13..09debda5 100644
+--- a/extpypi.py
++++ b/extpypi.py
+@@ -21,7 +21,7 @@
+ from .model import BaseStageCustomizer
+ from .model import BaseStage, make_key_and_href, SimplelinkMeta
+ from .model import ensure_boolean
+-from .model import join_requires
++from .model import join_links_data
+ from .readonly import ensure_deeply_readonly
+ from .log import threadlog
+ 
+@@ -29,6 +29,7 @@
+ class Link(URL):
+     def __init__(self, url="", *args, **kwargs):
+         self.requires_python = kwargs.pop('requires_python', None)
++        self.yanked = kwargs.pop('yanked', None)
+         URL.__init__(self, url, *args, **kwargs)
+ 
+ 
+@@ -103,7 +104,7 @@ def parse_index(self, disturl, html):
+         p = HTMLPage(html, disturl.url)
+         seen = set()
+         for link in p.links:
+-            newurl = Link(link.url, requires_python=link.requires_python)
++            newurl = Link(link.url, requires_python=link.requires_python, yanked=link.yanked)
+             if not newurl.is_valid_http_url():
+                 continue
+             if is_archive_of_project(newurl, self.project):
+@@ -331,12 +332,14 @@ def is_project_cached(self, project):
+         """ return True if we have some cached simpelinks information. """
+         return self.key_projsimplelinks(project).exists()
+ 
+-    def _save_cache_links(self, project, links, requires_python, serial):
++    def _save_cache_links(self, project, links, requires_python, yanked, serial):
+         assert links != ()  # we don't store the old "Not Found" marker anymore
+         assert isinstance(serial, int)
+         assert project == normalize_name(project), project
+-        data = {"serial": serial, "links": links,
+-            "requires_python": requires_python}
++        data = {
++            "serial": serial, "links": links,
++            "requires_python": requires_python,
++            "yanked": yanked}
+         key = self.key_projsimplelinks(project)
+         old = key.get()
+         if old != data:
+@@ -353,19 +356,21 @@ def _save_cache_links(self, project, links, requires_python, serial):
+         self.cache_retrieve_times.refresh(project)
+ 
+     def _load_cache_links(self, project):
+-        is_expired, links_with_require_python, serial = True, None, -1
++        is_expired, links_with_data, serial = True, None, -1
+ 
+         cache = self.key_projsimplelinks(project).get()
+         if cache:
+             is_expired = self.cache_retrieve_times.is_expired(project, self.cache_expiry)
+             serial = cache["serial"]
+-            links_with_require_python = join_requires(
+-                cache["links"], cache.get("requires_python", []))
+-            if self.offline and links_with_require_python:
+-                links_with_require_python = ensure_deeply_readonly(list(
+-                    filter(self._is_file_cached, links_with_require_python)))
++            links_with_data = join_links_data(
++                cache["links"],
++                cache.get("requires_python", []),
++                cache.get("yanked", []))
++            if self.offline and links_with_data:
++                links_with_data = ensure_deeply_readonly(list(
++                    filter(self._is_file_cached, links_with_data)))
+ 
+-        return is_expired, links_with_require_python, serial
++        return is_expired, links_with_data, serial
+ 
+     def _entry_from_href(self, href):
+         # extract relpath from href by cutting of the hash
+@@ -476,12 +481,13 @@ def map_and_dump():
+             entries = [maplink(link) for link in releaselinks]
+             links = [make_key_and_href(entry) for entry in entries]
+             requires_python = [link.requires_python for link in releaselinks]
+-            self._save_cache_links(project, links, requires_python, serial)
++            yanked = [link.yanked for link in releaselinks]
++            self._save_cache_links(project, links, requires_python, yanked, serial)
+             # make project appear in projects list even
+             # before we next check up the full list with remote
+             threadlog.info("setting projects cache for %r", project)
+             self.cache_projectnames.get_inplace().add(project)
+-            return join_requires(links, requires_python)
++            return join_links_data(links, requires_python, yanked)
+ 
+         try:
+             return map_and_dump()
+@@ -558,6 +564,8 @@ def get_versiondata_perstage(self, project, version, readonly=True):
+                     verdata['version'] = version
+                 if sm.require_python is not None:
+                     verdata['requires_python'] = sm.require_python
++                if sm.yanked:
++                    verdata['yanked'] = sm.yanked
+                 elinks = verdata.setdefault("+elinks", [])
+                 entrypath = sm._url.path
+                 elinks.append({"rel": "releasefile", "entrypath": entrypath})
+diff --git a/importexport.py b/server/devpi_server/importexport.py
+index 42a84b18..f01f17af 100644
+--- a/importexport.py
++++ b/importexport.py
+@@ -569,15 +569,18 @@ def import_filedesc(self, stage, filedesc, versions):
+                 entry = self.xom.filestore.maplink(
+                     url, stage.username, stage.index, project)
+                 entry.file_set_content(data, mapping["last_modified"])
+-                (_, links_with_require_python, serial) = stage._load_cache_links(project)
+-                if links_with_require_python is None:
+-                    links_with_require_python = []
++                (_, links_with_data, serial) = stage._load_cache_links(project)
++                if links_with_data is None:
++                    links_with_data = []
+                 links = [(url.basename, entry.relpath)]
+                 requires_python = [versions[version].get('requires_python')]
+-                for key, href, require_python in links_with_require_python:
++                yanked = [versions[version].get('yanked')]
++                for key, href, require_python, is_yanked in links_with_data:
+                     links.append((key, href))
+                     requires_python.append(require_python)
+-                stage._save_cache_links(project, links, requires_python, serial)
++                    yanked.append(is_yanked)
++                stage._save_cache_links(
++                    project, links, requires_python, yanked, serial)
+             # devpi-server-2.1 exported with md5 checksums
+             if "md5" in mapping:
+                 assert "hash_spec" not in mapping
+diff --git a/model.py b/server/devpi_server/model.py
+index caf6b780..de905560 100755
+--- a/model.py
++++ b/model.py
+@@ -23,12 +23,13 @@
+ from .readonly import get_mutable_deepcopy
+ 
+ 
+-def join_requires(links, requires_python):
+-    # build list of (key, href, require_python) tuples
++def join_links_data(links, requires_python, yanked):
++    # build list of (key, href, require_python, yanked) tuples
+     result = []
+-    for link, require_python in zip_longest(links, requires_python, fillvalue=None):
++    links = zip_longest(links, requires_python, yanked, fillvalue=None)
++    for link, require_python, yanked in links:
+         key, href = link
+-        result.append((key, href, require_python))
++        result.append((key, href, require_python, yanked))
+     return result
+ 
+ 
+@@ -476,7 +477,8 @@ def get_simple_links_filter_iter(self, project, links):
+         """ Called when a list of simple links is returned.
+ 
+             Returns None for no filtering, or an iterator returning
+-            True for items to keep and False for items to remove."""
++            True for items to keep and False for items to remove.
++            The size of the tuples in links might grow, develop defensively."""
+         return None
+ 
+ 
+@@ -620,21 +622,21 @@ def get_releaselinks(self, project):
+         # compatibility access method used by devpi-web and tests
+         project = normalize_name(project)
+         try:
+-            return [self._make_elink(project, key, href, require_python)
+-                    for key, href, require_python in self.get_simplelinks(project)]
++            return [self._make_elink(project, link_info)
++                    for link_info in self.get_simplelinks(project)]
+         except self.UpstreamNotFoundError:
+             return []
+ 
+     def get_releaselinks_perstage(self, project):
+         # compatibility access method for devpi-findlinks and possibly other plugins
+         project = normalize_name(project)
+-        return [self._make_elink(project, key, href, require_python)
+-                for key, href, require_python in self.get_simplelinks_perstage(project)]
++        return [self._make_elink(project, link_info)
++                for link_info in self.get_simplelinks_perstage(project)]
+ 
+-    def _make_elink(self, project, key, href, require_python):
+-        rp = SimplelinkMeta((key, href, require_python))
++    def _make_elink(self, project, link_info):
++        rp = SimplelinkMeta(link_info)
+         linkdict = {"entrypath": rp._url.path, "hash_spec": rp._url.hash_spec,
+-                    "require_python": require_python}
++                    "require_python": rp.require_python, "yanked": rp.yanked}
+         return ELink(self.filestore, linkdict, project, rp.version)
+ 
+     def get_linkstore_perstage(self, name, version, readonly=True):
+@@ -764,15 +766,16 @@ def get_simplelinks(self, project, sorted_links=True):
+                 iterator = self.customizer.get_simple_links_filter_iter(project, res)
+                 if iterator is not None:
+                     res = apply_filter_iter(res, iterator)
+-                for key, href, require_python in res:
++                for link_info in res:
++                    key = link_info[0]
+                     if key not in seen:
+                         seen.add(key)
+-                        all_links.append((key, href, require_python))
++                        all_links.append(link_info)
+         except self.UpstreamNotFoundError:
+             return []
+ 
+         if sorted_links:
+-            all_links = [(v.key, v.href, v.require_python)
++            all_links = [(v.key, v.href, v.require_python, v.yanked)
+                         for v in sorted(map(SimplelinkMeta, all_links), reverse=True)]
+         return all_links
+ 
+@@ -1138,7 +1141,8 @@ def get_simplelinks_perstage(self, project):
+         data = self.key_projsimplelinks(project).get()
+         links = data.get("links", [])
+         requires_python = data.get("requires_python", [])
+-        return join_requires(links, requires_python)
++        yanked = []  # PEP 592 isn't supported for private stages yet
++        return join_links_data(links, requires_python, yanked)
+ 
+     def _regen_simplelinks(self, project_input):
+         project = normalize_name(project_input)
+@@ -1477,8 +1481,8 @@ def _add_link_to_file_entry(self, rel, file_entry, for_entrypath=None):
+ 
+ class SimplelinkMeta(CompareMixin):
+     """ helper class to provide information for items from get_simplelinks() """
+-    def __init__(self, key_href):
+-        self.key, self.href, self.require_python = key_href
++    def __init__(self, link_info):
++        self.key, self.href, self.require_python, self.yanked = link_info
+         self._url = URL(self.href)
+         self.name, self.version, self.ext = splitbasename(self._url.basename, checkarch=False)
+ 
+diff --git a/views.py b/server/devpi_server/views.py
+index 365a73d5..1b499225 100644
+--- a/views.py
++++ b/views.py
+@@ -536,22 +536,16 @@ def make_url(href):
+             def make_url(href):
+                 return url.relpath("/" + href)
+ 
+-        for key, href, require_python in result:
++        for key, href, require_python, yanked in result:
+             stage = "/".join(href.split("/", 2)[:2])
+-            relurl = make_url(href)
+-            if require_python is None:
+-                data = dict(stage=stage, url=relurl, key=key)
+-                yield ('{stage} <a href="{url}">{key}</a><br/>\n'
+-                    .format(**data).encode('utf-8')
+-                    )
+-            else:
+-                require_python = escape(require_python)
+-                data = dict(stage=stage, url=relurl, key=key,
+-                    require_python=require_python)
+-                yield ('{stage} <a data-requires-python="{require_python}" '
+-                    'href="{url}">{key}</a><br/>\n'
+-                    .format(**data).encode('utf-8')
+-                    )
++            attribs = 'href="%s"' % make_url(href)
++            if require_python is not None:
++                attribs += ' data-requires-python="%s"' % escape(require_python)
++            if yanked:
++                attribs += ' data-yanked=""'
++            data = dict(stage=stage, attribs=attribs, key=key)
++            yield '{stage} <a {attribs}>{key}</a><br/>\n'.format(
++                **data).encode('utf-8')
+ 
+         yield "</body></html>".encode("utf-8")
+ 

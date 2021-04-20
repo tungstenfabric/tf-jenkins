@@ -1,0 +1,22 @@
+entryPoints:
+  https:
+    address: ":443"
+  registry5101:
+    address: ":5101"
+  registry5102:
+    address: ":5102"
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: "{{ letsencrypt_email }}"
+      storage: "/etc/traefik/acme.json"
+      tlsChallenge: {}
+
+log:
+  level: ERROR
+
+providers:
+  file:
+    filename: "/etc/traefik/provider.yaml"
+

@@ -1,0 +1,4 @@
+---
+database: "monitoring"
+grafana_password: "admin123"
+jenkins_measurement: "Jenkins.pipeline"

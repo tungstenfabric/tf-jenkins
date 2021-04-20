@@ -1,0 +1,9 @@
+---
+
+- name: Remove unattended-upgrades
+  apt:
+    name: unattended-upgrades
+    state: absent
+  register: res
+  retries: 5
+  until: res is success

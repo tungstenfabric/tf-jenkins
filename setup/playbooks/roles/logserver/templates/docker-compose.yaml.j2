@@ -1,0 +1,19 @@
+# Version 2 is the latest that is supported by docker-compose in
+# Ubuntu Xenial.
+version: '2'
+
+services:
+  logs:
+    environment:
+      no_proxy: "${no_proxy}"
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+      LANGUAGE: en_US.UTF-8
+    image: httpd:alpine
+    restart: always
+    ports:
+      - "{{ logs_port }}:80"
+    volumes:
+      - "{{ logserver_data_directory }}:/usr/local/apache2/htdocs"
+      - "./httpd.conf:/usr/local/apache2/conf/httpd.conf"
+      - "/var/log/zuul:/var/log/zuul"

@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  remote_user: "{{ remote_user }}"
+  become: yes
+  gather_facts: yes
+  roles:
+    - rhel-sync-packages

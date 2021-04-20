@@ -1,0 +1,92 @@
+---
+- name: create nexus etc directory
+  file:
+    path: /opt/nexus
+    state: directory
+
+- name: create share directory
+  file:
+    path: "/home/{{ remote_user }}/zuul"
+    state: directory
+
+- name: Ensure docker group is present
+  group:
+    name: docker
+    state: present
+
+- name: Ensure remote user is in docker group
+  user:
+    name: "{{ remote_user }}"
+    state: present
+    groups: "docker"
+
+- name: Configure proxy
+  template:
+    src: "{{ item }}.j2"
+    dest: "/opt/nexus/{{ item }}"
+    mode: 0644
+  with_items:
+    - nginx.restricted.whitelist
+    - nexus.nginx.conf
+    - nexus.traefik.yaml
+    - nexus.traefik.provider.yaml
+    - docker-compose.yaml
+
+- name: apply docker-compose.yaml
+  template:
+    src: "{{ item }}.j2"
+    dest: "/opt/nexus/{{ item }}"
+    mode: 0644
+  with_items:
+    - docker-compose.yaml
+
+- name: start nexus service
+  docker_compose:
+    project_src: /opt/nexus
+    restarted: yes
+
+- name: wait for nexus to come up
+  uri:
+    url: "http://{{ nexus_host }}/"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 12
+  delay: 5
+
+- name: reset admin password for nexus
+  command: docker exec -t -w /tmp nexus_nexus_1 java -jar /opt/sonatype/nexus/lib/support/nexus-orient-console.jar 'connect plocal:/opt/sonatype/sonatype-work/nexus3/db/security admin admin ; update user SET password="$shiro1$SHA-512$1024$NE+wqQq/TmjZMvfI7ENh/g==$V4yPw8T64UQ6GfJfxYq2hLsVrBY8D1v+bktfOxGdt4b/9BthpWPNUy/CBk6V9iA0nHpzYzJFWO8v/tZFtES8CA==" UPSERT WHERE id="admin"'
+
+- name: restart nexus
+  command: docker restart nexus_nexus_1
+
+- name: wait for nexus to come up
+  uri:
+    url: "http://{{ nexus_host }}/"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 12
+  delay: 5
+
+- name: install groovy to be able to configure nexus
+  package:
+    name: groovy
+    state: present
+  become: true
+
+- name: copy config script to nexus
+  copy:
+    src: "./nexus-scripting"
+    dest: "/opt/nexus/"
+
+# order is important, e.g. repos creation uses cleanup policy
+- name: configure nexus
+  command: "bash -e configure_tf_ci_nexus.sh --op {{ item }} --password {{ nexus_password }}"
+  args:
+    chdir: "/opt/nexus/nexus-scripting"
+  with_items:
+    - cleanup
+    - repos
+    - compact
+    - roles

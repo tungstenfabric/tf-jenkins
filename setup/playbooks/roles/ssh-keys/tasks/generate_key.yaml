@@ -1,0 +1,23 @@
+---
+- name: "check if ssh key {{ key_name }}_rsa exists"
+  stat:
+    path: "{{ ssh_keys_dir }}/{{ key_name }}_rsa"
+  register: private_key_stat
+
+- name: check if ssh key {{ key_name }}_rsa.pub exists
+  stat:
+    path: "{{ ssh_keys_dir }}/{{ key_name }}_rsa.pub"
+  register: public_key_stat
+
+- name: fail key generation if {{ key_name }} files exist
+  fail:
+    msg: "key {{ ssh_keys_dir }}/{{ key_name }}{{ key.postfix }} already exists"
+  when: key.exists == True
+  loop:
+    - {postfix: "_rsa", exists: "{{ private_key_stat.stat.exists }}"}
+    - {postfix: "_rsa.pub", exists: "{{ public_key_stat.stat.exists }}"}
+  loop_control:
+    loop_var: key
+
+- name: generate ssh key {{ key_name }}_rsa
+  command: "ssh-keygen -m pem -f {{ ssh_keys_dir }}/{{ key_name }}_rsa -N '' -q"

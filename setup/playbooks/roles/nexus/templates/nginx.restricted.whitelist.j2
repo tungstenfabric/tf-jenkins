@@ -1,0 +1,4 @@
+{% for host in nexus_restricted_dir_allowed_cidrs %}
+allow {{ host }};
+{% endfor %}
+deny all;

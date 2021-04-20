@@ -1,0 +1,15 @@
+---
+- name: install ntp packages
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - ntpdate
+    - ntp
+
+- name: set ntp service name
+  set_fact:
+    ntp_svc_name: "{{ 'ntp' if ansible_os_family == 'Debian' else 'ntpd' }}"
+
+- name: start ntp service
+  service: name={{ ntp_svc_name }} state=started enabled=yes

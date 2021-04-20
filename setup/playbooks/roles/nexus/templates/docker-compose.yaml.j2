@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  nexus:
+    image: sonatype/nexus3:3.21.1
+    restart: always
+    network_mode: host
+    volumes:
+      - nexus-data:/nexus-data
+  rproxy:
+    image: nginx:1.15
+    restart: always
+    network_mode: host
+    depends_on:
+      - nexus
+    volumes:
+      - "/opt/nexus/nexus.nginx.conf:/etc/nginx/conf.d/default.conf"
+      - "/opt/nexus/nginx.restricted.whitelist:/etc/nginx/conf.d/restricted.whitelist"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
+  docker-tls:
+    image: traefik
+    restart: always
+    depends_on:
+      - nexus
+    volumes:
+      - "/opt/nexus/nexus.traefik.yaml:/etc/traefik/traefik.yaml"
+      - "/opt/nexus/nexus.traefik.provider.yaml:/etc/traefik/provider.yaml"
+    ports:
+      - 5101:5101
+      - 5102:5102
+      - 443:443
+
+volumes:
+  nexus-data:

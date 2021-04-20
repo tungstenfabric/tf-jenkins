@@ -1,0 +1,25 @@
+<source>
+  @type  forward
+  @id    input1
+  @label @mainstream
+  port  24224
+</source>
+
+<filter **>
+  @type stdout
+</filter>
+
+<label @mainstream>
+  <match {{ jenkins_measurement }}.**>
+    @type copy
+    <store>
+      @type influxdb
+      dbname {{ database }}
+      flush_interval 10s 
+      host influxdb
+      port 8086
+      use_ssl false
+      tag_keys pipeline,gerrit,deployer,orchestrator,target
+    </store>
+  </match>
+</label>

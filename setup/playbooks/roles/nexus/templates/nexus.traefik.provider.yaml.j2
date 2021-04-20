@@ -1,0 +1,32 @@
+http:
+  routers:
+    r1:
+      rule: "Host(`{{ nexus_host }}`) || Host(`{{ nexus_region_host}}`)"
+      service: "s1"
+      entryPoints:
+        - "registry5101"
+      tls:
+        certResolver: "letsencrypt"
+        domains:
+          - main: "{{ nexus_host }}"
+            sans: "{{ nexus_region_host }}"
+    r2:
+      rule: "Host(`{{ nexus_host }}`) || Host(`{{ nexus_region_host}}`)"
+      service: "s2"
+      entryPoints:
+        - "registry5102"
+      tls:
+        certResolver: "letsencrypt"
+        domains:
+          - main: "{{ nexus_host }}"
+            sans: "{{ nexus_region_host }}"
+  services:
+    s1:
+      loadBalancer:
+        servers:
+        - url: http://{{ nexus_host }}:5001/
+    s2:
+      loadBalancer:
+        servers:
+        - url: http://{{ nexus_host }}:5002/
+
