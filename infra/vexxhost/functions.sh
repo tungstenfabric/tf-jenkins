@@ -10,6 +10,12 @@ function get_instance_ip() {
   done
 }
 
+function get_network_cidr() {
+  local net=$1
+  local subnet=$(openstack network show management | awk '/ subnets /{print $4}')
+  openstack subnet show $subnet -c cidr -f value
+}
+
 function list_instances() {
   local tags=$1
   local not_tags=${2:-}
