@@ -1,3 +1,5 @@
 export VM_TYPE=small
+export CI_DOMAIN=tfci.progmaticlab.com
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
+

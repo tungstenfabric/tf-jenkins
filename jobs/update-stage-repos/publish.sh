@@ -10,4 +10,4 @@ if [ -z ${REPOS_TYPE} ]; then
   exit 1
 fi
 
-ssh -i $REPOUPDATER_SSH_KEY $SSH_OPTIONS $REPOUPDATER_USER_NAME@tf-mirrors.progmaticlab.com "sudo /opt/mirrors/publish_stage.sh ${REPOS_TYPE}"
+ssh -i $REPOUPDATER_SSH_KEY $SSH_OPTIONS $REPOUPDATER_USER_NAME@tf-mirrors.$CI_DOMAIN "sudo /opt/mirrors/publish_stage.sh ${REPOS_TYPE}"

@@ -1,6 +1,6 @@
 // infra and product constants
 
-CI_DOMAIN="progmaticlab.com"
+CI_DOMAIN="tfci.progmaticlab.com"
 CONTAINER_REGISTRY="tf-nexus.${CI_DOMAIN}:5001"
 SITE_MIRROR="http://tf-nexus.${CI_DOMAIN}/repository"
 LOGS_HOST = "tf-nexus.${CI_DOMAIN}"

@@ -16,7 +16,7 @@ For now it's a bit outdated - we're working on actualisation.
 ### Jenkins master
 
 Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 500Gb for root volume.
-URL: <https://tf-jenkins.progmaticlab.com/>
+URL: <https://tf-jenkins.tfci.progmaticlab.com/>
 Source code: <https://github.com/tungstenfabric/tf-jenkins>
 
 Jenkins master is deployed as a docker container. All further configuration (user, plugins, ...) is applied inside Jenkins itself.
@@ -34,7 +34,7 @@ For now we have only one slave in one region of vexxhost. But we checked that co
 ### Nexus
 
 Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 2Tb for root volume, 2Tb for /var/lib/docker.
-URL: <https://tf-jenkins.progmaticlab.com/>
+URL: <https://tf-jenkins.tfci.progmaticlab.com/>
 
 For now it serves:
 
@@ -51,7 +51,7 @@ Nginx is deployed on nexus to provide https access to those CI registries on por
 ### Logs storage
 
 Currently resides on Nexus VM.
-URL: <http://tf-nexus.progmaticlab.com:8082/jenkins_logs/>
+URL: <http://tf-nexus.tfci.progmaticlab.com:8082/jenkins_logs/>
 
 Contains logs for most jobs. Divived into nightly, review, infra folders.
 Clean up policy - one month.
@@ -59,7 +59,7 @@ Clean up policy - one month.
 ### Grafana
 
 Resides on VM with Jenkins.
-URL: <http://tf-monitoring.progmaticlab.com/>
+URL: <http://tf-monitoring.tfci.progmaticlab.com/>
 
 First purpose is to show TF build matrix - table which shows live status of TF from nightly builds.
 Second purpose is to show checking and gating status for reviews.
