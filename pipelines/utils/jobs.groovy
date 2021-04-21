@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 // jobs utils
 
 // set of result for each job
@@ -278,6 +280,18 @@ def _run_jobs(def job_set, def streams) {
 }
 
 def _process_stream(def stream_name, def job_set, def streams) {
+  if (streams[stream_name].containsKey('frequency')) {
+    frequency = streams[stream_name]['frequency']
+    def currentDate = new Date()
+    // day of the Year from first Sunday of year. 
+    zeroDay = new SimpleDateFormat("yyyy-MM-dd").parse("${currentDate.getYear()+1900}-01-01")
+    day = currentDate[Calendar.DAY_OF_YEAR] + zeroDay[Calendar.DAY_OF_WEEK] - 2
+    if (day % frequency != 0) {
+      println("STREAM ${stream_name}: skipped due to frequency=${frequency} (current day number is ${day}")
+      return
+    }
+  }
+
   def jobs_code = [:]
   job_set.keySet().each { name ->
     if (job_set[name].get('stream') == stream_name)

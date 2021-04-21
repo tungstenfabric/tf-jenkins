@@ -44,6 +44,7 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
 
     def passed = true
     def check_msg_failed = ''
+    def check_msg_skipped = ''
     def check_msg_succeeded = ''
     def stopping_cause = 'Failed'
     for (stream in results.keySet()) {
@@ -68,10 +69,13 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
       if (!voting) {
         current_line += ' (non-voting)'
       }
+      // TODO: think how skipped builds should vote
       if (voting && result != 'SUCCESS') {
         passed = false
       }
-      if (result != 'SUCCESS') {
+      if (result == 'NOT_BUILT') {
+        check_msg_skipped += current_line
+      } else if (result != 'SUCCESS') {
         check_msg_failed += current_line
         // TODO: add name of failed job
       } else {
@@ -80,8 +84,10 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
     }
     def check_msg = ''
     if (check_msg_failed)
-      check_msg = "Failed checks:${check_msg_failed}\n\nSucceeded checks:"
-    check_msg += check_msg_succeeded
+      check_msg = "Failed checks:${check_msg_failed}\n\n"
+    if (check_msg_skipped)
+      check_msg = "Skipped checks:${check_msg_skipped}\n\n"
+    check_msg += "Succeeded checks:${check_msg_succeeded}"
 
     def duration_string = _get_duration_string(full_duration)
     def verified = VERIFIED_SUCCESS_VALUES[env.GERRIT_PIPELINE]

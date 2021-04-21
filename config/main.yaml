@@ -30,6 +30,9 @@
 # to be able to use variable of job from different template you have to use 'inherit-keys' property.
 #
 # stream keys:
+#   frequency - how frequently (in days) this stream should be run. if current date is multiple to the value
+#               then jobs will be run. Zero day is first Sunday of current year.
+#               default: 1
 #   lock - name of jenkins lockable resource. if set then infra will obtain this lock for whole stream
 #   vars - map of a key:value elements to use them as env vars in the job
 #   voting - boolean value to indicate if this stream should be included into overall vote result or not
