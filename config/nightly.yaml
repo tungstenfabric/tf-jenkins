@@ -64,6 +64,21 @@
         build-r2011-centos:
           vars:
             DEBUGINFO: TRUE
+        # additional schedule for some streams
+        helm-k8s:
+          frequency: 7
+        helm-os:
+          frequency: 7
+        ansible-k8s:
+          frequency: 7
+        rhosp13:
+          frequency: 7
+        rhosp13-1912:
+          frequency: 7
+        rhosp13-2011:
+          frequency: 7
+        rhosp13-ha-ziu:
+          frequency: 7
         # hack with locks due to lack of resources
         operator-ha:
           lock: group-two-ha
@@ -74,14 +89,17 @@
         juju-hybrid-ha:
           lock: group-two-ha
         helm-k8s-ha:
+          frequency: 7
           lock: group-one-ha
         helm-os-ha:
+          frequency: 7
           lock: group-one-ha
         ansible-os-ha:
           lock: group-one-ha
         ansible-os-ha-ziu:
           lock: group-one-ha
         ansible-k8s-ha:
+          frequency: 7
           lock: group-one-ha
         k8s-manifests-ha:
           lock: group-one-ha
