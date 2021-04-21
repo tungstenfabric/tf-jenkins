@@ -56,7 +56,6 @@ EOF
     # vexxhost
     source $my_dir/../../../infra/${SLAVE}/definitions
     source $my_dir/../../../infra/${SLAVE}/functions.sh
-    echo "export OS_REGION_NAME=${OS_REGION_NAME}" >> "$stackrc_file_path"
     IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
     echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
