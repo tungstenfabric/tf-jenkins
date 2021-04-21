@@ -12,7 +12,7 @@ function get_instance_ip() {
 
 function get_network_cidr() {
   local net=$1
-  local subnet=$(openstack network show management | awk '/ subnets /{print $4}')
+  local subnet=$(openstack network show $net | awk '/ subnets /{print $4}')
   openstack subnet show $subnet -c cidr -f value
 }
 
