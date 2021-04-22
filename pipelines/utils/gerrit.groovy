@@ -55,8 +55,8 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
       if (result == 'ABORTED') {
         stopping_cause = 'Aborted'
       }
-      if (result == 'NOT_BUILT') {
-        current_line = "\n- ${stream} : NOT_BUILT"
+      if (result == 'NOT_BUILT' || result == 'SKIPPED') {
+        current_line = "\n- ${stream} : ${result}"
       } else {
         current_line = "\n- " + _get_gerrit_msg_for_job(stream, result, results[stream]['duration'])
       }
@@ -73,7 +73,7 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
       if (voting && result != 'SUCCESS') {
         passed = false
       }
-      if (result == 'NOT_BUILT') {
+      if (result == 'SKIPPED') {
         check_msg_skipped += current_line
       } else if (result != 'SUCCESS') {
         check_msg_failed += current_line
@@ -229,7 +229,7 @@ def publish_nightly_results_to_monitoring(streams, results) {
       duration: 0,
       started: currentBuild.startTimeInMillis
     ]
-    if (results.containsKey(stream)) {
+    if (results.containsKey(stream) && !results[stream].getOrDefault('skipped', false)) {
       log_opts['logs'] = "${logs_url}/${stream}"
       log_opts['status'] = _get_stream_result(results[stream]['results'])
       if (results[stream].containsKey('duration')) {
@@ -266,11 +266,13 @@ def publish_nightly_results_to_monitoring(streams, results) {
 }
 
 def _get_stream_result(def results) {
-  // There are 5 status available: NOT_BUILT, ABORTED, FAILURE, UNSTABLE, SUCCESS
+  // There are statuses available: NOT_BUILT, ABORTED, FAILURE, UNSTABLE, SUCCESS, SKIPPED
   if ('FAILURE' in results || 'UNSTABLE' in results)
     return 'FAILURE'
   if ('ABORTED' in results)
     return 'ABORTED'
+  if ('SKIPPED' in results)
+    return 'SKIPPED'
   // let's treat this as FAILURE. it can be caused by failures in deps
   if ('NOT_BUILT' in results && 'SUCCESS' in results)
     return 'FAILURE'

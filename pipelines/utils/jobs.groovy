@@ -45,7 +45,7 @@ def main(def gate_utils, def gerrit_utils, def config_utils) {
     println("Jobs results: ${job_results}")
     stage('gerrit vote') {
       // add gerrit voting +2 +1 / -1 -2
-      def results = _get_jobs_result_for_gerrit(jobs, job_results)
+      def results = _get_jobs_result_for_gerrit(jobs, job_results, streams)
       verified = gerrit_utils.publish_results(pre_build_done, streams, results, (new Date()).getTime() - time_start)
       sh """#!/bin/bash -e
         echo "export VERIFIED=${verified}" >> global.env
@@ -287,6 +287,7 @@ def _process_stream(def stream_name, def job_set, def streams) {
     zeroDay = new SimpleDateFormat("yyyy-MM-dd").parse("${currentDate.getYear()+1900}-01-01")
     day = currentDate[Calendar.DAY_OF_YEAR] + zeroDay[Calendar.DAY_OF_WEEK] - 2
     if (day % frequency != 0) {
+      streams[stream_name]['skipped'] = true
       println("STREAM ${stream_name}: skipped due to frequency=${frequency} (current day number is ${day}")
       return
     }
@@ -340,7 +341,7 @@ def _process_job(def job_name, def job_set, def streams) {
   }
 }
 
-def _get_jobs_result_for_gerrit(job_set, job_results) {
+def _get_jobs_result_for_gerrit(def job_set, def job_results, def streams) {
   def results = [:]
   for (name in job_set.keySet()) {
     // do not include post job into report
@@ -356,6 +357,10 @@ def _get_jobs_result_for_gerrit(job_set, job_results) {
       results[stream]['results'] += result
       results[stream]['duration'] += duration
     }
+  }
+  for (name in results.keySet()) {
+    if (streams.containsKey(name) && streams[name].getOrDefault('skipped', false))
+      results[name]['results'] = ['SKIPPED']
   }
   return results
 }
