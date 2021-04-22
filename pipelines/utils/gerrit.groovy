@@ -84,9 +84,9 @@ def publish_results(pre_build_done, streams, results, full_duration, err_msg=nul
     }
     def check_msg = ''
     if (check_msg_failed)
-      check_msg = "Failed checks:${check_msg_failed}\n\n"
+      check_msg += "Failed checks:${check_msg_failed}\n\n"
     if (check_msg_skipped)
-      check_msg = "Skipped checks:${check_msg_skipped}\n\n"
+      check_msg += "Skipped checks:${check_msg_skipped}\n\n"
     check_msg += "Succeeded checks:${check_msg_succeeded}"
 
     def duration_string = _get_duration_string(full_duration)
