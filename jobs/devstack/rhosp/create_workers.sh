@@ -17,21 +17,11 @@ export RHOSP_ID=$BUILD_NUMBER
 export RHEL_VERSION=$ENVIRONMENT_OS
 export RHOSP_VERSION
 
-# TAG_SUFFIX is defined in vars.deploy-platform-rhosp13.23584.env
-# but CONTRAIL_CONTAINER_TAG is defined in global.env w/o suffix
-# So, global is sourced before vars and CONTRAIL_CONTAINER_TAG is w/o suffix here
-if [ -n "$TAG_SUFFIX" ] ; then
-  export CONTRAIL_CONTAINER_TAG="$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX"
-  export CONTRAIL_DEPLOYER_CONTAINER_TAG="$CONTRAIL_DEPLOYER_CONTAINER_TAG$TAG_SUFFIX"
-  export CONTRAIL_CONTAINER_TAG_ORIGINAL="$CONTRAIL_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX"
-  export CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL="$CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX"
-fi
-
-for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
-  echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" > "$stackrc_file_path"
-  echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
-  if [[ "$ENABLE_RHEL_REGISTRATION" == 'true' ]] ; then
-    cat << EOF >> "$stackrc_file_path"
+echo "# env file created by Jenkins" > "$stackrc_file_path"
+echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" >> "$stackrc_file_path"
+echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
+if [[ "$ENABLE_RHEL_REGISTRATION" == 'true' ]] ; then
+  cat << EOF >> "$stackrc_file_path"
 state="\$(set +o)"
 [[ "\$-" =~ e ]] && state+="; set -e"
 set +x
@@ -40,19 +30,54 @@ export RHEL_PASSWORD="$RHEL_PASSWORD"
 export RHEL_POOL_ID="$RHEL_POOL_ID"
 eval "\$state"
 EOF
-  fi
-  echo "export ENABLE_NETWORK_ISOLATION=$ENABLE_NETWORK_ISOLATION" >> "$stackrc_file_path"
-  echo "export OPENSTACK_CONTAINER_REGISTRY=$OPENSTACK_CONTAINER_REGISTRY" >> "$stackrc_file_path"
-  echo "export OPENSTACK_CONTAINER_TAG=$OPENSTACK_CONTAINER_TAG" >> "$stackrc_file_path"
-  echo "export PROVIDER=$PROVIDER" >> "$stackrc_file_path"
-  if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then 
-    echo "export ENABLE_TLS='ipa'" >> "$stackrc_file_path"
-  fi
+fi
+echo "export ENABLE_NETWORK_ISOLATION=$ENABLE_NETWORK_ISOLATION" >> "$stackrc_file_path"
+echo "export OPENSTACK_CONTAINER_REGISTRY=$OPENSTACK_CONTAINER_REGISTRY" >> "$stackrc_file_path"
+echo "export OPENSTACK_CONTAINER_TAG=$OPENSTACK_CONTAINER_TAG" >> "$stackrc_file_path"
+echo "export PROVIDER=$PROVIDER" >> "$stackrc_file_path"
+if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then 
+  echo "export ENABLE_TLS='ipa'" >> "$stackrc_file_path"
+fi
 
-  if [[ "$PROVIDER" == 'bmc' ]]; then
-    # openlab1
-    $my_dir/../../../infra/${JUMPHOST}/create_workers.sh
-  else
+if [[ "$PROVIDER" == 'bmc' ]]; then
+  $my_dir/../../../infra/${JUMPHOST}/create_workers.sh
+  source $stackrc_file_path
+  $WORKSPACE/src/tungstenfabric/tf-devstack/rhosp/create_env.sh
+elif [[ "$PROVIDER" == 'kvm' ]]; then
+  $my_dir/../../../infra/${JUMPHOST}/create_workers.sh
+  source $stackrc_file_path
+
+  # devstack requires to run scripts on KVM host
+  # TODO: make it symmetric with vexx/bmc - rework devstack scripts
+  script="create_env.sh"
+  cat <<EOF > $WORKSPACE/$script
+#!/bin/bash -e
+[ "${DEBUG,,}" == "true" ] && set -x
+export WORKSPACE=\$HOME
+export DEBUG=$DEBUG
+export ORCHESTRATOR=$ORCHESTRATOR
+export OPENSTACK_VERSION=$OPENSTACK_VERSION
+export SSL_ENABLE=$SSL_ENABLE
+export stackrc_file=$stackrc_file
+source \$WORKSPACE/\$stackrc_file
+export SSH_USER=stack
+src/tungstenfabric/tf-devstack/rhosp/cleanup.sh
+src/tungstenfabric/tf-devstack/rhosp/create_env.sh
+EOF
+  chmod a+x $WORKSPACE/$script
+  ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
+  rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/$script,$WORKSPACE/$stackrc_file} $IMAGE_SSH_USER@$instance_ip:./
+  # run this via eval due to special symbols in ssh_cmd
+  eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./$script
+
+elif [[ "$PROVIDER" != 'vexx' ]]; then
+  echo "ERROR: unsupported provider $PROVIDER"
+  exit 1
+else
+  res=1
+  cp $stackrc_file_path $stackrc_file_path.original
+  for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
+    cp $stackrc_file_path.original $stackrc_file_path
     # vexxhost
     source $my_dir/../../../infra/${SLAVE}/definitions
     source $my_dir/../../../infra/${SLAVE}/functions.sh
@@ -91,23 +116,29 @@ EOF
       required_cores=$(( required_cores + 4 ))
     fi
     wait_for_free_resources $required_instances $required_cores
-  fi
-  echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
-  # to prepare rhosp-environment.sh
-  source $stackrc_file_path
-  export vexxrc="$stackrc_file_path"
-  if ./src/tungstenfabric/tf-devstack/rhosp/create_env.sh ; then
-    echo "INFO: Running up hooks"
-    if [[ -e $my_dir/../../../infra/hooks/rhel/up.sh ]] ; then
-       ${my_dir}/../../../infra/hooks/rhel/up.sh
+    echo "export SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
+
+    # to prepare rhosp-environment.sh
+    source $stackrc_file_path
+    export vexxrc="$stackrc_file_path"
+    if $WORKSPACE/src/tungstenfabric/tf-devstack/rhosp/create_env.sh ; then
+      echo "INFO: Running up hooks"
+      # hooks are impleneted for vexxhost only
+      if [[ -e $my_dir/../../../infra/hooks/rhel/up.sh ]] ; then
+        ${my_dir}/../../../infra/hooks/rhel/up.sh
+      fi
+      res=0
+      break
     fi
-    exit 0
-  fi
-  echo "ERROR: Instances creation is failed. Retry"
-  $my_dir/remove_workers.sh || true
-  sleep $VM_BOOT_DELAY
-done
 
-echo "ERROR: Instances creation is failed at $VM_BOOT_RETRIES attempts."
-exit -1
+    echo "ERROR: Instances creation is failed. Retry"
+    $my_dir/remove_workers.sh || true
+    sleep $VM_BOOT_DELAY
+  done
+
+  if [[ $res != '0' ]]; then
+    echo "ERROR: Instances creation is failed at $VM_BOOT_RETRIES attempts."
+    exit 1
+  fi
+fi
