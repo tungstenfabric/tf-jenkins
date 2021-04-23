@@ -279,18 +279,23 @@ def _run_jobs(def job_set, def streams) {
     parallel(all_code)
 }
 
+def _is_skipped(def name, def frequency) {
+  def currentDate = new Date()
+  // day of the Year from first Monday of year. 
+  zeroDay = new SimpleDateFormat("yyyy-MM-dd").parse("${currentDate.getYear()+1900}-01-01")
+  // -3 = -1(from numbers 1-7 to indexes 0-6) -2(shift first day of week from Saturday to Monday)
+  day = currentDate[Calendar.DAY_OF_YEAR] + zeroDay[Calendar.DAY_OF_WEEK] - 3
+  if ((day % frequency) != 0) {
+    println("Stream/job {$name} has been skipped due to frequency=${frequency} (current day number is ${day}")
+    return true
+  }
+  return false
+}
+
 def _process_stream(def stream_name, def job_set, def streams) {
-  if (streams[stream_name].containsKey('frequency')) {
-    frequency = streams[stream_name]['frequency']
-    def currentDate = new Date()
-    // day of the Year from first Sunday of year. 
-    zeroDay = new SimpleDateFormat("yyyy-MM-dd").parse("${currentDate.getYear()+1900}-01-01")
-    day = currentDate[Calendar.DAY_OF_YEAR] + zeroDay[Calendar.DAY_OF_WEEK] - 2
-    if (day % frequency != 0) {
-      streams[stream_name]['skipped'] = true
-      println("STREAM ${stream_name}: skipped due to frequency=${frequency} (current day number is ${day}")
-      return
-    }
+  if (streams[stream_name].containsKey('frequency') && _is_kipped(stream_name, streams[stream_name]['frequency'])) {
+    streams[stream_name]['skipped'] = true
+    return
   }
 
   def jobs_code = [:]

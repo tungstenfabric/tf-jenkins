@@ -71,6 +71,8 @@
           frequency: 7
         ansible-k8s:
           frequency: 7
+        juju-os-1912:
+          frequency: 7
         rhosp13-1912:
           frequency: 7
         rhosp13-2011:
