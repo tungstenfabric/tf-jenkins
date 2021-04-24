@@ -293,7 +293,7 @@ def _is_skipped(def name, def frequency) {
 }
 
 def _process_stream(def stream_name, def job_set, def streams) {
-  if (streams[stream_name].containsKey('frequency') && _is_kipped(stream_name, streams[stream_name]['frequency'])) {
+  if (streams[stream_name].containsKey('frequency') && _is_skipped(stream_name, streams[stream_name]['frequency'])) {
     streams[stream_name]['skipped'] = true
     return
   }
