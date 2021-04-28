@@ -23,9 +23,19 @@ ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
 echo "# env file created by Jenkins" > "$ENV_FILE"
 echo "export ENVIRONMENT_OS=${ENVIRONMENT_OS}" >> "$ENV_FILE"
-echo "export OS_API_NETWORK_CIDR=$(get_network_cidr $OS_NETWORK)" >> "$ENV_FILE"
+cidr=$(get_network_cidr $OS_NETWORK)
+if [[ -z "cidr" ]]; then
+  echo "ERROR: failed to get CIDR for subnet in network '$OS_NETWORK'"
+  exit 1
+fi
+echo "export OS_API_NETWORK_CIDR=$cidr" >> "$ENV_FILE"
 if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
-  echo "export OS_DATA_NETWORK_CIDR=$(get_network_cidr $OS_DATA_NETWORK)" >> "$ENV_FILE"
+  cidr=$(get_network_cidr $OS_DATA_NETWORK)
+  if [[ -z "cidr" ]]; then
+    echo "ERROR: failed to get CIDR for subnet in network '$OS_DATA_NETWORK'"
+    exit 1
+  fi
+  echo "export OS_DATA_NETWORK_CIDR=$cidr" >> "$ENV_FILE"
 fi
 
 IMAGE_TEMPLATE_NAME="${OS_IMAGES["${ENVIRONMENT_OS^^}"]}"
@@ -90,9 +100,27 @@ function update_vm_port() {
   local instance_id=$1
   local net_name=$2
 
-  local port_id=$(openstack port list --server $instance_id --network $net_name -f value -c id)
+  local i
+  local port_id
+  for (( i=1; i<=5 ; ++i )) ; do
+    if port_id=$(openstack port list --server $instance_id --network $net_name -f value -c id) ; then
+      break
+    fi
+    sleep 10
+  done
+  if [[ -z "$port_id" ]]; then
+    echo "ERROR: can't get port_id for $instance_id/$net_name"
+    exit 1
+  fi
   echo "DEBUG: port_id=$port_id for $instance_id in $net_name"
-  openstack port set --no-security-group --disable-port-security $port_id
+  for (( i=1; i<=5 ; ++i )) ; do
+    if openstack port set --no-security-group --disable-port-security $port_id ; then
+      return
+    fi
+    slleep 10
+  done
+  echo "ERROR: can't set port config for port $port_id"
+  exit 1
 }
 
 if [[ -n $WORKER_NAME_PREFIX ]] ; then

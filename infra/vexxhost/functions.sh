@@ -2,18 +2,37 @@
 function get_instance_ip() {
   local instance_id=$1
   local net=${2:-"$OS_NETWORK"}
-  local substr
-  for substr in $(openstack server show $instance_id -c addresses -f value | tr ' ' '\n' | sed 's/;//'); do
-    if [[ " $substr" =~ " $net=" ]]; then
-      echo $substr | cut -d "=" -f 2
+
+  local networks
+  local i
+  for (( i=1; i<=5 ; ++i )) ; do
+    if networks=$(openstack server show $instance_id -c addresses -f value) 2>/dev/null ; then
+      break
+    fi
+    sleep 10
+  done
+  if [[ -z "$networks" ]]; then
+    return
+  fi
+  for network in $networks; do
+    if [[ " $network" =~ " $net=" ]]; then
+      echo $network | cut -d "=" -f 2 | cut -d ";" -f 1 | cut -d "," -f 1
+      break
     fi
   done
+  # TODO: check that all clients has error handling
 }
 
 function get_network_cidr() {
   local net=$1
-  local subnet=$(openstack network show $net | awk '/ subnets /{print $4}')
-  openstack subnet show $subnet -c cidr -f value
+  local i
+  local cidr
+  for (( i=1; i<=5 ; ++i )) ; do
+    if openstack subnet list --network $net -c subnet -f value 2>/dev/null | head -1 ; then
+      return
+    fi
+    sleep 10
+  done
 }
 
 function list_instances() {
@@ -60,10 +79,26 @@ function down_instances() {
 function wait_for_free_resources() {
   local required_instances=$1
   local required_cores=$2
-  local project_id=$(openstack project show $OS_PROJECT_NAME | awk '/ id /{print $4}')
+  local project_id
+  local i
+  for (( i=1; i<=5 ; ++i )) ; do
+    if project_id=$(openstack project show $OS_PROJECT_NAME | awk '/ id /{print $4}') ; then
+      break
+    fi
+    sleep 10
+  done
+  if [[ -z "$project_id" ]]; then
+    echo "ERROR: Can't get project_id by name $OS_PROJECT_NAME"
+    return 1
+  fi
+
   echo "INFO: wait for enough resources for required_instances=$required_instances and required_cores=$required_cores  $(date)"
   while true ; do
-    local quotas=$(openstack quota list --project $project_id --detail --compute)
+    local quotas
+    if ! quotas=$(openstack quota list --project $project_id --detail --compute) ; then
+      sleep $VM_BOOT_DELAY
+      continue
+    fi
     local instances_used=$(echo "$quotas" | awk '/ instances /{print $4}')
     local instances_limit=$(echo "$quotas" | awk '/ instances /{print $8}')
     local cores_used=$(echo "$quotas" | awk '/ cores /{print $4}')
