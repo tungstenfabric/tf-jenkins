@@ -490,7 +490,9 @@ def terminate_runs_by_review_number() {
     return false
   }
 
+  println("terminate_runs_by_review_number: start")
   terminated = _check_and_stop_builds(check)
+  println("terminate_runs_by_review_number: terminated builds = ${terminated}")
   for (params in terminated) {
     _notify_terminated(params)
   }
@@ -498,8 +500,9 @@ def terminate_runs_by_review_number() {
 
 def terminate_runs_by_depends_on_recursive(def change_id) {
   // recursive terminating
-  println('Search for dependent builds')
+  println("Search for dependent builds for ${change_id}")
   def terminated = _terminate_runs_by_depends_on(change_id)
+  println("terminate_runs_by_depends_on_recursive: terminated builds = ${terminated}")
   for (params in terminated) {
     _notify_terminated(params)
     terminate_runs_by_depends_on_recursive(params['change_id'])
@@ -527,26 +530,42 @@ def _terminate_runs_by_depends_on(def change_id) {
 
 def _check_and_stop_builds(def check_func) {
   def terminated = []
-  def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
-  for (def build in builds) {
-    if (!build || !build.getResult().equals(null))
-      continue
-    def action = build.allActions.find { it in hudson.model.ParametersAction }
-    if (!action)
-      continue
 
-    if (!check_func(action))
-      continue
+  // sometimes loop for builds may fail with java.util.NoSuchElementException
+  // let's do 3 retries
+  for (def i = 0; i < 3; ++i) {
+    try {
+      def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
+      for (def build in builds) {
+        if (!build || !build.getResult().equals(null))
+          continue
+        def action = build.allActions.find { it in hudson.model.ParametersAction }
+        if (!action)
+          continue
 
-    terminated.add([
-      'patchset_number': action.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger(),
-      'change_id': action.getParameter("GERRIT_CHANGE_ID").value,
-      'branch': action.getParameter("GERRIT_BRANCH").value
-    ])
+        if (!check_func(action))
+          continue
 
-    build.doStop()
-    println("Build ${build} has been aborted due to new patchset has been created for parent")
+        terminated.add([
+          'patchset_number': action.getParameter("GERRIT_PATCHSET_NUMBER").value.toInteger(),
+          'change_id': action.getParameter("GERRIT_CHANGE_ID").value,
+          'branch': action.getParameter("GERRIT_BRANCH").value
+        ])
+
+        build.doStop()
+        println("Build ${build} has been aborted due to new patchset has been created for parent")
+      }
+
+      break
+    } catch (err) {
+      println("_check_and_stop_builds: Failed to iterate over builds")
+      def msg = err.getMessage()
+      if (msg != null) {
+        println(msg)
+      }
+    }
   }
+
   return terminated
 }
 
