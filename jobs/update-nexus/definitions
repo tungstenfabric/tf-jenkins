@@ -1,4 +1,5 @@
 export VM_TYPE=xsmall
 export ENVIRONMENT_OS=centos7
+export CI_DOMAIN=tfci.progmaticlab.com
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"

@@ -11,7 +11,7 @@ fi
 [ -f $my_dir/${REPOS_TYPE}.env ] || exit 1
 source $my_dir/${REPOS_TYPE}.env
 
-MIRROR_REGISTRY=${MIRROR_REGISTRY:-"tf-mirrors.progmaticlab.com:5005"}
+MIRROR_REGISTRY=${MIRROR_REGISTRY:-"tf-mirrors.$CI_DOMAIN:5005"}
 
 function tag_container() {
   local c=$1

@@ -24,7 +24,7 @@ export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export TPC_REPO_USER=$TPC_REPO_USER
 export TPC_REPO_PASS=$TPC_REPO_PASS
-export REPO_SOURCE=http://tf-nexus.progmaticlab.com/repository
+export REPO_SOURCE=http://tf-nexus.$CI_DOMAIN/repository
 
 $update_func
 EOF

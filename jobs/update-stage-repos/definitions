@@ -1,1 +1,5 @@
+export CI_DOMAIN=tfci.progmaticlab.com
+
 SSH_OPTIONS="-t -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
+
+

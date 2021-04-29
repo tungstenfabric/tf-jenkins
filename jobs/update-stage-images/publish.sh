@@ -15,7 +15,7 @@ fi
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" {$WORKSPACE/src,$my_dir/*} $IMAGE_SSH_USER@$instance_ip:./
 
-export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"tf-mirrors.progmaticlab.com:5005"}
+export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"tf-mirrors.$CI_DOMAIN:5005"}
 
 echo "INFO: update images started"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
