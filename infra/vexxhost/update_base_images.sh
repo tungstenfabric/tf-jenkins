@@ -13,6 +13,8 @@ source "$my_dir/definitions"
 
 date_suffix=$(date +%Y%m%d%H%M)
 
+images=''
+
 # Get images
 if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'CENTOS7' ]]; then
   echo "INFO: download centos7 from centos.org"
@@ -22,6 +24,7 @@ if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'CENTOS7' ]]; then
   echo "INFO: upload centos7 to vexxhost"
   openstack image create --disk-format qcow2 --tag centos7 --file CentOS-7-x86_64-GenericCloud.qcow2 base-centos7-$date_suffix
   rm -f CentOS-7-x86_64-GenericCloud.qcow2*
+  images="$images base-centos7-$date_suffix"
 fi
 
 if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'UBUNTU18' ]]; then
@@ -32,6 +35,7 @@ if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'UBUNTU18' ]]; then
   echo "INFO: upload ubuntu18 to vexxhost"
   openstack image create --disk-format qcow2 --tag ubuntu18 --file bionic-server-cloudimg-amd64.img base-ubuntu18-$date_suffix
   rm -f bionic-server-cloudimg-amd64.img
+  images="$images base-ubuntu18-$date_suffix"
 fi
 
 if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
@@ -44,11 +48,15 @@ if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
   openstack image create --disk-format qcow2 --tag rhcos45 --file rhcos-4.5.6-x86_64-openstack.x86_64.qcow2 base-rhcos45-$date_suffix
   openstack image create --disk-format qcow2 --tag prepared-rhcos45 --file rhcos-4.5.6-x86_64-openstack.x86_64.qcow2 prepared-rhcos45-$date_suffix
   rm -f rhcos-4.5.6-x86_64-openstack.x86_64.qcow2
+  images="$images base-rhcos45-$date_suffix prepared-rhcos45-$date_suffix"
 fi
 
 sleep 10
-echo "INFO: uploaded image"
-openstack image show base-${IMAGE_TYPE,,}-$date_suffix
+printf "\n\nINFO: uploaded images"
+for image in $images ; done
+  openstack image $image
+done
+printf "\n\n\n"
 
 # Remove previous images
 # this code leaves 4 latest images - so it can be run always

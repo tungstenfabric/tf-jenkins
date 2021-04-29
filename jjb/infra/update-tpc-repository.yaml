@@ -57,6 +57,7 @@
           # individual job - create global.env
           echo "export SLAVE=vexxhost" > $WORKSPACE/global.env
           echo "export ENVIRONMENT_OS=centos7" >> $WORKSPACE/global.env
+          echo "export REPOS_CHANNEL=latest" >> $WORKSPACE/global.env
       - shell: |
           set -eo pipefail
           source "$WORKSPACE/global.env"
