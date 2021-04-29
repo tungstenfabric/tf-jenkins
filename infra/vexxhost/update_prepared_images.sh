@@ -7,7 +7,7 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
-export OS_NETWORK_ID=$(openstack network show $OS_NNETWORK -c id -f value)
+export OS_NETWORK_ID=$(openstack network show $OS_NETWORK -c id -f value)
 
 if [[ ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
   echo "INFO: prepared image doesn't require special preparation - it was created with base image. Exiting"
