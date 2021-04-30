@@ -7,5 +7,14 @@ mkdir -p ${MIRRORDIR}/ubuntu18/${DATE}
 cd ${MIRRORDIR}/ubuntu18
 
 sed -i "s|%MIRRORDIR%|${MIRRORDIR}/ubuntu18/${DATE}|" /etc/apt/mirror.list
-apt-mirror && (rm -f stage; ln -s ${DATE} stage)
+apt-mirror
 
+pushd ${DATE}
+wget -nv https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-lxd.tar.xz
+wget -nv https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-root.tar.xz
+wget -nv https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-lxd.tar.xz
+wget -nv https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-root.tar.xz
+popd
+
+rm -f stage
+ln -s ${DATE} stage

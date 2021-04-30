@@ -4,4 +4,3 @@ ADD mirror.list /etc/apt/mirror.list
 ADD sources.list /sources.list
 ADD syncrepos.sh /syncrepos.sh
 CMD /syncrepos.sh
-
