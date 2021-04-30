@@ -1,8 +1,8 @@
 // Gerrit utils
 
-VERIFIED_STARTED_VALUES = ['check': 0, 'gate': 0, 'nightly': null, 'templates': null, 'stage-repos': null]
-VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2, 'nightly': 1, 'templates': null, 'stage-repos': 1]
-VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2, 'nightly': -1, 'templates': null, 'stage-repos': -1]
+VERIFIED_STARTED_VALUES = ['check': 0, 'gate': 0, 'nightly': null, 'templates': null, 'stage-repos': null, 'init-repos': null]
+VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2, 'nightly': 1, 'templates': null, 'stage-repos': 1, 'init-repos': 1]
+VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2, 'nightly': -1, 'templates': null, 'stage-repos': -1, 'init-repos': -1]
 
 def resolve_gerrit_url() {
   def url = "http://${env.GERRIT_HOST}/"

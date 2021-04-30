@@ -1,6 +1,38 @@
 ---
 
 - job:
+    name: pipeline-init-repos
+    description: Pipeline to check new repos by repo type
+    project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 30
+    concurrent: false
+    parameters:
+      - choice:
+          name: SLAVE
+          choices:
+            - vexxhost
+            - aws
+          description: "Slave where all jobs will be run: vexxhost, aws"
+      - choice:
+          name: REPOS_TYPE
+          choices:
+            - centos7
+            - rhel7
+            - rhel8
+            - ubuntu18
+            #- pip
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: init-repos
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: pipelines/main.groovy
+      lightweight-checkout: true
+
+- job:
     name: pipeline-stage-repos
     description: Pipeline to check new repos by repo type
     project-type: pipeline
