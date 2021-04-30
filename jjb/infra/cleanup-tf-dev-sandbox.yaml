@@ -21,5 +21,5 @@
       - shell: |
           ./src/tungstenfabric/tf-jenkins/infra/cleanup-tf-dev-sandbox.sh
           SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
-          LOGS_HOST="tf-nexus.tfci.progmaticlab.com"
+          LOGS_HOST="tf-nexus.$CI_DOMAIN"
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "rm -f /var/www/logs/frozen/tag"

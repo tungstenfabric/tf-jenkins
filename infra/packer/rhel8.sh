@@ -1,8 +1,6 @@
 #!/bin/bash -eE
 set -o pipefail
 
-CI_DOMAIN=tfci.progmaticlab.com
-
 cat << EOF > local.repo
 
 [BaseOS]

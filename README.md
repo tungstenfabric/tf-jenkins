@@ -34,7 +34,7 @@ For now we have only one slave in one region of vexxhost. But we checked that co
 ### Nexus
 
 Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 2Tb for root volume, 2Tb for /var/lib/docker.
-URL: <https://tf-jenkins.tfci.progmaticlab.com/>
+URL: <https://tf-nexus.tfci.progmaticlab.com/>
 
 For now it serves:
 

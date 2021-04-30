@@ -1,5 +1,6 @@
 {
    "variables":{
+      "ci_domain":"{{env `CI_DOMAIN`}}",
       "workspace":"{{env `WORKSPACE`}}",
       "os_image":"{{env `OS_IMAGE`}}",
       "ssh_user":"{{env `SSH_USER`}}",
@@ -34,6 +35,7 @@
       {
          "type":"shell",
          "environment_vars":[
+            "CI_DOMAIN={{user `ci_domain`}}",
             "RHEL_USER={{user `rhel_user`}}",
             "RHEL_PASSWORD={{user `rhel_pass`}}",
             "RHEL_POOL_ID={{user `rhel_pool`}}"

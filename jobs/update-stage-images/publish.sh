@@ -24,6 +24,7 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
+export CI_DOMAIN=$CI_DOMAIN
 export REPOS_TYPE=$REPOS_TYPE
 export PATH=\$PATH:/usr/sbin
 

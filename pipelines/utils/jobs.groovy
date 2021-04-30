@@ -122,7 +122,6 @@ def _evaluate_env(def config_utils) {
       rm -rf global.env
       echo "export PIPELINE_BUILD_TAG=${BUILD_TAG}" >> global.env
       echo "export SLAVE=${SLAVE}" >> global.env
-      echo "export CI_DOMAIN=${CI_DOMAIN}" >> global.env
       echo "export LOGS_HOST=${constants.LOGS_HOST}" >> global.env
       echo "export LOGS_PATH=${logs_path}" >> global.env
       echo "export LOGS_URL=${logs_url}" >> global.env
