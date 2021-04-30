@@ -23,8 +23,8 @@ cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 echo "export RHEL_USER=$RHEL_USER" > rhel-account
 echo "export RHEL_PASSWORD=$RHEL_PASSWORD" >> rhel-account
 
-
 [ "${DEBUG,,}" == "true" ] && set -x
+export CI_DOMAIN=$CI_DOMAIN
 export REPOS_TYPE=$REPOS_TYPE
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
