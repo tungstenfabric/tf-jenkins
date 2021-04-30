@@ -20,7 +20,7 @@ tar -xvf images.tgz
 rm images.tgz
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"
-  curl -sS --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/$file
+  curl -fsS --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/$file
 done
 
 popd

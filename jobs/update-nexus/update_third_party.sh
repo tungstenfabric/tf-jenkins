@@ -9,7 +9,7 @@ if [[ -z ${TPC_REPO_USER} || -z ${TPC_REPO_PASS} ]] ; then
 fi
 
 sudo yum install -y wget curl gcc python3 python3-setuptools python3-devel python3-lxml
-curl -sS --retry 3 --retry-delay 10 https://bootstrap.pypa.io/pip/get-pip.py | sudo python3
+curl -fsS --retry 3 --retry-delay 10 https://bootstrap.pypa.io/pip/get-pip.py | sudo python3
 sudo python3 -m pip install urllib3
 
 # tf-container-build cache
@@ -24,7 +24,7 @@ echo "INFO: Upload containers cache files"
 pushd $CACHE_DIR
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"
-  curl -sS --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/external-web-cache/$file
+  curl -fsS --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/external-web-cache/$file
 done
 popd
 
@@ -52,7 +52,7 @@ pushd $CACHE_DIR
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"
   # ontrail-third-party already in path of downloaded files
-  curl -sS --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/$file
+  curl -fsS --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/$file
 done
 popd
 
@@ -88,6 +88,6 @@ wget -nv -O - https://object-storage.public.mtl1.vexxhost.net/swift/v1/558a8ca6c
 
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"
-  curl -sS --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/yum-tpc-binary/$file
+  curl -fsS --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T $file $REPO_SOURCE/yum-tpc-binary/$file
 done
 popd
