@@ -28,7 +28,7 @@ function get_network_cidr() {
   local i
   local cidr
   for (( i=1; i<=5 ; ++i )) ; do
-    if openstack subnet list --network $net -c subnet -f value 2>/dev/null | head -1 ; then
+    if openstack subnet list --network $net -c Subnet -f value 2>/dev/null | head -1 ; then
       return
     fi
     sleep 10
