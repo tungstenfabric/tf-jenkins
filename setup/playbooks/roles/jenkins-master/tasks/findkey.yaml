@@ -1,6 +1,7 @@
 - name: "find {{ item }} file"
   find:
-    paths: "{{ ssh_keys_dir }}"
+    paths:
+      - "{{ ssh_keys_dir }}"
     patterns: "{{ item }}_rsa"
     recurse: no
     file_type: file
@@ -11,5 +12,3 @@
   set_fact:
     key_list: "{{ key_list | combine({ item: lookup('file', keyfile.files[0].path) }) }}"
   when: keyfile.files|length == 1
-
-

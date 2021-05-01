@@ -7,6 +7,7 @@ all:
       hosts:
         tf-jenkins.progmaticlab.com:
           monitoring_region_host: "monitoring.region-name.ci.example.com"
+          default_network: management
     jenkins_slave:
       children:
         aws:
@@ -15,6 +16,9 @@ all:
         vexxhost:
           hosts:
             vexx01.tf-jenkins.progmaticlab.com:
+          vars:
+            os_region: ca-ymq-1
+            executors: 90
     nexus:
       hosts:
         nexus.internal:
@@ -74,6 +78,8 @@ all:
     # if you need to redefine some of them please remove it in group_vars/all and define here
 
     remote_user: ubuntu
+
+    ci_domain: tfci.progmaticlab.com
 
     # Account for publishing containers to dockerhub (nightly job)
     dockerhub:

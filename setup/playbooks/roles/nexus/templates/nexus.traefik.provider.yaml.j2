@@ -1,32 +1,32 @@
 http:
   routers:
     r1:
-      rule: "Host(`{{ nexus_host }}`) || Host(`{{ nexus_region_host}}`)"
+      rule: "Host(`{{ nexus_name }}.{{ ci_domain }}`) || Host(`{{ nexus_name }}.{{ region }}.{{ ci_domain }}`)"
       service: "s1"
       entryPoints:
         - "registry5101"
       tls:
         certResolver: "letsencrypt"
         domains:
-          - main: "{{ nexus_host }}"
-            sans: "{{ nexus_region_host }}"
+          - main: "{{ nexus_name }}.{{ ci_domain }}"
+            sans: "{{ nexus_name }}.{{ region }}.{{ ci_domain }}"
     r2:
-      rule: "Host(`{{ nexus_host }}`) || Host(`{{ nexus_region_host}}`)"
+      rule: "Host(`{{ nexus_name }}.{{ ci_domain }}`) || Host(`{{ nexus_name }}.{{ region }}.{{ ci_domain }}`)"
       service: "s2"
       entryPoints:
         - "registry5102"
       tls:
         certResolver: "letsencrypt"
         domains:
-          - main: "{{ nexus_host }}"
-            sans: "{{ nexus_region_host }}"
+          - main: "{{ nexus_name }}.{{ ci_domain }}"
+            sans: "{{ nexus_name }}.{{ region }}.{{ ci_domain }}"
   services:
     s1:
       loadBalancer:
         servers:
-        - url: http://{{ nexus_host }}:5001/
+        - url: http://{{ nexus_name }}.{{ ci_domain }}:5001/
     s2:
       loadBalancer:
         servers:
-        - url: http://{{ nexus_host }}:5002/
+        - url: http://{{ nexus_name }}.{{ ci_domain }}:5002/
 

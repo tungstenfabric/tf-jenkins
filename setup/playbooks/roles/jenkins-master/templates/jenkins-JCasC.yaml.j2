@@ -1,8 +1,13 @@
 jenkins:
-  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
+  systemMessage: "https://tungsten.io/\nbased on https://github.com/tungstenfabric/tf-jenkins\n\nJenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
   numExecutors: 2
   scmCheckoutRetryCount: 2
   mode: NORMAL
+  globalNodeProperties:
+  - envVars:
+      env:
+      - key: CI_DOMAIN
+        value: "{{ ci_domain }}"
   securityRealm:
     local:
       allowsSignup: false
@@ -33,7 +38,7 @@ jenkins:
             host: "{{ host }}"
             port: 22
             sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
-        name: "slave{{ loop.index }}-aws"
+        name: "slave-aws_{{ loop.index }}"
         numExecutors: 20
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
@@ -49,17 +54,17 @@ jenkins:
             host: "{{ host }}"
             port: 22
             sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
-        name: "slave{{ loop.index }}-vexxhost"
-        numExecutors: 20
+        name: "slave-vexxhost-{{ hostvars[host].region }}_{{ loop.index }}"
+        numExecutors: "{{ hostvars[host].executors | default(20) }}"
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
         nodeProperties:
         - envVars:
             env:
             - key: "OS_NETWORK"
-              value: "management"
+              value: "{{ hostvars[host].default_network }}"
             - key: "OS_REGION_NAME"
-              value: "ca-ymq-1"
+              value: "{{ hostvars[host].region }}"
             - key: "OS_SG"
               value: "default"
 {% endfor %}
@@ -68,7 +73,7 @@ jenkins:
 unclassified:
   location:
     adminAddress: "{{ jenkins_admin_email }}"
-    url: "https://{{ jenkins_fqdn }}/"
+    url: "https://{{ jenkins_name }}.{{ ci_domain }}/"
   shell:
     shell: "/bin/bash"
 security:

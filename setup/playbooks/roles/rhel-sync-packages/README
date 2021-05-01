@@ -1,6 +1,0 @@
-Prerequisites: 
-  Registered RHEL 7 host
-  200GB disk space
-
-This can take a few hours. It saves some time by first pulling what it can from nexus, then from upstream RH repos.
-If possible, add internal nexus host IP to /etc/hosts. Routing through its public IP is slower.

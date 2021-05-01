@@ -16,25 +16,21 @@
     state: directory
     suffix: docker-build
   register: docker_build_dir
-  when: jenkins_custom_docker_image
 
 - name: Copy jenkins Dockerfile
   template:
     src: "jenkins-Dockerfile.j2"
     dest: "{{ docker_build_dir.path }}/Dockerfile"
-  when: jenkins_custom_docker_image
 
 - name: Copy jenkins Dockerfile
   template:
     src: "jenkins-Dockerfile.j2"
     dest: "{{ docker_build_dir.path }}/Dockerfile"
-  when: jenkins_custom_docker_image
 
 - name: Copy entrypoint to build directory
   copy:
     src: "{{ item }}"
     dest: "{{ docker_build_dir.path }}/{{ item }}"
-  when: jenkins_custom_docker_image 
   with_items:
     - entrypoint.sh
 
@@ -42,7 +38,6 @@
   copy:
     src: "{{ item }}"
     dest: "{{ docker_build_dir.path }}/{{ item }}"
-  when: jenkins_custom_docker_image and jenkins_new_deploy
   with_items:
     - plugins.txt
 
@@ -50,9 +45,7 @@
   template:
     src: "jenkins-JCasC.yaml.j2"
     dest: "{{ docker_build_dir.path }}/jenkins.yaml"
-  when: jenkins_custom_docker_image and jenkins_new_deploy
-  vars:
-    jenkins_id_ssh_rsa: "{{lookup('file', 'jenkins_id_ssh_rsa')}}"
+  when: jenkins_overwrite_configuration
 
 - name: Create credentials
   include: credentials.yaml
@@ -67,7 +60,6 @@
     tag: latest
     force_tag: yes
     force_source: yes
-  when: jenkins_custom_docker_image
   register: jenkins_image
 
 #- name: Delete temporary directory
@@ -113,9 +105,9 @@
     ports:
       - "8080:8080"
     env:
-      VIRTUAL_HOST: "{{ jenkins_fqdn }},{{ jenkins_region_fqdn }}"
+      VIRTUAL_HOST: "{{ jenkins_name }}.{{ region }}.{{ ci_domain }}"
       VIRTUAL_PORT: "8080"
-      LETSENCRYPT_HOST: "{{ jenkins_fqdn }},{{ jenkins_region_fqdn }}"
+      LETSENCRYPT_HOST: "{{ jenkins_name }}.{{ region }}.{{ ci_domain }}"
       LETSENCRYPT_EMAIL: "{{ jenkins_admin_email }}"
     volumes:
       - jenkins_home:/var/jenkins_home
@@ -129,20 +121,19 @@
 
 - name: Pause play until a URL is reachable from this host
   uri:
-    url: "https://{{ jenkins_fqdn }}/login"
+    url: "https://{{ jenkins_name }}.{{ region }}.{{ ci_domain }}/login"
     follow_redirects: none
     method: GET
   register: _result
   until: _result.status == 200
   retries: 100
   delay: 5
-  when: jenkins_new_deploy
 
 - name: Clean JCasC config file after jenkins deploy
   file:
     state: absent
     path: "{{ volume_jenkins.volume.Mountpoint }}/jenkins.yaml"
-  when: jenkins_new_deploy
+  when: jenkins_overwrite_configuration
 
 - name: Create daily backup script
   template:
@@ -154,4 +145,3 @@
 
 - name: Populate jobs
   include: populate-jobs.yaml
-  when: jenkins_new_deploy

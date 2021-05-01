@@ -18,7 +18,7 @@
   user:
     name: "{{ remote_user }}"
     state: present
-    groups: "docker"
+    group: "docker"
 
 - name: Configure proxy
   template:
@@ -47,8 +47,8 @@
 
 - name: wait for nexus to come up
   uri:
-    url: "http://{{ nexus_host }}/"
-    status_code: 200
+    url: "http://{{ nexus_name }}.{{ region }}.{{ ci_domain }}/"
+    status_code: "200"
   register: result
   until: result.status == 200
   retries: 12
@@ -62,8 +62,8 @@
 
 - name: wait for nexus to come up
   uri:
-    url: "http://{{ nexus_host }}/"
-    status_code: 200
+    url: "http://{{ nexus_name }}.{{ region }}.{{ ci_domain }}/"
+    status_code: "200"
   register: result
   until: result.status == 200
   retries: 12

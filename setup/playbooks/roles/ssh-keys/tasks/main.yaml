@@ -15,4 +15,5 @@
   with_items:
     - logserver
     - mirrors
-
+    - jenkins_slave
+    - workers

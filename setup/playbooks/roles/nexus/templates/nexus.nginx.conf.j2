@@ -1,7 +1,7 @@
 # from https://help.sonatype.com/repomanager3/installation/run-behind-a-reverse-proxy#app
 server {
     listen   *:80;
-    server_name  {{ nexus_host }};
+    server_name  {{ nexus_name }}.{{ region }}.{{ ci_domain }};
 
     # allow large uploads of files
     client_max_body_size 1G;
