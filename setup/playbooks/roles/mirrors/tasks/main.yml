@@ -101,6 +101,9 @@
     volumes:
       - /opt/mirrors/dockerhub/config.yml:/etc/docker/registry/config.yml
       - /var/local/mirror/dockerhub:/var/lib/registry
+    labels:
+      traefik.http.routers.dockerhub.entrypoints: dockerhub
+      traefik.http.routers.dockerhub.rule: PathPrefix(`/`)
 
 - name: Start devpi
   docker_container:
@@ -122,6 +125,15 @@
     labels:
       traefik.http.routers.repos.entrypoints: web
       traefik.http.routers.repos.rule: PathPrefix(`/repos`)
+
+- name: Start docker registry :5005
+  docker_container:
+    name: dockerhub
+    image: registry:2
+    ports:
+      - 5005:5000
+    volumes:
+      - /var/local/mirror/registry5005:/var/lib/registry
 
 - name: Copy management scripts
   copy:
@@ -151,6 +163,11 @@
     group: wheel
     state: present
     createhome: yes
+
+- name: store RHEL credentials
+  template:
+    src: rhpwd.j2
+    dest: /root/rhpwd
 
 - name: set up authorized key
   authorized_key:
