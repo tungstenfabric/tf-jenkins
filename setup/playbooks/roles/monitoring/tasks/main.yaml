@@ -21,7 +21,10 @@
     mode: 0644
   with_items:
     - Dockerfile
-    - docker-compose.yaml
+    - Dockerfile.fixvars
+    - nginx-default.conf
+    - dashboard.json
+    - app
 
 - name: apply configuration
   template:
@@ -30,6 +33,7 @@
     mode: 0644
   with_items:
     - fluent.conf
+    - docker-compose.yaml
 
 - name: start apps
   docker_service:
@@ -52,25 +56,50 @@
     database_name: "{{ database }}"
     udp_port: 4444 # fixed in later ansible versions
 
-#- name: Create influxdb datasource
-#  grafana_datasource:
-#    name: "influxdb"
-#    grafana_url: "http://localhost:3000"
-#    grafana_user: "admin"
-#    grafana_password: "{{ grafana_password }}"
-#    org_id: "1"
-#    ds_type: "influxdb"
-#    ds_url: "http://influxdb:8086"
-#    database: "{{ database }}"
-#    time_interval: ">10s"
+- name: Add grafana user
+  community.grafana.grafana_user:
+    url: "http://localhost:3000"
+    url_username: "admin"
+    url_password: "admin"
+    name: "Admin"
+    email: "{{ jenkins_admin_email }}"
+    login: "{{ grafana_user }}"
+    password: "{{ grafana_password }}"
+    is_admin: true
+    state: present
+    ignore_errors: true
 
-#- name: Create dashboard
-#  uri:
-#    url: http://localhost:3000/api/dashboards/db
-#    user: admin
-#    password: "{{ grafana_password }}"
-#    method: POST
-#    force_basic_auth: yes
-#    status_code: 200
-#    body_format: json
-#    body: "{\"overwrite\": true, \"dashboard\": {{ lookup('file', 'dashboard.json') }} }"
+- name: Delete default admin grafana user
+  community.grafana.grafana_user:
+    url: "http://localhost:3000"
+    url_username: "{{ grafana_user }}"
+    url_password: "{{ grafana_password }}"
+    name: "Admin"
+    email: "{{ jenkins_admin_email }}"
+    login: "admin"
+    password: "{{ grafana_password }}"
+    is_admin: true
+    state: absent
+
+- name: Create influxdb datasource
+  grafana_datasource:
+    name: "influxdb"
+    grafana_url: "http://localhost:3000"
+    grafana_user: "{{ grafana_user }}"
+    grafana_password: "{{ grafana_password }}"
+    org_id: "1"
+    ds_type: "influxdb"
+    ds_url: "http://influxdb:8086"
+    database: "{{ database }}"
+    time_interval: ">10s"
+
+- name: Create dashboard
+  uri:
+    url: http://localhost:3000/api/dashboards/db
+    user: "{{ grafana_user }}"
+    password: "{{ grafana_password }}"
+    method: POST
+    force_basic_auth: yes
+    status_code: 200
+    body_format: json
+    body: "{\"overwrite\": true, \"dashboard\": {{ lookup('file', 'dashboard.json') }} }"
