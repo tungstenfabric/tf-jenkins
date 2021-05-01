@@ -23,19 +23,13 @@ ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
 echo "# env file created by Jenkins" > "$ENV_FILE"
 echo "export ENVIRONMENT_OS=${ENVIRONMENT_OS}" >> "$ENV_FILE"
-cidr=$(get_network_cidr $OS_NETWORK)
-if [[ -z "cidr" ]]; then
-  echo "ERROR: failed to get CIDR for subnet in network '$OS_NETWORK'"
-  exit 1
-fi
-echo "export OS_API_NETWORK_CIDR=$cidr" >> "$ENV_FILE"
 if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
   cidr=$(get_network_cidr $OS_DATA_NETWORK)
-  if [[ -z "cidr" ]]; then
+  if [[ -z "$cidr" ]]; then
     echo "ERROR: failed to get CIDR for subnet in network '$OS_DATA_NETWORK'"
     exit 1
   fi
-  echo "export OS_DATA_NETWORK_CIDR=$cidr" >> "$ENV_FILE"
+  echo "export DATA_NETWORK=$cidr" >> "$ENV_FILE"
 fi
 
 IMAGE_TEMPLATE_NAME="${OS_IMAGES["${ENVIRONMENT_OS^^}"]}"
