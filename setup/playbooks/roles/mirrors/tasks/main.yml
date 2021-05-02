@@ -60,6 +60,7 @@
     name: "{{ item }}repos"
     tag: latest
     source: build
+    force_source: yes
   with_items:
     - centos7
     - rhel7

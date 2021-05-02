@@ -76,7 +76,7 @@ jenkins:
 unclassified:
   location:
     adminAddress: "{{ jenkins_admin_email }}"
-    url: "https://{{ jenkins_name }}.{{ ci_domain }}/"
+    url: "https://{{ jenkins_name }}.{{ region }}.{{ ci_domain }}/"
   shell:
     shell: "/bin/bash"
 security:
