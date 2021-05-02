@@ -2,10 +2,19 @@
 
 [ $# -ne 1 ] && exit 1
 
-DIST=$1
-BASEDIR=/var/local/mirror/repos/${DIST}
-pushd ${BASEDIR}
-NEWLATEST=$(readlink stage)
-rm -f latest || /bin/true
-ln -s ${NEWLATEST} latest
-popd
+declare -A REPOS=( \
+    ["centos7"]="centos7 yum7" \
+    ["rhel7"]="rhel7 ubi7" \
+    ["rhel8"]="rhel8 ubi8" \
+    ["ubuntu18"]="ubuntu18" \
+)
+
+for repo in ${REPOS[$1]} ; done
+    echo "INFO: publish repo $repo for dist $1"
+    BASEDIR=/var/local/mirror/repos/${repo}
+    pushd ${BASEDIR}
+    NEWLATEST=$(readlink stage)
+    rm -f latest || /bin/true
+    ln -s ${NEWLATEST} latest
+    popd
+done
