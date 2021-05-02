@@ -78,7 +78,7 @@
           source "$WORKSPACE/global.env"
           source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
           source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
-          echo "INFO: do repos update for repo "
+          echo "INFO: do repos update for repo $REPOS_TYPE"
           $WORKSPACE/src/tungstenfabric/tf-jenkins/jobs/update-stage-repos/run.sh
     publishers:
       - archive:

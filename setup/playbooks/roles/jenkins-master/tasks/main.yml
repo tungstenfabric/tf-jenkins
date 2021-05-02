@@ -98,6 +98,19 @@
     network_mode: bridge
     restart_policy: unless-stopped
 
+- name: Get infos on volume
+  docker_volume_info:
+    name: jenkins_home
+  register: volume_jenkins
+  ignore_errors: True
+
+- name: Clean JCasC config file before jenkins deploy
+  file:
+    state: absent
+    path: "{{ volume_jenkins.volume.Mountpoint }}/jenkins.yaml"
+  when: jenkins_overwrite_configuration and volume_jenkins
+  ignore_errors: True
+
 - name: Create jenkins container
   docker_container:
     name: jenkins-master

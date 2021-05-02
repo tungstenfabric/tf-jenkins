@@ -1,9 +1,9 @@
 antisamy-markup-formatter
 aws-credentials
-build-name-setter
 build-timeout
 configuration-as-code
 copyartifact
+description-setter
 email-ext
 external-monitor-job
 gerrit-trigger
