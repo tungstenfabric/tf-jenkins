@@ -9,7 +9,7 @@ declare -A REPOS=( \
     ["ubuntu18"]="ubuntu18" \
 )
 
-for repo in ${REPOS[$1]} ; done
+for repo in ${REPOS[$1]} ; do
     echo "INFO: publish repo $repo for dist $1"
     BASEDIR=/var/local/mirror/repos/${repo}
     pushd ${BASEDIR}
