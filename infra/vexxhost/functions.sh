@@ -91,6 +91,7 @@ function wait_for_free_resources() {
     echo "ERROR: Can't get project_id by name $OS_PROJECT_NAME"
     return 1
   fi
+  echo "INFO: project_id=$project_id"
 
   echo "INFO: wait for enough resources for required_instances=$required_instances and required_cores=$required_cores  $(date)"
   while true ; do

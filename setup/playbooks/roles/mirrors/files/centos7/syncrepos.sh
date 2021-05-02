@@ -1,8 +1,7 @@
 #!/bin/bash -e
 
 REPOS_CENTOS7=(base centosplus extras updates)
-REPOS_YUM7=(centos-openstack-queens dockerrepo epel google-chrome)
-#REPOS_UBI7=(ubi-7 ubi-7-server-debug-rpms ubi-7-server-source-rpms ubi-7-server-optional-rpms ubi-7-server-optional-debug-rpms ubi-7-server-optional-source-rpms ubi-7-server-extras-rpms ubi-7-server-extras-debug-rpms ubi-7-server-extras-source-rpms ubi-7-rhah ubi-7-rhah-debug ubi-7-rhah-source ubi-server-rhscl-7-rpms ubi-server-rhscl-7-debug-rpms ubi-server-rhscl-7-source-rpms ubi-7-server-devtools-rpms ubi-7-server-devtools-debug-rpms ubi-7-server-devtools-source-rpms)
+REPOS_YUM7=(centos-openstack-queens dockerrepo epel google-chrome k8s)
 MIRRORDIR=/repos
 DATE=$(date +"%Y%m%d")
 
