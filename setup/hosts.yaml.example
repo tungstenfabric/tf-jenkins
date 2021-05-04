@@ -1,129 +1,86 @@
 all:
   children:
 #
-# monitoring should be deployed to jenkins master host 
+# monitoring should be deployed to jenkins master host - these services has one replica even for multi-region deploy.
 #
     jenkins_master:
       hosts:
-        tf-jenkins.progmaticlab.com:
-          monitoring_region_host: "monitoring.region-name.ci.example.com"
-          default_network: management
+        199.204.45.99:
+          region: ca-ymq-1
     jenkins_slave:
       children:
-        aws:
-          hosts:
-            aws01.tf-jenkins.progmaticlab.com:
+#        aws:
+#          hosts:
+#            aws01.region.progmaticlab.com:
         vexxhost:
           hosts:
-            vexx01.tf-jenkins.progmaticlab.com:
-          vars:
-            os_region: ca-ymq-1
-            executors: 90
+            199.19.213.80:
+              region: ca-ymq-1
+              default_network: management
+              executors: 90
     nexus:
       hosts:
-        nexus.internal:
-          nexus_region_host: "nexus.region-name.ci.example.com"
+        199.19.213.181:
+          region: ca-ymq-1
     mirrors:
       hosts:
-        mirrors:
-    nameserver:
-      hosts:
-        ns1:
-          region: region1
-        ns2:
-          region: region2
-      vars:
-        cizone: ci.internal
-        nameservers:
-          # FQDNs, put primary master server name first
-          - ns1.internal
-          - ns2.internal
-        regions:
-          region1:
-            publicnets:
-              # Region's public nets
-              - 1.2.3.0/24
-              - 2.3.4.0/19
-            forwarders:
-              # Region's default internal resolvers
-              - 10.0.0.1
-              - 10.0.1.1
-            data:
-              # Short names and IPs for A RRs in region zone
-              tf-nexus: 10.0.1.2
-              tf-jenkins: 10.0.1.3
-              tf-mirrors: 10.0.1.4
-          region2:
-            publicnets:
-              # Region's public nets
-              - 11.2.3.0/24
-              - 12.3.4.0/19
-            forwarders:
-              # Region's default internal resolvers
-              - 10.0.0.1
-              - 10.0.1.1
-            data:
-              # Short names and IPs for A RRs in region zone
-              tf-nexus: 10.0.2.2
-              tf-jenkins: 10.0.2.3
-              tf-mirrors: 10.0.2.4
-        default_region: region1
+        199.204.45.97:
+          remote_user: centos
     logserver:
       hosts:
-        logserver
+        199.19.213.181: 
 
   vars:
     # please see some defaults in group_vars/all
     # please note that definitions in group_vars/all have greater precedence than below vars
     # if you need to redefine some of them please remove it in group_vars/all and define here
 
+    # if True the Jenkins-Configurtaion-as-a-Code file (JCasC) will be applied at run of jenkins-master playbook
+    jenkins_overwrite_configuration: true
+
+    # to access hosts from above list
     remote_user: ubuntu
+    # private ssh key to those hosts
+    ansible_ssh_private_key_file: "{{ lookup('env', 'HOME') }}/.ssh/some_key"
 
-    ci_domain: tfci.progmaticlab.com
+    ci_domain: "some_ci_domain"
+  
+    nexus_password: "some_password"
 
-    # Account for publishing containers to dockerhub (nightly job)
-    dockerhub:
-      namespace: tungstenfabric
-      username: username
-      password: pwd
+    jenkins_default_user_password: "some_password"
 
-    image_web_server: "nexus/repository/"
-    nexus_host: "nexus.internal"
-    nexus_region_host: "nexus.region1.internal"
-    nexus_user: "admin"
-    nexus_password: "password"
+    jenkins_admin_email: "tf-jenkins@some_email_domain"
+    letsencrypt_email: "null@some_email_domain"
 
-    # jenkins_new_deploy: true - redeploy Jenkins master from the scratch
-    # jenkins_new_deploy: false - upgrade Jenkins master to latest version
-    jenkins_new_deploy: false 
-    jenkins_default_user_password: "password"
-    jenkins_fqdn: "tf-jenkins.ci.internal"
-    jenkins_region_fqdn: "tf-jenkins.region1.ci.internal"
-    jenkins_admin_email: "root@admin.internal"
-    letsencrypt_email: "root@admin.internal"
-    log_url: "http://log-site.public:port"
-    ssh_keys_dir: "{{ lookup('env', 'HOME') }}/tfci/ssh"
+    grafana_password: "some_password"
 
-# Optional , secrets used by Jenkins jobs
-#
-#    aws_access_key: "some_secret"
-#    aws_secret_key: "some_secret"
-#    docker_user: "some_secret"
-#    docker_password: "some_secret"
-#    vexx_os_username: "some_secret"
-#    vexx_os_project_name: "some_secret"
-#    vexx_os_password: "some_secret"
-#    vexx_os_domain_name: "some_secret"
-#    vexx_os_auth_url: "some_secret"
-#    rhel_user: "some_secret"
-#    rhel_password: "some_secret"
-#    rhel_pool_id: "some_secret"
-#    dockerhub_user: "some_secret"
-#    dockerhub_password: "some_secret"
-#    gerrit_user: "some_secret"
-#    gerrit_password: "some_secret"
-#    maas_api_key: "some_secret"
-#    aquascanner_user: "some_secret"
-#    aquascanner_password: "some_secret"
-#    aquasec_user: "some_secret"
-#    aquasec_password: "some_secret"
+    # AWS creds in case of AWS save exists
+    #aws_access_key: "aws_key"
+    #aws_secret_key: "aws_secret"
+
+    # OpenStack creds in case of such slave exists
+    os_username: "os_username"
+    os_project_name: "os_project_name"
+    os_password: "os_password"
+    os_domain_name: "os_domain_name"
+    os_auth_url: "os_auth_url"
+
+    rhel_user: "rhel_user"
+    rhel_password: "rhel_password"
+    rhel_pool_id: "rhel_pool_id"
+
+    dockerhub_user: "dockerhub_user"
+    dockerhub_password: "dockerhub_password"
+
+    gerrit_user: "gerrit_user"
+    gerrit_password: "gerrit_password"
+
+    maas_api_key: "maas_api_key"
+
+    openshift_pull_secret: |
+      some json from https://cloud.redhat.com/openshift/install/pull-secret
+
+    aquascanner_user: "aquascanner_user"
+    aquascanner_password: "aquascanner_password"
+    aquasec_user: "aquasec_user"
+    aquasec_password: "aquasec_password"

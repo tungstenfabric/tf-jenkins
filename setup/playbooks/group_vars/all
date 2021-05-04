@@ -1,0 +1,13 @@
+---
+
+remote_user: ubuntu
+
+jenkins_name: "tf-jenkins"
+jenkins_default_user: "self-jenkins"
+
+nexus_name: "tf-nexus"
+nexus_user: "admin"
+
+monitoring_name: "tf-monitoring"
+
+ssh_keys_dir: "{{ lookup('env', 'HOME') }}/tfci/ssh" 

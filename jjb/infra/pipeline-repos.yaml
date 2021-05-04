@@ -7,7 +7,7 @@
     properties:
       - build-discarder:
           num-to-keep: 30
-    concurrent: false
+    concurrent: true
     parameters:
       - choice:
           name: SLAVE
@@ -39,7 +39,7 @@
     properties:
       - build-discarder:
           num-to-keep: 30
-    concurrent: false
+    concurrent: true
     parameters:
       - choice:
           name: SLAVE

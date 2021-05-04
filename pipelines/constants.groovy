@@ -12,7 +12,7 @@ LOGS_BASE_PATH = "/var/www/logs/jenkins_logs"
 // URL to report to user
 LOGS_BASE_URL = "http://tf-nexus.${SLAVE_REGION}.${CI_DOMAIN}:8082/jenkins_logs"
 // URL to report pipeline result
-MONITORING_BACKEND_URL = "http://tf-monitoring-backend.${CI_DOMAIN}:9880"
+MONITORING_BACKEND_URL = "http://tf-monitoring.${SLAVE_REGION}.${CI_DOMAIN}:9880"
 // store built docker images in long-term repo in case of nightly 
 if (env.GERRIT_PIPELINE == 'nightly') {
   CONTAINER_REGISTRY="tf-nexus.${SLAVE_REGION}.${CI_DOMAIN}:5002"

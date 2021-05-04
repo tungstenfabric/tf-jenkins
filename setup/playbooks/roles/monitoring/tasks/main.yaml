@@ -23,7 +23,6 @@
     - Dockerfile
     - Dockerfile.fixvars
     - nginx-default.conf
-    - dashboard.json
     - app
 
 - name: copy script
@@ -40,6 +39,7 @@
     dest: "/opt/monitoring/{{ item }}"
     mode: 0644
   with_items:
+    - dashboard.json
     - fluent.conf
     - docker-compose.yaml
 
@@ -73,7 +73,7 @@
     method: PUT
     body_format: json
     body: #'{"oldPassword": "admin", "newPassword": "{{ grafana_password }}"}'
-      oldPassword: admin
+      oldPassword: "admin"
       newPassword: "{{ grafana_password }}"
     status_code:
       - 200
@@ -99,14 +99,14 @@
     method: POST
     body_format: json
     body:
-     name: InfluxDB
-     type: influxdb
-     url: http://influxdb:8086
-     access: proxy
-     database: "{{ database }}"
-     status_code:
-       - 200
-       - 409 # if datasource exists
+      name: InfluxDB
+      type: influxdb
+      url: http://influxdb:8086
+      access: proxy
+      database: "{{ database }}"
+      status_code:
+        - 200
+        - 409 # if datasource exists
   when: datasource.status == 404
 
 - name: Create dashboard

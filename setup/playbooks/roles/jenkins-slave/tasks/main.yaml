@@ -68,6 +68,11 @@
     group: "{{ jenkins_user }}"
     mode: "0600"
 
+- name: Store tuned ssh config for user
+  copy:
+    src: ssh_config
+    dest: "/home/{{ jenkins_user }}/.ssh/config"
+
 - name: Ensure group "docker" exists
   group:
     name: docker

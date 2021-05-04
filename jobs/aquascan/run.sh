@@ -9,7 +9,7 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 source "$my_dir/../../infra/${SLAVE}/functions.sh"
 
-AQUASEC_HOST_IP=$(get_instance_ip $AQUASCAN_INSTANCE_NAME)
+AQUASEC_HOST_IP=$(get_instance_ip tf-aquascan.$SLAVE_REGION.$CI_DOMAIN)
 SCAN_REPORTS_STASH=/tmp/scan_reports
 
 env_file="$WORKSPACE/scan.env"
