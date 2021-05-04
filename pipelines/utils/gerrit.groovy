@@ -206,6 +206,7 @@ def publish_plain_results_to_monitoring(streams, results, verified) {
     logstring = optstostring(log_opts)
     sh """
       ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
+        --url ${MONITORING_BACKEND_URL} \
         ${logstring}
     """
   } catch (err) {
@@ -253,6 +254,7 @@ def publish_nightly_results_to_monitoring(streams, results) {
       logstring = optstostring(log_opts)
       sh """
         ${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/fluentd/log.py \
+          --url ${MONITORING_BACKEND_URL} \
           ${logstring}
       """
     } catch (err) {

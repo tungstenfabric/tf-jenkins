@@ -89,8 +89,7 @@ def main():
         )
 
     parser.add_argument(
-        "--url", dest="url", type=str,
-        default="http://10.0.3.124:9880"
+        "--url", dest="url", type=str, required=True
     )
     parser.add_argument(
         "--measurement", dest="measurement",
