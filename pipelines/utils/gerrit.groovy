@@ -200,7 +200,8 @@ def publish_plain_results_to_monitoring(streams, results, verified) {
       started: currentBuild.startTimeInMillis,
       duration: (new Date()).getTime() - currentBuild.startTimeInMillis,
       patchset: "${resolve_gerrit_url()}${path}",
-      logs: logs_url
+      logs: logs_url,
+      region: ${SLAVE_REGION}
     ]
 
     logstring = optstostring(log_opts)
@@ -228,7 +229,8 @@ def publish_nightly_results_to_monitoring(streams, results) {
       gerrit: env.GERRIT_PIPELINE,
       status: "NOT_IMPLEMENTED",
       duration: 0,
-      started: currentBuild.startTimeInMillis
+      started: currentBuild.startTimeInMillis,
+      region: ${SLAVE_REGION}
     ]
     if (results.containsKey(stream) && !results[stream].getOrDefault('skipped', false)) {
       log_opts['logs'] = "${logs_url}/${stream}"

@@ -10,6 +10,7 @@ tags = [
     'orchestrator',
     'deployer',
     'gerrit',
+    'region',
 ]
 results = [
     'status',
