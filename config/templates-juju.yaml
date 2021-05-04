@@ -145,7 +145,7 @@
       juju-os-1912:
         vars:
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
-          CONTAINER_REGISTRY: 'tf-nexus.$CI_DOMAIN:5002'
+          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
           SSL_ENABLE: 'true'
     jobs:
       deploy-platform-juju-os-1912:
@@ -181,7 +181,7 @@
       juju-os-2011:
         vars:
           CONTRAIL_CONTAINER_TAG: 'nightly-r2011-centos'
-          CONTAINER_REGISTRY: 'tf-nexus.$CI_DOMAIN:5002'
+          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
           SSL_ENABLE: 'true'
           MONITORING_DEPLOY_TARGET: ILTS
           MONITORING_DEPLOYER: juju
@@ -255,7 +255,7 @@
     streams:
       juju-os-ha-ziu:
         vars:
-          CONTAINER_REGISTRY: tf-nexus.$CI_DOMAIN:5002
+          CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011-centos
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju

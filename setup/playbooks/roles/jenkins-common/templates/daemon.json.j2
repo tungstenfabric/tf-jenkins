@@ -6,6 +6,8 @@
   "log-opts": {
     "max-size": "10m",
     "max-file": "3" 
-  },
-  "insecure-registries":["tf-nexus.{{ ci_domain }}:5001", "tf-nexus.{{ ci_domain }}:5002"]
+  }
+  {% if 'jenkins_slave' in group_names %}
+  ,"insecure-registries":["tf-nexus.{{ region }}.{{ ci_domain }}:5001", "tf-nexus.{{ region }}.{{ ci_domain }}:5002"]
+  {% endif -%}
 }

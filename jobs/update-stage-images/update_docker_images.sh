@@ -14,7 +14,7 @@ source $my_dir/${REPOS_TYPE}.env
 
 [ -f $my_dir/rhel-account ] && source $my_dir/rhel-account
 
-MIRROR_REGISTRY=${MIRROR_REGISTRY:-"tf-mirrors.$CI_DOMAIN:5005"}
+MIRROR_REGISTRY=${MIRROR_REGISTRY:-"tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"}
 
 function retry() {
   local i

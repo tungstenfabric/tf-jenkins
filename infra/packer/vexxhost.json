@@ -1,5 +1,6 @@
 {
    "variables":{
+      "slave_region":"{{env `SLAVE_REGION`}}",
       "ci_domain":"{{env `CI_DOMAIN`}}",
       "workspace":"{{env `WORKSPACE`}}",
       "os_image":"{{env `OS_IMAGE`}}",
@@ -35,6 +36,7 @@
       {
          "type":"shell",
          "environment_vars":[
+            "SLAVE_REGION={{user `slave_region`}}",
             "CI_DOMAIN={{user `ci_domain`}}",
             "RHEL_USER={{user `rhel_user`}}",
             "RHEL_PASSWORD={{user `rhel_pass`}}",

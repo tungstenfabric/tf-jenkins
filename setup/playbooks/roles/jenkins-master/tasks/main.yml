@@ -111,6 +111,7 @@
   when: jenkins_overwrite_configuration and volume_jenkins
   ignore_errors: True
 
+# TODO: add more names when master will be just one
 - name: Create jenkins container
   docker_container:
     name: jenkins-master

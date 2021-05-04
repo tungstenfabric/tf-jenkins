@@ -1,27 +1,27 @@
 [tf-mirrors.ci_repos_yum7-base]
-name=added from: http://tf-mirrors.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/base
-baseurl=http://tf-mirrors.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/base
+name=added from: http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/base
+baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/base
 enabled=1
 gpgcheck=0
 cost = 500
 
 [tf-mirrors.ci_repos_yum7-extras]
-name=added from: http://tf-mirrors.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/extras
-baseurl=http://tf-mirrors.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/extras
+name=added from: http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/extras
+baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/extras
 enabled=1
 gpgcheck=0
 cost = 500
 
 [tf-mirrors.ci_repos_yum7-updates]
-name=added from: http://tf-mirrors.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/updates/
-baseurl=http://tf-mirrors.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/updates/
+name=added from: http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/updates/
+baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/updates/
 enabled=1
 gpgcheck=0
 cost = 500
 
 [tf-mirrors.ci_repos_yum7-centosplus]
-name=added from: http://tf-mirrors.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/centosplus/
-baseurl=http://tf-mirrors.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/centosplus/
+name=added from: http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/centosplus/
+baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/centosplus/
 enabled=1
 gpgcheck=0
 cost = 500
