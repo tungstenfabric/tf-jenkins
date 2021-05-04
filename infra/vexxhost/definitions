@@ -1,5 +1,5 @@
 # OS variables are defined in the properties of the Jenkins node
-export OS_REGION_NAME
+export OS_REGION_NAME=$SLAVE_REGION
 export OS_NETWORK="${OS_NETWORK:-management}"
 export OS_DATA_NETWORK="data"
 export OS_NETWORK_ID

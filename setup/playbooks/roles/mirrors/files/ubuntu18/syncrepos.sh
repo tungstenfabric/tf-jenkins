@@ -8,6 +8,7 @@ cd ${MIRRORDIR}/ubuntu18
 
 sed -i "s|%MIRRORDIR%|${MIRRORDIR}/ubuntu18/${DATE}|" /etc/apt/mirror.list
 sed -i "s|%CI_DOMAIN%|${CI_DOMAIN}|" /etc/apt/sources.list
+sed -i "s|%SLAVE_REGION%|${SLAVE_REGION}|" /etc/apt/sources.list
 apt-mirror
 
 mkdir -p ${DATE}/lxd

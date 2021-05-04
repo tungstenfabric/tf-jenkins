@@ -1,1 +1,1 @@
-APT_MIRROR=http://tf-mirrors.$CI_DOMAIN/repos/ubuntu18/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu/
+APT_MIRROR=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu18/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu/

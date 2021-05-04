@@ -1,8 +1,8 @@
 {
   "registry-mirrors": [
-    "http://tf-mirrors.$CI_DOMAIN:5000"
+    "http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5000"
   ],
   "insecure-registries": [
-    "tf-mirrors.$CI_DOMAIN:5000"
+    "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5000"
   ]
 }

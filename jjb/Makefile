@@ -21,7 +21,7 @@ clean: $(outdir)
 	find $(outdir) -maxdepth 1 -type f ! -name README -delete
 
 test: clean
-	@sed -i 's/%CI_DOMAIN%/$(CI_DOMAIN)/g' $(jenkins_jobs_ini)
+	@sed -i 's/%JENKINS_URL%/$(JENKINS_URL)/g' $(jenkins_jobs_ini)
 	@$(jenkins_jobs) --conf $(jenkins_jobs_ini) --user $(USER) --password $(PASSWORD) test -o $(outdir) common:jobs:gerrit:infra
 
 update: clean

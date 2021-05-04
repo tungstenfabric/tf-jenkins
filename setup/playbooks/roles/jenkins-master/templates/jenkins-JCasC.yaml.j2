@@ -64,10 +64,10 @@ jenkins:
         nodeProperties:
         - envVars:
             env:
+            - key: "SLAVE_REGION"
+              value: "{{ hostvars[host].region }}"
             - key: "OS_NETWORK"
               value: "{{ hostvars[host].default_network }}"
-            - key: "OS_REGION_NAME"
-              value: "{{ hostvars[host].region }}"
             - key: "OS_SG"
               value: "default"
 {% endfor %}

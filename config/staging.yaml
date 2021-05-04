@@ -32,7 +32,7 @@
         update-stage-images-rhel7:
           job-name: update-stage-images
           vars:
-            CONTAINER_REGISTRY: 'tf-mirrors.$CI_DOMAIN:5005'
+            CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel7'
         publish-stage-repos-rhel7:
           job-name: publish-stage-repos
@@ -43,7 +43,7 @@
         publish-stage-images-rhel7:
           job-name: publish-stage-images
           vars:
-            CONTAINER_REGISTRY: 'tf-mirrors.$CI_DOMAIN:5005'
+            CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel7'
           depends-on:
             - update-stage-images-rhel7
@@ -62,7 +62,7 @@
         update-stage-images-rhel8:
           job-name: update-stage-images
           vars:
-            CONTAINER_REGISTRY: 'tf-mirrors.$CI_DOMAIN:5005'
+            CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel8'
         publish-stage-repos-rhel8:
           job-name: publish-stage-repos
@@ -73,7 +73,7 @@
         publish-stage-images-rhel8:
           job-name: publish-stage-images
           vars:
-            CONTAINER_REGISTRY: 'tf-mirrors.$CI_DOMAIN:5005'
+            CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel8'
           depends-on:
             - update-stage-images-rhel8
@@ -151,7 +151,7 @@
         update-stage-images-rhel7:
           job-name: update-stage-images
           vars:
-            CONTAINER_REGISTRY: 'tf-mirrors.$CI_DOMAIN:5005'
+            CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel7'
         prepare-sandbox-ubi:
           # it needs images job in deps cause contrail-general-base is based on clean ubi image
@@ -171,7 +171,7 @@
         publish-stage-images-rhel7:
           job-name: publish-stage-images
           vars:
-            CONTAINER_REGISTRY: 'tf-mirrors.$CI_DOMAIN:5005'
+            CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel7'
           depends-on:
             - test-sanity-rhosp13
@@ -196,7 +196,7 @@
         update-stage-images-rhel8:
           job-name: update-stage-images
           vars:
-            CONTAINER_REGISTRY: 'tf-mirrors.$CI_DOMAIN:5005'
+            CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel8'
         prepare-sandbox-ubi:
           # it needs images job in deps cause contrail-general-base is based on clean ubi image
@@ -216,7 +216,7 @@
         publish-stage-images-rhel8:
           job-name: publish-stage-images
           vars:
-            CONTAINER_REGISTRY: 'tf-mirrors.$CI_DOMAIN:5005'
+            CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel8'
           depends-on:
             - test-sanity-rhosp16
