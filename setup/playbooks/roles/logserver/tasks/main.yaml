@@ -1,17 +1,17 @@
 ---
 
-- name: Ensure zuul group exists
+- name: Ensure logserver group exists
   group:
-    name: zuul
+    name: logserver
     state: present
     gid: 9999
 
-- name: Ensure zuul user exists
+- name: Ensure logserver user exists
   user:
-    name: "zuul"
+    name: "logserver"
     state: present
     uid: 9999
-    groups: docker,zuul
+    group: logserver
     append: yes
 
 - name: create required directories
@@ -19,88 +19,57 @@
     path: "{{ item }}"
     state: directory
     recurse: yes
-    follow: no
     mode: 0755
-    owner: zuul
-    group: zuul
+    owner: logserver
+    group: logserver
   with_items:
-    - /var/log/zuul
-    - /var/lib/zuul
-    - /var/lib/zuul/builds
-    - /var/lib/zuul/git
-    - /var/lib/zuul/ssh
-    - /var/lib/zuul/keys
+    - "{{ logserver_docker_directory }}"
+    - /home/logserver/.ssh
 
-- name: protect zuul keys folders
-  file:
-    path: "{{ item }}"
-    mode: 0700
-    owner: zuul
-    group: zuul
-  with_items:
-    - /var/lib/zuul/keys
-
-- name: create required directories
-  file:
-    path: "{{ item }}"
-    state: directory
-    recurse: yes
-    mode: 0755
-    owner: zuul
-    group: zuul
-  with_items:
-    - /opt/zuul-logserver/
-    - /home/zuul/.ssh
-
-# for now log server is placed somewhere and accessed from executor with zuul user
+# for now log server is placed somewhere and accessed from executor with logserver user
 - name: create logserver data directory
   file:
     path: "{{ logserver_data_directory }}"
     state: directory
-    owner: zuul
-    group: zuul
+    owner: logserver
+    group: logserver
     recurse: yes
     mode: 0775
-
-- name: extract static content for ARA reports
-  unarchive:
-    src: static.tgz
-    dest: "{{ logserver_data_directory }}"
 
 - name: "collect {{ ssh_keys_dir }}/logserver_rsa.pub' ssh key"
   set_fact:
     logserver_pubkey: "{{ lookup('file', '{{ ssh_keys_dir }}/logserver_rsa.pub') }}"
 
-- name: add logserver public ssh key to zuul's authorized_keys
-  shell: "echo {{ logserver_pubkey }} >> /home/zuul/.ssh/authorized_keys"
+- name: add logserver public ssh key to logserver's authorized_keys
+  shell: "echo {{ logserver_pubkey }} >> /home/logserver/.ssh/authorized_keys"
 
-- name: fix /home/zuul/.ssh/authorized_keys security
+- name: fix /home/logserver/.ssh/authorized_keys security
   file:
-    path: /home/zuul/.ssh/authorized_keys
-    owner: zuul
-    group: zuul
+    path: /home/logserver/.ssh/authorized_keys
+    owner: logserver
+    group: logserver
     mode: 0644
 
 - name: copy logserver configuration files
   copy:
     src: "httpd.conf"
-    dest: "/opt/zuul-logserver/httpd.conf"
+    dest: "{{ logserver_docker_directory }}/httpd.conf"
     force: true
-    owner: zuul
-    group: zuul
+    owner: logserver
+    group: logserver
 
 - name: apply logserver compose file
   template:
     src: docker-compose.yaml.j2
-    dest: /opt/zuul-logserver/docker-compose.yaml
+    dest: "{{ logserver_docker_directory }}/docker-compose.yaml"
     mode: 0644
 
 - name: start logserver
   docker_service:
-    project_src: /opt/zuul-logserver/
+    project_src: "{{ logserver_docker_directory }}"
 
 - name: logserver log rotate task
   template:
     src: ci-log-rotate.j2
-    dest: /etc/cron.daily/zuul-log-rotate
+    dest: /etc/cron.daily/ci-log-rotate
     mode: 0755

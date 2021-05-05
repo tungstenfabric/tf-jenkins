@@ -1,3 +1,4 @@
 ---
 logs_port: 8082
 logserver_data_directory: /var/www/logs
+logserver_docker_directory: /home/logserver/docker
