@@ -129,7 +129,7 @@
 
 - name: Start docker registry :5005
   docker_container:
-    name: dockerhub
+    name: registry5005
     image: registry:2
     ports:
       - 5005:5000
