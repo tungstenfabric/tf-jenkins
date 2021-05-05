@@ -109,6 +109,10 @@
         - 409 # if datasource exists
   when: datasource.status == 404
 
+- name: get contents of file
+  command: cat /opt/monitoring/dashboard.json
+  register: dashboard
+
 - name: Create dashboard
   uri:
     url: http://localhost:3000/api/dashboards/db
@@ -118,7 +122,7 @@
     force_basic_auth: yes
     status_code: 200
     body_format: json
-    body: "{\"overwrite\": true, \"dashboard\": {{ lookup('file', 'dashboard.json') }} }"
+    body: "{\"overwrite\": true, \"dashboard\": {{ dashboard.stdout }} }"
 
 - name: Connect monitoring to proxy
   shell: /opt/monitoring/docker-network.sh
