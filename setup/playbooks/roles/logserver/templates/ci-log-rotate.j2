@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export LOGFILE=/tmp/zuul-log-rotate.log
+export LOGFILE=/tmp/log-rotate.log
 
 exec > >(tee -a $LOGFILE)
 exec 2>&1

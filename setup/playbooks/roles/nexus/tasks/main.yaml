@@ -4,11 +4,6 @@
     path: /opt/nexus
     state: directory
 
-- name: create share directory
-  file:
-    path: "/home/{{ remote_user }}/zuul"
-    state: directory
-
 - name: Ensure docker group is present
   group:
     name: docker

@@ -16,4 +16,3 @@ services:
     volumes:
       - "{{ logserver_data_directory }}:/usr/local/apache2/htdocs"
       - "./httpd.conf:/usr/local/apache2/conf/httpd.conf"
-      - "/var/log/zuul:/var/log/zuul"

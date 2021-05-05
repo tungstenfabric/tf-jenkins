@@ -10,8 +10,6 @@
     state: directory
     recurse: yes
     mode: 0755
-    owner: zuul
-    group: zuul
   with_items:
     - /opt/aquasec
     - /opt/aquasec/aqua-db
@@ -64,7 +62,7 @@
     --header 'accept: application/json'
     --header 'content-type: application/json'
     --header 'Authorization: Bearer {{ aquasec_token.stdout }}'
-    --data '{ "id": "{{ aqua_scanner_user }}", "password": "{{ aqua_scanner_pass }}", "email": "zuul@opencontrail.org", "role": "scanner"  }'
+    --data '{ "id": "{{ aqua_scanner_user }}", "password": "{{ aqua_scanner_pass }}", "email": "{{ jenkins_admin_email }}", "role": "scanner"  }'
   register: aquasec_scanner_user
   failed_when: aquasec_scanner_user.stdout| length > 0 and "already exists" not in aquasec_scanner_user.stdout
   changed_when: aquasec_scanner_user.stdout | length == 0
