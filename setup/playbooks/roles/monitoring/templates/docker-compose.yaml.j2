@@ -7,13 +7,12 @@ services:
     volumes:
       - influxdb-data:/var/lib/influxdb
   fluentd:
-    #image: fluent/fluentd:edge
     build:
       context: .
     depends_on:
       - influxdb
     ports:
-      - 24224:24224/udp
+      - 9880:9880
     volumes:
       - fluentd-data:/fluentd/log
       - ./fluent.conf:/fluentd/etc/fluent.conf
