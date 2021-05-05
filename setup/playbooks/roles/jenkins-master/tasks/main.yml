@@ -119,9 +119,9 @@
     ports:
       - "8080:8080"
     env:
-      VIRTUAL_HOST: "{{ jenkins_name }}.{{ region }}.{{ ci_domain }}"
+      VIRTUAL_HOST: "{{ jenkins_name }}.{{ ci_domain }},{{ jenkins_name }}.{{ region }}.{{ ci_domain }}"
       VIRTUAL_PORT: "8080"
-      LETSENCRYPT_HOST: "{{ jenkins_name }}.{{ region }}.{{ ci_domain }}"
+      LETSENCRYPT_HOST: "{{ jenkins_name }}.{{ ci_domain }},{{ jenkins_name }}.{{ region }}.{{ ci_domain }}"
       LETSENCRYPT_EMAIL: "{{ jenkins_admin_email }}"
     volumes:
       - jenkins_home:/var/jenkins_home
