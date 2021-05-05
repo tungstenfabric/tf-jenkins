@@ -26,6 +26,14 @@
     - dashboard.json
     - app
 
+- name: copy script
+  copy:
+    src: "files/{{ item }}"
+    dest: "/opt/monitoring/{{ item }}"
+    mode: 0755
+  with_items:
+    - docker-network.sh
+
 - name: apply configuration
   template:
     src: "{{ item }}.j2"
@@ -56,50 +64,61 @@
     database_name: "{{ database }}"
     udp_port: 4444 # fixed in later ansible versions
 
-- name: Add grafana user
-  community.grafana.grafana_user:
-    url: "http://localhost:3000"
-    url_username: "admin"
-    url_password: "admin"
-    name: "Admin"
-    email: "{{ jenkins_admin_email }}"
-    login: "{{ grafana_user }}"
-    password: "{{ grafana_password }}"
-    is_admin: true
-    state: present
-    ignore_errors: true
+- name: Change grafana admin password
+  uri:
+    url: "http://localhost:3000/api/user/password"
+    url_username: admin
+    url_password: admin
+    force_basic_auth: yes
+    method: PUT
+    body_format: json
+    body: #'{"oldPassword": "admin", "newPassword": "{{ grafana_password }}"}'
+      oldPassword: admin
+      newPassword: "{{ grafana_password }}"
+    status_code:
+      - 200
+      - 401 # The password may be changed already
 
-- name: Delete default admin grafana user
-  community.grafana.grafana_user:
-    url: "http://localhost:3000"
-    url_username: "{{ grafana_user }}"
+- name: Check if datasource exists
+  uri:
+    url: "http://localhost:3000/api/datasources/name/InfluxDB"
+    url_username: admin
     url_password: "{{ grafana_password }}"
-    name: "Admin"
-    email: "{{ jenkins_admin_email }}"
-    login: "admin"
-    password: "{{ grafana_password }}"
-    is_admin: true
-    state: absent
+    force_basic_auth: yes
+    status_code:
+      - 200
+      - 404
+  register: datasource
 
 - name: Create influxdb datasource
-  grafana_datasource:
-    name: "influxdb"
-    grafana_url: "http://localhost:3000"
-    grafana_user: "{{ grafana_user }}"
-    grafana_password: "{{ grafana_password }}"
-    org_id: "1"
-    ds_type: "influxdb"
-    ds_url: "http://influxdb:8086"
-    database: "{{ database }}"
-    time_interval: ">10s"
+  uri:
+    url: "http://localhost:3000/api/datasources"
+    url_username: admin
+    url_password: "{{ grafana_password }}"
+    force_basic_auth: yes
+    method: POST
+    body_format: json
+    body:
+     name: InfluxDB
+     type: influxdb
+     url: http://influxdb:8086
+     access: proxy
+     database: "{{ database }}"
+     status_code:
+       - 200
+       - 409 # if datasource exists
+  when: datasource.status == 404
 
 - name: Create dashboard
   uri:
     url: http://localhost:3000/api/dashboards/db
-    user: "{{ grafana_user }}"
+    user: "admin"
     password: "{{ grafana_password }}"
     method: POST
     force_basic_auth: yes
     status_code: 200
     body_format: json
     body: "{\"overwrite\": true, \"dashboard\": {{ lookup('file', 'dashboard.json') }} }"
+
+- name: Connect monitoring to proxy
+  shell: /opt/monitoring/docker-network.sh
