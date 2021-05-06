@@ -7,15 +7,6 @@ all:
       hosts:
         199.204.45.99:
           region: ca-ymq-1
-          mailrelay_from:
-            - 127.0.0.0/8
-            - 10.0.0.0/8
-            - 192.168.0.0/16
-            - 172.16.0.0./12
-          mailrelay_to_domains:
-            # List of domains to which mail relay is allowed
-            # Use "*" to allow any domain
-            - "*"
     jenkins_slave:
       children:
 #        aws:
@@ -31,6 +22,9 @@ all:
       hosts:
         199.19.213.181:
           region: ca-ymq-1
+          # if this is true then cert will be created also for 'tf-nexus.$ci_domain'
+          # in case of false only 'tf-nexus.$region.$ci_domain' will be used
+          default_region: true
     mirrors:
       hosts:
         199.204.45.97:
