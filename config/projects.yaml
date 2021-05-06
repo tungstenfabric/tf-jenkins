@@ -228,7 +228,6 @@
     gate:
       templates:
         - operator
-        - operator-ha
         - cleanup
 
 - project:
