@@ -1,3 +1,5 @@
+export PROVIDER=bmc
+
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 export BASE_IMAGES_PATH="/var/lib/libvirt/images/base"
 export VM_IMAGES_PATH="$HOME/vms"

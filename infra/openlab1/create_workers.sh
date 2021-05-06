@@ -33,6 +33,7 @@ echo "VMs are started"
 EOF
 
 stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
+echo "export PROVIDER=$PROVIDER" >> "$stackrc_file"
 echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$WORKSPACE/$stackrc_file"
 echo "export instance_ip=$instance_ip" >> "$WORKSPACE/$stackrc_file"
 echo "export mgmt_ip=$instance_ip" >> "$WORKSPACE/$stackrc_file"

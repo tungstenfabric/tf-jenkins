@@ -13,9 +13,9 @@ source "$WORKSPACE/stackrc.$JOB_NAME.env" || /bin/true
 source "${WORKSPACE}/deps.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 
-#This hook is for VEXX only
-if [[ "$PROVIDER" != 'vexx' ]]; then
-  echo "INFO: Skipping hooks. RHEL hooks for vexxhost only"
+#This hook is for openstack only
+if [[ "$PROVIDER" != 'openstack' ]]; then
+  echo "INFO: Skipping hooks. RHEL hooks for openstack only"
   exit 0
 fi
 

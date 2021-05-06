@@ -1,3 +1,5 @@
+export PROVIDER=kvm
+
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
 IMAGE_SSH_USER=ubuntu

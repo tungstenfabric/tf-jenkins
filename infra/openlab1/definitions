@@ -1,3 +1,5 @@
+export PROVIDER=bmc
+
 export IMAGE_SSH_USER="stack"
 export ORIGIN_VM_NAME="$ENVIRONMENT_OS"
 export VM_NAME="undercloud"
