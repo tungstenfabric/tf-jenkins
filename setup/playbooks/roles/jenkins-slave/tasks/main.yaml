@@ -45,8 +45,8 @@
     mode: "0700"
     state: directory
   with_items:
-    - jenkins_user
-    - ansible_user
+    - "{{ jenkins_user }}"
+    - "{{ remote_user }}"
 
 - name: "Store {{ item.dst }} for user {{ item.user }}"
   copy:
@@ -57,8 +57,8 @@
     mode: "0600"
   with_items:
     - { src: "ssh_config", dst: '.ssh/config', user: "{{ jenkins_user }}" }
-    - { src: "ssh_config", dst: '.ssh/config', user: "{{ ansible_user }}" }
-    - { src: "{{ ssh_keys_dir }}/workers_rsa", dst: '.ssh/workers', user: "{{ ansible_user }}" }
+    - { src: "ssh_config", dst: '.ssh/config', user: "{{ remote_user }}" }
+    - { src: "{{ ssh_keys_dir }}/workers_rsa", dst: '.ssh/workers', user: "{{ remote_user }}" }
 
 - name: Read a keypair for slaves
   set_fact:

@@ -4,13 +4,13 @@
   group:
     name: logserver
     state: present
-    gid: 9999
+    gid: 9998
 
 - name: Ensure logserver user exists
   user:
     name: "logserver"
     state: present
-    uid: 9999
+    uid: 9998
     group: logserver
     append: yes
 
