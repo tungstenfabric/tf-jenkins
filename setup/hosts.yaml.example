@@ -7,6 +7,15 @@ all:
       hosts:
         199.204.45.99:
           region: ca-ymq-1
+          mailrelay_from:
+            - 127.0.0.0/8
+            - 10.0.0.0/8
+            - 192.168.0.0/16
+            - 172.16.0.0./12
+          mailrelay_to_domains:
+            # List of domains to which mail relay is allowed
+            # Use "*" to allow any domain
+            - "*"
     jenkins_slave:
       children:
 #        aws:

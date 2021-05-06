@@ -1,0 +1,14 @@
+---
+- name: Install exim
+  apt:
+    name: exim4
+    state: present
+    update_cache: yes
+
+- name: Configure exim
+  template:
+    src: update-exim4.conf.conf.j2
+    dest: /etc/exim4/update-exim4.conf.conf
+    mode: 0644
+  notify: restart exim
+
