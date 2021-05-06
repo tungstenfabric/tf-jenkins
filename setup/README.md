@@ -69,6 +69,7 @@ Deploy mirrors, nexus, logserver
 ansible-playbook -i hosts.yaml playbooks/deploy-mirrors.yaml
 ansible-playbook -i hosts.yaml playbooks/deploy-nexus.yaml
 ansible-playbook -i hosts.yaml playbooks/deploy-logserver.yaml
+ansible-playbook -i hosts.yaml playbooks/deploy-merger-monitor.yaml
 ```
 
 Deploy jenkins slave and master
@@ -76,6 +77,7 @@ Deploy jenkins slave and master
 ```bash
 ansible-playbook -i hosts.yaml playbooks/deploy-jenkins-slave.yaml
 ansible-playbook -i hosts.yaml playbooks/deploy-jenkins-master.yaml
+ansible-playbook -i hosts.yaml playbooks/deploy-mailrelay.yaml
 ```
 
 Deploy monitoring
@@ -113,4 +115,4 @@ After this point CI should be ready to run checks. For ensure that alll steps we
 
 ## Gerrit integration
 
-To listen gerrit events and run CI checks some gerrit item should be registered in gerrit plugin via Jenkins configuration in UI.
+To listen gerrit events and run CI checks some gerrit item should be registered in gerrit plugin via Jenkins configuration in UI. SSH keyfile is placed inside jenkins container at /var/jenkins_home/.ssh/${GERRIT_USER_NAME}_id_rsa

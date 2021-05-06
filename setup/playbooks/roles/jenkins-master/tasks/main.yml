@@ -22,11 +22,6 @@
     src: "jenkins-Dockerfile.j2"
     dest: "{{ docker_build_dir.path }}/Dockerfile"
 
-- name: Copy jenkins Dockerfile
-  template:
-    src: "jenkins-Dockerfile.j2"
-    dest: "{{ docker_build_dir.path }}/Dockerfile"
-
 - name: Copy entrypoint to build directory
   copy:
     src: "{{ item }}"
@@ -148,6 +143,29 @@
     state: absent
     path: "{{ volume_jenkins.volume.Mountpoint }}/jenkins.yaml"
   when: jenkins_overwrite_configuration
+
+- name: Get stats of a jenkins_home
+  stat:
+    path: "{{ volume_jenkins.volume.Mountpoint }}"
+    become: yes
+  register: st
+
+- name: "Make jenkins_home/.ssh directory"
+  file:
+    path: "{{ volume_jenkins.volume.Mountpoint }}/.ssh"
+    owner: "{{ st.stat.uid }}"
+    group: "{{ st.stat.gid }}"
+    mode: "0700"
+    state: directory
+
+- name: copy private keypair for gerrit useer
+  copy:
+    src: "{{ ssh_keys_dir }}/zuul_rsa"
+    dest: "{{ volume_jenkins.volume.Mountpoint }}/.ssh/{{ gerrit_user }}_id_rsa"
+    owner: "{{ st.stat.uid }}"
+    group: "{{ st.stat.gid }}"
+    mode: "0600"
+    force: true
 
 - name: Create daily backup script
   template:

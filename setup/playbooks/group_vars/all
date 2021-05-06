@@ -11,3 +11,13 @@ nexus_user: "admin"
 monitoring_name: "tf-monitoring"
 
 ssh_keys_dir: "{{ lookup('env', 'HOME') }}/tfci/ssh" 
+
+mailrelay_from:
+  - 127.0.0.0/8
+  - 10.0.0.0/8
+  - 192.168.0.0/16
+  - 172.16.0.0./12
+mailrelay_to_domains:
+  # List of domains to which mail relay is allowed
+  # Use "*" to allow any domain
+  - "*"

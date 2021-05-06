@@ -1,0 +1,28 @@
+---
+
+- name: Copy script to remote
+  copy:
+    src: "{{ playbook_dir }}/../../infra/gerrit/merger_monitor.py"
+    dest: "/root"
+    mode: "0755"
+
+- name: "Make /root/.ssh directory"
+  file:
+    path: /home/root/.ssh
+    owner: "root"
+    group: "root"
+    mode: "0700"
+    state: directory
+
+- name: copy private keypair for zuul
+  copy:
+    src: "{{ ssh_keys_dir }}/zuul_rsa"
+    dest: "/root/.ssh/id_rsa"
+    force: true
+    owner: "root"
+    group: "root"
+    mode: "0600"
+
+- name: Run merger monitor
+  shell: nohup /root/merger_monitor.py </dev/null >/root/nohup.out 2>/root/nohup.err &
+  become: yes

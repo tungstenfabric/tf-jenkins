@@ -1,0 +1,17 @@
+---
+- hosts: nexus
+  remote_user: "{{ remote_user }}"
+  become: yes
+  gather_facts: no
+  roles:
+    - python
+  pre_tasks:
+  - name: install python for ansible
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- hosts: nexus
+  remote_user: "{{ remote_user }}"
+  become: yes
+  gather_facts: yes
+  roles:
+    - merger-monitor

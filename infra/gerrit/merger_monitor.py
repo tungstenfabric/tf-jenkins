@@ -5,6 +5,7 @@
 
 from datetime import datetime
 import json
+import shutil
 import subprocess
 import time
 import os
@@ -100,6 +101,15 @@ class Checker():
 
 def main():
     # TODO: subscribe to stream and wait for events
+
+    # prepare dir for TAG_FILE
+    # it should be writable for owner of /var/www/logs
+    tag_dir = os.path.dirname(TAG_FILE)
+    base_stat = os.stat(os.path.dirname(tag_dir))
+    shutil.rmtree(tag_dir, ignore_errors=True)
+    os.makedirs(tag_dir, mode=0o777)
+    os.chown(tag_dir, base_stat.st_uid, base_stat.st_gid)
+
     checker = Checker()
     last_merge = checker.get_last_merge()
     checker.update_tag(last_merge)
