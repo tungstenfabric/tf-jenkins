@@ -90,6 +90,8 @@ unclassified:
       Check console output at $BUILD_URL to view the results.
     defaultContentType: "text/plain"
     defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
+    defaultRecipients: "{{ jenkins_admin_email }}"
+    defaultReplyTo: "{{ jenkins_admin_email }}"
     defaultTriggerIds:
     - "hudson.plugins.emailext.plugins.trigger.FailureTrigger"
     mailAccount:
