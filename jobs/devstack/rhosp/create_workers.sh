@@ -84,11 +84,11 @@ else
     IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
     echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
-    # initial values for undercloud (v2-standard-4)
+    # initial values for undercloud (v?-standard-4)
     required_instances=1
     required_cores=4
     if [ -z "$NODES" ] ; then
-      # default aio (v2-standard-8)
+      # default aio (v?-standard-8)
       required_instances=$(( required_instances + 1 ))
       required_cores=$(( required_cores + 8 ))
     fi
