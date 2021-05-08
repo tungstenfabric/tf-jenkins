@@ -1,6 +1,6 @@
 ---
 
-- job-template:
+- job:
     name: "test-unit-ui"
     description: "unit tests of ui"
     defaults: global
