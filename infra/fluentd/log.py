@@ -32,7 +32,7 @@ def countprevious(days, measurement, logitem):
     for tag in taglist:
         clause += "{} =~ /^{}$/ and ".format(tag, taglist[tag])
     query = "SELECT status FROM \"{}\" WHERE {} time >= now() - {}d".format(measurement, clause, days-1)
-    client = influxdb.InfluxDBClient(host="10.0.3.124", database="monitoring")
+    client = influxdb.InfluxDBClient(host="tf-monitoring.progmaticlab.com", database="monitoring")
     res=client.query(query)
     points = list(res.get_points())
     successcount = len([p for p in points if p['status'] == "SUCCESS"])
