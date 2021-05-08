@@ -20,25 +20,27 @@ results = [
     'logs',
 ]
 
-def countprevious(days, measurement, logitem):
+
+def countprevious(host, days, measurement, logitem):
     taglist = {key: logitem[key] for key in tags}
     try:
         import influxdb
-    except:
+    except Exception:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'influxdb'])
         import influxdb
 
-    clause=""
+    clause = ""
     for tag in taglist:
         clause += "{} =~ /^{}$/ and ".format(tag, taglist[tag])
-    query = "SELECT status FROM \"{}\" WHERE {} time >= now() - {}d".format(measurement, clause, days-1)
-    client = influxdb.InfluxDBClient(host="tf-monitoring.progmaticlab.com", database="monitoring")
-    res=client.query(query)
+    query = "SELECT status FROM \"{}\" WHERE {} time >= now() - {}d".format(measurement, clause, days - 1)
+    client = influxdb.InfluxDBClient(host=host, database="monitoring")
+    res = client.query(query)
     points = list(res.get_points())
     successcount = len([p for p in points if p['status'] == "SUCCESS"])
     if logitem['status'] == "SUCCESS":
         successcount += 1
-    return "{}/{}".format(successcount, len(points)+1)
+    return "{}/{}".format(successcount, len(points) + 1)
+
 
 def splitdata(logdata):
     ret = []
@@ -56,25 +58,27 @@ def splitdata(logdata):
             splittedret.extend(splitdata(r))
         ret = splittedret
     else:
-        ret = [logdata,]
+        ret = [logdata]
 
     return ret
 
-def do_log(url, measurement, logdata):
+
+def do_log(host, measurement, logdata):
     loglist = splitdata(logdata)
     for logitem in loglist:
         # No need to check response status code, workspace is a subject to wipe out
         # If data can't be submitted at the moment, it'll be dropped out
         logitem['duration'] = "{}h {}m {}s".format(
-            int(int(logitem['duration']) / (3600*1000)),
-            int(int(logitem['duration']) / (1000*60) % 60),
-            int(int(logitem['duration']) % (60*1000) / 1000)
+            int(int(logitem['duration']) / (3600 * 1000)),
+            int(int(logitem['duration']) / (1000 * 60) % 60),
+            int(int(logitem['duration']) % (60 * 1000) / 1000)
         )
         try:
-            logitem['last_success_count'] = countprevious(7, measurement, logitem)
-        except:
+            logitem['last_success_count'] = countprevious(host, 7, measurement, logitem)
+        except Exception:
             pass
-        r = requests.post(url="{}/{}".format(url, measurement), json=logitem)
+        requests.post(url="http://{}:9880/{}".format(host, measurement), json=logitem)
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -90,23 +94,24 @@ def main():
         )
 
     parser.add_argument(
-        "--url", dest="url", type=str, required=True
+        "--host", dest="host", type=str, required=True
     )
     parser.add_argument(
         "--measurement", dest="measurement",
         type=str, default="Jenkins.pipeline"
     )
-    args=parser.parse_args()
-    if args.url[-1] == '/':
-        args.url = args.url[:-1]
+    args = parser.parse_args()
+    if args.host[-1] == '/':
+        args.host = args.host[:-1]
     logdata = {}
-    keys = tags+results
+    keys = tags + results
     for key in keys:
         value = getattr(args, key)
         if value:
             logdata[key] = value
 
-    do_log(args.url, args.measurement, logdata)
+    do_log(args.host, args.measurement, logdata)
+
 
 if __name__ == "__main__":
     main()
