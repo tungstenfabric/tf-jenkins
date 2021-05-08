@@ -18,9 +18,9 @@ export VM_BOOT_DELAY="${VM_BOOT_DELAY:-60}"
 
 ENVIRONMENT_OS=${ENVIRONMENT_OS:-'centos7'}
 
-declare -A VM_TYPES=( ['large']='v2-standard-8' \
-                      ['medium']='v2-standard-4' \
-                      ['small']='v2-standard-2' \
+declare -A VM_TYPES=( ['large']='v3-standard-8' \
+                      ['medium']='v3-standard-4' \
+                      ['small']='v3-standard-2' \
                       ['xsmall']='v2-standard-1' )
 
 declare -A OS_IMAGES=( ['CENTOS7']='prepared-centos7' \
