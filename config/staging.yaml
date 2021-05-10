@@ -98,6 +98,25 @@
 
 
 - project:
+    name: init-repos-ubuntu20
+    init-repos:
+      templates:
+        - cleanup
+      jobs:
+        update-stage-repos-ubuntu20:
+          job-name: update-stage-repos
+          timeout: 600
+          vars:
+            REPOS_TYPE: 'ubuntu20'
+        publish-stage-repos-ubuntu20:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'ubuntu20'
+          depends-on:
+            - update-stage-repos-ubuntu20
+
+
+- project:
     name: stage-repos-centos7
     stage-repos:
       templates:
@@ -241,5 +260,31 @@
           job-name: publish-stage-repos
           vars:
             REPOS_TYPE: 'ubuntu18'
+          depends-on:
+            - test-sanity-juju-os
+
+
+- project:
+    name: stage-repos-ubuntu20
+    stage-repos:
+      templates:
+        - build-centos
+        - juju-os
+        - cleanup
+      jobs:
+        update-stage-repos-ubuntu20:
+          job-name: update-stage-repos
+          timeout: 600
+          vars:
+            REPOS_TYPE: 'ubuntu20'
+        deploy-platform-juju-os:
+          depends-on:
+            - update-stage-repos-ubuntu20
+          vars:
+            ENVIRONMENT_OS: ubuntu20
+        publish-stage-repos-ubuntu20:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'ubuntu20'
           depends-on:
             - test-sanity-juju-os

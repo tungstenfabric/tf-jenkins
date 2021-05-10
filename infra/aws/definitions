@@ -19,6 +19,9 @@ IMAGE_RHEL7_SSH_USER='ec2-user'
 IMAGE_UBUNTU18='ami-0a5d8bc3b2b741f1b'
 IMAGE_UBUNTU18_SSH_USER='ubuntu'
 
+IMAGE_UBUNTU20='ami-?'
+IMAGE_UBUNTU20_SSH_USER='ubuntu'
+
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
 MAX_COUNT='20'
@@ -31,10 +34,12 @@ declare -A OS_IMAGES_UP=( ['CENTOS7']='centos' \
                           ['CENTOS8']='centos' \
                           ['RHEL7']='rhel' \
                           ['RHEL8']='rhel' \
-                          ['UBUNTU18']='ubuntu' )
+                          ['UBUNTU18']='ubuntu' \
+                          ['UBUNTU20']='ubuntu' )
 
 declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['CENTOS8']='' \
                             ['RHEL7']='rhel' \
                             ['RHEL8']='rhel' \
-                            ['UBUNTU18']='' )
+                            ['UBUNTU18']='' \
+                            ['UBUNTU20']='' )

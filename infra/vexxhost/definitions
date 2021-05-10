@@ -29,27 +29,31 @@ declare -A OS_IMAGES=( ['CENTOS7']='prepared-centos7' \
                        ['RHEL7']='prepared-rhel7' \
                        ['RHEL8']='prepared-rhel8' \
                        ['RHCOS45']='prepared-rhcos45' \
-                       ['UBUNTU18']='prepared-ubuntu18' )
+                       ['UBUNTU18']='prepared-ubuntu18' \
+                       ['UBUNTU20']='prepared-ubuntu20' )
 
 declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' \
                             ['CENTOS8']='centos' \
                             ['RHEL7']='cloud-user' \
                             ['RHEL8']='cloud-user' \
                             ['RHCOS45']='core' \
-                            ['UBUNTU18']='ubuntu' )
+                            ['UBUNTU18']='ubuntu' \
+                            ['UBUNTU20']='ubuntu' )
 
 declare -A OS_IMAGES_UP=( ['CENTOS7']='centos' \
                           ['CENTOS8']='centos' \
                           ['RHEL7']='' \
                           ['RHEL8']='' \
                           ['RHCOS45']='' \
-                          ['UBUNTU18']='ubuntu' )
+                          ['UBUNTU18']='ubuntu' \
+                          ['UBUNTU20']='ubuntu' )
 
 declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['CENTOS8']='' \
                             ['RHEL7']='' \
                             ['RHEL8']='' \
                             ['RHCOS45']='' \
-                            ['UBUNTU18']='' )
+                            ['UBUNTU18']='' \
+                            ['UBUNTU20']='' )
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"

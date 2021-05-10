@@ -15,8 +15,6 @@ mkdir -p ${DATE}/lxd
 pushd ${DATE}/lxd
 wget -nv https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-lxd.tar.xz
 wget -nv https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-root.tar.xz
-wget -nv https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-lxd.tar.xz
-wget -nv https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-root.tar.xz
 popd
 
 rm -f stage

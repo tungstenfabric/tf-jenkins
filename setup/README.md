@@ -106,9 +106,9 @@ Infra must be initiallised to be able to run CI and infra checks/jobs. Please ne
 - Set in UI/Configuration/Global Security/Markup Formatter to safeHTML (TODO: automate it)
 - Run job **update-nexus-artifacts** for THIRD_PARTY and then for SANITY_IMAGES. This will upload to Nexus some predefined yum packages, third-party cache, VM images for sanity tests, and other similar objects.
 - Run job **update-base-images** for ALL. This will download and register in the cloud base images for CI workers. Redhat images (for rhel7 and rhel8) should be downloaded with appropriate subscription and registered manually to be ablle to run Redhat related checks. Here is a CLI command to register image `openstack image create --container-format bare --disk-format qcow2 --file rhel7.qcow --tag rhel7 --shared base-rhel7-202102100000`. Name and tag must be in exaclt this format. Numbers in name is a date of image in format YYYYMMDD0000.
-- Run job **update-prepared-images** for CENTOS7, UBUNTU18. This will prepare base images for workers to speed up CI checks.
+- Run job **update-prepared-images** for CENTOS7, UBUNTU18, UBUNTU20. This will prepare base images for workers to speed up CI checks.
 - Run job **update-tpc-source-repository**. This will compile and publish some yum packages to use them later in build Contrail process. These packages are changed rarely and should be pre-build.
-- Run job **pipeline-init-repos** for CENTOS7, UBUNTU18, RHEL7, RHEL8. These jobs may take several hours and can be run in parallel.
+- Run job **pipeline-init-repos** for CENTOS7, UBUNTU18, UBUNTU20, RHEL7, RHEL8. These jobs may take several hours and can be run in parallel.
 - Run job **update-prepared-images** for RHEL7, RHEL8
 
 After this point CI should be ready to run checks. For ensure that alll steps were made correctly plelase run job **pipline-nightly** and check results.

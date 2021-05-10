@@ -24,6 +24,9 @@ jenkins:
       - "Overall/Administer:authenticated"
       - "Overall/Read:anonymous"
       - "View/Read:anonymous"
+  markupFormatter:
+    rawHtml:
+      disableSyntaxHighlighting: false
   crumbIssuer:
     standard:
       excludeClientIPFromCrumb: false
@@ -101,6 +104,33 @@ unclassified:
     maxAttachmentSizeMb: -1
     precedenceBulk: false
     watchingEnabled: false
+  gerrit-trigger:
+    pluginConfig:
+      interestingEvents:
+      - "change-abandoned"
+      - "change-restored"
+      - "comment-added"
+      - "patchset-created"
+    servers:
+    - config:
+        buildCurrentPatchesOnly:
+          abortManualPatchsets: true
+          abortNewPatchsets: true
+          abortSameTopic: false
+        categories:
+        - verdictDescription: "Code Review"
+          verdictValue: "Code-Review"
+        - verdictDescription: "Verified"
+          verdictValue: "Verified"
+        - verdictDescription: "Approved"
+          verdictValue: "Approved"
+        enableManualTrigger: false
+        gerritAuthKeyFile: "/var/jenkins_home/.ssh/zuul-tf_id_rsa"
+        gerritFrontEndUrl: "https://gerrit.tungsten.io/"
+        gerritHostName: "gerrit.tungsten.io"
+        gerritUserName: "zuul-tf"
+      name: "gerrit.tungsten.io"
+      noConnectionOnStartup: false
 security:
   scriptApproval:
     approvedSignatures:
