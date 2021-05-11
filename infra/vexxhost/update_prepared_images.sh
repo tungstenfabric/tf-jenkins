@@ -32,7 +32,7 @@ for i in "${!OS_IMAGE_USERS[@]}"; do
     # python-openstackclient has a bug - it doesn't allow to use '--tag' param even it has it in help
     OLD_IMAGES=$(openstack image list -c Name -f value | grep "prepared-${i,,}" | sort -nr | tail -n +4)
   fi
-  for o in $OLD_IMAGES; do
+  for o in $OLD_IMAGES ; do
     echo "INFO: remove old image $o"
     openstack image delete $o
   done
