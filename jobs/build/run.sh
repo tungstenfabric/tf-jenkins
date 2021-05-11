@@ -57,7 +57,6 @@ elif [[ "${LINUX_DISTR}" =~ 'ubi7' ]] ; then
 fi
 
 # here we need only ubuntu18 mirror file cause we based build-init container on ubuntu18 only
-export UBUNTU_VERSION=18
 export UBUNTU_CODENAME='bionic'
 for repofile in $mirror_list_for_build $mirror_list mirror-base.repo mirror-docker.repo mirror-pip.conf mirror-docker-daemon.json ubuntu-sources.list ; do
   file="${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}"

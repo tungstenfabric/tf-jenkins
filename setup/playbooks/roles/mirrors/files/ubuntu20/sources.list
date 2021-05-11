@@ -1,5 +1,0 @@
-deb http://tf-mirrors.%SLAVE_REGION%.%CI_DOMAIN%/repos/ubuntu20/latest/mirror/archive.ubuntu.com/ubuntu focal main restricted universe multiverse
-deb http://tf-mirrors.%SLAVE_REGION%.%CI_DOMAIN%/repos/ubuntu20/latest/mirror/archive.ubuntu.com/ubuntu focal-security main restricted universe multiverse
-deb http://tf-mirrors.%SLAVE_REGION%.%CI_DOMAIN%/repos/ubuntu20/latest/mirror/archive.ubuntu.com/ubuntu focal-updates main restricted universe multiverse
-deb http://tf-mirrors.%SLAVE_REGION%.%CI_DOMAIN%/repos/ubuntu20/latest/mirror/archive.ubuntu.com/ubuntu focal-proposed main restricted universe multiverse
-deb http://tf-mirrors.%SLAVE_REGION%.%CI_DOMAIN%/repos/ubuntu20/latest/mirror/archive.ubuntu.com/ubuntu focal-backports main restricted universe multiverse

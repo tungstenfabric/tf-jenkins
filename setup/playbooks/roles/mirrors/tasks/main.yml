@@ -27,8 +27,7 @@
     - centos7
     - rhel7
     - rhel8
-    - ubuntu18
-    - ubuntu20
+    - ubuntu
 
 - name: Install required python modules
   pip:
@@ -52,8 +51,7 @@
     - centos7
     - rhel7
     - rhel8
-    - ubuntu18
-    - ubuntu20
+    - ubuntu
 
 - name: Build repos images
   docker_image:
@@ -67,8 +65,7 @@
     - centos7
     - rhel7
     - rhel8
-    - ubuntu18
-    - ubuntu20
+    - ubuntu
 
 - name: Set devpi secret
   copy:
