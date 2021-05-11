@@ -1,0 +1,19 @@
+Host *
+    StrictHostKeyChecking no
+    UserKnownHostsFile=/dev/null
+    PasswordAuthentication=no
+    ServerAliveInterval=60
+
+#Section added manually for transparent proxy to openlab1
+### The Bastion Host
+Host vexslave-old
+  HostName slave-1.sjc1.progmaticlab.com
+  IdentityFile /home/jenkins/.ssh/workers
+
+### The Remote Host
+Host openlab1
+  HostName openlab.tf-jenkins.progmaticlab.com
+  Port 30001
+  ProxyJump vexslave-old
+  IdentityFile /home/jenkins/.ssh/workers
+

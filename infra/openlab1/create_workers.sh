@@ -9,7 +9,9 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
-cat <<EOF | ssh -i $OPENLAB1_SSH_KEY $SSH_OPTIONS -p 30001 jenkins@openlab.tf-jenkins.progmaticlab.com
+cp "$my_dir/ssh_config" "$WORKSPACE/ssh_config"
+
+cat <<EOF | ssh -F $WORKSPACE/ssh_config openlab1
 [ "${DEBUG,,}" == "true" ] && set -x
 export LIBVIRT_DEFAULT_URI=qemu:///system
 export PATH=\$PATH:/usr/sbin
@@ -37,7 +39,7 @@ echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$WORKSPACE/$stackrc_file"
 echo "export instance_ip=$instance_ip" >> "$WORKSPACE/$stackrc_file"
 echo "export mgmt_ip=$instance_ip" >> "$WORKSPACE/$stackrc_file"
 echo "export ipa_mgmt_ip=$ipa_mgmt_ip" >> "$WORKSPACE/$stackrc_file"
-echo "export SSH_EXTRA_OPTIONS=\"-o ProxyCommand=\\\"ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -W %h:%p -i \$OPENLAB1_SSH_KEY -l jenkins -p 30001 openlab.tf-jenkins.progmaticlab.com\\\"\"" >> "$WORKSPACE/$stackrc_file"
+echo "export SSH_EXTRA_OPTIONS=\"-F $WORKSPACE/ssh_config -J openlab1\"" >> "$WORKSPACE/$stackrc_file"
 source "$WORKSPACE/$stackrc_file"
 
 function wait_machine() {
