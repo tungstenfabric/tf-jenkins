@@ -88,7 +88,7 @@ def _evaluate_common_params() {
   branch = 'master'
   if (env.GERRIT_BRANCH)
     branch = env.GERRIT_BRANCH.split('/')[-1].toLowerCase()
-  openstack_version = constants.DEFAULT_OPENSTACK_VERSION
+  openstack_version = null
   if (branch in constants.OPENSTACK_VERSIONS)
     openstack_version = branch
   if (env.GERRIT_CHANGE_ID) {
@@ -126,7 +126,6 @@ def _evaluate_env(def config_utils) {
       echo "export LOGS_PATH=${logs_path}" >> global.env
       echo "export LOGS_URL=${logs_url}" >> global.env
       # store default registry params. jobs can redefine them if needed in own config (VARS).
-      echo "export OPENSTACK_VERSION=${openstack_version}" >> global.env
       echo "export SITE_MIRROR=${constants.SITE_MIRROR}" >> global.env
       echo "export CONTAINER_REGISTRY=${constants.CONTAINER_REGISTRY}" >> global.env
       echo "export DEPLOYER_CONTAINER_REGISTRY=${constants.CONTAINER_REGISTRY}" >> global.env
@@ -138,6 +137,12 @@ def _evaluate_env(def config_utils) {
       echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL=${tf_container_tag}" >> global.env
       echo "export GERRIT_PIPELINE=${env.GERRIT_PIPELINE}" >> global.env
     """
+    if (openstack_version != null) {
+      // let the project to define own default version
+      sh """#!/bin/bash -e
+        echo "export OPENSTACK_VERSION=${openstack_version}" >> global.env
+      """
+    }
 
     // store gerrit input if present. evaluate jobs
     println("Pipeline to run: ${env.GERRIT_PIPELINE}")

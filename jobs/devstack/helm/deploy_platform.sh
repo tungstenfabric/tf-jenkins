@@ -11,7 +11,7 @@ source "$my_dir/definitions"
 function add_deployrc() {
   local file="$1"
   cat <<EOF >> "$file"
-  # Openstack Helm installation requires set locale, otherwise get UnicodeDecodeError on Vexx
+  # Openstack Helm installation requires set locale, otherwise get UnicodeDecodeError on OpenStack
   sudo localectl set-locale LANG=en-US.UTF-8
   . /etc/locale.conf
   export LC_ALL=en_US.UTF-8

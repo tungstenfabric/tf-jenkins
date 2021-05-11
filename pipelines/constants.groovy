@@ -17,11 +17,9 @@ MONITORING_BACKEND_HOST = "tf-monitoring.${SLAVE_REGION}.${CI_DOMAIN}"
 if (env.GERRIT_PIPELINE == 'nightly') {
   CONTAINER_REGISTRY="tf-nexus.${SLAVE_REGION}.${CI_DOMAIN}:5002"
 }
-// this is default LTS release for all deployers
-DEFAULT_OPENSTACK_VERSION = "queens"
 
 // possible openstack versions
-OPENSTACK_VERSIONS = ['ocata', 'pike', 'queens', 'rocky', 'stein', 'train', 'ussuri', 'victoria']
+OPENSTACK_VERSIONS = ['ocata', 'pike', 'queens', 'rocky', 'stein', 'train', 'ussuri', 'victoria', 'wallaby', 'xena']
 
 // list of projects which will receive Verified label in gerrit instead of fake VerifiedTF
 VERIFIED_PROJECTS = [
