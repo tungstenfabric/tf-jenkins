@@ -1,5 +1,5 @@
-deb http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu$UBUNTU_VERSION/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu $UBUNTU_CODENAME main restricted universe multiverse
-deb http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu$UBUNTU_VERSION/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu $UBUNTU_CODENAME-security main restricted universe multiverse
-deb http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu$UBUNTU_VERSION/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu $UBUNTU_CODENAME-updates main restricted universe multiverse
-deb http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu$UBUNTU_VERSION/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu $UBUNTU_CODENAME-proposed main restricted universe multiverse
-deb http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu$UBUNTU_VERSION/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu $UBUNTU_CODENAME-backports main restricted universe multiverse
+deb http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu $UBUNTU_CODENAME main restricted universe multiverse
+deb http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu $UBUNTU_CODENAME-security main restricted universe multiverse
+deb http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu $UBUNTU_CODENAME-updates main restricted universe multiverse
+deb http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu $UBUNTU_CODENAME-proposed main restricted universe multiverse
+deb http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubuntu/$REPOS_CHANNEL/mirror/archive.ubuntu.com/ubuntu $UBUNTU_CODENAME-backports main restricted universe multiverse

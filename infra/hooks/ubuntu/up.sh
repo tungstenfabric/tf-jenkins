@@ -15,7 +15,6 @@ source "${WORKSPACE}/vars.${JOB_NAME}.${JOB_RND}.env" || /bin/true
 # do ssh and cat for /etc/os-release - it's a symlink
 ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "cat /etc/os-release" 2>/dev/null > $WORKSPACE/os-release
 source $WORKSPACE/os-release
-export UBUNTU_VERSION=$(echo $VERSION_ID | cut -d '.' -f 1)
 export UBUNTU_CODENAME
 
 cat $my_dir/../../mirrors/mirror-pip.conf | envsubst > "$WORKSPACE/mirror-pip.conf"

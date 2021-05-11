@@ -21,8 +21,7 @@
             - centos7
             - rhel7
             - rhel8
-            - ubuntu18
-            - ubuntu20
+            - ubuntu
             #- pip
       - hidden:
           name: GERRIT_PIPELINE
@@ -54,8 +53,7 @@
             - centos7
             - rhel7
             - rhel8
-            - ubuntu18
-            - ubuntu20
+            - ubuntu
             #- pip
       - hidden:
           name: GERRIT_PIPELINE
