@@ -8,25 +8,6 @@ export provision_network_name='data'
 
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o ServerAliveInterval=60"
 
-JUMPHOST=${JUMPHOST:-'vexxhost'}
-
-declare -A RHOSP_PROVIDERS=( \
-  ['vexxhost']='vexx' \
-  ['vexx']='vexx' \
-  ['bmc']='bmc' \
-  ['openlab1']='bmc' \
-  ['openlab2']='bmc' \
-  ['openlab3']='kvm' \
-  ['openlab4']='kvm' \
-)
-
-export PROVIDER="${PROVIDER:-${RHOSP_PROVIDERS[$JUMPHOST]}}"
-
-[ -n "$PROVIDER" ] || {
-  echo "ERROR: unsupported JUMPHOST: $JUMPHOST"
-  exit 1
-}
-
 function add_deployrc() {
   local file="$1"
   cat "$WORKSPACE/$stackrc_file" >> "$file"

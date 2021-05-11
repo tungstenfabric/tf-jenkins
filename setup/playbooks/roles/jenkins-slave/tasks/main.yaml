@@ -22,7 +22,7 @@
     state: absent
   when: "'vexxhost' in group_names"
 
-- name: Install pip packages for vexx
+- name: Install pip packages for openstack
   pip:
     name:
       - python-openstackclient==5.4.0

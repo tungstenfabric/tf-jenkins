@@ -5,7 +5,6 @@
     streams:
       openshift4-ha:
         vars:
-          PROVIDER: "vexx"
           CONTROLLER_NODES: "C1,C2,C3"
           AGENT_NODES: "A1,A2"
           MONITORING_DEPLOY_TARGET: HA

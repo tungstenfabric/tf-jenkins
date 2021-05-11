@@ -7,7 +7,6 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
-source "$my_dir/../../../infra/${JUMPHOST}/definitions"
 
 export stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 stackrc_file_path=$WORKSPACE/$stackrc_file
@@ -34,23 +33,22 @@ fi
 echo "export ENABLE_NETWORK_ISOLATION=$ENABLE_NETWORK_ISOLATION" >> "$stackrc_file_path"
 echo "export OPENSTACK_CONTAINER_REGISTRY=$OPENSTACK_CONTAINER_REGISTRY" >> "$stackrc_file_path"
 echo "export OPENSTACK_CONTAINER_TAG=$OPENSTACK_CONTAINER_TAG" >> "$stackrc_file_path"
-echo "export PROVIDER=$PROVIDER" >> "$stackrc_file_path"
 if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then 
   echo "export ENABLE_TLS='ipa'" >> "$stackrc_file_path"
 fi
 
-if [[ "$PROVIDER" == 'bmc' ]]; then
-  $my_dir/../../../infra/${JUMPHOST}/create_workers.sh
-  source $stackrc_file_path
-  $WORKSPACE/src/tungstenfabric/tf-devstack/rhosp/create_env.sh
-elif [[ "$PROVIDER" == 'kvm' ]]; then
+if [[ -n "$JUMPHOST" ]]; then
   $my_dir/../../../infra/${JUMPHOST}/create_workers.sh
   source $stackrc_file_path
 
-  # devstack requires to run scripts on KVM host
-  # TODO: make it symmetric with vexx/bmc - rework devstack scripts
-  script="create_env.sh"
-  cat <<EOF > $WORKSPACE/$script
+  if [[ "$PROVIDER" == 'bmc' ]]; then
+    $WORKSPACE/src/tungstenfabric/tf-devstack/rhosp/create_env.sh
+  elif [[ "$PROVIDER" == 'kvm' ]]; then
+
+    # devstack requires to run scripts on KVM host
+    # TODO: make it symmetric with openstack/bmc - rework devstack scripts
+    script="create_env.sh"
+    cat <<EOF > $WORKSPACE/$script
 #!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
@@ -64,24 +62,25 @@ export SSH_USER=stack
 src/tungstenfabric/tf-devstack/rhosp/cleanup.sh
 src/tungstenfabric/tf-devstack/rhosp/create_env.sh
 EOF
-  chmod a+x $WORKSPACE/$script
-  ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
-  rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/$script,$WORKSPACE/$stackrc_file} $IMAGE_SSH_USER@$instance_ip:./
-  # run this via eval due to special symbols in ssh_cmd
-  eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./$script
-
-elif [[ "$PROVIDER" != 'vexx' ]]; then
-  echo "ERROR: unsupported provider $PROVIDER"
-  exit 1
+    chmod a+x $WORKSPACE/$script
+    ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
+    rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/$script,$WORKSPACE/$stackrc_file} $IMAGE_SSH_USER@$instance_ip:./
+    # run this via eval due to special symbols in ssh_cmd
+    eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./$script
+  else
+    echo "ERROR: unsupported provider $PROVIDER"
+    exit 1
+  fi
 else
   res=1
   cp $stackrc_file_path $stackrc_file_path.original
   for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
     cp $stackrc_file_path.original $stackrc_file_path
-    # vexxhost
+    # vexxhost/aws
     source $my_dir/../../../infra/${SLAVE}/definitions
     source $my_dir/../../../infra/${SLAVE}/functions.sh
     IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
+    echo "export PROVIDER=$PROVIDER" >> "$stackrc_file_path"
     echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file_path"
 
     # initial values for undercloud (v?-standard-4)
@@ -124,7 +123,7 @@ else
     export vexxrc="$stackrc_file_path"
     if $WORKSPACE/src/tungstenfabric/tf-devstack/rhosp/create_env.sh ; then
       echo "INFO: Running up hooks"
-      # hooks are impleneted for vexxhost only
+      # hooks are impleneted for openstack only
       if [[ -e $my_dir/../../../infra/hooks/rhel/up.sh ]] ; then
         ${my_dir}/../../../infra/hooks/rhel/up.sh
       fi

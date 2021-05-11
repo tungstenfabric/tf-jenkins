@@ -1,8 +1,9 @@
+export PROVIDER=openstack
+
 # OS variables are defined in the properties of the Jenkins node
 export OS_REGION_NAME=$SLAVE_REGION
 export OS_NETWORK="${OS_NETWORK:-management}"
 export OS_DATA_NETWORK="data"
-export OS_NETWORK_ID
 export OS_SG="${OS_SG:-default}"
 export RESERVED_INSTANCES_COUNT=3
 export RESERVED_CORES_COUNT=16

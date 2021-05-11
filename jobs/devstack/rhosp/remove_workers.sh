@@ -14,4 +14,4 @@ if [[ "$PROVIDER" == "bmc" ]]; then
     exit
 fi
 
-$WORKSPACE/src/tungstenfabric/tf-devstack/rhosp/providers/vexx/cleanup.sh
+$WORKSPACE/src/tungstenfabric/tf-devstack/rhosp/providers/openstack/cleanup.sh

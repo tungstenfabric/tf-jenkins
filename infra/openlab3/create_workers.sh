@@ -12,6 +12,7 @@ source "$my_dir/definitions"
 ssh -i $WORKER_SSH_KEY $SSH_OPTS $IMAGE_SSH_USER@$instance_ip "sudo rm -rf .tf src"
 
 stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
+echo "export PROVIDER=$PROVIDER" >> "$stackrc_file"
 echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$stackrc_file"
 echo "export instance_ip=$instance_ip" >> "$stackrc_file"
 source "$stackrc_file"

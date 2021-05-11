@@ -14,6 +14,9 @@ if [[ -z "$JUMPHOST" ]] ; then
   exit
 fi
 
+# here we have just one option - JUMPHOST=openlab2
+# it's a bmc setup with MAAS
+
 if [[ "$SLAVE" != 'vexxhost' ]]; then
   echo "ERROR: currently maas setup is accessible only from vexxhost slave"
   exit 1
