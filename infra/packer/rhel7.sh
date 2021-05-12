@@ -95,7 +95,9 @@ EOF
 sudo sed 's/enabled=1/enabled=0/g' /etc/yum/pluginconf.d/subscription-manager.conf > subscription-manager.conf.temp
 sudo cp -f subscription-manager.conf.temp /etc/yum/pluginconf.d/subscription-manager.conf
 rm -rf subscription-manager.conf.temp
-sudo mv local.repo /etc/yum.repos.d/
 
+sudo mv local.repo /etc/yum.repos.d/
 sudo yum update -y
+sudo rm /etc/yum.repos.d/local.repo
+
 sudo sed -i '/192\.168\.122\.1/d' /etc/resolv.conf
