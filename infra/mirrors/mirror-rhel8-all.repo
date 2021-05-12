@@ -54,6 +54,14 @@ baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel8/$REPOS_CHANNEL/fa
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
+[AdvancedVirtualization]
+Name=Advanced Virtualization for RHEL 8 x86_64
+enabled=1
+gpgcheck=1
+baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel8/$REPOS_CHANNEL/advanced-virt-for-rhel-8-x86_64-rpms/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
+
 [Ceph]
 Name=Ceph for Red Hat Enterprise Linux 8.0
 enabled=1
