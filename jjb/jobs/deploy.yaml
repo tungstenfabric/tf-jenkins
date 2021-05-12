@@ -25,18 +25,6 @@
               username-variable: WORKER_USER_NAME
               passphrase-variable: WORKER_PASSPHRASE
       - credentials-binding:
-          - ssh-user-private-key:
-              credential-id: openlab1
-              key-file-variable: OPENLAB1_SSH_KEY
-              username-variable: OPENLAB1_USER_NAME
-              passphrase-variable: OPENLAB1_PASSPHRASE
-      - credentials-binding:
-          - ssh-user-private-key:
-              credential-id: openlab2
-              key-file-variable: OPENLAB2_SSH_KEY
-              username-variable: OPENLAB2_USER_NAME
-              passphrase-variable: OPENLAB2_PASSPHRASE
-      - credentials-binding:
           - amazon-web-services:
               credential-id: aws-creds
               access-key: AWS_ACCESS_KEY_ID
@@ -172,18 +160,6 @@
               passphrase-variable: WORKER_PASSPHRASE
       - credentials-binding:
           - ssh-user-private-key:
-              credential-id: openlab1
-              key-file-variable: OPENLAB1_SSH_KEY
-              username-variable: OPENLAB1_USER_NAME
-              passphrase-variable: OPENLAB1_PASSPHRASE
-      - credentials-binding:
-          - ssh-user-private-key:
-              credential-id: openlab2
-              key-file-variable: OPENLAB2_SSH_KEY
-              username-variable: OPENLAB2_USER_NAME
-              passphrase-variable: OPENLAB2_PASSPHRASE
-      - credentials-binding:
-          - ssh-user-private-key:
               credential-id: logs_host
               key-file-variable: LOGS_HOST_SSH_KEY
               username-variable: LOGS_HOST_USERNAME
@@ -250,18 +226,6 @@
               key-file-variable: WORKER_SSH_KEY
               username-variable: WORKER_USER_NAME
               passphrase-variable: WORKER_PASSPHRASE
-      - credentials-binding:
-          - ssh-user-private-key:
-              credential-id: openlab1
-              key-file-variable: OPENLAB1_SSH_KEY
-              username-variable: OPENLAB1_USER_NAME
-              passphrase-variable: OPENLAB1_PASSPHRASE
-      - credentials-binding:
-          - ssh-user-private-key:
-              credential-id: openlab2
-              key-file-variable: OPENLAB2_SSH_KEY
-              username-variable: OPENLAB2_USER_NAME
-              passphrase-variable: OPENLAB2_PASSPHRASE
       - credentials-binding:
           - amazon-web-services:
               credential-id: aws-creds
