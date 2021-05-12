@@ -20,7 +20,7 @@ NODES_COUNT=${NODES_COUNT:-1}
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
 echo "# env file created by Jenkins" > "$ENV_FILE"
-echo "export PROVIDER=$PROVIDER" >> "$stackrc_file"
+echo "export PROVIDER=$PROVIDER" >> "$ENV_FILE"
 echo "export AWS_REGION=${AWS_REGION}" >> "$ENV_FILE"
 echo "export ENVIRONMENT_OS=${ENVIRONMENT_OS}" >> "$ENV_FILE"
 
