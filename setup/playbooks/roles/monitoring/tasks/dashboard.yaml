@@ -1,0 +1,15 @@
+---
+- name: get contents of file
+  command: cat /opt/monitoring/dashboards/{{ item }}.json
+  register: dashboard
+
+- name: Create dashboard
+  uri:
+    url: http://localhost:3000/api/dashboards/db
+    user: "admin"
+    password: "{{ grafana_password }}"
+    method: POST
+    force_basic_auth: yes
+    status_code: 200
+    body_format: json
+    body: "{\"overwrite\": true, \"dashboard\": {{ dashboard.stdout }} }"

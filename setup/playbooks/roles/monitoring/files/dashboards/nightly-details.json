@@ -1,0 +1,450 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "iteration": 1620835815898,
+  "links": [
+    {
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [],
+      "targetBlank": true,
+      "type": "dashboards"
+    }
+  ],
+  "panels": [
+    {
+      "datasource": "InfluxDB",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "from": "",
+              "id": 0,
+              "text": "1",
+              "to": "",
+              "type": 1,
+              "value": "SUCCESS"
+            },
+            {
+              "from": "",
+              "id": 2,
+              "text": "4",
+              "to": "",
+              "type": 1,
+              "value": "FAILURE"
+            },
+            {
+              "from": "",
+              "id": 3,
+              "text": "3",
+              "to": "",
+              "type": 1,
+              "value": "ABORTED"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgba(0, 0, 0, 0)",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "text": {},
+        "textMode": "name"
+      },
+      "pluginVersion": "7.5.5",
+      "repeat": "orchestrator",
+      "scopedVars": {
+        "orchestrator": {
+          "selected": true,
+          "text": "k8s",
+          "value": "k8s"
+        }
+      },
+      "targets": [
+        {
+          "alias": "$tag_orchestrator",
+          "groupBy": [
+            {
+              "params": [
+                "orchestrator"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "Jenkins.pipeline",
+          "orderByTime": "DESC",
+          "policy": "default",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "gerrit",
+              "operator": "=~",
+              "value": "/^$gerrit$/"
+            },
+            {
+              "condition": "AND",
+              "key": "deployer",
+              "operator": "=~",
+              "value": "/^$deployer$/"
+            },
+            {
+              "condition": "AND",
+              "key": "orchestrator",
+              "operator": "=~",
+              "value": "/^$orchestrator$/"
+            },
+            {
+              "condition": "AND",
+              "key": "target",
+              "operator": "=~",
+              "value": "/^$target$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$deployer",
+      "type": "stat"
+    },
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "displayMode": "auto",
+            "filterable": false
+          },
+          "links": [],
+          "mappings": [
+            {
+              "from": "",
+              "id": 1,
+              "text": "1",
+              "to": "",
+              "type": 1,
+              "value": "FAILURE"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgba(0, 0, 0, 0)",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "logs"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "",
+                    "url": "${__value.raw}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "status"
+            },
+            "properties": [
+              {
+                "id": "custom.displayMode",
+                "value": "color-background"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 4,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "Jenkins.pipeline",
+          "orderByTime": "DESC",
+          "policy": "default",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "status"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "logs"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "gerrit",
+              "operator": "=~",
+              "value": "/^$gerrit$/"
+            },
+            {
+              "condition": "AND",
+              "key": "deployer",
+              "operator": "=~",
+              "value": "/^$deployer$/"
+            },
+            {
+              "condition": "AND",
+              "key": "orchestrator",
+              "operator": "=~",
+              "value": "/^$orchestrator$/"
+            },
+            {
+              "condition": "AND",
+              "key": "target",
+              "operator": "=~",
+              "value": "/^$target$/"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "$deployer details",
+      "transformations": [],
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "nightly",
+          "value": "nightly"
+        },
+        "datasource": "InfluxDB",
+        "definition": "show tag values with key=\"gerrit\"",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "gerrit",
+        "options": [],
+        "query": "show tag values with key=\"gerrit\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "ansible",
+          "value": "ansible"
+        },
+        "datasource": "InfluxDB",
+        "definition": "show tag values with key=\"deployer\"",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "deployer",
+        "options": [],
+        "query": "show tag values with key=\"deployer\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "k8s",
+          "value": "k8s"
+        },
+        "datasource": "InfluxDB",
+        "definition": "show tag values with key=\"orchestrator\"",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "orchestrator",
+        "options": [],
+        "query": "show tag values with key=\"orchestrator\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "HA",
+          "value": "HA"
+        },
+        "datasource": "InfluxDB",
+        "definition": "show tag values with key=\"target\"",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "target",
+        "options": [],
+        "query": "show tag values with key=\"target\"",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "Nightly job details",
+  "uid": "49XCNspGz",
+  "version": 19
+}

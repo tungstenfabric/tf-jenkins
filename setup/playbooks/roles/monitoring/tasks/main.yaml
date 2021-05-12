@@ -23,7 +23,9 @@
     - Dockerfile
     - Dockerfile.fixvars
     - nginx-default.conf
-    - app
+    - grafana.ini
+    - app/
+    - dashboards/
 
 - name: copy script
   copy:
@@ -39,9 +41,15 @@
     dest: "/opt/monitoring/{{ item }}"
     mode: 0644
   with_items:
-    - dashboard.json
     - fluent.conf
     - docker-compose.yaml
+
+- name: create dashboard list
+  set_fact:
+    dashboards:
+      - nightly-overview
+      - nightly-details
+      - checking-gating
 
 - name: start apps
   docker_service:
@@ -72,7 +80,7 @@
     force_basic_auth: yes
     method: PUT
     body_format: json
-    body: #'{"oldPassword": "admin", "newPassword": "{{ grafana_password }}"}'
+    body: 
       oldPassword: "admin"
       newPassword: "{{ grafana_password }}"
     status_code:
@@ -109,20 +117,9 @@
         - 409 # if datasource exists
   when: datasource.status == 404
 
-- name: get contents of file
-  command: cat /opt/monitoring/dashboard.json
-  register: dashboard
-
 - name: Create dashboard
-  uri:
-    url: http://localhost:3000/api/dashboards/db
-    user: "admin"
-    password: "{{ grafana_password }}"
-    method: POST
-    force_basic_auth: yes
-    status_code: 200
-    body_format: json
-    body: "{\"overwrite\": true, \"dashboard\": {{ dashboard.stdout }} }"
+  include: dashboard.yaml
+  loop: "{{ dashboards }}"
 
 - name: Connect monitoring to proxy
   shell: /opt/monitoring/docker-network.sh

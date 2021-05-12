@@ -23,6 +23,7 @@ services:
     ports:
       - 3000:3000
     volumes:
+      - ./grafana.ini:/etc/grafana/grafana.ini
       - grafana-data:/var/lib/grafana
   fixvars:
     build:
@@ -42,6 +43,8 @@ services:
     environment:
       - VIRTUAL_HOST={{ monitoring_name }}.{{ ci_domain }},{{ monitoring_name }}.{{ region }}.{{ ci_domain }}
       - VIRTUAL_PORT=8082
+      - LETSENCRYPT_HOST={{ monitoring_name }}.{{ ci_domain }},{{ monitoring_name }}.{{ region }}.{{ ci_domain }}
+      - LETSENCRYPT_EMAIL={{ letsencrypt_email }}
 
 volumes:
   fluentd-data:

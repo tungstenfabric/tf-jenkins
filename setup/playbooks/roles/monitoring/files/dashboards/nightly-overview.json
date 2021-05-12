@@ -15,9 +15,22 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
-  "iteration": 1619781039519,
+  "iteration": 1620834884979,
   "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [
+        "checking"
+      ],
+      "targetBlank": false,
+      "title": "",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    },
     {
       "icon": "external link",
       "tags": [],
@@ -28,12 +41,13 @@
   ],
   "panels": [
     {
-      "datasource": null,
+      "datasource": "InfluxDB",
       "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {
-            "align": null
+            "align": null,
+            "filterable": false
           },
           "links": [],
           "mappings": [],
@@ -100,14 +114,14 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "targets": [
         {
-          "alias": "",
           "groupBy": [],
           "measurement": "Jenkins.pipeline",
           "orderByTime": "ASC",
           "policy": "default",
+          "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "table",
           "select": [
@@ -127,15 +141,14 @@
           "tags": [
             {
               "key": "gerrit",
-              "operator": "=~",
-              "value": "/^$gerrit$/"
+              "operator": "=",
+              "value": "nightly"
             }
           ]
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "",
       "transformations": [
         {
           "id": "filterFieldsByName",
@@ -179,13 +192,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -248,14 +258,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -277,9 +280,10 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "repeat": "deployer",
       "repeatDirection": "h",
       "scopedVars": {
@@ -381,13 +385,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -450,14 +451,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -479,12 +473,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "scopedVars": {
         "deployer": {
@@ -585,13 +579,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -654,14 +645,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -683,12 +667,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "scopedVars": {
         "deployer": {
@@ -789,13 +773,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -858,14 +839,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -887,12 +861,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "scopedVars": {
         "deployer": {
@@ -993,13 +967,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -1062,14 +1033,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -1091,12 +1055,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "scopedVars": {
         "deployer": {
@@ -1197,13 +1161,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -1266,14 +1227,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -1295,12 +1249,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "scopedVars": {
         "deployer": {
@@ -1401,13 +1355,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -1470,14 +1421,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -1499,12 +1443,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "scopedVars": {
         "deployer": {
@@ -1605,13 +1549,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -1674,14 +1615,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -1703,12 +1637,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "scopedVars": {
         "deployer": {
@@ -1815,8 +1749,7 @@
       },
       "id": 109,
       "panels": [],
-      "repeat": null,
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 10,
       "scopedVars": {
         "target": {
@@ -1833,13 +1766,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -1902,14 +1832,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -1931,12 +1854,13 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "repeat": "deployer",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2038,13 +1962,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -2107,14 +2028,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -2136,12 +2050,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 110,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2243,13 +2157,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -2312,14 +2223,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -2341,12 +2245,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 110,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2448,13 +2352,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -2517,14 +2418,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -2546,12 +2440,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 110,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2653,13 +2547,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -2722,14 +2613,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -2751,12 +2635,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 110,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2858,13 +2742,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -2927,14 +2808,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -2956,12 +2830,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 110,
       "repeatedByRow": true,
       "scopedVars": {
@@ -3063,13 +2937,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -3132,14 +3003,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -3161,12 +3025,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 110,
       "repeatedByRow": true,
       "scopedVars": {
@@ -3268,13 +3132,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -3337,14 +3198,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -3366,12 +3220,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 110,
       "repeatedByRow": true,
       "scopedVars": {
@@ -3479,8 +3333,7 @@
       },
       "id": 111,
       "panels": [],
-      "repeat": null,
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 10,
       "scopedVars": {
         "target": {
@@ -3497,13 +3350,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -3566,14 +3416,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -3595,12 +3438,13 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "repeat": "deployer",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -3702,13 +3546,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -3771,14 +3612,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -3800,12 +3634,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 112,
       "repeatedByRow": true,
       "scopedVars": {
@@ -3907,13 +3741,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -3976,14 +3807,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -4005,12 +3829,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 112,
       "repeatedByRow": true,
       "scopedVars": {
@@ -4112,13 +3936,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -4181,14 +4002,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -4210,12 +4024,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 112,
       "repeatedByRow": true,
       "scopedVars": {
@@ -4317,13 +4131,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -4386,14 +4197,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -4415,12 +4219,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 112,
       "repeatedByRow": true,
       "scopedVars": {
@@ -4522,13 +4326,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -4591,14 +4392,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -4620,12 +4414,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 112,
       "repeatedByRow": true,
       "scopedVars": {
@@ -4727,13 +4521,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -4796,14 +4587,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -4825,12 +4609,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 112,
       "repeatedByRow": true,
       "scopedVars": {
@@ -4932,13 +4716,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -5001,14 +4782,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -5030,12 +4804,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 112,
       "repeatedByRow": true,
       "scopedVars": {
@@ -5143,8 +4917,7 @@
       },
       "id": 113,
       "panels": [],
-      "repeat": null,
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 10,
       "scopedVars": {
         "target": {
@@ -5161,13 +4934,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -5230,14 +5000,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -5259,12 +5022,13 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "repeat": "deployer",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -5366,13 +5130,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -5435,14 +5196,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -5464,12 +5218,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 114,
       "repeatedByRow": true,
       "scopedVars": {
@@ -5571,13 +5325,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -5640,14 +5391,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -5669,12 +5413,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 114,
       "repeatedByRow": true,
       "scopedVars": {
@@ -5776,13 +5520,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -5845,14 +5586,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -5874,12 +5608,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 114,
       "repeatedByRow": true,
       "scopedVars": {
@@ -5981,13 +5715,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -6050,14 +5781,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -6079,12 +5803,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 114,
       "repeatedByRow": true,
       "scopedVars": {
@@ -6186,13 +5910,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -6255,14 +5976,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -6284,12 +5998,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 114,
       "repeatedByRow": true,
       "scopedVars": {
@@ -6391,13 +6105,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -6460,14 +6171,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -6489,12 +6193,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 114,
       "repeatedByRow": true,
       "scopedVars": {
@@ -6596,13 +6300,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -6665,14 +6366,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -6694,12 +6388,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 114,
       "repeatedByRow": true,
       "scopedVars": {
@@ -6807,8 +6501,7 @@
       },
       "id": 115,
       "panels": [],
-      "repeat": null,
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 10,
       "scopedVars": {
         "target": {
@@ -6825,13 +6518,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -6894,14 +6584,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -6923,12 +6606,13 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "repeat": "deployer",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -7030,13 +6714,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -7099,14 +6780,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -7128,12 +6802,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 116,
       "repeatedByRow": true,
       "scopedVars": {
@@ -7235,13 +6909,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -7304,14 +6975,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -7333,12 +6997,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 116,
       "repeatedByRow": true,
       "scopedVars": {
@@ -7440,13 +7104,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -7509,14 +7170,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -7538,12 +7192,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 116,
       "repeatedByRow": true,
       "scopedVars": {
@@ -7645,13 +7299,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -7714,14 +7365,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -7743,12 +7387,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 116,
       "repeatedByRow": true,
       "scopedVars": {
@@ -7850,13 +7494,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -7919,14 +7560,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -7948,12 +7582,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 116,
       "repeatedByRow": true,
       "scopedVars": {
@@ -8055,13 +7689,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -8124,14 +7755,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -8153,12 +7777,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 116,
       "repeatedByRow": true,
       "scopedVars": {
@@ -8260,13 +7884,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -8329,14 +7950,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -8358,12 +7972,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 116,
       "repeatedByRow": true,
       "scopedVars": {
@@ -8471,8 +8085,7 @@
       },
       "id": 117,
       "panels": [],
-      "repeat": null,
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 10,
       "scopedVars": {
         "target": {
@@ -8489,13 +8102,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -8558,14 +8168,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -8587,12 +8190,13 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "repeat": "deployer",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -8694,13 +8298,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -8763,14 +8364,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -8792,12 +8386,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 118,
       "repeatedByRow": true,
       "scopedVars": {
@@ -8899,13 +8493,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -8968,14 +8559,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -8997,12 +8581,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 118,
       "repeatedByRow": true,
       "scopedVars": {
@@ -9104,13 +8688,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -9173,14 +8754,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -9202,12 +8776,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 118,
       "repeatedByRow": true,
       "scopedVars": {
@@ -9309,13 +8883,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -9378,14 +8949,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -9407,12 +8971,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 118,
       "repeatedByRow": true,
       "scopedVars": {
@@ -9514,13 +9078,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -9583,14 +9144,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -9612,12 +9166,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 118,
       "repeatedByRow": true,
       "scopedVars": {
@@ -9719,13 +9273,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -9788,14 +9339,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -9817,12 +9361,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 118,
       "repeatedByRow": true,
       "scopedVars": {
@@ -9924,13 +9468,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -9993,14 +9534,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -10022,12 +9556,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 118,
       "repeatedByRow": true,
       "scopedVars": {
@@ -10135,8 +9669,7 @@
       },
       "id": 119,
       "panels": [],
-      "repeat": null,
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 10,
       "scopedVars": {
         "target": {
@@ -10153,13 +9686,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -10222,14 +9752,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -10251,12 +9774,13 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "repeat": "deployer",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -10358,13 +9882,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -10427,14 +9948,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -10456,12 +9970,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 120,
       "repeatedByRow": true,
       "scopedVars": {
@@ -10563,13 +10077,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -10632,14 +10143,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -10661,12 +10165,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 120,
       "repeatedByRow": true,
       "scopedVars": {
@@ -10768,13 +10272,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -10837,14 +10338,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -10866,12 +10360,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 120,
       "repeatedByRow": true,
       "scopedVars": {
@@ -10973,13 +10467,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -11042,14 +10533,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -11071,12 +10555,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 120,
       "repeatedByRow": true,
       "scopedVars": {
@@ -11178,13 +10662,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -11247,14 +10728,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -11276,12 +10750,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 120,
       "repeatedByRow": true,
       "scopedVars": {
@@ -11383,13 +10857,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -11452,14 +10923,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -11481,12 +10945,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 120,
       "repeatedByRow": true,
       "scopedVars": {
@@ -11588,13 +11052,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -11657,14 +11118,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -11686,12 +11140,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 120,
       "repeatedByRow": true,
       "scopedVars": {
@@ -11799,8 +11253,7 @@
       },
       "id": 121,
       "panels": [],
-      "repeat": null,
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 10,
       "scopedVars": {
         "target": {
@@ -11817,13 +11270,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -11886,14 +11336,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -11915,12 +11358,13 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "repeat": "deployer",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -12022,13 +11466,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -12091,14 +11532,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -12120,12 +11554,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 122,
       "repeatedByRow": true,
       "scopedVars": {
@@ -12227,13 +11661,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -12296,14 +11727,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -12325,12 +11749,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 122,
       "repeatedByRow": true,
       "scopedVars": {
@@ -12432,13 +11856,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -12501,14 +11922,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -12530,12 +11944,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 122,
       "repeatedByRow": true,
       "scopedVars": {
@@ -12637,13 +12051,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -12706,14 +12117,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -12735,12 +12139,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 122,
       "repeatedByRow": true,
       "scopedVars": {
@@ -12842,13 +12246,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -12911,14 +12312,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -12940,12 +12334,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 122,
       "repeatedByRow": true,
       "scopedVars": {
@@ -13047,13 +12441,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -13116,14 +12507,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -13145,12 +12529,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 122,
       "repeatedByRow": true,
       "scopedVars": {
@@ -13252,13 +12636,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -13321,14 +12702,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -13350,12 +12724,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 122,
       "repeatedByRow": true,
       "scopedVars": {
@@ -13463,8 +12837,7 @@
       },
       "id": 123,
       "panels": [],
-      "repeat": null,
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 10,
       "scopedVars": {
         "target": {
@@ -13481,13 +12854,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -13550,14 +12920,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -13579,12 +12942,13 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "repeat": "deployer",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -13686,13 +13050,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -13755,14 +13116,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -13784,12 +13138,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 124,
       "repeatedByRow": true,
       "scopedVars": {
@@ -13891,13 +13245,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -13960,14 +13311,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -13989,12 +13333,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 124,
       "repeatedByRow": true,
       "scopedVars": {
@@ -14096,13 +13440,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -14165,14 +13506,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -14194,12 +13528,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 124,
       "repeatedByRow": true,
       "scopedVars": {
@@ -14301,13 +13635,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -14370,14 +13701,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -14399,12 +13723,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 124,
       "repeatedByRow": true,
       "scopedVars": {
@@ -14506,13 +13830,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -14575,14 +13896,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -14604,12 +13918,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 124,
       "repeatedByRow": true,
       "scopedVars": {
@@ -14711,13 +14025,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -14780,14 +14091,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -14809,12 +14113,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 124,
       "repeatedByRow": true,
       "scopedVars": {
@@ -14916,13 +14220,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -14985,14 +14286,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -15014,12 +14308,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 124,
       "repeatedByRow": true,
       "scopedVars": {
@@ -15127,8 +14421,7 @@
       },
       "id": 125,
       "panels": [],
-      "repeat": null,
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 10,
       "scopedVars": {
         "target": {
@@ -15145,13 +14438,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -15214,14 +14504,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -15243,12 +14526,13 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
+      "pluginVersion": "7.5.5",
       "repeat": "deployer",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -15350,13 +14634,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -15419,14 +14700,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -15448,12 +14722,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 126,
       "repeatedByRow": true,
       "scopedVars": {
@@ -15555,13 +14829,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -15624,14 +14895,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -15653,12 +14917,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 126,
       "repeatedByRow": true,
       "scopedVars": {
@@ -15760,13 +15024,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -15829,14 +15090,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -15858,12 +15112,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 126,
       "repeatedByRow": true,
       "scopedVars": {
@@ -15965,13 +15219,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -16034,14 +15285,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -16063,12 +15307,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 126,
       "repeatedByRow": true,
       "scopedVars": {
@@ -16170,13 +15414,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -16239,14 +15480,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -16268,12 +15502,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 126,
       "repeatedByRow": true,
       "scopedVars": {
@@ -16375,13 +15609,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -16444,14 +15675,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -16473,12 +15697,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 126,
       "repeatedByRow": true,
       "scopedVars": {
@@ -16580,13 +15804,10 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "links": [
             {
               "title": "Details",
-              "url": "http://{{ monitoring_name }}.{{ ci_domain }}/r/49XCNspGz/build-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
+              "url": "http://tf-monitoring.progmaticlab.com/r/49XCNspGz/nightly-job-details?var-gerrit=${gerrit}&var-orchestrator=${__series.name}&var-target=${target}&var-deployer=${deployer}"
             }
           ],
           "mappings": [
@@ -16649,14 +15870,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName"
-            },
-            "properties": []
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 3,
@@ -16678,12 +15892,12 @@
           "fields": "/.*/",
           "values": false
         },
+        "text": {},
         "textMode": "name"
       },
-      "pluginVersion": "7.1.4",
-      "repeat": null,
+      "pluginVersion": "7.5.5",
       "repeatDirection": "h",
-      "repeatIteration": 1619781039519,
+      "repeatIteration": 1620834884979,
       "repeatPanelId": 126,
       "repeatedByRow": true,
       "scopedVars": {
@@ -16782,9 +15996,11 @@
     }
   ],
   "refresh": "1h",
-  "schemaVersion": 26,
+  "schemaVersion": 27,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "nightly"
+  ],
   "templating": {
     "list": [
       {
@@ -16796,6 +16012,8 @@
         },
         "datasource": "InfluxDB",
         "definition": "show tag values with key=\"gerrit\"",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": null,
@@ -16822,6 +16040,8 @@
         },
         "datasource": "InfluxDB",
         "definition": "show tag values with key=\"deployer\"",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -16848,6 +16068,8 @@
         },
         "datasource": "InfluxDB",
         "definition": "show tag values with key=\"orchestrator\"",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -16872,6 +16094,8 @@
           "text": "All",
           "value": "$__all"
         },
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -16964,5 +16188,5 @@
   "timezone": "",
   "title": "Nightly jobs status",
   "uid": "uwaTf7NMz",
-  "version": 96
+  "version": 14
 }
