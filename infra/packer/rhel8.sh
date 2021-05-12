@@ -69,7 +69,7 @@ cost = 600
 
 EOF
 
-sudo rm -rf /etc/yum.repos.d/redhat.repo
+sudo mv /etc/yum.repos.d/redhat.repo ./redhat.repo
 sudo yum clean all
 sudo subscription-manager clean
 
@@ -77,13 +77,14 @@ sudo subscription-manager clean
 sudo sed 's/enabled=1/enabled=0/g' /etc/yum/pluginconf.d/subscription-manager.conf > subscription-manager.conf.temp
 sudo cp -f subscription-manager.conf.temp /etc/yum/pluginconf.d/subscription-manager.conf
 rm -rf subscription-manager.conf.temp
-sudo mv local.repo /etc/yum.repos.d/
 
+sudo mv local.repo /etc/yum.repos.d/
 echo "INFO: /etc/yum.repos.d/local.repo"
 sudo cat /etc/yum.repos.d/local.repo
-
 echo "INFO: yum update"
 sudo yum update -y
+sudo rm /etc/yum.repos.d/local.repo
+sudo mv ./redhat.repo /etc/yum.repos.d/
 
 sudo sed -i '/192\.168\.122\.1/d' /etc/resolv.conf
 echo "INFO: /etc/resolv.conf"
