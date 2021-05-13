@@ -308,10 +308,11 @@
         lock: openlab2
         vars:
           JUMPHOST: openlab2
+          OPENSTACK_VERSION: 'ussuri'
           SSL_ENABLE: 'true'
           CONTROLLER_NODES: "C1,C2,C3"
           AGENT_NODES: "A1,A2"
-          ENABLE_DPDK_SRIOV: 'true'
+          #ENABLE_DPDK_SRIOV: 'true'
           CONTROL_NETWORK: '192.168.51.0/24'
           DATA_NETWORK: '10.0.0.0/16'
           MONITORING_DEPLOY_TARGET: PROD,SR-IOV,DPDK
