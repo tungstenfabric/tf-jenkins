@@ -12,12 +12,19 @@ monitoring_name: "tf-monitoring"
 
 ssh_keys_dir: "{{ lookup('env', 'HOME') }}/tfci/ssh" 
 
+# (optional) mailrelay_from: list of hosts/nets to relay from.
+# Not restricted by mailrelay_to_domains, relaying to any domain is allowed.
+# localhost is always included into the list
+#
 mailrelay_from:
   - 127.0.0.0/8
   - 10.0.0.0/8
   - 192.168.0.0/16
   - 172.16.0.0./12
-mailrelay_to_domains:
-  # List of domains to which mail relay is allowed
-  # Use "*" to allow any domain
-  - "*"
+
+# (optional) mailrelay_to_domains - list of domains to which mail relay is allowed
+# Not restricted by mailrelay_from, realying from any host/net is allowed
+# Use "*" to allow relaying to any domain from any host (bad idea)
+#
+# mailrelay_to_domains:
+#   - "some_email_domain"
