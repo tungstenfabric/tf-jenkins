@@ -2,9 +2,17 @@ dc_eximconfig_configtype='internet'
 dc_other_hostnames='{{ ansible_fqdn }}'
 dc_local_interfaces='{{ ansible_default_ipv4.address }}'
 dc_readhost=''
-dc_relay_domains='{{ mailrelay_to_domains | join(',') }}'
+{% if mailrelay_to_domains is defined and mailrelay_to_domains|length > 0 %}
+dc_relay_domains='{{ mailrelay_to_domains | join(':') }}'
+{% else %}
+dc_relay_domains='{{ jenkins_admin_email.split('@')[1] }}'
+{% endif %}
 dc_minimaldns='false'
-dc_relay_nets='{{ mailrelay_from | join(',') }}'
+{% if mailrelay_from is defined %}
+dc_relay_nets='{{ mailrelay_from | join(':') }}'
+{% else %}
+dc_relay_nets=''
+{% endif %}
 dc_smarthost=''
 CFILEMODE='644'
 dc_use_split_config='false'
