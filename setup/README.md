@@ -111,7 +111,17 @@ Infra must be initiallised to be able to run CI and infra checks/jobs. Please ne
 - Run job **pipeline-init-repos** for CENTOS7, UBUNTU18, UBUNTU20, RHEL7, RHEL8. These jobs may take several hours and can be run in parallel.
 - Run job **update-prepared-images** for RHEL7, RHEL8
 
-After this point CI should be ready to run checks. For ensure that alll steps were made correctly plelase run job **pipline-nightly** and check results.
+After this point CI should be ready to run checks. For ensure that all steps were made correctly plelase run job **pipline-nightly** and check results.
+
+### Red Hat settings
+
+To update Red Hat mirrors you have to set 'rhel_user', 'rhel_password', 'rhel_pool_id' variables in hosts.yaml. They will be passed to mirror's script and used during repos staging. To obtain pool id please list available pools and choose pool with words in name 'Red Hat OpenStack Platform', 'Available' key with 'Unlimited', 'Service Level' with 'Self-Support' and 'Entitlement Type' Virtual'. In most cases it willl be just one pool. Otherwise please use with longer 'End Date'.
+
+```bash
+subscription-manager register --name=rhel7repomirror --username=$RHEL_USER --password=$RHEL_PASSWORD
+subscription-manager list --available
+subscription-manager unregister
+```
 
 ## Gerrit integration
 
