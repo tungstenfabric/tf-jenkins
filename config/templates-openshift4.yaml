@@ -51,7 +51,6 @@
         lock: openlab3
         vars:
           JUMPHOST: openlab3
-          HUGEPAGES_ENABLED: false
           PROVIDER: "kvm"
           CONTROLLER_NODES: "C1,C2,C3"
           AGENT_NODES: "A1,A2"
