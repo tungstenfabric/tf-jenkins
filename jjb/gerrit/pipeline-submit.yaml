@@ -26,9 +26,6 @@
             notbuilt: true
           trigger-on:
             - comment-added-event:
-                approval-category: 'VerifiedTF'
-                approval-value: 2
-            - comment-added-event:
                 approval-category: 'Verified'
                 approval-value: 2
             - comment-added-contains-event:

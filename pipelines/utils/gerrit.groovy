@@ -313,13 +313,8 @@ def notify_gerrit(msg, verified=0, submit=false, change_id=null, branch=null, pa
       usernameVariable: 'GERRIT_API_USER')]) {
     def opts = ""
 
-    // temporary hack to not vote for review.opencontrail.org
-    def label_name = 'VerifiedTF'
-    if (env.GERRIT_HOST != 'review.opencontrail.org' || (env.GERRIT_PROJECT in constants.VERIFIED_PROJECTS && env.GERRIT_BRANCH == 'master'))
-      label_name = 'Verified'
-
     if (verified != null) {
-      opts += " --labels ${label_name}=${verified}"
+      opts += " --labels Verified=${verified}"
     }
     if (submit) {
       opts += " --submit"
@@ -435,12 +430,7 @@ def has_gate_approvals() {
 def has_gate_submits() {
   def result = _has_approvals('submit')
   println("INFO: has_submit_approvals = ${result}")
-
-  if (env.GERRIT_HOST != 'review.opencontrail.org' || (env.GERRIT_PROJECT in constants.VERIFIED_PROJECTS && env.GERRIT_BRANCH == 'master'))
-    return result
-
-  // TODO: remove return false and uncomment real result when we will be ready for this
-  return false
+  return result
 }
 
 def is_merged() {

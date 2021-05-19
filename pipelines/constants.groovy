@@ -21,18 +21,6 @@ if (env.GERRIT_PIPELINE == 'nightly') {
 // possible openstack versions
 OPENSTACK_VERSIONS = ['ocata', 'pike', 'queens', 'rocky', 'stein', 'train', 'ussuri', 'victoria', 'wallaby', 'xena']
 
-// list of projects which will receive Verified label in gerrit instead of fake VerifiedTF
-VERIFIED_PROJECTS = [
-  'tungstenfabric/tf-container-builder',
-  'tungstenfabric/tf-ansible-deployer',
-  'tungstenfabric/tf-charms',
-  'tungstenfabric/tf-devstack',
-  'tungstenfabric/tf-dev-env',
-  'tungstenfabric/tf-jenkins',
-  'tungstenfabric/tf-dev-test',
-  'tungstenfabric/tf-deployment-test'
-]
-
 // in minutes
 JOB_TIMEOUT = 180
 
