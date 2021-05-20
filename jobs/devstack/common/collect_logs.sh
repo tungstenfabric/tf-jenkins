@@ -8,11 +8,25 @@ deployer=$1
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
+ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 res=0
+
+echo "INFO: wait for host"
+timeout 300 bash -c "\
+while /bin/true ; do \
+  $ssh_cmd $IMAGE_SSH_USER@$instance_ip 'uname -a' 2>/dev/null && break ; \
+  sleep 10 ; \
+done" || res=1
+
+if [[ "$res" != '0' ]]; then
+  echo "ERROR: VM is not accessible"
+  exit 1
+fi
+
+echo "INFO: collect logs"
 ${my_dir}/run_stage.sh $deployer logs || res=1
 
 echo "INFO: Copy logs from host to workspace"
-ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 rsync -a -e "$ssh_cmd" $IMAGE_SSH_USER@$instance_ip:logs.tgz $WORKSPACE/logs.tgz
 
 pushd $WORKSPACE
