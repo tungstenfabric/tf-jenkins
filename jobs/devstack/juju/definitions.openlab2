@@ -7,6 +7,7 @@ export MAAS_PROFILE="admin"
 function add_deployrc() {
   local file="$1"
   cat <<EOF >> "$file"
+export UBUNTU_SERIES=$UBUNTU_SERIES
 export CONTROL_NETWORK="$CONTROL_NETWORK"
 export DATA_NETWORK="$DATA_NETWORK"
 export CLOUD=maas
