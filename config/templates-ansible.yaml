@@ -97,6 +97,7 @@
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: os
+          USE_DATAPLANE_NETWORK: true
     parents:
       - build-centos
     jobs:
@@ -132,6 +133,7 @@
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: os
+          USE_DATAPLANE_NETWORK: true
     parents:
       - build-centos
     jobs:
@@ -173,6 +175,7 @@
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: os
+          USE_DATAPLANE_NETWORK: true
     parents:
       - build-centos
     jobs:
