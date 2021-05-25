@@ -529,8 +529,10 @@ def _check_and_stop_builds(def check_func) {
   // let's do 3 retries
   for (def i = 0; i < 3; ++i) {
     try {
-      def builds = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME).getBuilds()
-      for (def build in builds) {
+      def pipeline = Jenkins.getInstanceOrNull().getItemByFullName(env.JOB_NAME)
+      def builds = pipeline.getBuildsAsMap().keySet()
+      for (def buildNumber in builds) {
+        def build = pipeline.getBuildByNumber(buildNumber)
         if (!build || !build.getResult().equals(null))
           continue
         def action = build.allActions.find { it in hudson.model.ParametersAction }
