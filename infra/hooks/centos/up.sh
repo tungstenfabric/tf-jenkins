@@ -41,7 +41,5 @@ $ssh_cmd $IMAGE_SSH_USER@$instance_ip "sudo rm -f /etc/yum.repos.d/*; sudo cp mi
 # TODO: detect interface name
 echo "INFO: do not set default gateway for second interface"
 if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
-  $ssh_cmd $IMAGE_SSH_USER@$instance_ip "echo 'DEFROUTE=no' | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-eth1 ; sudo systemctl restart network.service"
-  # dhclient should restart a little bit later
-  $ssh_cmd $IMAGE_SSH_USER@$instance_ip "sudo dhclient -r && sudo dhclient"
+  $ssh_cmd $IMAGE_SSH_USER@$instance_ip "printf 'DEFROUTE=no\nPEERDNS=no\n' | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-eth1 ; sudo systemctl restart network.service"
 fi
