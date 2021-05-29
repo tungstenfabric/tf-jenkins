@@ -9,9 +9,7 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
-cp "$my_dir/ssh_config" "$WORKSPACE/ssh_config"
-
-cat <<EOF | ssh -F $WORKSPACE/ssh_config openlab1
+cat <<EOF | ssh -F $my_dir/ssh_config openlab1
 [ "${DEBUG,,}" == "true" ] && set -x
 export LIBVIRT_DEFAULT_URI=qemu:///system
 export PATH=\$PATH:/usr/sbin
@@ -34,13 +32,15 @@ fi
 echo "VMs are started"
 EOF
 
+ssh_config="$(cat $my_dir/ssh_config | base64 -w 0)"
 stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 echo "export PROVIDER=$PROVIDER" >> "$stackrc_file"
 echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$WORKSPACE/$stackrc_file"
 echo "export instance_ip=$instance_ip" >> "$WORKSPACE/$stackrc_file"
 echo "export mgmt_ip=$instance_ip" >> "$WORKSPACE/$stackrc_file"
 echo "export ipa_mgmt_ip=$ipa_mgmt_ip" >> "$WORKSPACE/$stackrc_file"
-echo "export SSH_EXTRA_OPTIONS=\"-F $WORKSPACE/ssh_config -J openlab1\"" >> "$WORKSPACE/$stackrc_file"
+echo "echo $ssh_config | base64 --decode > \$WORKSPACE/ssh_config " >> "$WORKSPACE/$stackrc_file"
+echo "export SSH_EXTRA_OPTIONS=\"-F \$WORKSPACE/ssh_config -J openlab1\"" >> "$WORKSPACE/$stackrc_file"
 source "$WORKSPACE/$stackrc_file"
 
 function wait_machine() {
