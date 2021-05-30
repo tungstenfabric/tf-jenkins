@@ -24,7 +24,9 @@ for i in $(echo "$PIPELINE_INSTANSES"); do
     LOCKED_INSTANCES+=("$i")
   fi
 done
-[[ "${#LOCKED_INSTANCES[@]}" -lt "1" ]] && exit
+if [[ "${#LOCKED_INSTANCES[@]}" -lt "1" ]];
+  exit
+fi
 
 MAX_DURATION="259200"
 C_DATE=$(date +%s)
@@ -36,16 +38,17 @@ for i in $(echo ${LOCKED_INSTANCES[*]}); do
    EXCEED+=($i)
   fi
 done
-[[ "${#EXCEED[*]}" -eq "0" ]] && exit
+echo "INFO: Exceed list: ${#EXCEED[@]}"
+if [[ "${#EXCEED[*]}" == "0" ]]; then
+  exit
+fi
 
+report_file="aws.report.txt"
+echo "VEXXHOST instances alive more than 3 days:" > $report_file
 for h in "${EXCEED[@]}"; do
   i=$(aws ec2 describe-instances --region "$AWS_REGION" \
           --query 'Reservations[*].Instances[*].[Tags[?Key==`Name`].Value | [0]]' \
           --instance-ids "$h" \
           --output text )
-  echo "${h} ${i}" >> aws.report.txt
+  echo "${h} ${i}" >> $report_file
 done
-
-if [ -f aws.report.txt ]; then
-  echo "VEXXHOST instances alive more than 3 days:" | cat - aws.report.txt | tee aws.report.txt
-fi

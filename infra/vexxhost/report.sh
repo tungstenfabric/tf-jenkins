@@ -11,23 +11,26 @@ source "$my_dir/definitions"
 MAX_DURATION="259200"
 
 LOCKED=$(nova list --tags-any "SLAVE=vexxhost" --status ACTIVE --field locked,name | grep 'True' | tr -d '|' | awk '{print $1}' || true)
-[[ -z "$LOCKED" ]] && exit
+if [[ -z "$LOCKED" ]]; then
+  exit
+fi
 
 C_DATE=$(date +%s)
 for i in $LOCKED; do
-  echo $i
+  echo "INFO: Locked instance to test for duration: $i"
   L_DATE=$(date --date $(nova show $i | grep 'OS-SRV-USG:launched_at' | tr -d '|' | awk '{print $NF}') +%s)
   DURATION=$(($C_DATE - $L_DATE))
   if [[ "$DURATION" -ge "$MAX_DURATION" ]]; then
-   EXCEED+=($i)
+    EXCEED+=($i)
   fi
 done
-[[ "${#EXCEED[*]}" -eq "0" ]] && exit
-
-for h in "${EXCEED[@]}"; do
-  echo "${h} $(openstack server show ${h} -f json | jq -r '.name')" >> vexxhost.report.txt
-done
-
-if [ -f vexxhost.report.txt ]; then
-  echo "VEXXHOST instances alive more than 3 days:" | cat - vexxhost.report.txt | tee vexxhost.report.txt
+echo "INFO: Exceed list: ${#EXCEED[@]}"
+if [[ "${#EXCEED[*]}" == "0" ]]; then
+  exit
 fi
+
+report_file="vexxhost.report.txt"
+echo "VEXXHOST instances alive more than 3 days:" > $report_file
+for h in "${EXCEED[@]}"; do
+  echo "${h} $(openstack server show ${h} -f json | jq -r '.name')" >> $report_file
+done
