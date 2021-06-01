@@ -25,8 +25,7 @@
     streams:
       rhosp13:
         vars:
-          OPENSTACK_VERSION: queens
-          RHOSP_VERSION: rhosp13
+          ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
@@ -64,8 +63,7 @@
     streams:
       rhosp13-1912:
         vars:
-          OPENSTACK_VERSION: queens
-          RHOSP_VERSION: rhosp13
+          ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
@@ -105,8 +103,7 @@
     streams:
       rhosp13-2011:
         vars:
-          OPENSTACK_VERSION: queens
-          RHOSP_VERSION: rhosp13
+          ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
@@ -142,14 +139,13 @@
           - test-sanity-rhosp13-2011
 
 - template:
-    name: rhosp16
+    name: rhosp16.1
     parents:
       - build-ubi
     streams:
-      rhosp16:
+      rhosp16.1:
         vars:
-          OPENSTACK_VERSION: train
-          RHOSP_VERSION: rhosp16
+          ENVIRONMENT_OS: rhel82
           TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
@@ -159,20 +155,20 @@
           MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-rhosp16:
-        stream: rhosp16
+        stream: rhosp16.1
       deploy-tf-rhosp16:
-        stream: rhosp16
+        stream: rhosp16.1
         depends-on:
           - package-ubi
           - deploy-platform-rhosp16
       test-sanity-rhosp16:
         job-name: test-sanity
-        stream: rhosp16
+        stream: rhosp16.1
         depends-on:
           - deploy-tf-rhosp16
       collect-logs-and-cleanup-rhosp16:
         job-name: collect-logs-and-cleanup
-        stream: rhosp16
+        stream: rhosp16.1
         type: post-hook
         depends-on:
           - deploy-platform-rhosp16
@@ -180,15 +176,54 @@
           - test-sanity-rhosp16
 
 - template:
-    name: rhosp16-2011
+    name: rhosp16.2
+    # to use latest deployer's code
+    #parents:
+    #  - build-ubi
+    streams:
+      rhosp16.2:
+        vars:
+          ENVIRONMENT_OS: rhel84
+          TAG_SUFFIX: "-ubi7"
+          DEPLOY_COMPACT_AIO: true
+          ENABLE_RHEL_REGISTRATION: false
+          OPENSTACK_CONTAINER_REGISTRY: "10.0.3.192:5000"
+          CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
+          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
+    jobs:
+      deploy-platform-rhosp16.2:
+        stream: rhosp16.2
+        job-name: deploy-platform-rhosp16
+      deploy-tf-rhosp16.2:
+        stream: rhosp16.2
+        job-name: deploy-tf-rhosp16
+        depends-on:
+          # to use latest deployer's code
+          #- package-deployers-ubi
+          - deploy-platform-rhosp16.2
+      test-sanity-rhosp16.2:
+        job-name: test-sanity
+        stream: rhosp16.2
+        depends-on:
+          - deploy-tf-rhosp16.2
+      collect-logs-and-cleanup-rhosp16-2011:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp16.2
+        type: post-hook
+        depends-on:
+          - deploy-platform-rhosp16.2
+          - deploy-tf-rhosp16.2
+          - test-sanity-rhosp16.2
+
+- template:
+    name: rhosp16.1-2011
     # to use latest deployer's code
     parents:
       - build-ubi
     streams:
-      rhosp16-2011:
+      rhosp16.1-2011:
         vars:
-          OPENSTACK_VERSION: train
-          RHOSP_VERSION: rhosp16
+          ENVIRONMENT_OS: rhel82
           TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
@@ -200,10 +235,10 @@
           MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-rhosp16-2011:
-        stream: rhosp16-2011
+        stream: rhosp16.1-2011
         job-name: deploy-platform-rhosp16
       deploy-tf-rhosp16-2011:
-        stream: rhosp16-2011
+        stream: rhosp16.1-2011
         job-name: deploy-tf-rhosp16
         depends-on:
           # to use latest deployer's code
@@ -211,12 +246,12 @@
           - deploy-platform-rhosp16-2011
       test-sanity-rhosp16-2011:
         job-name: test-sanity
-        stream: rhosp16-2011
+        stream: rhosp16.1-2011
         depends-on:
           - deploy-tf-rhosp16-2011
       collect-logs-and-cleanup-rhosp16-2011:
         job-name: collect-logs-and-cleanup
-        stream: rhosp16-2011
+        stream: rhosp16.1-2011
         type: post-hook
         depends-on:
           - deploy-platform-rhosp16-2011
@@ -224,14 +259,13 @@
           - test-sanity-rhosp16-2011
 
 - template:
-    name: rhosp16-ha
+    name: rhosp16.1-ha
     parents:
       - build-ubi
     streams:
-      rhosp16-ha:
+      rhosp16.1-ha:
         vars:
-          OPENSTACK_VERSION: train
-          RHOSP_VERSION: rhosp16
+          ENVIRONMENT_OS: rhel82
           TAG_SUFFIX: "-ubi7"
           SSL_ENABLE: true
           ENABLE_RHEL_REGISTRATION: false
@@ -243,21 +277,21 @@
     jobs:
       deploy-platform-rhosp16-ha:
         job-name: deploy-platform-rhosp16
-        stream: rhosp16-ha
+        stream: rhosp16.1-ha
       deploy-tf-rhosp16-ha:
         job-name: deploy-tf-rhosp16
-        stream: rhosp16-ha
+        stream: rhosp16.1-ha
         depends-on:
           - package-ubi
           - deploy-platform-rhosp16-ha
       test-sanity-rhosp16-ha:
         job-name: test-sanity
-        stream: rhosp16-ha
+        stream: rhosp16.1-ha
         depends-on:
           - deploy-tf-rhosp16-ha
       collect-logs-and-cleanup-rhosp16-ha:
         job-name: collect-logs-and-cleanup
-        stream: rhosp16-ha
+        stream: rhosp16.1-ha
         type: post-hook
         depends-on:
           - deploy-platform-rhosp16-ha
@@ -273,8 +307,7 @@
         lock: openlab1
         vars:
           JUMPHOST: openlab1
-          ENVIRONMENT_OS: rhel7
-          RHOSP_VERSION: rhosp13
+          ENVIRONMENT_OS: rhel82
           TAG_SUFFIX: "-ubi7"
           ENABLE_RHEL_REGISTRATION: false
           ENABLE_NETWORK_ISOLATION: true
@@ -308,16 +341,15 @@
           - test-sanity-rhosp13-bmc
 
 - template:
-    name: rhosp16-bmc
+    name: rhosp16.1-bmc
     parents:
       - build-ubi
     streams:
-      rhosp16-bmc:
+      rhosp16.1-bmc:
         lock: openlab1
         vars:
           JUMPHOST: openlab1
           ENVIRONMENT_OS: rhel82
-          OPENSTACK_VERSION: train
           TAG_SUFFIX: "-ubi7"
           ENABLE_RHEL_REGISTRATION: false
           ENABLE_NETWORK_ISOLATION: true
@@ -328,22 +360,22 @@
     jobs:
       deploy-platform-rhosp16-bmc:
         job-name: deploy-platform-rhosp16
-        stream: rhosp16-bmc
+        stream: rhosp16.1-bmc
       deploy-tf-rhosp16-bmc:
         job-name: deploy-tf-rhosp16
-        stream: rhosp16-bmc
+        stream: rhosp16.1-bmc
         timeout: 240
         depends-on:
           - package-ubi
           - deploy-platform-rhosp16-bmc
       test-sanity-rhosp16-bmc:
         job-name: test-sanity
-        stream: rhosp16-bmc
+        stream: rhosp16.1-bmc
         depends-on:
           - deploy-tf-rhosp16-bmc
       collect-logs-and-cleanup-rhosp16-bmc:
         job-name: collect-logs-and-cleanup
-        stream: rhosp16-bmc
+        stream: rhosp16.1-bmc
         type: post-hook
         depends-on:
           - deploy-platform-rhosp16-bmc
@@ -351,16 +383,15 @@
           - test-sanity-rhosp16-bmc
 
 - template:
-    name: rhosp16-slave01
+    name: rhosp16.1-slave01
     parents:
       - build-ubi
     streams:
-      rhosp16-slave01:
+      rhosp16.1-slave01:
         lock: openlab3
         vars:
           DEBUG: true
           JUMPHOST: openlab3
-          OPENSTACK_VERSION: train
           ENVIRONMENT_OS: rhel82
           TAG_SUFFIX: "-ubi7"
           ENABLE_RHEL_REGISTRATION: true
@@ -368,22 +399,22 @@
     jobs:
       deploy-platform-rhosp16-slave01:
         job-name: deploy-platform-rhosp16
-        stream: rhosp16-slave01
+        stream: rhosp16.1-slave01
       deploy-tf-rhosp16-slave01:
         job-name: deploy-tf-rhosp16
-        stream: rhosp16-slave01
+        stream: rhosp16.1-slave01
         timeout: 240
         depends-on:
           - package-ubi
           - deploy-platform-rhosp16-slave01
       test-sanity-rhosp16-slave01:
         job-name: test-sanity
-        stream: rhosp16-slave01
+        stream: rhosp16.1-slave01
         depends-on:
           - deploy-tf-rhosp16-slave01
       collect-logs-and-cleanup-rhosp16-slave01:
         job-name: collect-logs-and-cleanup
-        stream: rhosp16-slave01
+        stream: rhosp16.1-slave01
         type: post-hook
         depends-on:
           - deploy-platform-rhosp16-slave01
@@ -397,8 +428,7 @@
     streams:
       rhosp13-ha:
         vars:
-          OPENSTACK_VERSION: queens
-          RHOSP_VERSION: rhosp13
+          ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: "-ubi7"
           SSL_ENABLE: true
           ENABLE_RHEL_REGISTRATION: false
@@ -438,8 +468,7 @@
     streams:
       rhosp13-ha-ziu:
         vars:
-          OPENSTACK_VERSION: queens
-          RHOSP_VERSION: rhosp13
+          ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: "-ubi7"
           SSL_ENABLE: true
           CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
@@ -486,14 +515,13 @@
           - test-sanity-rhosp13-ha-ziu
 
 - template:
-    name: rhosp16-ha-ziu
+    name: rhosp16.1-ha-ziu
     parents:
       - build-ubi
     streams:
-      rhosp16-ha-ziu:
+      rhosp16.1-ha-ziu:
         vars:
-          OPENSTACK_VERSION: train
-          RHOSP_VERSION: rhosp16
+          ENVIRONMENT_OS: rhel82
           TAG_SUFFIX: "-ubi7"
           SSL_ENABLE: true
           CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
@@ -506,15 +534,15 @@
           MONITORING_ORCHESTRATOR: os
     jobs:
       deploy-platform-rhosp16-ha-ziu:
-        stream: rhosp16-ha-ziu
+        stream: rhosp16.1-ha-ziu
         job-name: deploy-platform-rhosp16
       deploy-tf-rhosp16-ha-ziu:
-        stream: rhosp16-ha-ziu
+        stream: rhosp16.1-ha-ziu
         job-name: deploy-tf-rhosp16
         depends-on:
           - deploy-platform-rhosp16-ha-ziu
       test-deployment-rhosp16-ha-ziu:
-        stream: rhosp16-ha-ziu
+        stream: rhosp16.1-ha-ziu
         job-name: test-deployment
         timeout: 240
         vars:
@@ -525,14 +553,14 @@
           - deploy-tf-rhosp16-ha-ziu
       test-sanity-rhosp16-ha-ziu:
         job-name: test-sanity
-        stream: rhosp16-ha-ziu
+        stream: rhosp16.1-ha-ziu
         vars:
           TF_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/contrail-test-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
           - test-deployment-rhosp16-ha-ziu
       collect-logs-and-cleanup-rhosp16-ha-ziu:
         job-name: collect-logs-and-cleanup
-        stream: rhosp16-ha-ziu
+        stream: rhosp16.1-ha-ziu
         type: post-hook
         depends-on:
           - deploy-platform-rhosp16-ha-ziu

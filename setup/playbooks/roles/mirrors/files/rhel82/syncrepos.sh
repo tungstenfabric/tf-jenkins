@@ -26,7 +26,7 @@ function retry() {
 }
 
 if [[ -n ${RHEL_USER+x} && -n ${RHEL_PASSWORD+x} && -n ${RHEL_POOL_ID+x} ]]; then
-  subscription-manager register --name=rhel8repomirror --username=$RHEL_USER --password=$RHEL_PASSWORD
+  subscription-manager register --name=rhel82repomirror --username=$RHEL_USER --password=$RHEL_PASSWORD
 else
   echo "ERROR: No RedHat subscription credentials provided, exiting"
   exit 1
@@ -41,7 +41,7 @@ subscription-manager release --set=8.2
 yum repolist
 yum install -y yum-utils createrepo
 
-for repo in "rhel8" "ubi8" ; do
+for repo in "rhel82" "ubi82" ; do
   if [ ! -d ${MIRRORDIR}/$repo/${DATE} ]; then
     mkdir -p ${MIRRORDIR}/$repo/${DATE}
     if [ -d ${MIRRORDIR}/$repo/latest ]; then
@@ -54,16 +54,16 @@ done
 
 for r in ${REPOS_RH8[@]}; do
   subscription-manager repos --enable=${r}
-  retry reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/rhel8/${DATE}
-  #createrepo -v ${MIRRORDIR}/rhel8/${DATE}/${r}/
+  retry reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/rhel82/${DATE}
+  #createrepo -v ${MIRRORDIR}/rhel82/${DATE}/${r}/
 done
 
 for r in ${REPOS_UBI8[@]}; do
-  reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/ubi8/${DATE}
-  #createrepo -v ${MIRRORDIR}/ubi8/${DATE}/${r}/
+  reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/ubi82/${DATE}
+  #createrepo -v ${MIRRORDIR}/ubi82/${DATE}/${r}/
 done
 
-for repo in "rhel8" "ubi8" ; do
+for repo in "rhel82" "ubi82" ; do
   pushd ${MIRRORDIR}/$repo
   rm -f stage
   ln -s ${DATE} stage
