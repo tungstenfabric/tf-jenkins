@@ -3,10 +3,60 @@
 - job-template:
     name: "test-unit-{target}"
     description: "unit tests of {target}"
-    defaults: global-with-creds-for-pipeline
+    defaults: global
     scm:
       - tf-jenkins
       - tf-dev-env
+    parameters:
+      - label:
+          name: NODE_NAME
+      - string:
+          name: STREAM 
+      - string:
+          name: JOB_RND
+      - string:
+          name: PIPELINE_NAME
+      - string:
+          name: PIPELINE_NUMBER
+    wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - amazon-web-services:
+              credential-id: aws-creds
+              access-key: AWS_ACCESS_KEY_ID
+              secret-key: AWS_SECRET_ACCESS_KEY
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: logs_host
+              key-file-variable: LOGS_HOST_SSH_KEY
+              username-variable: LOGS_HOST_USERNAME
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
     builders:
       - copyartifact:
           project: ${{PIPELINE_NAME}}

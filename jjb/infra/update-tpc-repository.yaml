@@ -3,7 +3,7 @@
 - job:
     name: "update-tpc-source-repository"
     description: "Update tpc-source repository from tf-third-party-packages"
-    defaults: global-with-creds
+    defaults: global
     properties:
       - build-discarder:
           num-to-keep: 30
@@ -13,7 +13,39 @@
       - tf-jenkins
       - tf-dev-env
     wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
       - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
+      - credentials-binding:
+          - amazon-web-services:
+              credential-id: aws-creds
+              access-key: AWS_ACCESS_KEY_ID
+              secret-key: AWS_SECRET_ACCESS_KEY
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
           - text:
               credential-id: TPC_REPO_USER
               variable: TPC_REPO_USER
