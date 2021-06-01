@@ -1,9 +1,0 @@
----
-# Mandatory vars
-# aqua_cloud_user:
-# aqua_cloud_password:
-# aqua_license:
-aqua_admin_password: very_secret_password
-aqua_scanner_user: scanner
-aqua_scanner_pass: scannerpass
-aqua_db_password: aqua_db_pass

@@ -83,7 +83,11 @@ all:
     openshift_pull_secret: |
       some json from https://cloud.redhat.com/openshift/install/pull-secret
 
-    aquascanner_user: "aquascanner_user"
-    aquascanner_password: "aquascanner_password"
-    aquasec_user: "aquasec_user"
-    aquasec_password: "aquasec_password"
+    aqua_admin_password: "somepassword"
+    aqua_db_password: "somepassword"
+    aqua_cloud_user: "some@email"
+    aqua_cloud_password: "somepassword"
+    aqua_scanner_user: "user"
+    aqua_scanner_pass: "somepassword"
+    aqua_scanner_version: "4.2"
+    aqua_license: "licence-base64-string"
