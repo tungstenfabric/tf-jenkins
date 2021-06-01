@@ -7,8 +7,6 @@
           num-to-keep: 30
     node: master
     wrappers:
-        - workspace-cleanup:
-            disable-deferred-wipeout: true
         - credentials-binding:
           - username-password-separated:
               credential-id: self-jenkins
