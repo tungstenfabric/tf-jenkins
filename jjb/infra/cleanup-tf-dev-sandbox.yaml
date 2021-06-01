@@ -9,6 +9,9 @@
     scm:
       - tf-jenkins
     wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: logs_host

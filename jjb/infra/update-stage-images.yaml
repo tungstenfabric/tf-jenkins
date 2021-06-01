@@ -3,12 +3,32 @@
 - job:
     name: update-stage-images
     description: "Update staged docker images"
-    defaults: global-with-creds-for-pipeline
+    defaults: global
     concurrent: false
     scm:
       - tf-jenkins
       - tf-dev-env
+    parameters:
+      - label:
+          name: NODE_NAME
+      - string:
+          name: STREAM
+      - string:
+          name: JOB_RND
+      - string:
+          name: PIPELINE_NAME
+      - string:
+          name: PIPELINE_NUMBER
     wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: tf-mirrors
@@ -17,11 +37,30 @@
               passphrase-variable: REPOUPDATER_PASSPHRASE
       - credentials-binding:
           - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
+          - text:
               credential-id: RHEL_USER
               variable: RHEL_USER
           - text:
               credential-id: RHEL_PASSWORD
               variable: RHEL_PASSWORD
+
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
@@ -73,12 +112,32 @@
 - job:
     name: publish-stage-images
     description: "Publish staged images"
-    defaults: global-with-creds-for-pipeline
+    defaults: global
     concurrent: false
     scm:
       - tf-jenkins
       - tf-dev-env
+    parameters:
+      - label:
+          name: NODE_NAME
+      - string:
+          name: STREAM
+      - string:
+          name: JOB_RND
+      - string:
+          name: PIPELINE_NAME
+      - string:
+          name: PIPELINE_NUMBER
     wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+      - credentials-binding:
+          - ssh-user-private-key:
+              credential-id: worker
+              key-file-variable: WORKER_SSH_KEY
+              username-variable: WORKER_USER_NAME
+              passphrase-variable: WORKER_PASSPHRASE
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: tf-mirrors
@@ -86,6 +145,24 @@
               username-variable: REPOUPDATER_USER_NAME
               passphrase-variable: REPOUPDATER_PASSPHRASE
       - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
           - text:
               credential-id: RHEL_USER
               variable: RHEL_USER

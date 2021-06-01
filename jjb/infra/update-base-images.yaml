@@ -1,7 +1,7 @@
 - job:
     name: "update-base-images"
     description: "update-base-images"
-    defaults: global-with-creds
+    defaults: global
     properties:
       - build-discarder:
           num-to-keep: 30
@@ -23,6 +23,29 @@
           description: "Image type for update or ALL(default)"
     scm:
       - tf-jenkins
+    wrappers:
+      - workspace-cleanup:
+          disable-deferred-wipeout: true
+      - timestamps
+      - credentials-binding:
+          - text:
+              credential-id: VEXX_OS_USERNAME
+              variable: OS_USERNAME
+          - text:
+              credential-id: VEXX_OS_PROJECT_NAME
+              variable: OS_PROJECT_NAME
+          - text:
+              credential-id: VEXX_OS_PASSWORD
+              variable: OS_PASSWORD
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_USER_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_DOMAIN_NAME
+              variable: OS_PROJECT_DOMAIN_NAME
+          - text:
+              credential-id: VEXX_OS_AUTH_URL
+              variable: OS_AUTH_URL
     builders:
       - shell: |
           echo "DESCRIPTION Image type=$IMAGE_TYPE"
