@@ -1,4 +1,5 @@
 ---
+
 - job-template:
     name: deploy-platform-{project}
     description: "devstack deploy platform for {project}"

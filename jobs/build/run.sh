@@ -159,6 +159,14 @@ if [[ "$STAGE" == "fetch" ]]; then
   echo "export UNITTEST_TARGETS=$(cat $WORKSPACE/unittest_targets.lst | tr '\n' ',')" >> build.env
 fi
 
+# hack to not re-push just pulled tf-dev-sandbox:stable
+if [[ "$PUBLISH_TYPE" == 'stable' ]]; then
+  if ! $ssh_cmd find output/logs | grep -q "build-tf-dev-env.log" ; then
+    echo "INFO: build log of tf-dev-sandbox:stable is not found - skipping publishing"
+    PUBLISH_TYPE=""
+  fi
+fi
+
 if [[ -n "$PUBLISH_TYPE" ]]; then
   if [[ "$PUBLISH_TYPE" == 'stable' ]]; then
     tag="$DEVENV_TAG"
