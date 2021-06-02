@@ -9,7 +9,7 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 source "$my_dir/../../infra/${SLAVE}/functions.sh"
 
-AQUASEC_HOST_IP=$(get_instance_ip tf-aquascan.$SLAVE_REGION.$CI_DOMAIN)
+AQUASEC_HOST="tf-aquascan.$SLAVE_REGION.$CI_DOMAIN"
 SCAN_REPORTS_STASH=/tmp/scan_reports
 
 env_file="$WORKSPACE/scan.env"
@@ -19,7 +19,7 @@ CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 DEVENV_IMAGE_NAME=tf-dev-sandbox
 SCAN_REPORTS_STASH=${SCAN_REPORTS_STASH}
 SCAN_THRESHOLD=9.8
-AQUASEC_HOST_IP=$AQUASEC_HOST_IP
+AQUASEC_HOST=$AQUASEC_HOST
 AQUASEC_VERSION=4.6
 AQUASEC_REGISTRY=registry.aquasec.com
 AQUASEC_REGISTRY_USER=$AQUASEC_USERNAME
@@ -28,10 +28,10 @@ SCANNER_USER=$AQUASEC_SCANNER_USERNAME
 SCANNER_PASSWORD=$AQUASEC_SCANNER_PASSWORD
 EOF
 
-scp -i $WORKER_SSH_KEY $SSH_OPTIONS $env_file $my_dir/{scan.sh,excel.py,new_cves.py} $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:
+scp -i $WORKER_SSH_KEY $SSH_OPTIONS $env_file $my_dir/{scan.sh,excel.py,new_cves.py} $AQUASEC_HOST_USERNAME@$AQUASEC_HOST:
 
 echo "INFO: Prepare the Aquasec environment"
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST
 export WORKSPACE=\$HOME
 [ "${DEBUG,,}" == "true" ] && set -x
 export PATH=\$PATH:/usr/sbin
@@ -53,7 +53,7 @@ echo "INFO: Start scanning containers"
 suffix=$(date --utc +"%Y-%m-%dT%H-%M-%S")
 scan_report=aquasec-report-${suffix}.xlsx
 new_cves_report=aquasec-new-cves-${suffix}.xlsx
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP
+cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST
 export WORKSPACE=\$HOME
 source ./scan.env
 if sudo -E ./scan.sh; then
@@ -70,8 +70,8 @@ if sudo -E ./scan.sh; then
   sudo -E python ./excel.py -i \${SCAN_REPORTS_STASH} -o $scan_report
 fi
 EOF
-rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:$scan_report . || true
-rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST_IP:$new_cves_report . 2>/dev/null || true
+rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST:$scan_report . || true
+rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST:$new_cves_report . 2>/dev/null || true
 if [ -e ${new_cves_report} ]; then
   echo "ERROR: new CVE-s are detected: ${FULL_LOGS_URL}/${new_cves_report}"
   exit 1

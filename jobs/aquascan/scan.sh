@@ -102,7 +102,7 @@ function parse_scan_results() {
 
 function do_scan() {
 	local r=$1
-	local a=$AQUASEC_HOST_IP
+	local a=$AQUASEC_HOST
 
 	for n in $(pull_eligible_image_names $r); do
 		local i="${CONTAINER_REGISTRY}/$n:${CONTAINER_TAG}"
