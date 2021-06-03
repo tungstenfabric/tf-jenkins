@@ -161,7 +161,7 @@ fi
 
 # hack to not re-push just pulled tf-dev-sandbox:stable
 if [[ "$PUBLISH_TYPE" == 'stable' ]]; then
-  if ! $ssh_cmd find output/logs | grep -q "build-tf-dev-env.log" ; then
+  if ! $ssh_cmd $IMAGE_SSH_USER@$instance_ip "find output/logs" | grep -q "build-tf-dev-env.log" ; then
     echo "INFO: build log of tf-dev-sandbox:stable is not found - skipping publishing"
     PUBLISH_TYPE=""
   fi
