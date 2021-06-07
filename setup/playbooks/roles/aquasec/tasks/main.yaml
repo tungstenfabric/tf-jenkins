@@ -14,6 +14,14 @@
     - /opt/aquasec
     - /opt/aquasec/aqua-db
     - /opt/aquasec/tmp
+    - "/home/{{ ansible_ssh_user }}/.ssh"
+
+- name: "collect {{ ssh_keys_dir }}/worker_rsa.pub' ssh key"
+  set_fact:
+    worker_pubkey: "{{ lookup('file', '{{ ssh_keys_dir }}/worker_rsa.pub') }}"
+
+- name: add worker public ssh key to worker's authorized_keys
+  shell: "echo {{ worker_pubkey }} >> /home/{{ ansible_ssh_user }}/.ssh/authorized_keys"
 
 - name: login into aquasec docker repo
   command: docker login registry.aquasec.com -u '{{ aqua_cloud_user }}' -p '{{ aqua_cloud_password }}'
