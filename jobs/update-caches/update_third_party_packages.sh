@@ -62,7 +62,10 @@ CACHE_DIR="$(pwd)/tpc-binary"
 mkdir -p $CACHE_DIR
 pushd $CACHE_DIR
 
+# archived packages
 kernels="
+  https://vault.centos.org/7.6.1810/updates/x86_64/Packages/kernel-3.10.0-957.12.2.el7.x86_64.rpm
+  https://vault.centos.org/7.6.1810/updates/x86_64/Packages/kernel-devel-3.10.0-957.12.2.el7.x86_64.rpm
   https://vault.centos.org/7.7.1908/os/x86_64/Packages/kernel-3.10.0-1062.el7.x86_64.rpm
   https://vault.centos.org/7.7.1908/os/x86_64/Packages/kernel-devel-3.10.0-1062.el7.x86_64.rpm
   https://vault.centos.org/7.7.1908/updates/x86_64/Packages/kernel-3.10.0-1062.4.1.el7.x86_64.rpm
@@ -78,6 +81,12 @@ kernels="
   https://vault.centos.org/8.2.2004/BaseOS/x86_64/os/Packages/kernel-4.18.0-193.28.1.el8_2.x86_64.rpm
   https://vault.centos.org/8.2.2004/BaseOS/x86_64/os/Packages/kernel-core-4.18.0-193.28.1.el8_2.x86_64.rpm
   https://vault.centos.org/8.2.2004/BaseOS/x86_64/os/Packages/kernel-devel-4.18.0-193.28.1.el8_2.x86_64.rpm
+"
+
+# current packages - should be taken from archive after new release
+kernel+="
+  http://mirror.centos.org/centos/7/updates/x86_64/Packages/kernel-3.10.0-1160.25.1.el7.x86_64.rpm
+  http://mirror.centos.org/centos/7/updates/x86_64/Packages/kernel-devel-3.10.0-1160.25.1.el7.x86_64.rpm
 "
 
 for kernel in $kernels ; do
