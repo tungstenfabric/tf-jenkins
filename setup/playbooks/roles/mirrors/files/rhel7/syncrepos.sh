@@ -41,7 +41,9 @@ for repo in "rhel7" "ubi7" ; do
   if [ ! -d ${MIRRORDIR}/$repo/${DATE} ]; then
     mkdir -p ${MIRRORDIR}/$repo/${DATE}
     if [ -d ${MIRRORDIR}/$repo/latest ]; then
+      echo "INFO: Copying current latest for repo $repo to stage to speed up reposync"
       cp -R ${MIRRORDIR}/$repo/latest/* ${MIRRORDIR}/$repo/${DATE}/
+      echo "INFO: Copied"
     fi
   fi
 done
