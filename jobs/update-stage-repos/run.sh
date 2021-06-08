@@ -10,8 +10,13 @@ if [ -z ${REPOS_TYPE} ]; then
   exit 1
 fi
 
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
+
 cat <<EOF | ssh -i $REPOUPDATER_SSH_KEY $SSH_OPTIONS $REPOUPDATER_USER_NAME@tf-mirrors.$SLAVE_REGION.$CI_DOMAIN
 export SLAVE_REGION=$SLAVE_REGION
 export CI_DOMAIN=$CI_DOMAIN
-sudo -E /opt/mirrors/sync.sh ${REPOS_TYPE}
+export RHEL_USER="$RHEL_USER"
+export RHEL_PASSWORD="$RHEL_PASSWORD"
+export RHEL_POOL_ID="$RHEL_POOL_ID"
+./src/tungstenfabric/tf-jenkins/jobs/update-stage-images/sync.sh ${REPOS_TYPE}
 EOF

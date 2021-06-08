@@ -136,15 +136,6 @@
     volumes:
       - /var/local/mirror/registry5005:/var/lib/registry
 
-- name: Copy management scripts
-  copy:
-    src: "files/{{ item }}"
-    dest: "/opt/mirrors/{{ item }}"
-    mode: 0755
-  with_items:
-    - sync.sh
-    - publish_stage.sh
-
 - name: Make sure we have a 'wheel' group
   group:
     name: wheel
@@ -164,11 +155,6 @@
     group: wheel
     state: present
     createhome: yes
-
-- name: store RHEL credentials
-  template:
-    src: rhpwd.j2
-    dest: /root/rhpwd
 
 - name: set up authorized key
   authorized_key:

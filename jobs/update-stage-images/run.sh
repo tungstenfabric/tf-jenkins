@@ -13,15 +13,13 @@ if [ -z ${REPOS_TYPE} ]; then
   exit 1
 fi
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" {$WORKSPACE/src,$my_dir/*} $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"}
 
 echo "INFO: update images started"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 #!/bin/bash -e
-echo "export RHEL_USER=$RHEL_USER" > rhel-account
-echo "export RHEL_PASSWORD=$RHEL_PASSWORD" >> rhel-account
 
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
@@ -30,13 +28,14 @@ export SLAVE_REGION=$SLAVE_REGION
 export CI_DOMAIN=$CI_DOMAIN
 export REPOS_TYPE=$REPOS_TYPE
 export PATH=\$PATH:/usr/sbin
-
+export RHEL_USER=$RHEL_USER
+export RHEL_PASSWORD=$RHEL_PASSWORD
 export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
-./src/tungstenfabric/tf-dev-env/common/setup_docker.sh
 
+./src/tungstenfabric/tf-dev-env/common/setup_docker.sh
 echo "INFO: cat /etc/docker/daemon.json"
 cat /etc/docker/daemon.json
 
-./update_docker_images.sh
+./src/tungstenfabric/tf-jenkins/jobs/update-stage-images/update_docker_images.sh
 EOF
 echo "INFO: Update docker images is finished for $REPOS_TYPE"

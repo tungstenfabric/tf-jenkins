@@ -4,15 +4,12 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
 if [[ -z ${REPOS_TYPE} ]]; then
-   echo "REPOS_TYPE is not defined. Exit"
-   exit 1
+  echo "ERROR: REPOS_TYPE is not defined. Exit"
+  exit 1
 fi
 
 [ -f $my_dir/${REPOS_TYPE}.env ] || exit 1 
 source $my_dir/${REPOS_TYPE}.env
-
-
-[ -f $my_dir/rhel-account ] && source $my_dir/rhel-account
 
 MIRROR_REGISTRY=${MIRROR_REGISTRY:-"tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"}
 
@@ -27,7 +24,7 @@ function retry() {
     sleep 5
   done
   if [[ $i == 5 ]]; then
-    echo ERROR. COMMAND FAILE AFTER 5 retries: $@
+    echo "ERROR. COMMAND FAILE AFTER 5 retries: $@"
     exit 1
   fi
 }
@@ -49,6 +46,7 @@ if [[ -n "$RHEL_USER" && "$RHEL_PASSWORD" ]] ; then
   echo "INFO: login to docker registry $REDHAT_REGISTRY"
   sudo docker login -u $RHEL_USER -p $RHEL_PASSWORD "https://$REDHAT_REGISTRY" || {
     echo "ERROR: failed to login "
+    exit 1
   }
 else
   echo "ERROR: No RedHat credentials. Please define variables RHEL_USER and RHEL_PASSWORD. Exiting..."

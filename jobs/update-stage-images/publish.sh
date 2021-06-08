@@ -13,7 +13,7 @@ if [ -z ${REPOS_TYPE} ]; then
   exit 1
 fi
 
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" {$WORKSPACE/src,$my_dir/*} $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 export CONTAINER_REGISTRY=${CONTAINER_REGISTRY:-"tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"}
 
@@ -35,6 +35,6 @@ export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
 echo "INFO: cat /etc/docker/daemon.json"
 cat /etc/docker/daemon.json
 
-./publish_docker_images.sh
+./src/tungstenfabric/tf-jenkins/jobs/update-stage-images/publish_docker_images.sh
 EOF
 echo "INFO: Publishing docker images is finished for $REPOS_TYPE"

@@ -114,6 +114,8 @@
         prepare-sandbox-centos:
           depends-on:
             - update-stage-repos-centos7
+          vars:
+            DEVENV_TAG: stage-centos7-$RANDOM
         deploy-platform-ansible-os:
           depends-on:
             - update-stage-repos-centos7
@@ -158,6 +160,8 @@
           depends-on:
             - update-stage-repos-rhel7
             - update-stage-images-rhel7
+          vars:
+            DEVENV_TAG: stage-rhel7-$RANDOM
         deploy-platform-rhosp13:
           depends-on:
             - update-stage-repos-rhel7
@@ -203,6 +207,8 @@
           depends-on:
             - update-stage-repos-rhel8
             - update-stage-images-rhel8
+          vars:
+            DEVENV_TAG: stage-rhel8-$RANDOM
         deploy-platform-rhosp16:
           depends-on:
             - update-stage-repos-rhel8

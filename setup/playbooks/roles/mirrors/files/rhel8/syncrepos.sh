@@ -20,16 +20,15 @@ function retry() {
     echo "RETRYING COMMAND (time=$i out of 5)"
   done
   if [[ $i == 5 ]]; then
-    echo "COMMAND FAILED AFTER 5 tries: $@"
-    echo ABORTING
+    echo "ERROR: COMMAND FAILED AFTER 5 tries: $@"
     exit 1
   fi
 }
 
-if [[ ! -z ${RHEL_USER+x} && ! -z ${RHEL_PASSWORD+x} && ! -z ${RHEL_POOL_ID+x} ]]; then
+if [[ -n ${RHEL_USER+x} && -n ${RHEL_PASSWORD+x} && -n ${RHEL_POOL_ID+x} ]]; then
   subscription-manager register --name=rhel8repomirror --username=$RHEL_USER --password=$RHEL_PASSWORD
 else
-  echo "No RedHat subscription credentials provided, exiting"
+  echo "ERROR: No RedHat subscription credentials provided, exiting"
   exit 1
 fi
 
