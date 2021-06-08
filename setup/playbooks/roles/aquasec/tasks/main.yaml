@@ -23,6 +23,11 @@
 - name: add worker public ssh key to worker's authorized_keys
   shell: "echo {{ worker_pubkey }} >> /home/{{ ansible_ssh_user }}/.ssh/authorized_keys"
 
+- name: install required python packages
+  pip:
+    name: xlsxwriter
+    state: present
+
 - name: login into aquasec docker repo
   command: docker login registry.aquasec.com -u '{{ aqua_cloud_user }}' -p '{{ aqua_cloud_password }}'
   no_log: yes

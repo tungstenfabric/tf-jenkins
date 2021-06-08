@@ -39,6 +39,8 @@ def addVulnerability(data_, sink_, lineno_):
 def addVulnerabilities(source_, builder_):
   with open(source_) as f:
     d = json.load(f)
+    if not 'resources' in d.keys():
+        return
     for r in filter(lambda r_: 'vulnerabilities' in r_,  d['resources']):
       for v in r['vulnerabilities']:
         x = {}
@@ -117,4 +119,3 @@ def main():
 
 if __name__ == "__main__":
   main()
-
