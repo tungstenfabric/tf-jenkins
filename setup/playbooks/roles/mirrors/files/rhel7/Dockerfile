@@ -1,4 +1,3 @@
-FROM registry.access.redhat.com/rhel7
-ADD repos/* /etc/yum.repos.d/
+FROM registry.access.redhat.com/ubi7/ubi
 ADD syncrepos.sh /syncrepos.sh
 CMD /syncrepos.sh

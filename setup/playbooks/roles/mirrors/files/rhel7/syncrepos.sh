@@ -1,7 +1,5 @@
 #!/bin/bash -e
 
-RHUSERNAME=${RHUSERNAME:-}
-RHPASSWORD=${RHPASSWORD:-}
 REPOS_RH7=(rhel-7-server-rpms rhel-7-server-optional-rpms rhel-7-server-extras-rpms rhel-7-server-openstack-13-rpms rhel-7-server-openstack-13-devtools-rpms rhel-7-server-ansible-2.6-rpms rhel-7-fast-datapath-rpms rhel-server-rhscl-7-rpms rhel-ha-for-rhel-7-server-rpms rhel-7-server-rhceph-3-tools-rpms)
 REPOS_UBI7=(ubi-7 ubi-7-server-debug-rpms ubi-7-server-source-rpms ubi-7-server-optional-rpms ubi-7-server-optional-debug-rpms ubi-7-server-optional-source-rpms ubi-7-server-extras-rpms ubi-7-server-extras-debug-rpms ubi-7-server-extras-source-rpms ubi-7-rhah ubi-7-rhah-debug ubi-7-rhah-source ubi-server-rhscl-7-rpms ubi-server-rhscl-7-debug-rpms ubi-server-rhscl-7-source-rpms ubi-7-server-devtools-rpms ubi-7-server-devtools-debug-rpms ubi-7-server-devtools-source-rpms)
 MIRRORDIR=/repos
