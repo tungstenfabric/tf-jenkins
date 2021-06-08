@@ -26,7 +26,6 @@ function retry() {
   fi
 }
 
-
 if [[ ! -z ${RHEL_USER+x} && ! -z ${RHEL_PASSWORD+x} && ! -z ${RHEL_POOL_ID+x} ]]; then
   subscription-manager register --name=rhel8repomirror --username=$RHEL_USER --password=$RHEL_PASSWORD
 else
@@ -43,6 +42,14 @@ subscription-manager release --set=8.2
 yum repolist
 yum install -y yum-utils createrepo
 
+for repo in "rhel8" "ubi8" ; do
+  if [ ! -d ${MIRRORDIR}/$repo/${DATE} ]; then
+    mkdir -p ${MIRRORDIR}/$repo/${DATE}
+    if [ -d ${MIRRORDIR}/$repo/latest ]; then
+      cp -R ${MIRRORDIR}/$repo/latest/* ${MIRRORDIR}/$repo/${DATE}/
+    fi
+  fi
+done
 
 for r in ${REPOS_RH8[@]}; do
   subscription-manager repos --enable=${r}
@@ -50,17 +57,14 @@ for r in ${REPOS_RH8[@]}; do
   #createrepo -v ${MIRRORDIR}/rhel8/${DATE}/${r}/
 done
 
-pushd ${MIRRORDIR}/rhel8
-rm -f stage
-ln -s ${DATE} stage
-popd
-
 for r in ${REPOS_UBI8[@]}; do
   reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/ubi8/${DATE}
   #createrepo -v ${MIRRORDIR}/ubi8/${DATE}/${r}/
 done
 
-pushd ${MIRRORDIR}/ubi8
-rm -f stage
-ln -s ${DATE} stage
-popd
+for repo in "rhel8" "ubi8" ; do
+  pushd ${MIRRORDIR}/$repo
+  rm -f stage
+  ln -s ${DATE} stage
+  popd
+done

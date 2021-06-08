@@ -40,6 +40,14 @@ subscription-manager attach --pool=$RHEL_POOL_ID
 yum repolist
 yum install -y yum-utils createrepo
 
+for repo in "rhel7" "ubi7" ; do
+  if [ ! -d ${MIRRORDIR}/$repo/${DATE} ]; then
+    mkdir -p ${MIRRORDIR}/$repo/${DATE}
+    if [ -d ${MIRRORDIR}/$repo/latest ]; then
+      cp -R ${MIRRORDIR}/$repo/latest/* ${MIRRORDIR}/$repo/${DATE}/
+    fi
+  fi
+done
 
 for r in ${REPOS_RH7[@]}; do
   subscription-manager repos --enable=${r}
@@ -47,17 +55,14 @@ for r in ${REPOS_RH7[@]}; do
   createrepo -v ${MIRRORDIR}/rhel7/${DATE}/${r}/
 done
 
-pushd ${MIRRORDIR}/rhel7
-rm -f stage
-ln -s ${DATE} stage
-popd
-
 for r in ${REPOS_UBI7[@]}; do
   retry reposync -l --repoid=${r} --download-metadata --downloadcomps --download_path=${MIRRORDIR}/ubi7/${DATE}
   createrepo -v ${MIRRORDIR}/ubi7/${DATE}/${r}/
 done
 
-pushd ${MIRRORDIR}/ubi7
-rm -f stage
-ln -s ${DATE} stage
-popd
+for repo in "rhel7" "ubi7" ; do
+  pushd ${MIRRORDIR}/$repo
+  rm -f stage
+  ln -s ${DATE} stage
+  popd
+done
