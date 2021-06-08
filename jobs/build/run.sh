@@ -12,7 +12,7 @@ if [[ "$STAGE" == 'freeze' ]] && [[ "$GERRIT_PIPELINE" != 'gate' || "$GERRIT_BRA
   echo "INFO: Freeze works only for gate pipeline and for master branch"
   exit
 fi
-if [[ "$STAGE" == 'none' ]] && [[ ("$GERRIT_PIPELINE" != 'check' && "$GERRIT_PIPELINE" != 'templates') || "$GERRIT_BRANCH" != 'master' ]]; then
+if [[ "$DEVENV_TAG" == 'frozen' ]] && [[ "$STAGE" == 'none' ]] && [[ ("$GERRIT_PIPELINE" != 'check' && "$GERRIT_PIPELINE" != 'templates') || "$GERRIT_BRANCH" != 'master' ]]; then
   # use frozen only for check pipeline
   unset DEVENV_TAG
 fi
