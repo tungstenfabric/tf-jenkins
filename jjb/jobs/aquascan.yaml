@@ -65,7 +65,7 @@
     builders:
       - copyartifact:
           project: ${PIPELINE_NAME}
-          filter: "global.env,*.$JOB_RND.env"
+          filter: "global.env,*.$JOB_RND.env,patchsets-info.json"
           which-build: upstream-build
           optional: true
       - shell: |
