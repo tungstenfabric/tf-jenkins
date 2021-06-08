@@ -11,7 +11,7 @@ if [ -z ${REPOS_TYPE} ]; then
 fi
 
 dest="$REPOUPDATER_USER_NAME@tf-mirrors.$SLAVE_REGION.$CI_DOMAIN"
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $dest:./
+rsync -a -e "ssh -i $REPOUPDATER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $dest:./
 
 cat <<EOF | ssh -i $REPOUPDATER_SSH_KEY $SSH_OPTIONS $dest
 export SLAVE_REGION=$SLAVE_REGION
