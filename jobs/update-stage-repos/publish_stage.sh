@@ -17,7 +17,7 @@ for repo in ${REPOS[$1]} ; do
         old_latest=$(readlink latest)
     fi
     sudo rm -f latest || /bin/true
-    sudo ln -s ${NEWLATEST} latest
+    sudo ln -s ${new_latest} latest
     if [[ -n "$old_latest" ]]; then
         sudo rm -rf $old_latest
     fi
