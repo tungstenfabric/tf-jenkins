@@ -16,10 +16,6 @@
         - ansible-k8s-ha
         - ansible-os
         - ansible-os-ha-ziu
-        - helm-k8s
-        - helm-k8s-ha
-        - helm-os
-        - helm-os-ha
         - juju-k8s
         - juju-os
         - juju-os-maas
@@ -65,10 +61,6 @@
           vars:
             DEBUGINFO: TRUE
         # additional schedule for some streams
-        helm-k8s:
-          frequency: 7
-        helm-os:
-          frequency: 7
         ansible-k8s:
           frequency: 7
         juju-os-1912:
@@ -88,12 +80,6 @@
           lock: group-two-ha
         juju-hybrid-ha:
           lock: group-two-ha
-        helm-k8s-ha:
-          frequency: 7
-          lock: group-one-ha
-        helm-os-ha:
-          frequency: 7
-          lock: group-one-ha
         ansible-os-ha:
           lock: group-one-ha
         ansible-os-ha-ziu:
