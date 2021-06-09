@@ -46,12 +46,10 @@
           - text:
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL
-          - text:
-              credential-id: TPC_REPO_USER
-              variable: TPC_REPO_USER
-          - text:
-              credential-id: TPC_REPO_PASS
-              variable: TPC_REPO_PASS
+          - username-password-separated:
+              credential-id: tpc-repo
+              username: TPC_REPO_USER
+              password: TPC_REPO_PASS
     builders:
       - shell: |
           # individual job - create global.env

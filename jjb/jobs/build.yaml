@@ -52,12 +52,10 @@
           - text:
               credential-id: VEXX_OS_AUTH_URL
               variable: OS_AUTH_URL
-          - text:
-              credential-id: RHEL_USER
-              variable: RHEL_USER
-          - text:
-              credential-id: RHEL_PASSWORD
-              variable: RHEL_PASSWORD
+          - username-password-separated:
+              credential-id: rhel-creds
+              username: RHEL_USER
+              password: RHEL_PASSWORD
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: logs_host
