@@ -18,17 +18,11 @@ export RHOSP_VERSION
 
 echo "# env file created by Jenkins" > "$stackrc_file_path"
 echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" >> "$stackrc_file_path"
+echo "export RHEL_POOL_ID=$RHEL_POOL_ID" >> "$stackrc_file_path"
 echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
 if [[ "$ENABLE_RHEL_REGISTRATION" == 'true' ]] ; then
-  cat << EOF >> "$stackrc_file_path"
-state="\$(set +o)"
-[[ "\$-" =~ e ]] && state+="; set -e"
-set +x
-export RHEL_USER="$RHEL_USER"
-export RHEL_PASSWORD="$RHEL_PASSWORD"
-export RHEL_POOL_ID="$RHEL_POOL_ID"
-eval "\$state"
-EOF
+  echo "export RHEL_USER=$RHEL_USER" >> "$stackrc_file_path"
+  echo "export RHEL_PASSWORD=$RHEL_PASSWORD" >> "$stackrc_file_path"
 fi
 echo "export ENABLE_NETWORK_ISOLATION=$ENABLE_NETWORK_ISOLATION" >> "$stackrc_file_path"
 echo "export OPENSTACK_CONTAINER_REGISTRY=$OPENSTACK_CONTAINER_REGISTRY" >> "$stackrc_file_path"

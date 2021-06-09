@@ -58,9 +58,6 @@
           - text:
               credential-id: RHEL_PASSWORD
               variable: RHEL_PASSWORD
-          - text:
-              credential-id: RHEL_POOL_ID
-              variable: RHEL_POOL_ID
       - credentials-binding:
           - ssh-user-private-key:
               credential-id: logs_host

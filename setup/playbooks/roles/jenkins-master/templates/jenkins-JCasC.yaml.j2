@@ -73,6 +73,8 @@ jenkins:
               value: "{{ hostvars[host].default_network }}"
             - key: "OS_SG"
               value: "default"
+            - key: "RHEL_POOL_ID"
+              value: "{{ rhel_pool_id | default('NotDefined') }}"
 {% endfor %}
 {% endif %}
 {% endif %}
