@@ -25,6 +25,11 @@
         stream: operator
         depends-on:
           - deploy-tf-operator
+      test-deployment-operator:
+        job-name: test-deployment
+        stream: operator
+        depends-on:
+          - test-sanity-operator
       collect-logs-and-cleanup-operator:
         job-name: collect-logs-and-cleanup
         stream: operator
@@ -33,6 +38,7 @@
           - deploy-platform-operator
           - deploy-tf-operator
           - test-sanity-operator
+          - test-deployment-operator
 
 - template:
     name: operator-ha
@@ -64,6 +70,11 @@
         stream: operator-ha
         depends-on:
           - deploy-tf-operator-ha
+      test-deployment-operator-ha:
+        job-name: test-deployment
+        stream: operator-ha
+        depends-on:
+          - test-sanity-operator-ha
       collect-logs-and-cleanup-operator-ha:
         job-name: collect-logs-and-cleanup
         stream: operator-ha
@@ -72,3 +83,4 @@
           - deploy-platform-operator-ha
           - deploy-tf-operator-ha
           - test-sanity-operator-ha
+          - test-deployment-operator-ha
