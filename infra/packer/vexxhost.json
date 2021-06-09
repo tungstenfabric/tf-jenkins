@@ -8,7 +8,7 @@
       "sg_group":"{{env `OS_SG`}}",
       "net_id":"{{env `OS_NETWORK_ID`}}",
       "rhel_user":"{{env `RHEL_USER`}}",
-      "rhel_pass":"{{env `RHEL_PASSWORD`}}",
+      "rhel_password":"{{env `RHEL_PASSWORD`}}",
       "rhel_pool_id":"{{env `RHEL_POOL_ID`}}"
    },
    "builders":[
@@ -39,7 +39,7 @@
             "SLAVE_REGION={{user `slave_region`}}",
             "CI_DOMAIN={{user `ci_domain`}}",
             "RHEL_USER={{user `rhel_user`}}",
-            "RHEL_PASSWORD={{user `rhel_pass`}}",
+            "RHEL_PASSWORD={{user `rhel_password`}}",
             "RHEL_POOL_ID={{user `rhel_pool_id`}}"
          ],
          "script":"{{user `workspace`}}/src/tungstenfabric/tf-jenkins/infra/packer/{{user `os_image`}}.sh"
