@@ -29,8 +29,8 @@
         depends-on:
           #- package-ubi
           - deploy-platform-openshift4-ha
-      test-sanity-openshift4-ha:
-        job-name: test-sanity
+      test-deployment-openshift4-ha:
+        job-name: test-deployment
         stream: openshift4-ha
         depends-on:
           - deploy-tf-openshift4-ha
@@ -41,7 +41,7 @@
         depends-on:
           - deploy-platform-openshift4-ha
           - deploy-tf-openshift4-ha
-          - test-sanity-openshift4-ha
+          - test-deployment-openshift4-ha
 
 
 - template:
