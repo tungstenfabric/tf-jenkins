@@ -147,7 +147,6 @@
 - name: Get stats of a jenkins_home
   stat:
     path: "{{ volume_jenkins.volume.Mountpoint }}"
-    become: yes
   register: st
 
 - name: "Make jenkins_home/.ssh directory"
