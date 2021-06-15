@@ -249,55 +249,56 @@
           - test-sanity-juju-os-ha
 
 - template:
-    name: juju-os-ha-ziu
+    name: juju-hybrid-ha-ziu
     parents:
       - build-centos
     streams:
-      juju-os-ha-ziu:
+      juju-hybrid-ha-ziu:
         vars:
+          ENABLE_NAGIOS: 'true'
           CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011-centos
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
-          MONITORING_ORCHESTRATOR: os
+          MONITORING_ORCHESTRATOR: os,hybrid,k8s
           OPENSTACK_VERSION: train
     jobs:
-      deploy-platform-juju-os-ha-ziu:
-        job-name: deploy-platform-juju-os
-        stream: juju-os-ha-ziu
+      deploy-platform-juju-hybrid-ha-ziu:
+        job-name: deploy-platform-juju-hybrid
+        stream: juju-hybrid-ha-ziu
         vars:
-          NODES: JUJU_CONTROLLER_NODES:xsmall:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
-      deploy-tf-juju-os-ha-ziu:
-        job-name: deploy-tf-juju-os
-        stream: juju-os-ha-ziu
+          NODES: JUJU_CONTROLLER_NODES:xsmall:1,CONTROLLER_NODES:large:3,AGENT_NODES:small:2
+      deploy-tf-juju-hybrid-ha-ziu:
+        job-name: deploy-tf-juju-hybrid
+        stream: juju-hybrid-ha-ziu
         depends-on:
-          - deploy-platform-juju-os-ha-ziu
-      test-ziu-juju-os-ha-ziu:
+          - deploy-platform-juju-hybrid-ha-ziu
+      test-ziu-juju-hybrid-ha-ziu:
         job-name: test-deployment
-        stream: juju-os-ha-ziu
+        stream: juju-hybrid-ha-ziu
         vars:
           DEPLOYMENT_TEST_TAGS: ziu
           TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
           - package-centos
-          - deploy-tf-juju-os-ha-ziu
-      test-sanity-juju-os-ha-ziu:
+          - deploy-tf-juju-hybrid-ha-ziu
+      test-sanity-juju-hybrid-ha-ziu:
         job-name: test-sanity
-        stream: juju-os-ha-ziu
+        stream: juju-hybrid-ha-ziu
         vars:
           DEBUG: true
           TF_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/contrail-test-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
-          - test-ziu-juju-os-ha-ziu
-      collect-logs-and-cleanup-juju-os-ha-ziu:
+          - test-ziu-juju-hybrid-ha-ziu
+      collect-logs-and-cleanup-juju-hybrid-ha-ziu:
         job-name: collect-logs-and-cleanup
-        stream: juju-os-ha-ziu
+        stream: juju-hybrid-ha-ziu
         type: post-hook
         depends-on:
-          - deploy-platform-juju-os-ha-ziu
-          - deploy-tf-juju-os-ha-ziu
-          - test-ziu-juju-os-ha-ziu
-          - test-sanity-juju-os-ha-ziu
+          - deploy-platform-juju-hybrid-ha-ziu
+          - deploy-tf-juju-hybrid-ha-ziu
+          - test-ziu-juju-hybrid-ha-ziu
+          - test-sanity-juju-hybrid-ha-ziu
 
 - template:
     name: juju-os-maas

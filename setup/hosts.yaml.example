@@ -25,13 +25,18 @@ all:
           # if this is true then cert will be created also for 'tf-nexus.$ci_domain'
           # in case of false only 'tf-nexus.$region.$ci_domain' will be used
           default_region: true
+    # we deploy aquasec on nexus
+    aquasec:
+      hosts:
+        199.19.213.181:
+          region: ca-ymq-1
     mirrors:
       hosts:
         199.204.45.97:
           remote_user: centos
     logserver:
       hosts:
-        199.19.213.181: 
+        199.19.213.181:
 
   vars:
     # please see some defaults in group_vars/all
