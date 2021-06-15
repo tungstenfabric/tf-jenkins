@@ -19,10 +19,9 @@
         - juju-k8s
         - juju-os
         - juju-os-maas
-        - juju-os-ha-ziu
         - juju-os-1912
         - juju-os-2011
-        - juju-hybrid-ha
+        - juju-hybrid-ha-ziu
         - rhosp13
         - rhosp13-1912
         - rhosp13-2011
