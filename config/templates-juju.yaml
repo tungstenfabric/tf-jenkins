@@ -258,6 +258,7 @@
           ENABLE_NAGIOS: 'true'
           CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011-centos
+          CONTRAIL_DEPLOYER_CONTAINER_TAG: nightly-r2011-centos
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os,hybrid,k8s
