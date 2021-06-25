@@ -24,10 +24,6 @@ sudo cp -f ./pip.conf /etc/pip.conf
 sudo mkdir -p /etc/docker/
 sudo cp -f ./docker-daemon.json /etc/docker/daemon.json
 #sudo kill -SIGHUP $(pidof dockerd)
-
-echo "vm.nr_hugepages = 128" | sudo tee /etc/sysctl.d/tf-hugepages.conf
-sudo sysctl --system
-grep "Huge" /proc/meminfo
 EOF
 
 if [ -f $my_dir/../../mirrors/centos7-environment ]; then
