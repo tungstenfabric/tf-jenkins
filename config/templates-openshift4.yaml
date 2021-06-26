@@ -73,8 +73,8 @@
         depends-on:
           - package-ubi
           - deploy-platform-openshift4-slave01
-      test-sanity-openshift4-slave01:
-        job-name: test-sanity
+      test-deployment-openshift4-slave01:
+        job-name: test-deployment
         stream: openshift4-slave01
         depends-on:
           - deploy-tf-openshift4-slave01
@@ -85,7 +85,7 @@
         depends-on:
           - deploy-platform-openshift4-slave01
           - deploy-tf-openshift4-slave01
-          - test-sanity-openshift4-slave01
+          - test-deployment-openshift4-slave01
 
 - template:
     name: openshift4-slave04
@@ -116,8 +116,8 @@
         depends-on:
           - package-ubi
           - deploy-platform-openshift4-slave04
-      test-sanity-openshift4-slave04:
-        job-name: test-sanity
+      test-deployment-openshift4-slave04:
+        job-name: test-deployment
         stream: openshift4-slave04
         depends-on:
           - deploy-tf-openshift4-slave04
@@ -128,7 +128,7 @@
         depends-on:
           - deploy-platform-openshift4-slave04
           - deploy-tf-openshift4-slave04
-          - test-sanity-openshift4-slave04
+          - test-deployment-openshift4-slave04
 
 - template:
     name: openshift4.5-slave04
@@ -160,8 +160,8 @@
         depends-on:
           - package-ubi
           - deploy-platform-openshift4.5-slave04
-      test-sanity-openshift4.5-slave04:
-        job-name: test-sanity
+      test-deployment-openshift4.5-slave04:
+        job-name: test-deployment
         stream: openshift4.5-slave04
         depends-on:
           - deploy-tf-openshift4.5-slave04
@@ -172,4 +172,4 @@
         depends-on:
           - deploy-platform-openshift4.5-slave04
           - deploy-tf-openshift4.5-slave04
-          - test-sanity-openshift4.5-slave04
+          - test-deployment-openshift4.5-slave04

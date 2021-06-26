@@ -13,7 +13,7 @@ maas login $MAAS_PROFILE $MAAS_ENDPOINT - <<< $(echo $MAAS_API_KEY)
 machines=$(maas $MAAS_PROFILE machines read | jq -r '.[] | .system_id')
 
 for machine in $machines; do
-    maas $MAAS_PROFILE machine release $machine
+  maas $MAAS_PROFILE machine release $machine
 done
 
 for ((i=0; i<10; ++i)); do
