@@ -20,9 +20,8 @@
         - tf-jenkins
       script-path: pipelines/process_stale_reviews.groovy
       lightweight-checkout: true
-# TODO: enbale cron trigger
-#    triggers:
-#      - timed: '0 * * * *'
+    triggers:
+      - timed: 'H/10 * * * *'
 
 - job:
     name: gerrit-submit-stale-reviews
@@ -44,6 +43,5 @@
         - tf-jenkins
       script-path: pipelines/process_stale_reviews.groovy
       lightweight-checkout: true
-# TODO: enbale cron trigger
-#    triggers:
-#      - timed: '0 * * * *'
+    triggers:
+      - timed: 'H/10 * * * *'
