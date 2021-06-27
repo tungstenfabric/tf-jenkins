@@ -46,6 +46,7 @@
       operator-ha:
         voting: false
         vars:
+          CONFIG_API_WORKER_COUNT: 3
           # operator is always ssl
           SSL_ENABLE: true
           MONITORING_DEPLOY_TARGET: HA
