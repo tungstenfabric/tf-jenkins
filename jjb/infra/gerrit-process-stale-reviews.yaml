@@ -21,7 +21,7 @@
       script-path: pipelines/process_stale_reviews.groovy
       lightweight-checkout: true
     triggers:
-      - timed: 'H/10 * * * *'
+      - timed: '*/10 * * * *'
 
 - job:
     name: gerrit-submit-stale-reviews
@@ -44,4 +44,4 @@
       script-path: pipelines/process_stale_reviews.groovy
       lightweight-checkout: true
     triggers:
-      - timed: 'H/10 * * * *'
+      - timed: '*/10 * * * *'
