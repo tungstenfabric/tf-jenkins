@@ -78,7 +78,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 
 EOF
 
-sudo mv /etc/yum.repos.d/redhat.repo ./redhat.repo
+sudo mv /etc/yum.repos.d/redhat.repo ./redhat.repo || true
 sudo yum clean all
 sudo subscription-manager clean
 
