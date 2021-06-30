@@ -28,7 +28,8 @@ declare -A VM_TYPES=( ['large']='v3-standard-8' \
 declare -A OS_IMAGES=( ['CENTOS7']='prepared-centos7' \
                        ['CENTOS8']='prepared-centos8' \
                        ['RHEL7']='prepared-rhel7' \
-                       ['RHEL8']='prepared-rhel8' \
+                       ['RHEL82']='prepared-rhel82' \
+                       ['RHEL84']='prepared-rhel84' \
                        ['RHCOS45']='prepared-rhcos45' \
                        ['UBUNTU18']='prepared-ubuntu18' \
                        ['UBUNTU20']='prepared-ubuntu20' )
@@ -36,7 +37,8 @@ declare -A OS_IMAGES=( ['CENTOS7']='prepared-centos7' \
 declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' \
                             ['CENTOS8']='centos' \
                             ['RHEL7']='cloud-user' \
-                            ['RHEL8']='cloud-user' \
+                            ['RHEL82']='cloud-user' \
+                            ['RHEL84']='cloud-user' \
                             ['RHCOS45']='core' \
                             ['UBUNTU18']='ubuntu' \
                             ['UBUNTU20']='ubuntu' )
@@ -44,7 +46,8 @@ declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' \
 declare -A OS_IMAGES_UP=( ['CENTOS7']='centos' \
                           ['CENTOS8']='centos' \
                           ['RHEL7']='' \
-                          ['RHEL8']='' \
+                          ['RHEL82']='' \
+                          ['RHEL84']='' \
                           ['RHCOS45']='' \
                           ['UBUNTU18']='ubuntu' \
                           ['UBUNTU20']='ubuntu' )
@@ -52,7 +55,8 @@ declare -A OS_IMAGES_UP=( ['CENTOS7']='centos' \
 declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['CENTOS8']='' \
                             ['RHEL7']='' \
-                            ['RHEL8']='' \
+                            ['RHEL82']='' \
+                            ['RHEL84']='' \
                             ['RHCOS45']='' \
                             ['UBUNTU18']='' \
                             ['UBUNTU20']='' )

@@ -16,7 +16,8 @@
             - CENTOS7
             - CENTOS8
             - RHEL7
-            - RHEL8
+            - RHEL82
+            - RHEL84
             - UBUNTU18
             - UBUNTU20
             - RHCOS45
