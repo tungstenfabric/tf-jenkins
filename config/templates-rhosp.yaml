@@ -316,7 +316,7 @@
         lock: openlab1
         vars:
           JUMPHOST: openlab1
-          ENVIRONMENT_OS: rhel8
+          ENVIRONMENT_OS: rhel82
           OPENSTACK_VERSION: train
           TAG_SUFFIX: "-ubi7"
           ENABLE_RHEL_REGISTRATION: false
@@ -361,7 +361,7 @@
           DEBUG: true
           JUMPHOST: openlab3
           OPENSTACK_VERSION: train
-          ENVIRONMENT_OS: rhel8
+          ENVIRONMENT_OS: rhel82
           TAG_SUFFIX: "-ubi7"
           ENABLE_RHEL_REGISTRATION: true
           ENABLE_NETWORK_ISOLATION: false

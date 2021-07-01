@@ -330,7 +330,7 @@
           deployer: rhosp
           orchestrator: openstack
       - rhosp16:
-          environment_os: rhel8
+          environment_os: rhel82
           deployer: rhosp
           orchestrator: openstack
       - operator:

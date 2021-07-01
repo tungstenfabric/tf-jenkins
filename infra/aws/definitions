@@ -35,13 +35,15 @@ ENVIRONMENT_OS=${ENVIRONMENT_OS:-'centos7'}
 declare -A OS_IMAGES_UP=( ['CENTOS7']='centos' \
                           ['CENTOS8']='centos' \
                           ['RHEL7']='rhel' \
-                          ['RHEL8']='rhel' \
+                          ['RHEL82']='rhel' \
+                          ['RHEL84']='rhel' \
                           ['UBUNTU18']='ubuntu' \
                           ['UBUNTU20']='ubuntu' )
 
 declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['CENTOS8']='' \
                             ['RHEL7']='rhel' \
-                            ['RHEL8']='rhel' \
+                            ['RHEL82']='rhel' \
+                            ['RHEL84']='rhel' \
                             ['UBUNTU18']='' \
                             ['UBUNTU20']='' )
