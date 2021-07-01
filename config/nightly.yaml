@@ -18,7 +18,7 @@
         - ansible-os-ha-ziu
         - juju-k8s
         - juju-os
-        - juju-os-maas
+        #- juju-os-maas
         - juju-os-1912
         - juju-os-2011
         - juju-hybrid-ha-ziu
