@@ -93,7 +93,7 @@ sudo cat /etc/yum.repos.d/local.repo
 echo "INFO: yum update"
 sudo yum update -y
 sudo rm /etc/yum.repos.d/local.repo
-sudo mv ./redhat.repo /etc/yum.repos.d/
+sudo mv ./redhat.repo /etc/yum.repos.d/ || true
 
 sudo sed -i '/192\.168\.122\.1/d' /etc/resolv.conf
 echo "INFO: /etc/resolv.conf"
