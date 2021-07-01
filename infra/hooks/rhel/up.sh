@@ -30,7 +30,7 @@ echo "INFO: Chosen for $rhel_ver and OS ${os_ver} repo number: ${rhel_os_repo_nu
 
 if [[ $rhel_ver == 'rhel7' ]]; then
   repofile="$my_dir/../../mirrors/mirror-rhel7.repo"
-elif [[ $rhel_ver == 'rhel8' ]]; then
+elif [[ $rhel_ver =~ 'rhel8' ]]; then
   repofile="$my_dir/../../mirrors/mirror-rhel8-all.repo"
 else
   echo "ERROR: unsupported RHEL version = $rhel_ver"
