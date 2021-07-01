@@ -127,14 +127,17 @@ def _evaluate_env(def config_utils) {
       echo "export LOGS_URL=${logs_url}" >> global.env
       # store default registry params. jobs can redefine them if needed in own config (VARS).
       echo "export SITE_MIRROR=${constants.SITE_MIRROR}" >> global.env
+
       echo "export CONTAINER_REGISTRY=${constants.CONTAINER_REGISTRY}" >> global.env
       echo "export DEPLOYER_CONTAINER_REGISTRY=${constants.CONTAINER_REGISTRY}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG=${tf_container_tag}" >> global.env
       echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG=${tf_container_tag}" >> global.env
+
       echo "export CONTAINER_REGISTRY_ORIGINAL=${constants.CONTAINER_REGISTRY}" >> global.env
       echo "export DEPLOYER_CONTAINER_REGISTRY_ORIGINAL=${constants.CONTAINER_REGISTRY}" >> global.env
       echo "export CONTRAIL_CONTAINER_TAG_ORIGINAL=${tf_container_tag}" >> global.env
       echo "export CONTRAIL_DEPLOYER_CONTAINER_TAG_ORIGINAL=${tf_container_tag}" >> global.env
+
       echo "export GERRIT_PIPELINE=${env.GERRIT_PIPELINE}" >> global.env
     """
     if (openstack_version != null) {
