@@ -186,6 +186,7 @@
           MONITORING_DEPLOY_TARGET: ILTS
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
+          ENVIRONMENT_OS: ubuntu20
     jobs:
       deploy-platform-juju-os-2011:
         job-name: deploy-platform-juju-os
