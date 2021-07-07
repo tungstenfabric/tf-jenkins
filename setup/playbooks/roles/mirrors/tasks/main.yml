@@ -99,6 +99,7 @@
   docker_container:
     name: dockerhub
     image: registry:2
+    restart_policy: unless-stopped
     volumes:
       - /opt/mirrors/dockerhub/config.yml:/etc/docker/registry/config.yml
       - /var/local/mirror/dockerhub:/var/lib/registry
@@ -110,6 +111,7 @@
   docker_container:
     name: devpi
     image: devpi:latest
+    restart_policy: unless-stopped
     volumes:
       - /var/local/mirror/pypi:/devpi
     labels:
@@ -120,6 +122,7 @@
   docker_container:
     name: repos
     image: nginx:latest
+    restart_policy: unless-stopped
     volumes:
       - /var/local/mirror/repos:/usr/share/nginx/html/repos
       - /opt/mirrors/nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -131,6 +134,7 @@
   docker_container:
     name: registry5005
     image: registry:2
+    restart_policy: unless-stopped
     ports:
       - 5005:5000
     volumes:
