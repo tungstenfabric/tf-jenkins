@@ -8,6 +8,7 @@ my_dir="$(dirname $my_file)"
 
 source "$my_dir/definitions"
 
+export ssh_private_key=$WORKER_SSH_KEY
 export stackrc_file=${stackrc_file:-"stackrc.$JOB_NAME.env"}
 stackrc_file_path=$WORKSPACE/$stackrc_file
 # RHOSP_ID is a part of vm name - to be able to identify VM-s quickly
