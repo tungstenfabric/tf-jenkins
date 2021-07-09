@@ -19,22 +19,12 @@ if [[ "$PROVIDER" != 'openstack' ]]; then
   exit 0
 fi
 
-ENVIRONMENT_OS=${ENVIRONMENT_OS:-'rhel7'}
-OPENSTACK_VERSION=${OPENSTACK_VERSION:-'queens'}
-
-rhel_ver=${ENVIRONMENT_OS,,}
-os_ver=${OPENSTACK_VERSION,,}
-echo "INFO: Supported rhel openstacks: ${RHEL_REPOS_MAP[@]}"
-rhel_os_repo_num=${RHEL_REPOS_MAP["${os_ver}"]}
-echo "INFO: Chosen for $rhel_ver and OS ${os_ver} repo number: ${rhel_os_repo_num}"
-
-if [[ $rhel_ver == 'rhel7' ]]; then
-  repofile="$my_dir/../../mirrors/mirror-rhel7.repo"
-elif [[ $rhel_ver =~ 'rhel8' ]]; then
-  repofile="$my_dir/../../mirrors/mirror-rhel8-all.repo"
+repofile="$my_dir/../../mirrors/mirror-${ENVIRONMENT_OS}.repo"
+if [[ -f $repofile ]]; then
+    echo "INFO: Using repofile $repofile"
 else
-  echo "ERROR: unsupported RHEL version = $rhel_ver"
-  exit 1
+    echo "repofile $repofile not found. Stop"
+    exit 1
 fi
 
 cat $repofile | envsubst > $WORKSPACE/local.repo

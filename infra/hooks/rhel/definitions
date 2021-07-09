@@ -1,10 +1,2 @@
 
-declare -A RHEL_REPOS_MAP=( ['newton']='10' \
-                          ['ocata']='11' \
-                          ['pike']='12' \
-                          ['queens']='13' \
-                          ['rocky']='14' \
-                          ['stein']='15' \
-                          ['train']='16' )
-
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
