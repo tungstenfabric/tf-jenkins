@@ -40,7 +40,7 @@ mirror_list=""
 mirror_list_for_build=""
 
 if [[ ${LINUX_DISTR} == 'rhel7' ]]; then
-  mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-rhel84.repo"
+  mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-rhel84-baseos.repo"
   mirror_list="google-chrome.repo"
 elif [[ ${LINUX_DISTR} == 'centos' ]]; then
   mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-docker.repo mirror-base.repo "
@@ -52,7 +52,7 @@ elif [[ ${LINUX_DISTR} == 'centos' ]]; then
   mirror_list+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
   mirror_list+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
 elif [[ "${LINUX_DISTR}" =~ 'ubi7' ]] ; then
-  mirror_list_for_build="mirror-epel.repo google-chrome.repo ubi.repo mirror-rhel7.repo mirror-rhel84.repo"
+  mirror_list_for_build="mirror-epel.repo google-chrome.repo ubi.repo mirror-rhel7.repo mirror-rhel84-baseos.repo"
   mirror_list="google-chrome.repo ubi.repo mirror-rhel7.repo"
 fi
 
