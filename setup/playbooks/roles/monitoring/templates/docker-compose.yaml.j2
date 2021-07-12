@@ -6,6 +6,7 @@ services:
       - 8086:8086
     volumes:
       - influxdb-data:/var/lib/influxdb
+    restart: on-failure
   fluentd:
     build:
       context: .
@@ -16,6 +17,7 @@ services:
     volumes:
       - fluentd-data:/fluentd/log
       - ./fluent.conf:/fluentd/etc/fluent.conf
+    restart: on-failure
   grafana:
     image: grafana/grafana:latest
     depends_on:
@@ -25,12 +27,14 @@ services:
     volumes:
       - ./grafana.ini:/etc/grafana/grafana.ini
       - grafana-data:/var/lib/grafana
+    restart: on-failure
   fixvars:
     build:
       context: .
       dockerfile: Dockerfile.fixvars
     depends_on:
       - fluentd
+    restart: on-failure
   nginx:
     image: nginx
     volumes:
@@ -45,6 +49,7 @@ services:
       - VIRTUAL_PORT=8082
       - LETSENCRYPT_HOST={{ monitoring_name }}.{{ ci_domain }},{{ monitoring_name }}.{{ region }}.{{ ci_domain }}
       - LETSENCRYPT_EMAIL={{ letsencrypt_email }}
+    restart: on-failure
 
 volumes:
   fluentd-data:
