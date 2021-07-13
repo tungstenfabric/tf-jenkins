@@ -257,6 +257,7 @@
       juju-hybrid-ha-ziu:
         vars:
           ENABLE_NAGIOS: 'true'
+          CONTRAIL_DEPLOYER_BRANCH: R2011
           CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011-centos
           DEPLOYER_CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
