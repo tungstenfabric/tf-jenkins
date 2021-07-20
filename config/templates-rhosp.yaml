@@ -154,32 +154,34 @@
           MONITORING_DEPLOYER: rhosp16
           MONITORING_ORCHESTRATOR: os
     jobs:
-      deploy-platform-rhosp16:
+      deploy-platform-rhosp16.1:
         stream: rhosp16.1
-      deploy-tf-rhosp16:
+        job-name: deploy-platform-rhosp16
+      deploy-tf-rhosp16.1:
         stream: rhosp16.1
+        job-name: deploy-tf-rhosp16
         depends-on:
           - package-ubi
-          - deploy-platform-rhosp16
-      test-sanity-rhosp16:
+          - deploy-platform-rhosp16.1
+      test-sanity-rhosp16.1:
         job-name: test-sanity
         stream: rhosp16.1
         depends-on:
-          - deploy-tf-rhosp16
-      collect-logs-and-cleanup-rhosp16:
+          - deploy-tf-rhosp16.1
+      collect-logs-and-cleanup-rhosp16.1:
         job-name: collect-logs-and-cleanup
         stream: rhosp16.1
         type: post-hook
         depends-on:
-          - deploy-platform-rhosp16
-          - deploy-tf-rhosp16
-          - test-sanity-rhosp16
+          - deploy-platform-rhosp16.1
+          - deploy-tf-rhosp16.1
+          - test-sanity-rhosp16.1
 
 - template:
     name: rhosp16.2
     # to use latest deployer's code
-    #parents:
-    #  - build-ubi
+    parents:
+      - build-ubi
     streams:
       rhosp16.2:
         vars:
@@ -188,8 +190,6 @@
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "10.0.3.192:5000"
-          CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
     jobs:
       deploy-platform-rhosp16.2:
         stream: rhosp16.2
@@ -198,15 +198,14 @@
         stream: rhosp16.2
         job-name: deploy-tf-rhosp16
         depends-on:
-          # to use latest deployer's code
-          #- package-deployers-ubi
+          - package-ubi
           - deploy-platform-rhosp16.2
       test-sanity-rhosp16.2:
         job-name: test-sanity
         stream: rhosp16.2
         depends-on:
           - deploy-tf-rhosp16.2
-      collect-logs-and-cleanup-rhosp16-2011:
+      collect-logs-and-cleanup-rhosp16.2:
         job-name: collect-logs-and-cleanup
         stream: rhosp16.2
         type: post-hook
@@ -214,6 +213,48 @@
           - deploy-platform-rhosp16.2
           - deploy-tf-rhosp16.2
           - test-sanity-rhosp16.2
+
+- template:
+    name: rhosp16.2-ha
+    # to use latest deployer's code
+    parents:
+      - build-ubi
+    streams:
+      rhosp16.2-ha:
+        vars:
+          ENVIRONMENT_OS: rhel84
+          TAG_SUFFIX: "-ubi7"
+          SSL_ENABLE: true
+          DEPLOY_COMPACT_AIO: true
+          ENABLE_RHEL_REGISTRATION: false
+          OPENSTACK_CONTAINER_REGISTRY: "10.0.3.192:5000"
+          NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
+          #CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
+          #CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
+    jobs:
+      deploy-platform-rhosp16.2-ha:
+        stream: rhosp16.2-ha
+        job-name: deploy-platform-rhosp16
+      deploy-tf-rhosp16.2-ha:
+        stream: rhosp16.2-ha
+        job-name: deploy-tf-rhosp16
+        depends-on:
+          # to use latest deployer's code
+          - package-ubi
+          - deploy-platform-rhosp16.2-ha
+      test-sanity-rhosp16.2-ha:
+        job-name: test-sanity
+        stream: rhosp16.2-ha
+        depends-on:
+          - deploy-tf-rhosp16.2-ha
+      collect-logs-and-cleanup-rhosp16.2-ha:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp16.2-ha
+        type: post-hook
+        depends-on:
+          - deploy-platform-rhosp16.2-ha
+          - deploy-tf-rhosp16.2-ha
+          - test-sanity-rhosp16.2-ha
 
 - template:
     name: rhosp16.1-2011
@@ -234,29 +275,29 @@
           MONITORING_DEPLOYER: rhosp16
           MONITORING_ORCHESTRATOR: os
     jobs:
-      deploy-platform-rhosp16-2011:
+      deploy-platform-rhosp16.1-2011:
         stream: rhosp16.1-2011
         job-name: deploy-platform-rhosp16
-      deploy-tf-rhosp16-2011:
+      deploy-tf-rhosp16.1-2011:
         stream: rhosp16.1-2011
         job-name: deploy-tf-rhosp16
         depends-on:
           # to use latest deployer's code
           - package-deployers-ubi
-          - deploy-platform-rhosp16-2011
-      test-sanity-rhosp16-2011:
+          - deploy-platform-rhosp16.1-2011
+      test-sanity-rhosp16.1-2011:
         job-name: test-sanity
         stream: rhosp16.1-2011
         depends-on:
-          - deploy-tf-rhosp16-2011
-      collect-logs-and-cleanup-rhosp16-2011:
+          - deploy-tf-rhosp16.1-2011
+      collect-logs-and-cleanup-rhosp16.1-2011:
         job-name: collect-logs-and-cleanup
         stream: rhosp16.1-2011
         type: post-hook
         depends-on:
-          - deploy-platform-rhosp16-2011
-          - deploy-tf-rhosp16-2011
-          - test-sanity-rhosp16-2011
+          - deploy-platform-rhosp16.1-2011
+          - deploy-tf-rhosp16.1-2011
+          - test-sanity-rhosp16.1-2011
 
 - template:
     name: rhosp16.1-ha
@@ -275,28 +316,28 @@
           MONITORING_DEPLOYER: rhosp16
           MONITORING_ORCHESTRATOR: os
     jobs:
-      deploy-platform-rhosp16-ha:
+      deploy-platform-rhosp16.1-ha:
         job-name: deploy-platform-rhosp16
         stream: rhosp16.1-ha
-      deploy-tf-rhosp16-ha:
+      deploy-tf-rhosp16.1-ha:
         job-name: deploy-tf-rhosp16
         stream: rhosp16.1-ha
         depends-on:
           - package-ubi
-          - deploy-platform-rhosp16-ha
-      test-sanity-rhosp16-ha:
+          - deploy-platform-rhosp16.1-ha
+      test-sanity-rhosp16.1-ha:
         job-name: test-sanity
         stream: rhosp16.1-ha
         depends-on:
-          - deploy-tf-rhosp16-ha
-      collect-logs-and-cleanup-rhosp16-ha:
+          - deploy-tf-rhosp16.1-ha
+      collect-logs-and-cleanup-rhosp16.1-ha:
         job-name: collect-logs-and-cleanup
         stream: rhosp16.1-ha
         type: post-hook
         depends-on:
-          - deploy-platform-rhosp16-ha
-          - deploy-tf-rhosp16-ha
-          - test-sanity-rhosp16-ha
+          - deploy-platform-rhosp16.1-ha
+          - deploy-tf-rhosp16.1-ha
+          - test-sanity-rhosp16.1-ha
 
 - template:
     name: rhosp13-bmc
@@ -358,29 +399,29 @@
           MONITORING_DEPLOYER: rhosp16
           MONITORING_ORCHESTRATOR: os
     jobs:
-      deploy-platform-rhosp16-bmc:
+      deploy-platform-rhosp16.1-bmc:
         job-name: deploy-platform-rhosp16
         stream: rhosp16.1-bmc
-      deploy-tf-rhosp16-bmc:
+      deploy-tf-rhosp16.1-bmc:
         job-name: deploy-tf-rhosp16
         stream: rhosp16.1-bmc
         timeout: 240
         depends-on:
           - package-ubi
-          - deploy-platform-rhosp16-bmc
-      test-sanity-rhosp16-bmc:
+          - deploy-platform-rhosp16.1-bmc
+      test-sanity-rhosp16.1-bmc:
         job-name: test-sanity
         stream: rhosp16.1-bmc
         depends-on:
-          - deploy-tf-rhosp16-bmc
-      collect-logs-and-cleanup-rhosp16-bmc:
+          - deploy-tf-rhosp16.1-bmc
+      collect-logs-and-cleanup-rhosp16.1-bmc:
         job-name: collect-logs-and-cleanup
         stream: rhosp16.1-bmc
         type: post-hook
         depends-on:
-          - deploy-platform-rhosp16-bmc
-          - deploy-tf-rhosp16-bmc
-          - test-sanity-rhosp16-bmc
+          - deploy-platform-rhosp16.1-bmc
+          - deploy-tf-rhosp16.1-bmc
+          - test-sanity-rhosp16.1-bmc
 
 - template:
     name: rhosp16.1-slave01
@@ -397,29 +438,29 @@
           ENABLE_RHEL_REGISTRATION: true
           ENABLE_NETWORK_ISOLATION: false
     jobs:
-      deploy-platform-rhosp16-slave01:
+      deploy-platform-rhosp16.1-slave01:
         job-name: deploy-platform-rhosp16
         stream: rhosp16.1-slave01
-      deploy-tf-rhosp16-slave01:
+      deploy-tf-rhosp16.1-slave01:
         job-name: deploy-tf-rhosp16
         stream: rhosp16.1-slave01
         timeout: 240
         depends-on:
           - package-ubi
-          - deploy-platform-rhosp16-slave01
-      test-sanity-rhosp16-slave01:
+          - deploy-platform-rhosp16.1-slave01
+      test-sanity-rhosp16.1-slave01:
         job-name: test-sanity
         stream: rhosp16.1-slave01
         depends-on:
-          - deploy-tf-rhosp16-slave01
-      collect-logs-and-cleanup-rhosp16-slave01:
+          - deploy-tf-rhosp16.1-slave01
+      collect-logs-and-cleanup-rhosp16.1-slave01:
         job-name: collect-logs-and-cleanup
         stream: rhosp16.1-slave01
         type: post-hook
         depends-on:
-          - deploy-platform-rhosp16-slave01
-          - deploy-tf-rhosp16-slave01
-          - test-sanity-rhosp16-slave01
+          - deploy-platform-rhosp16.1-slave01
+          - deploy-tf-rhosp16.1-slave01
+          - test-sanity-rhosp16.1-slave01
 
 - template:
     name: rhosp13-ha
@@ -533,15 +574,15 @@
           MONITORING_DEPLOYER: rhosp16
           MONITORING_ORCHESTRATOR: os
     jobs:
-      deploy-platform-rhosp16-ha-ziu:
+      deploy-platform-rhosp16.1-ha-ziu:
         stream: rhosp16.1-ha-ziu
         job-name: deploy-platform-rhosp16
-      deploy-tf-rhosp16-ha-ziu:
+      deploy-tf-rhosp16.1-ha-ziu:
         stream: rhosp16.1-ha-ziu
         job-name: deploy-tf-rhosp16
         depends-on:
-          - deploy-platform-rhosp16-ha-ziu
-      test-deployment-rhosp16-ha-ziu:
+          - deploy-platform-rhosp16.1-ha-ziu
+      test-deployment-rhosp16.1-ha-ziu:
         stream: rhosp16.1-ha-ziu
         job-name: test-deployment
         timeout: 240
@@ -550,20 +591,20 @@
           TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
           - package-ubi
-          - deploy-tf-rhosp16-ha-ziu
-      test-sanity-rhosp16-ha-ziu:
+          - deploy-tf-rhosp16.1-ha-ziu
+      test-sanity-rhosp16.1-ha-ziu:
         job-name: test-sanity
         stream: rhosp16.1-ha-ziu
         vars:
           TF_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/contrail-test-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
-          - test-deployment-rhosp16-ha-ziu
-      collect-logs-and-cleanup-rhosp16-ha-ziu:
+          - test-deployment-rhosp16.1-ha-ziu
+      collect-logs-and-cleanup-rhosp16.1-ha-ziu:
         job-name: collect-logs-and-cleanup
         stream: rhosp16.1-ha-ziu
         type: post-hook
         depends-on:
-          - deploy-platform-rhosp16-ha-ziu
-          - deploy-tf-rhosp16-ha-ziu
-          - test-deployment-rhosp16-ha-ziu
-          - test-sanity-rhosp16-ha-ziu
+          - deploy-platform-rhosp16.1-ha-ziu
+          - deploy-tf-rhosp16.1-ha-ziu
+          - test-deployment-rhosp16.1-ha-ziu
+          - test-sanity-rhosp16.1-ha-ziu
