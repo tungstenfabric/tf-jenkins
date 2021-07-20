@@ -31,6 +31,12 @@ if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
     exit 1
   fi
   echo "export DATA_NETWORK=$cidr" >> "$ENV_FILE"
+  gw=$(get_network_gateway $OS_DATA_NETWORK)
+  if [[ -z "$gw" ]]; then
+    echo "ERROR: failed to get Gateway for subnet in network '$OS_DATA_NETWORK'"
+    exit 1
+  fi
+  echo "export VROUTER_GATEWAY=$gw" >> "$ENV_FILE"
 fi
 
 IMAGE_TEMPLATE_NAME="${OS_IMAGES["${ENVIRONMENT_OS^^}"]}"

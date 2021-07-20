@@ -26,10 +26,24 @@ function get_instance_ip() {
 function get_network_cidr() {
   local net=$1
   local i
-  local cidr
   for (( i=1; i<=5 ; ++i )) ; do
     if openstack subnet list --network $net -c Subnet -f value 2>/dev/null | head -1 ; then
       return
+    fi
+    sleep 10
+  done
+}
+
+function get_network_gateway() {
+  local net=$1
+  local i
+  local gw
+  for (( i=1; i<=5 ; ++i )) ; do
+    local subnet=$(openstack subnet list --network data -c ID -f value 2>/dev/null | head -1)
+    if [ -n "$subnet" ] ; then
+      if openstack subnet show $subnet -c gateway_ip -f value 2>/dev/null ; then
+        return
+      fi
     fi
     sleep 10
   done
