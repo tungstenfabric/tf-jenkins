@@ -2,7 +2,7 @@
 
 // docker registry with cleanup policy = 1 day
 // all CI check build some images and store them there to check later in deployer
-CONTAINER_REGISTRY="tf-nexus.${SLAVE_REGION}.${CI_DOMAIN}:5001"
+CONTAINER_REGISTRY="tf-nexus.${SLAVE_REGION}.${CI_DOMAIN}:5101"
 // base URL for various caches
 SITE_MIRROR="http://tf-nexus.${SLAVE_REGION}.${CI_DOMAIN}/repository"
 // for ssh purpose
@@ -15,7 +15,7 @@ LOGS_BASE_URL = "http://tf-nexus.${SLAVE_REGION}.${CI_DOMAIN}:8082/jenkins_logs"
 MONITORING_BACKEND_HOST = "tf-monitoring.${SLAVE_REGION}.${CI_DOMAIN}"
 // store built docker images in long-term repo in case of nightly 
 if (env.GERRIT_PIPELINE == 'nightly') {
-  CONTAINER_REGISTRY="tf-nexus.${SLAVE_REGION}.${CI_DOMAIN}:5002"
+  CONTAINER_REGISTRY="tf-nexus.${SLAVE_REGION}.${CI_DOMAIN}:5102"
 }
 
 // possible openstack versions

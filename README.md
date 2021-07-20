@@ -38,15 +38,15 @@ URL: <https://tf-nexus.progmaticlab.com/>
 
 For now it serves:
 
-- docker registry on port 5001 - used for short lived images with different tags like review images. Images are stored for 24 hours - then they are removed.
-- docker registry on port 5002 - used for long lived images with constant tags like 'latest', 'nightly', 'R2011', ...
+- docker registry on port 5101 (5001 the same without SSL) - used for short lived images with different tags like review images. Images are stored for 24 hours - then they are removed.
+- docker registry on port 5102 (5002 the same without SSL) - used for long lived images with constant tags like 'latest', 'nightly', 'R2011', ...
 - raw hosted folder 'images' - used for VM images for sanity tests. It has some predeployed content which is saved on S3.
 - raw hosted folder 'contrail_third_party' - used as a local cache to resources from files <https://github.com/tungstenfabric/tf-third-party/blob/master/packages.xml> and <https://github.com/tungstenfabric/tf-webui-third-party/blob/master/packages.xml> to avoid network glitches in CI
 - YUM repo for 'TPC binary' - third-party cache of static yum packages. These packages were taken long time ago somewhere and there is no source code for them. So this repo has predeployed content which saved on S3.
 - YUM repo for 'TPC source' - third-party cache of built yum packages. Source spec files for these RPM-s are stored in <https://github.com/tungstenfabric/tf-third-party-packages> and this repo can be fully re-built from scratch. It's used when product needs some yum package which is not available as yum package - only sources or pyhton package is present.
 - Some maven repos with predefined content in one of them. But knowledge why it's required is absent.
 
-Nginx is deployed on nexus to provide https access to those CI registries on ports 5101 and 5102 respectively. Registries on ports 5001 and 5002 are not secured.
+Nginx is deployed on nexus to provide https access to those CI registries on ports 5101 and 5102 respectively. Registries on ports 5101 and 5102 are not secured.
 
 ### Logs storage
 
