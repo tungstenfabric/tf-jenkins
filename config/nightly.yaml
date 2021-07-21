@@ -125,7 +125,7 @@
           # additional deps
           depends-on:
             - package-r2011-ubi
-        deploy-tf-rhosp16-2011:
+        deploy-tf-rhosp16.1-2011:
           # additional deps
           depends-on:
             - package-r2011-ubi

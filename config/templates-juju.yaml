@@ -32,10 +32,10 @@
     streams:
       juju-k8s:
         vars:
-          ENABLE_NAGIOS: 'true'
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: k8s
+          ENVIRONMENT_OS: ubuntu20
     parents:
       - build-centos
     jobs:
@@ -74,6 +74,7 @@
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: k8s
+          ENVIRONMENT_OS: ubuntu20
     parents:
       - build-centos
     jobs:
@@ -256,7 +257,6 @@
     streams:
       juju-hybrid-ha-ziu:
         vars:
-          ENABLE_NAGIOS: 'true'
           CONTRAIL_DEPLOYER_BRANCH: R2011
           CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011-centos
@@ -267,6 +267,7 @@
           MONITORING_ORCHESTRATOR: os,hybrid,k8s
           OPENSTACK_VERSION: train
           HUGE_PAGES_2MB: 512
+          ENVIRONMENT_OS: ubuntu20
     jobs:
       deploy-platform-juju-hybrid-ha-ziu:
         job-name: deploy-platform-juju-hybrid
@@ -349,55 +350,16 @@
           - test-sanity-juju-os-maas
 
 - template:
-    name: juju-hybrid
-    parents:
-      - build-centos
-    streams:
-      juju-hybrid:
-        vars:
-          ENABLE_NAGIOS: 'true'
-          MONITORING_DEPLOY_TARGET: AIO
-          MONITORING_DEPLOYER: juju
-          MONITORING_ORCHESTRATOR: hybrid
-    jobs:
-      deploy-platform-juju-hybrid:
-        stream: juju-hybrid
-      deploy-tf-juju-hybrid:
-        stream: juju-hybrid
-        depends-on:
-          - package-centos
-          - deploy-platform-juju-hybrid
-      test-sanity-juju-hybrid:
-        job-name: test-sanity
-        stream: juju-hybrid
-        depends-on:
-          - deploy-tf-juju-hybrid
-      test-deployment-juju-hybrid:
-        job-name: test-deployment
-        stream: juju-hybrid
-        depends-on:
-          - test-sanity-juju-hybrid
-      collect-logs-and-cleanup-juju-hybrid:
-        job-name: collect-logs-and-cleanup
-        stream: juju-hybrid
-        type: post-hook
-        depends-on:
-          - deploy-platform-juju-hybrid
-          - deploy-tf-juju-hybrid
-          - test-sanity-juju-hybrid
-          - test-deployment-juju-hybrid
-
-- template:
     name: juju-hybrid-ha
     parents:
       - build-centos
     streams:
       juju-hybrid-ha:
         vars:
-          ENABLE_NAGIOS: 'true'
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: hybrid,k8s
+          ENVIRONMENT_OS: ubuntu20
     jobs:
       deploy-platform-juju-hybrid-ha:
         job-name: deploy-platform-juju-hybrid

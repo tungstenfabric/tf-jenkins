@@ -229,8 +229,6 @@
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "10.0.3.192:5000"
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
-          #CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
-          #CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
     jobs:
       deploy-platform-rhosp16.2-ha:
         stream: rhosp16.2-ha
@@ -239,7 +237,6 @@
         stream: rhosp16.2-ha
         job-name: deploy-tf-rhosp16
         depends-on:
-          # to use latest deployer's code
           - package-ubi
           - deploy-platform-rhosp16.2-ha
       test-sanity-rhosp16.2-ha:
