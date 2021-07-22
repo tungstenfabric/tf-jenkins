@@ -24,7 +24,7 @@ log "Scan TF containers"
 [ -z "$CONTAINER_TAG" ] && { err "empty CONTAINER_TAG" && exit -1; }
 [ -z "${SCAN_REPORTS_STASH}" ] && { err "empty SCAN_REPORTS_STASH" && exit -1; }
 
-CONTAINER_REGISTRY_INSECURE=${CONTAINER_REGISTRY_INSECURE:-"true"}
+CONTAINER_REGISTRY_INSECURE=${CONTAINER_REGISTRY_INSECURE:-"false"}
 AQUASEC_REGISTRY=registry.aquasec.com
 SCAN_INCLUDE_REGEXP=${SCAN_INCLUDE_REGEXP:-"contrail-\|tf-"}
 SCAN_EXCLUDE_REGEXP=${SCAN_EXCLUDE_REGEXP:-"base\|contrail-third-party-packages\|${DEVENV_IMAGE_NAME}\|-src"}
