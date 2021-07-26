@@ -185,10 +185,10 @@
     stage-repos:
       templates:
         - build-ubi
-        - rhosp16
+        - rhosp16.1
         - cleanup
       streams:
-        rhosp16:
+        rhosp16.1:
           vars:
             OPENSTACK_CONTAINER_TAG: '16.1-stage'
       jobs:
@@ -209,7 +209,8 @@
             - update-stage-images-rhel8
           vars:
             DEVENV_TAG: stage-rhel8-$RANDOM
-        deploy-platform-rhosp16:
+        deploy-platform-rhosp16.1:
+          job-name: deploy-platform-rhosp16
           depends-on:
             - update-stage-repos-rhel8
             - update-stage-images-rhel8
@@ -218,14 +219,14 @@
           vars:
             REPOS_TYPE: 'rhel8'
           depends-on:
-            - test-sanity-rhosp16
+            - test-sanity-rhosp16.1
         publish-stage-images-rhel8:
           job-name: publish-stage-images
           vars:
             CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel8'
           depends-on:
-            - test-sanity-rhosp16
+            - test-sanity-rhosp16.1
 
 #TODO: add checks for deployment with ubuntu20
 - project:

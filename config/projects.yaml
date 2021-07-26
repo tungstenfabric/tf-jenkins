@@ -181,12 +181,12 @@
     check:
       templates:
         - rhosp13
-        - rhosp16
+        - rhosp16.1
         - cleanup
     gate:
       templates:
         - rhosp13
-        - rhosp16
+        - rhosp16.1
         - cleanup
 
 - project:
@@ -208,11 +208,11 @@
     branch: stable/train
     check:
       templates:
-        - rhosp16
+        - rhosp16.1
         - cleanup
     gate:
       templates:
-        - rhosp16
+        - rhosp16.1
         - cleanup
 
 - project:
