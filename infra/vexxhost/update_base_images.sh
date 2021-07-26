@@ -65,7 +65,7 @@ fi
 sleep 10
 printf "\n\nINFO: uploaded images"
 for image in $images ; do
-  openstack image $image
+  openstack image show $image
 done
 printf "\n\n\n"
 
