@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o pipefail
 
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
@@ -70,7 +71,7 @@ container_registry_url="${src_scheme}://${CONTAINER_REGISTRY}"
 
 if [[ "${SCAN_CONTAINERS_LIST}" == 'auto' ]] ; then
   log "Query containers to scan"
-  if ! raw_repos=$(run_with_retry curl -s --show-error ${container_registry_url}/v2/_catalog) ; then
+  if ! raw_repos=$(run_with_retry timeout -s 9 10 curl -s --show-error ${container_registry_url}/v2/_catalog) ; then
     err "Failed to request repo list from docker registry ${CONTAINER_REGISTRY}"
     exit -1
   fi
@@ -87,7 +88,7 @@ fi
 
 function pull_eligible_image_names() {
 	local r=$1
-	curl -s -k ${container_registry_url}/v2/$r/tags/list | jq -c -r "select(.tags[] | inside(\"${CONTAINER_TAG}\")) | .name" | sort | uniq
+	timeout -s 9 10 curl -s -k ${container_registry_url}/v2/$r/tags/list | jq -c -r "select(.tags[] | inside(\"${CONTAINER_TAG}\")) | .name" | sort | uniq
 }
 
 function parse_scan_results() {

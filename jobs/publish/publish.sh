@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o pipefail
 
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
@@ -63,7 +64,7 @@ container_registry_url="${src_scheme}://${CONTAINER_REGISTRY}"
 
 if [[ "${PUBLISH_CONTAINERS_LIST}" == 'auto' ]] ; then
   log "Request containers for publishing"
-  if ! raw_repos=$(run_with_retry curl -s --show-error ${container_registry_url}/v2/_catalog) ; then
+  if ! raw_repos=$(run_with_retry timeout -s 9 10 curl -s --show-error ${container_registry_url}/v2/_catalog) ; then
     err "Failed to request repo list from docker registry ${CONTAINER_REGISTRY}"
     exit -1
   fi
@@ -87,7 +88,7 @@ function get_container_full_name_list() {
   local full_names=$container
   if [ -z "$name" ] ; then
     # just short name, loopup the tag
-    local tags=$(run_with_retry curl -s --show-error ${container_registry_url}/v2/$container/tags/list | jq -c -r '.tags[]')
+    local tags=$(run_with_retry timeout -s 9 10 curl -s --show-error ${container_registry_url}/v2/$container/tags/list | jq -c -r '.tags[]')
     if echo "$tags" | grep -q "^$lookup_tag\$" ; then
       full_names="${CONTAINER_REGISTRY}/${container}:${lookup_tag}"
     elif echo "$tags" | grep -q "^\(\(queens\)\|\(rocky\)\|\(stein\)\)-$lookup_tag\$" ; then

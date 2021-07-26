@@ -14,7 +14,7 @@
    "builders":[
       {
          "type":"openstack",
-         "flavor":"v2-highcpu-2",
+         "flavor":"v3-starter-2",
          "image_name":"prepared-{{user `os_image`}}-{{isotime \"200601021504\"}}",
          "source_image_filter":{
             "filters":{
