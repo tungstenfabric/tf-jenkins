@@ -5,15 +5,15 @@ my_dir="$(dirname $my_file)"
 
 
 function log(){
-  echo -e "INFO: $(date --utc +"%Y-%m-%d %H-%M-%S"): $@"
+  echo -e "INFO: $(date): $@"
 } 
 
 function warn(){
-  echo -e "WARNING: $(date --utc +"%Y-%m-%d %H-%M-%S"): $@" >&2
+  echo -e "WARNING: $(date): $@" >&2
 } 
 
 function err(){
-  echo -e "ERROR: $(date --utc +"%Y-%m-%d %H-%M-%S"): $@" >&2
+  echo -e "ERROR: $(date): $@" >&2
 } 
 
 log "Scan TF containers"
