@@ -148,6 +148,7 @@
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
           CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
           SSL_ENABLE: 'true'
+          OPENSTACK_VERSION: 'queens'
     jobs:
       deploy-platform-juju-os-1912:
         job-name: deploy-platform-juju-os
