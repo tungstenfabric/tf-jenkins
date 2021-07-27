@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 set -o pipefail
 
 my_file="$(readlink -e "$0")"
@@ -50,10 +50,11 @@ function run_with_retry() {
   local cmd=$@
   local attempt=0
   for attempt in {1..3} ; do
-    if $cmd ; then
+    if res="`eval $cmd`" ; then
+      echo "$res"
       return 0
     fi
-    sleep 1;
+    sleep 1
   done
   return 1
 }
