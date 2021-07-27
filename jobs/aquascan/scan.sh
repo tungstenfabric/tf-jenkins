@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 set -o pipefail
 
 my_file="$(readlink -e "$0")"
@@ -52,10 +52,11 @@ function run_with_retry() {
   local cmd=$@
   local attempt=0
   for attempt in {1..3} ; do
-    if $cmd ; then
+    if res="`eval $cmd`" ; then
+      echo "$res"
       return 0
     fi
-    sleep 1;
+    sleep 1
   done
   return 1
 }
@@ -88,7 +89,7 @@ fi
 
 function pull_eligible_image_names() {
 	local r=$1
-	timeout -s 9 10 curl -s -k ${container_registry_url}/v2/$r/tags/list | jq -c -r "select(.tags[] | inside(\"${CONTAINER_TAG}\")) | .name" | sort | uniq
+	run_with_retry timeout -s 9 10 curl -s -k ${container_registry_url}/v2/$r/tags/list | jq -c -r "select(.tags[] | inside(\"${CONTAINER_TAG}\")) | .name" | sort | uniq
 }
 
 function parse_scan_results() {
