@@ -266,7 +266,7 @@
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os,hybrid,k8s
-          OPENSTACK_VERSION: train
+          OPENSTACK_VERSION: ussuri
           HUGE_PAGES_2MB: 512
           ENVIRONMENT_OS: ubuntu20
     jobs:
