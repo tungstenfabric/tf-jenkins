@@ -77,14 +77,17 @@ TODO
 ## Support of https://gerrit.tungsten.io
 
 We provide the ability to run jobs to check your patchsets sent for review.
+We have similar terminology as OpenStack CI - checking and gating ('check' and 'gate' pipelines).
 
-Each project is associated with several templates that are launched by default when a new patchset is loaded. You can see the list of projects and associated templates in the `config/main.yaml` file.
+Each project is associated with several templates that are launched by default when a new patchset is loaded. You can see the list of projects and associated templates in the `config/main.yaml` file. Each project has two 'pipelines' - 'check' and  'gate'.
+'check' pipeline is intended as a set of simple checks and fast as possible. By this we achieve less workload fo CI cause each patchset in most cases has more runs of 'check' than 'gate'. And second reason then developer gets result of its change fast.
+'gate' pipeline has more jobs to check in most cases. And it's longer than 'check'. It happens cause it must recompile source code against current base, currect and dependent patchsets, and patchsets which are present in 'gate' pipeline right now. CI has to take into account current runs in 'gate' cause superposition with current patchset may lead to broken code. Also 'gate' pipeline stores built docker images in local cache for 1 day to use them in CI runs for deployment projects to speed up checking. Such images we called 'frozen'. They have appropriate image tag.  
 
-To independently initiate the review of templates related to the current project, add a comment `check` to your review
+Checking is started by Jenkins for each new patchset. To independently initiate the review of templates related to the current project, add a comment `check` to your review.
 
 To start checking a specific template, add a comment to your review with template name like `check template template-name`. For several templates at once comment is `check templates name1 name2`.
 
-To start or restart gating comment is `gate`.
+Gating is started when gerrit labels are set to specific values. To start or restart gating comment is `gate`.
 
 It is possible to stop all jobs running for the current review. To do this, add a comment `cancel` to your review.
 
@@ -93,6 +96,10 @@ Another option is implicit dependency - it's a dependency based on git tree. You
 If that review that current depends on gets new patchset then checks for current review will be cancelled.
 
 After checking TF CI posts a message with results along with timings, links to logs. Overall time is a time for whole checking. And stream time is a summarized time from all jobs in this stream. Sometimes stream time can be bigger that checks time due to parallel runs.
+
+General workflow of gerrit assumes working with labels - <https://gerrit-review.googlesource.com/Documentation/config-labels.html>
+Current implementation is following: People sets only 'Code-Review' and 'Approved' label at anytime of review lifecycle - sometimes just one person can do it, sometimes project has agreement to wait for two people. It's possible to reset label's value back to any other value to stop merging or if person changes the opinion.
+‘Verified’ label is set by CI: +1/-1 for checking and +2/-2 for gating. '+1' means that basic checks passed against current sourcecode state plus current (and dependent) patchset. When Code-Review is +2 and Approved is +1 then CI starts gating. If it’s successful then CI sets +2 for Verified and then merges the change.
 
 ## Used tools
 
