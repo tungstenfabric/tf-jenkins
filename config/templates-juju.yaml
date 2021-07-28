@@ -266,9 +266,9 @@
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os,hybrid,k8s
-          OPENSTACK_VERSION: ussuri
+          OPENSTACK_VERSION: train
           HUGE_PAGES_2MB: 512
-          ENVIRONMENT_OS: ubuntu20
+          ENVIRONMENT_OS: ubuntu18
     jobs:
       deploy-platform-juju-hybrid-ha-ziu:
         job-name: deploy-platform-juju-hybrid
