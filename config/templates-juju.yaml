@@ -360,7 +360,9 @@
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: hybrid,k8s
-          ENVIRONMENT_OS: ubuntu20
+          OPENSTACK_VERSION: train
+          HUGE_PAGES_2MB: 256
+          ENVIRONMENT_OS: ubuntu18
     jobs:
       deploy-platform-juju-hybrid-ha:
         job-name: deploy-platform-juju-hybrid
