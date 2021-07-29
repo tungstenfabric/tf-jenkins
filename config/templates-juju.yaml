@@ -326,6 +326,7 @@
           MONITORING_DEPLOY_TARGET: PROD,SR-IOV,DPDK
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
+          UBUNTU_SERIES: focal
     jobs:
       deploy-platform-juju-os-maas:
         job-name: deploy-platform-juju-os
