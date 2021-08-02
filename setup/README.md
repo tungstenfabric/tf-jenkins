@@ -42,7 +42,7 @@ Do ssh into this machine and install required software:
 ```bash
 sudo apt-get update -y
 sudo apt-get install -y python3-pip git
-sudo pip3 install --upgrade pip3
+sudo pip3 install --upgrade "pip<21.1"
 sudo pip3 install "ansible<2.10"
 ```
 
