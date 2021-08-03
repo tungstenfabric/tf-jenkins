@@ -20,7 +20,8 @@
           choices:
             - centos7
             - rhel7
-            - rhel8
+            - rhel82
+            - rhel84
             - ubuntu
             #- pip
       - hidden:
@@ -52,7 +53,8 @@
           choices:
             - centos7
             - rhel7
-            - rhel8
+            - rhel82
+            - rhel84
             - ubuntu
             #- pip
       - hidden:
