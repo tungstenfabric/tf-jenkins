@@ -189,7 +189,7 @@
           TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
-          OPENSTACK_CONTAINER_REGISTRY: "10.0.3.192:5000"
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
     jobs:
       deploy-platform-rhosp16.2:
         stream: rhosp16.2
@@ -227,7 +227,7 @@
           SSL_ENABLE: true
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
-          OPENSTACK_CONTAINER_REGISTRY: "10.0.3.192:5000"
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
     jobs:
       deploy-platform-rhosp16.2-ha:
