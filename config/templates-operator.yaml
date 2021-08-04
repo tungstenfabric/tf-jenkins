@@ -10,7 +10,7 @@
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: operator
           MONITORING_ORCHESTRATOR: k8s
-          HUGE_PAGES_2MB: 128
+          HUGE_PAGES_2MB: 512
     parents:
       - build-centos
     jobs:
@@ -53,7 +53,7 @@
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: operator
           MONITORING_ORCHESTRATOR: k8s
-          HUGE_PAGES_2MB: 128
+          HUGE_PAGES_2MB: 512
     parents:
       - build-centos
     jobs:

@@ -416,7 +416,7 @@
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: hybrid,k8s
           ENVIRONMENT_OS: ubuntu20
-          HUGE_PAGES_2MB: 256
+          HUGE_PAGES_2MB: 512
     jobs:
       deploy-platform-juju-hybrid-ha:
         job-name: deploy-platform-juju-hybrid
