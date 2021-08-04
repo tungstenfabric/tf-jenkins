@@ -241,6 +241,8 @@ class Gerrit(object):
 
         while spin:
             m = self._session.get('/changes/', params='%s&S=%d' % (q, start))
+            if not m:
+                break
             for c in m:
                 start += 1
                 spin = c.get('_more_changes', False)
