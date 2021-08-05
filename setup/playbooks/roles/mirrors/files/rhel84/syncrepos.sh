@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
-#TODO: openstack-16.2-for-rhel-8-x86_64-rpms isn't available yet. 
+#Should be changed later rhosp16.2 release
+#openstack-16.2-for-rhel-8-x86_64-rpms is not available, so we use openstack-beta-for-rhel-8-x86_64-rpms instead
 #REPOS_RH8=(rhel-8-for-x86_64-appstream-rpms rhel-8-for-x86_64-baseos-rpms rhel-8-for-x86_64-highavailability-rpms ansible-2.9-for-rhel-8-x86_64-rpms ansible-2-for-rhel-8-x86_64-rpms advanced-virt-for-rhel-8-x86_64-rpms satellite-tools-6.5-for-rhel-8-x86_64-rpms openstack-16.2-for-rhel-8-x86_64-rpms fast-datapath-for-rhel-8-x86_64-rpms rhceph-4-tools-for-rhel-8-x86_64-rpms)
-REPOS_RH8=(rhel-8-for-x86_64-appstream-rpms rhel-8-for-x86_64-baseos-rpms rhel-8-for-x86_64-highavailability-rpms ansible-2.9-for-rhel-8-x86_64-rpms ansible-2-for-rhel-8-x86_64-rpms advanced-virt-for-rhel-8-x86_64-rpms satellite-tools-6.5-for-rhel-8-x86_64-rpms fast-datapath-for-rhel-8-x86_64-rpms rhceph-4-tools-for-rhel-8-x86_64-rpms)
-REPOS_UBI8=(ubi-8-appstream ubi-8-baseos ubi-8-codeready-builder)
+REPOS_RH8=(rhel-8-for-x86_64-appstream-rpms rhel-8-for-x86_64-baseos-rpms rhel-8-for-x86_64-highavailability-rpms ansible-2.9-for-rhel-8-x86_64-rpms ansible-2-for-rhel-8-x86_64-rpms advanced-virt-for-rhel-8-x86_64-rpms satellite-tools-6.5-for-rhel-8-x86_64-rpms openstack-beta-for-rhel-8-x86_64-rpms fast-datapath-for-rhel-8-x86_64-rpms rhceph-4-tools-for-rhel-8-x86_64-rpms)
 MIRRORDIR=/repos
 DATE=$(date +"%Y%m%d")
 
@@ -18,7 +18,7 @@ function retry() {
     if $@ ; then
       break
     fi
-    echo "COMMAND FAILED: $@" 
+    echo "COMMAND FAILED: $@"
     echo "RETRYING COMMAND (time=$i out of 5)"
   done
   if [[ $i == 5 ]]; then
@@ -43,7 +43,7 @@ subscription-manager release --set=8.4
 yum repolist
 yum install -y yum-utils createrepo
 
-for repo in "rhel84" "ubi84" ; do
+for repo in "rhel84" ; do
   if [ ! -d ${MIRRORDIR}/$repo/${DATE} ]; then
     mkdir -p ${MIRRORDIR}/$repo/${DATE}
     if [ -d ${MIRRORDIR}/$repo/latest ]; then
@@ -60,14 +60,10 @@ for r in ${REPOS_RH8[@]}; do
   #createrepo -v ${MIRRORDIR}/rhel84/${DATE}/${r}/
 done
 
-for r in ${REPOS_UBI8[@]}; do
-  reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/ubi84/${DATE}
-  #createrepo -v ${MIRRORDIR}/ubi84/${DATE}/${r}/
-done
-
-for repo in "rhel84" "ubi84" ; do
+for repo in "rhel8"; do
   pushd ${MIRRORDIR}/$repo
   rm -f stage
   ln -s ${DATE} stage
   popd
 done
+
