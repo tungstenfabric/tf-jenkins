@@ -24,7 +24,15 @@ rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/mirror-docker-
 cat $my_dir/../../mirrors/ubuntu-sources.list | envsubst > "$WORKSPACE/ubuntu-sources.list"
 rsync -a -e "ssh -i ${WORKER_SSH_KEY} ${SSH_OPTIONS}" "$WORKSPACE/ubuntu-sources.list" ${IMAGE_SSH_USER}@${instance_ip}:./ubuntu-sources.list
 
+# we have to wait for cloud-init finish cause it may overwrite our copy of sources.list
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
+echo "INFO: wait for cloud-init finish"
+while ps ax | grep -v grep | grep 'cloud-init' ; do
+  sleep 1
+done
+sleep 2
+echo "INFO: cloud-init finished"
+
 sudo cp -f ./pip.conf /etc/pip.conf
 sudo mkdir -p /etc/docker/
 sudo cp -f ./docker-daemon.json /etc/docker/daemon.json
