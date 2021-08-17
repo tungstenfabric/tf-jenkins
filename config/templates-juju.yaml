@@ -27,6 +27,7 @@
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: k8s
 
+# k8s doesn't work stable in AIO mode due to certs thus run it in two small VM-s
 - template:
     name: juju-k8s
     streams:
@@ -41,6 +42,8 @@
     jobs:
       deploy-platform-juju-k8s:
         stream: juju-k8s
+        vars:
+          NODES: JUJU_CONTROLLER_NODES:xsmall:1,CONTROLLER_NODES:medium:1,AGENT_NODES:small:1
       deploy-tf-juju-k8s:
         stream: juju-k8s
         depends-on:
