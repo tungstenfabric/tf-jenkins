@@ -38,7 +38,7 @@ timestamps {
     if (jobs_code.size() > 0)
       parallel(jobs_code)
     stage('Build common usage report') {
-      node('master') {
+      node('built-in') {
         cleanWs()
         if (jobs_code.containsKey('aws'))
           unstash("aws")
