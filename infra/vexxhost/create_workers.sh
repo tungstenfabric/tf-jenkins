@@ -118,7 +118,7 @@ function update_vm_port() {
     if openstack port set --no-security-group --disable-port-security $port_id ; then
       return
     fi
-    slleep 10
+    sleep 10
   done
   echo "ERROR: can't set port config for port $port_id"
   exit 1

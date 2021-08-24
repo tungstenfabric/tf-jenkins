@@ -5,7 +5,7 @@
     properties:
       - build-discarder:
           num-to-keep: 30
-    node: master
+    node: built-in
     wrappers:
         - workspace-cleanup:
             disable-deferred-wipeout: true
