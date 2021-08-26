@@ -20,6 +20,11 @@ if TERMINATION_LIST=$(list_instances PipelineBuildTag=${PIPELINE_BUILD_TAG}) ; t
     down_instances $DOWN_LIST || true
   fi
 
+  for instance in $TERMINATION_LIST ; do
+    openstack server show $instance
+    openstack console log show $instance
+  done
+
   echo "INFO: Instances to terminate: $TERMINATION_LIST"
   nova delete $(echo "$TERMINATION_LIST")
 fi
