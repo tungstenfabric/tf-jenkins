@@ -41,6 +41,13 @@ echo "INFO: Update ubuntu OS"
 sudo sudo cp -f ./ubuntu-sources.list /etc/apt/sources.list
 echo "APT::Acquire::Retries \"10\";" | sudo tee /etc/apt/apt.conf.d/80-retries
 sudo cp -f /usr/share/unattended-upgrades/20auto-upgrades-disabled /etc/apt/apt.conf.d/ || /bin/true
+
+if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
+  echo "            dhcp4-overrides:" | sudo tee -a /etc/netplan/50-cloud-init.yaml
+  echo "                use-routes: false" | sudo tee -a /etc/netplan/50-cloud-init.yaml
+  sudo netplan apply
+fi
+cat /etc/netplan/50-cloud-init.yaml
 EOF
 
 if [ -f $my_dir/../../mirrors/ubuntu-environment ]; then
