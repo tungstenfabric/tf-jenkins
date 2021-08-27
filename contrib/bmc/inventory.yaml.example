@@ -1,0 +1,53 @@
+all:
+  children:
+    mirrors:
+      hosts:
+        10.87.72.100:
+          remote_user: root
+    kvm:
+      hosts:
+        5a8s1-node4:
+          remote_user: root
+          ansible_host: 10.87.72.4
+          bridge_map: 
+            eno1:
+              br-mgmt
+            ens1f0:
+              br-data
+        5a8s3-node1:
+          remote_user: root
+          ansible_host: 10.87.72.5
+          bridge_map: 
+            eno1:
+              br-mgmt
+            ens1f0:
+              br-data
+        5a8s3-node2:
+          remote_user: root
+          ansible_host: 10.87.72.6
+          bridge_map: 
+            eno1:
+              br-mgmt
+            ens1f0:
+              br-data
+        5a8s3-node3:
+          remote_user: root
+          ansible_host: 10.87.72.7
+          bridge_map: 
+            eno1:
+              br-mgmt
+            ens1f0:
+              br-data
+        5a8s3-node4:
+          remote_user: root
+          ansible_host: 10.87.72.8
+          bridge_map: 
+            eno1:
+              br-mgmt
+            ens1f0:
+              br-data
+
+  vars:
+    gateway: 10.87.72.126
+    local_mirror_ip_address: 10.87.72.66
+

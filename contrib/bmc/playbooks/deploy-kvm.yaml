@@ -1,0 +1,8 @@
+
+- hosts: kvm
+  remote_user: "{{ remote_user }}"
+  become: no
+  gather_facts: yes
+  roles:
+    - kvm
+
