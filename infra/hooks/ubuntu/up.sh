@@ -45,6 +45,7 @@ sudo cp -f /usr/share/unattended-upgrades/20auto-upgrades-disabled /etc/apt/apt.
 if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
   echo "            dhcp4-overrides:" | sudo tee -a /etc/netplan/50-cloud-init.yaml
   echo "                use-routes: false" | sudo tee -a /etc/netplan/50-cloud-init.yaml
+  echo "                use-dns: false" | sudo tee -a /etc/netplan/50-cloud-init.yaml
   sudo netplan apply
 fi
 cat /etc/netplan/50-cloud-init.yaml
