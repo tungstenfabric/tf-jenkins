@@ -1,0 +1,15 @@
+NM_CONTROLLED=no
+STP=yes
+TYPE=Bridge
+BOOTPROTO=none
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+NAME={{ item.value }}
+DEVICE={{ item.value }}
+ONBOOT=yes
+{% if item.value == 'br-mgmt' %}
+IPADDR={{ ansible_host }}
+PREFIX=25
+GATEWAY={{ gateway }}
+{% endif %}
+
