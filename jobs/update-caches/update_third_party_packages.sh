@@ -84,7 +84,7 @@ kernels="
 "
 
 # current packages - should be taken from archive after new release
-kernel+="
+kernels+="
   http://mirror.centos.org/centos/7/updates/x86_64/Packages/kernel-3.10.0-1160.25.1.el7.x86_64.rpm
   http://mirror.centos.org/centos/7/updates/x86_64/Packages/kernel-devel-3.10.0-1160.25.1.el7.x86_64.rpm
   http://mirror.centos.org/centos/8/BaseOS/x86_64/os/Packages/kernel-4.18.0-305.12.1.el8_4.x86_64.rpm
