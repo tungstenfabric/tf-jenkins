@@ -25,12 +25,13 @@ function get_mac_address {
 }
 
 function generate_instackenv_block {
-  ipmi_address=$1
-  vm=$2
-  vbmc_port=$3
-  mac_address=$4
-  os_name=$5
-cat <<EOF>> instackenv-$rhosp_version.json
+  file=$1
+  ipmi_address=$2
+  vm=$3
+  vbmc_port=$4
+  mac_address=$5
+  os_name=$6
+cat <<EOF>> $file
         {
             "name":"$vm",
             "pm_type":"pxe_ipmitool",

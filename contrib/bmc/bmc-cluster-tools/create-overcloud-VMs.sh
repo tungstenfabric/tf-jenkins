@@ -14,7 +14,7 @@ source $my_dir/functions.sh
 
 
 
-for vm in "${!node_4_vm[@]}"; do 
+for vm in "${!node_4_vm[@]}"; do
   ip_addr=${node_4_vm[$vm]};
   vbmc_port=${vbmc_port_4_vm[$vm]}
   ssh $ip_addr ./create_VM.sh $vm rhel8.2

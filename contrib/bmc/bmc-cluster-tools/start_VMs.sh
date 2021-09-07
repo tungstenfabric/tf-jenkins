@@ -12,7 +12,7 @@ source $my_dir/$1.env
 source functions.sh
 
 
-for vm in "${!node_4_vm[@]}"; do 
+for vm in "${!node_4_vm[@]}"; do
   ip_addr=${node_4_vm[$vm]};
   ssh $ip_addr virsh start $vm
 done

@@ -8,7 +8,7 @@ source $my_dir/rhosp13.env
 source functions.sh
 
 
-for kvm in $(echo $kvm_list); do 
+for kvm in $(echo $kvm_list); do
   ssh $kvm vbmc list
 done
 
