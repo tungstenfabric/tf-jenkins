@@ -20,7 +20,7 @@ done" || res=1
 
 if [[ "$res" != '0' ]]; then
   echo "ERROR: VM is not accessible. trying reboot..."
-  "$my_dir/../../../infra/${SLAVE}/reboot_worker.sh $instance_ip"
+  "$my_dir/../../../infra/${SLAVE}/reboot_worker.sh" $instance_ip
   sleep 30
   res=0
   timeout 60 bash -c "\
