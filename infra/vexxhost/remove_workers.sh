@@ -17,7 +17,6 @@ for instance_id in $instance_ids ; do
   if nova show "$instance_id" | grep 'locked' | grep 'False' ; then
     if down_instances $instance_id ; then
       openstack server show $instance_id
-      openstack console log show $instance_id
       nova delete "$instance_id"
     fi
   fi
