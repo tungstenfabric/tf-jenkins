@@ -12,11 +12,23 @@ ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
 res=0
 
 echo "INFO: wait for host"
-timeout 300 bash -c "\
+timeout 30 bash -c "\
 while /bin/true ; do \
   $ssh_cmd $IMAGE_SSH_USER@$instance_ip 'uname -a' 2>/dev/null && break ; \
   sleep 10 ; \
 done" || res=1
+
+if [[ "$res" != '0' ]]; then
+  echo "ERROR: VM is not accessible. trying reboot..."
+  "$my_dir/../../../infra/${SLAVE}/reboot_worker.sh $instance_ip"
+  sleep 30
+  res=0
+  timeout 60 bash -c "\
+  while /bin/true ; do \
+    $ssh_cmd $IMAGE_SSH_USER@$instance_ip 'uname -a' 2>/dev/null && break ; \
+    sleep 10 ; \
+  done" || res=1
+fi
 
 if [[ "$res" != '0' ]]; then
   echo "ERROR: VM is not accessible"
