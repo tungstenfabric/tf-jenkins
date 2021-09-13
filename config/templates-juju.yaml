@@ -115,6 +115,7 @@
           MONITORING_DEPLOYER: juju
           MONITORING_ORCHESTRATOR: os
           ENVIRONMENT_OS: ubuntu20
+          USE_DATAPLANE_NETWORK: true
     jobs:
       deploy-platform-juju-os:
         stream: juju-os
