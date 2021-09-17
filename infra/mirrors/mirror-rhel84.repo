@@ -17,7 +17,7 @@ cost = 600
 [rhosp16.2]
 Name=Openstack 16.2 for Red Hat Enterprise Linux 8.4
 enabled=1
-baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/openstack-beta-for-rhel-8-x86_64-rpms/
+baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/openstack-16.2-for-rhel-8-x86_64-rpms/
 cost = 600
 gpgcheck=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release

@@ -28,7 +28,7 @@ elif [[ "$REPOS_TYPE" == "rhel82" ]]; then
     RHOSP_NAMESPACE="rhosp-rhel8"
 elif [[ "$REPOS_TYPE" == "rhel84" ]]; then    
     REDHAT_TAG='16.2'
-    RHOSP_NAMESPACE="rhosp-beta"
+    RHOSP_NAMESPACE="rhosp-rhel8"
 
 fi
 
