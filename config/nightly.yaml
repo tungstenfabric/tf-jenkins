@@ -49,9 +49,11 @@
           vars:
             DEBUGINFO: TRUE
         build-r1912:
+          frequency: 7
           vars:
             DEBUGINFO: TRUE
         build-r1912-ubi:
+          frequency: 7
           vars:
             DEBUGINFO: TRUE
         build-r2011-ubi:
