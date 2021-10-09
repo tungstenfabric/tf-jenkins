@@ -29,6 +29,7 @@
         - rhosp16.1
         - rhosp16.1-2011
         - rhosp16.1-ha-ziu
+        - rhosp16.2-ha
         #- rhosp13-bmc
         - operator
         - operator-ha
