@@ -4,7 +4,8 @@ set -o pipefail
 [ "${DEBUG,,}" == "true" ] && set -x
 
 echo "INFO: prepare mirrors input"
-cp pip.conf src/tungstenfabric/tf-dev-env/config/etc/pip.conf
+mkdir -p ./src/tungstenfabric/tf-dev-env/config/etc
+cp pip.conf ./src/tungstenfabric/tf-dev-env/config/etc/pip.conf
 # TODO: add yum mirrors: base and docker
 
 echo "INFO: run dev-env and sync sources"
