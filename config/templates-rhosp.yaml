@@ -585,7 +585,7 @@
         timeout: 240
         vars:
           DEPLOYMENT_TEST_TAGS: ziu
-          TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
+          TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX
         depends-on:
           - package-ubi
           - deploy-tf-rhosp16.1-ha-ziu
@@ -593,7 +593,7 @@
         job-name: test-sanity
         stream: rhosp16.1-ha-ziu
         vars:
-          TF_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/contrail-test-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
+          TF_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/contrail-test-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX
         depends-on:
           - test-deployment-rhosp16.1-ha-ziu
       collect-logs-and-cleanup-rhosp16.1-ha-ziu:
