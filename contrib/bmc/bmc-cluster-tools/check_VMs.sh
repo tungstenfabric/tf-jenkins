@@ -4,8 +4,8 @@ source rhosp13.env
 source functions.sh
 
 
-for kvm in $(echo $kvm_list); do 
-  ssh $kvm virsh list --all 
+for kvm in $(echo $kvm_list); do
+  ssh $kvm virsh list --all
 done
 
 

@@ -11,10 +11,10 @@ my_dir="$(dirname $my_file)"
 source $my_dir/$1.env
 source functions.sh
 
-virsh destroy undercloud
-virsh undefine --remove-all-storage undercloud
+virsh destroy $undercloud_vm
+virsh undefine --remove-all-storage $undercloud_vm
 
-for vm in "${!node_4_vm[@]}"; do 
+for vm in "${!node_4_vm[@]}"; do
   ip_addr=${node_4_vm[$vm]};
   #del_vbmc $ip_addr $vm
   ssh $ip_addr virsh destroy $vm

@@ -11,10 +11,8 @@ my_dir="$(dirname $my_file)"
 source $my_dir/$1.env
 source functions.sh
 
+virt-clone --original ${undercloud_vm}-original --name ${undercloud_vm} --auto-clone
+virsh start $undercloud_vm
 
-for vm in "${!node_4_vm[@]}"; do
-  ip_addr=${node_4_vm[$vm]};
-  ssh $ip_addr virsh destroy $vm
-done
-
+$my_dir/create-overcloud-VMs.sh $1
 

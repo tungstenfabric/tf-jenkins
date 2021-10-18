@@ -23,10 +23,10 @@ REPOS_TYPE=$1
 if [[ "$REPOS_TYPE" == "rhel7" ]]; then
     REDHAT_TAG='13.0'
     RHOSP_NAMESPACE="rhosp13"
-elif [[ "$REPOS_TYPE" == "rhel82" ]]; then    
+elif [[ "$REPOS_TYPE" == "rhel82" ]]; then
     REDHAT_TAG='16.1'
     RHOSP_NAMESPACE="rhosp-rhel8"
-elif [[ "$REPOS_TYPE" == "rhel84" ]]; then    
+elif [[ "$REPOS_TYPE" == "rhel84" ]]; then
     REDHAT_TAG='16.2'
     RHOSP_NAMESPACE="rhosp-rhel8"
 
@@ -69,7 +69,7 @@ function wait_cmd_success() {
   echo ""
   echo "INFO: done in $((i*interval))s"
   eval "$state"
-} 
+}
 
 
 function wait_ssh() {

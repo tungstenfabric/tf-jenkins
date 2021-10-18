@@ -12,10 +12,10 @@ source $my_dir/$1.env
 source $my_dir/functions.sh
 
 
-virt-clone --original undercloud_backup --name undercloud --auto-clone
-virsh start undercloud
+virt-clone --original ${undercloud_vm}_backup --name $undercloud_vm --auto-clone
+virsh start $undercloud_vm
 
-for vm in "${!node_4_vm[@]}"; do 
+for vm in "${!node_4_vm[@]}"; do
   ip_addr=${node_4_vm[$vm]};
   vbmc_port=${vbmc_port_4_vm[$vm]}
   ssh $ip_addr virt-clone --original "${vm}_backup" --name $vm --auto-clone
@@ -26,6 +26,6 @@ done
 
 $my_dir/generate_instackenv.sh
 
-#Sometimes it's unavailable without reboot. 
-virsh destroy undercloud
-virsh start undercloud
+#Sometimes it's unavailable without reboot.
+virsh destroy $undercloud_vm
+virsh start $undercloud_vm
