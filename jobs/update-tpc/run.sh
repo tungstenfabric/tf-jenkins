@@ -10,7 +10,11 @@ source "$my_dir/definitions"
 
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" {$WORKSPACE/src,$my_dir/update_tpc.sh} $IMAGE_SSH_USER@$instance_ip:./
 
-echo "INFO: Update tpc started"
+repo_name="yum-tpc-source"
+repo_suffix=${tpc_repo_suffix["$ENVIRONMENT_OS"]}
+[ -z $"repo_suffix" ] || repo_name+="-${repo_suffix}"
+
+echo "INFO: Update tpc started ($repo_name)"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 #!/bin/bash -e
 [ "${DEBUG,,}" == "true" ] && set -x
@@ -19,7 +23,7 @@ export DEBUG=$DEBUG
 export TPC_REPO_USER=$TPC_REPO_USER
 export TPC_REPO_PASS=$TPC_REPO_PASS
 
-export REPO_SOURCE=http://tf-nexus.$SLAVE_REGION.$CI_DOMAIN/repository/yum-tpc-source
+export REPO_SOURCE=http://tf-nexus.$SLAVE_REGION.$CI_DOMAIN/repository/$repo_name
 export CONTAINER_REGISTRY=tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101
 export DEVENV_TAG=stable
 export CONTRAIL_DEPLOY_REGISTRY=0

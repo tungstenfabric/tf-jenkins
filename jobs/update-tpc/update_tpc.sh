@@ -11,12 +11,9 @@ cp pip.conf ./src/tungstenfabric/tf-dev-env/config/etc/pip.conf
 echo "INFO: run dev-env and sync sources"
 ./src/tungstenfabric/tf-dev-env/run.sh fetch
 
-echo "INFO: List packages"
-sudo docker exec -i tf-dev-sandbox /bin/bash -c "cd contrail/third_party/contrail-third-party-packages/upstream/rpm; make list"
-echo "INFO: Prepare for build"
-sudo docker exec -i tf-dev-sandbox /bin/bash -c "cd contrail/third_party/contrail-third-party-packages/upstream/rpm; make prep"
-echo "INFO: Make all"
-sudo docker exec -i tf-dev-sandbox /bin/bash -c "cd contrail/third_party/contrail-third-party-packages/upstream/rpm; make all"
+echo "INFO: Buil TPP"
+./src/tungstenfabric/tf-dev-env/run.sh compile tpp
+
 echo "INFO: Copy built RPM-s from container to host"
 sudo docker cp tf-dev-sandbox:/root/contrail/third_party/RPMS .
 

@@ -323,6 +323,11 @@ create_raw_hosted('contrail-third-party')
 create_yum_hosted('yum-tpc-binary', 0)
 // hosted tpc source has build packages from third-party-packages repo and it doesn't depend on branch for now
 // because contrail-third-party-packages doesn't have branches
+create_yum_hosted('yum-tpc-source-el7', 0)
+create_yum_hosted('yum-tpc-source-el8', 0)
+create_yum_group('yum-tpc-el7', ['yum-tpc-binary', 'yum-tpc-source-el7'])
+create_yum_group('yum-tpc-el8', ['yum-tpc-binary', 'yum-tpc-source-el8'])
+// TODO: legacy - remove as ubi8 support be done
 create_yum_hosted('yum-tpc-source', 0)
 create_yum_group('yum-tpc', ['yum-tpc-binary', 'yum-tpc-source'])
 
