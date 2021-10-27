@@ -11,6 +11,9 @@ cp pip.conf ./src/tungstenfabric/tf-dev-env/config/etc/pip.conf
 echo "INFO: run dev-env and sync sources"
 ./src/tungstenfabric/tf-dev-env/run.sh fetch
 
+echo "INFO: preapre deps for TPP compilation"
+./src/tungstenfabric/tf-dev-env/run.sh configure tpp
+
 echo "INFO: Buil TPP"
 ./src/tungstenfabric/tf-dev-env/run.sh compile tpp
 

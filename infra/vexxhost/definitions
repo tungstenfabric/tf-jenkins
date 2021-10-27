@@ -46,8 +46,8 @@ declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' \
 declare -A OS_IMAGES_UP=( ['CENTOS7']='centos' \
                           ['CENTOS8']='centos' \
                           ['RHEL7']='' \
-                          ['RHEL82']='' \
-                          ['RHEL84']='' \
+                          ['RHEL82']='rhel' \
+                          ['RHEL84']='rhel' \
                           ['RHCOS45']='' \
                           ['UBUNTU18']='ubuntu' \
                           ['UBUNTU20']='ubuntu' )
