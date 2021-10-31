@@ -176,6 +176,11 @@ for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
 
   for instance_id in $INSTANCE_IDS ; do
     instance_ip=$(get_instance_ip $instance_id)
+    if [[ -z "$instance_ip" ]]; then
+      echo "ERROR: Can't get instance's IP by its id=$instance_id. Clean up"
+      cleanup ${group_tag}
+      break
+    fi
     if ! wait_for_instance_availability $instance_ip ; then
       echo "ERROR: Node with $instance_ip is not available. Clean up"
       cleanup ${group_tag}

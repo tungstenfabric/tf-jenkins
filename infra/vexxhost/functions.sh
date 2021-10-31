@@ -6,9 +6,10 @@ function get_instance_ip() {
   local networks
   local i
   for (( i=1; i<=5 ; ++i )) ; do
-    if networks=$(openstack server show $instance_id -c addresses -f value) 2>/dev/null ; then
+    if networks=$(openstack server show $instance_id -c addresses -f value 2>&1) ; then
       break
     fi
+    networks=""
     sleep 10
   done
   if [[ -z "$networks" ]]; then
@@ -20,28 +21,30 @@ function get_instance_ip() {
       break
     fi
   done
-  # TODO: check that all clients has error handling
 }
 
+# caller must check for empty result
 function get_network_cidr() {
   local net=$1
-  local i
+  local i, res
   for (( i=1; i<=5 ; ++i )) ; do
-    if openstack subnet list --network $net -c Subnet -f value 2>/dev/null | head -1 ; then
+    if res=$(openstack subnet list --network $net -c Subnet -f value 2>&1) ; then
+      echo "$res | head -1"
       return
     fi
     sleep 10
   done
 }
 
+# caller must check for empty result
 function get_network_gateway() {
   local net=$1
-  local i
-  local gw
+  local i, gw, res
   for (( i=1; i<=5 ; ++i )) ; do
-    local subnet=$(openstack subnet list --network data -c ID -f value 2>/dev/null | head -1)
-    if [ -n "$subnet" ] ; then
-      if openstack subnet show $subnet -c gateway_ip -f value 2>/dev/null ; then
+    if res=$(openstack subnet list --network data -c ID -f value 2>&1) ; then
+      subnet=$(echo "$res" | head -1)
+      if [ -n "$subnet" ] && res=$(openstack subnet show $subnet -c gateway_ip -f value 2>/dev/null) ; then
+        echo "$res"
         return
       fi
     fi
@@ -56,16 +59,35 @@ function list_instances() {
   if [[ -n "$not_tags" ]] ; then
     opts+=" --not-tags $not_tags"
   fi
-  nova list $opts --minimal | awk '{print $2}' | grep -v ID | grep -v "^$" | tr '\n' ' '
+  local i, res
+  for (( i=1; i<=5 ; ++i )) ; do
+    if res=$(nova list $opts --minimal 2>&1) ; then
+      echo "$res" | awk '{print $2}' | grep -v ID | grep -v "^$" | tr '\n' ' '
+      return
+    fi
+    sleep 10
+  done
+  echo "ERROR: can't list instances with tags=$tags and not_tags=$not_tags"
+  echo "$res"
+  return 1
 }
 
 function get_tag_value() {
   local instance=$1
   local tag=$2
-  local kv=$(nova server-tag-list $instance  | awk '{print $2}' | grep -v "^Tag$" | grep "${tag}=")
-  if [[ -n "$kv" ]] ; then
-    echo $kv | cut -d '=' -f 2
-  fi
+  local i, res
+  for (( i=1; i<=5 ; ++i )) ; do
+    if res=$(nova server-tag-list $instance 2>&1) ; then
+      local kv=$(echo "$res" | awk '{print $2}' | grep -v "^Tag$" | grep "${tag}=")
+      if [[ -n "$kv" ]] ; then
+        echo $kv | cut -d '=' -f 2
+      fi
+    fi
+    sleep 10
+  done
+  echo "ERROR: tag value (key=$tag) couldn't be obtained for instance $instance"
+  echo "$res"
+  return 1
 }
 
 function tier_down() {
@@ -73,6 +95,9 @@ function tier_down() {
   local down=$(get_tag_value $instance DOWN)
   if [[ -n "$down" && -e ${my_dir}/../hooks/${down}/down.sh ]] ; then
     local instance_ip=$(get_instance_ip $instance)
+    if [[ -z "$instance_ip" ]]; then
+      return 1
+    fi
     ${my_dir}/../hooks/${down}/down.sh $instance_ip
   fi
 }
