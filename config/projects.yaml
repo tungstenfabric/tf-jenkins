@@ -181,6 +181,9 @@
 
 - project:
     name: tungstenfabric/tf-tripleo-puppet
+    branch:
+      - master
+      - R.+
     check:
       templates:
         - rhosp13

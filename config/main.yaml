@@ -8,6 +8,7 @@
 # project keys:
 #   name - the name of project from review system
 #   names - list of projects (to support forks or migration)
+#   branch - string or list of branches to apply the definition
 #   check/gate/nightly...: name of predefined pipeline. Check/gate is used for check/gate events.
 #                          nightly and other are used to manually run infra jobs
 

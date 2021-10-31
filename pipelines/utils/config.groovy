@@ -38,8 +38,27 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
       continue
     if (item.get('project').containsKey('names') && !item.get('project').names.contains(project_name))
       continue
-    if (item.get('project').containsKey('branch') && item.get('project').get('branch') != gerrit_branch)
-      continue
+    if (item.get('project').containsKey('branch')) {
+      def branches = []
+      def value = item.get('project').get('branch')
+      if (value instanceof java.util.ArrayList) {
+        branches = value
+      } else {
+        branches = [value]
+      }
+      found = false
+      for (branch in branches) {
+        if (_compare_branches(gerrit_branch, branch)) {
+          found = true
+          break
+        }
+      }
+      print("Found = ${found}, value = ${value}")
+      if (!found) {
+        continue
+      }
+    }
+
     project = item.get('project')
     break
   }
@@ -75,6 +94,15 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
   _fill_stream_jobs(streams, jobs)
 
   return [streams, jobs, post_jobs]
+}
+
+// this method uses regexp search that is no serializable - thus apply NonCPS
+@NonCPS
+def _compare_branches(gerrit_branch, config_branch) {
+  // return true/false - otherwise it will return matcher object
+  if (gerrit_branch =~ "^${config_branch}\$")
+    return true
+  return false
 }
 
 def _get_data() {
