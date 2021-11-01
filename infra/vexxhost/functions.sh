@@ -26,8 +26,9 @@ function get_instance_ip() {
 # caller must check for empty result
 function get_network_cidr() {
   local net=$1
-  local i, res
+  local i
   for (( i=1; i<=5 ; ++i )) ; do
+    local res
     if res=$(openstack subnet list --network $net -c Subnet -f value 2>&1) ; then
       echo "$res | head -1"
       return
@@ -39,8 +40,9 @@ function get_network_cidr() {
 # caller must check for empty result
 function get_network_gateway() {
   local net=$1
-  local i, gw, res
+  local i
   for (( i=1; i<=5 ; ++i )) ; do
+    local res
     if res=$(openstack subnet list --network data -c ID -f value 2>&1) ; then
       subnet=$(echo "$res" | head -1)
       if [ -n "$subnet" ] && res=$(openstack subnet show $subnet -c gateway_ip -f value 2>/dev/null) ; then
@@ -59,8 +61,9 @@ function list_instances() {
   if [[ -n "$not_tags" ]] ; then
     opts+=" --not-tags $not_tags"
   fi
-  local i, res
+  local i
   for (( i=1; i<=5 ; ++i )) ; do
+    local res
     if res=$(nova list $opts --minimal 2>&1) ; then
       echo "$res" | awk '{print $2}' | grep -v ID | grep -v "^$" | tr '\n' ' '
       return
@@ -75,8 +78,9 @@ function list_instances() {
 function get_tag_value() {
   local instance=$1
   local tag=$2
-  local i, res
+  local i
   for (( i=1; i<=5 ; ++i )) ; do
+    local res
     if res=$(nova server-tag-list $instance 2>&1) ; then
       local kv=$(echo "$res" | awk '{print $2}' | grep -v "^Tag$" | grep "${tag}=")
       if [[ -n "$kv" ]] ; then
