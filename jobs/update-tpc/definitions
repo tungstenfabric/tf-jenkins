@@ -1,7 +1,3 @@
 export VM_TYPE=xsmall
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
-
-ENVIRONMENT_OS=${ENVIRONMENT_OS:-'centos7'}
-
-declare -A tpc_repo_suffix=( ['centos7']='el7' ['rhel84']='el8' ) 

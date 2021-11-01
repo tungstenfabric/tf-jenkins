@@ -14,11 +14,11 @@
       - tf-dev-env
     parameters:
       - choice:
-          description: "Operating system el7 or el8"
-          name: ENVIRONMENT_OS
+          description: "TPC version to update"
+          name: TPC_VERSION
           choices:
-            - centos7
-            - rhel84
+            - el7
+            - el8
     wrappers:
       - workspace-cleanup:
           disable-deferred-wipeout: true
@@ -61,8 +61,14 @@
       - shell: |
           # individual job - create global.env
           echo "export SLAVE=vexxhost" > $WORKSPACE/global.env
-          echo "export ENVIRONMENT_OS=$ENVIRONMENT_OS" >> $WORKSPACE/global.env
           echo "export REPOS_CHANNEL=latest" >> $WORKSPACE/global.env
+          echo "export TPC_VERSION=$TPC_VERSION" >> $WORKSPACE/global.env
+          if [[ $TPC_VERSION == 'el7' ]]; then
+            echo "export ENVIRONMENT_OS=centos7" >> $WORKSPACE/global.env
+          else
+            # el8 case
+            echo "export ENVIRONMENT_OS=rhel84" >> $WORKSPACE/global.env
+          fi
       - shell: |
           set -eo pipefail
           source "$WORKSPACE/global.env"

@@ -1,6 +1,11 @@
 #!/bin/bash
 
 cd
+if [ ! -e rhosp-environment.sh ] ; then
+    echo "INFO: no rhosp-environment.sh - skip distribute_local_repos.sh"
+    exit
+fi
+
 source rhosp-environment.sh
 
 SSH_USER=${SSH_USER:-'cloud-user'}
