@@ -18,7 +18,7 @@ echo "INFO: Buil TPP"
 ./src/tungstenfabric/tf-dev-env/run.sh compile tpp
 
 echo "INFO: Copy built RPM-s from container to host"
-sudo docker cp tf-dev-sandbox:/root/contrail/third_party/RPMS .
+sudo docker cp tf-dev-sandbox:/root/contrail/RPMS .
 
 echo "INFO: Upload packages"
 for pfile in $(find ./RPMS -type f -name "*.rpm"); do
