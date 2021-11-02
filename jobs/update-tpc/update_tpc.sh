@@ -20,7 +20,7 @@ echo "INFO: Buil TPP"
 cat <<EOF >/tmp/upload.sh
 #!/bin/bash -e
 echo "INFO: Upload packages"
-for pfile in \$(find /root/contrail/RPMS -type f -name "*.rpm"); do
+for pfile in \$(find /root/work/RPMS -type f -name "*.rpm"); do
   package=\$(echo \$pfile | awk -F '/' '{print \$NF}')
   echo "INFO: Upload \$pfile as $package"
   curl -sS -u ${TPC_REPO_USER}:${TPC_REPO_PASS} --upload-file \$pfile $REPO_SOURCE/\$package
