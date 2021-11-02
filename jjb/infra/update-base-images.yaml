@@ -14,6 +14,7 @@
           choices:
             - ALL
             - CENTOS7
+            - CENTOS8
             - UBUNTU18
             - UBUNTU20
             - RHCOS45

@@ -27,6 +27,15 @@ if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'CENTOS7' ]]; then
   images="$images base-centos7-$date_suffix"
 fi
 
+if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'CENTOS8' ]]; then
+  echo "INFO: download centos8 from centos.org"
+  curl -LOs "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2"
+  echo "INFO: upload centos8 to vexxhost"
+  openstack image create --disk-format qcow2 --tag centos8 --file CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2 base-centos8-$date_suffix
+  rm -f CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
+  images="$images base-centos8-$date_suffix"
+fi
+
 if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'UBUNTU18' ]]; then
   echo "INFO: download ubuntu18 from cloud-images"
   curl -LOs "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img"

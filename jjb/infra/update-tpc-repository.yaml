@@ -67,9 +67,7 @@
             echo "export ENVIRONMENT_OS=centos7" >> $WORKSPACE/global.env
           else
             # el8 case
-            echo "export ENVIRONMENT_OS=rhel84" >> $WORKSPACE/global.env
-            echo "export LINUX_DISTR=tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005/ubi8/ubi" >> $WORKSPACE/global.env
-            echo "export LINUX_DISTR_VER=stable" >> $WORKSPACE/global.env
+            echo "export ENVIRONMENT_OS=centos8" >> $WORKSPACE/global.env
           fi
       - shell: |
           set -eo pipefail
