@@ -68,6 +68,7 @@
           else
             # el8 case
             echo "export ENVIRONMENT_OS=centos8" >> $WORKSPACE/global.env
+            echo "export LINUX_DISTR_VER=8" >> $WORKSPACE/global.env
           fi
       - shell: |
           set -eo pipefail
