@@ -17,12 +17,17 @@ echo "INFO: preapre deps for TPP compilation"
 echo "INFO: Buil TPP"
 ./src/tungstenfabric/tf-dev-env/run.sh compile tpp
 
-echo "INFO: Copy built RPM-s from container to host"
-sudo docker cp tf-dev-sandbox:/root/contrail/RPMS .
-
+cat <<EOF >/tmp/upload.sh
+#!/bin/bash -e
 echo "INFO: Upload packages"
-for pfile in $(find ./RPMS -type f -name "*.rpm"); do
-  package=$(echo $pfile | awk -F '/' '{print $NF}')
-  echo "INFO: Upload $pfile as $package"
-  curl -sS -u ${TPC_REPO_USER}:${TPC_REPO_PASS} --upload-file $pfile $REPO_SOURCE/$package
+for pfile in \$(find /root/contrail/RPMS -type f -name "*.rpm"); do
+  package=\$(echo \$pfile | awk -F '/' '{print \$NF}')
+  echo "INFO: Upload \$pfile as $package"
+  curl -sS -u ${TPC_REPO_USER}:${TPC_REPO_PASS} --upload-file \$pfile $REPO_SOURCE/\$package
 done
+EOF
+chmod a+x /tmp/upload.sh
+
+echo "INFO: Copy upload script into container and run it"
+sudo docker cp /tmp/upload.sh tf-dev-sandbox:/tmp/upload.sh
+sudo docker exec tf-dev-sandbox /tmp/upload.sh
