@@ -26,17 +26,22 @@ sudo cp -f ./docker-daemon.json /etc/docker/daemon.json
 #sudo kill -SIGHUP $(pidof dockerd)
 EOF
 
-if [ -f $my_dir/../../mirrors/centos7-environment ]; then
+$ssh_cmd $IMAGE_SSH_USER@$instance_ip "grep VERSION_ID /etc/os-release" 2>/dev/null >"$WORKSPACE/os-release-$instance_ip"
+source "$WORKSPACE/os-release-$instance_ip"
+
+if [ -f $my_dir/../../mirrors/centos${VERSION_ID}-environment ]; then
   echo "INFO: copy additional environment to host"
-  cat $my_dir/../../mirrors/centos7-environment | envsubst > "$WORKSPACE/centos7-environment"
-  rsync -a -e "$ssh_cmd" "$WORKSPACE/centos7-environment" ${IMAGE_SSH_USER}@${instance_ip}:./centos7-environment
-  $ssh_cmd $IMAGE_SSH_USER@$instance_ip "cat centos7-environment | sudo tee -a /etc/environment"
+  cat $my_dir/../../mirrors/centos${VERSION_ID}-environment | envsubst > "$WORKSPACE/centos${VERSION_ID}-environment"
+  rsync -a -e "$ssh_cmd" "$WORKSPACE/centos${VERSION_ID}-environment" ${IMAGE_SSH_USER}@${instance_ip}:./centos${VERSION_ID}-environment
+  $ssh_cmd $IMAGE_SSH_USER@$instance_ip "cat centos${VERSION_ID}-environment | sudo tee -a /etc/environment"
 fi
 
-echo "INFO: copy mirror-base.repo to host"
-cat $my_dir/../../mirrors/mirror-base.repo | envsubst > "$WORKSPACE/mirror-base.repo"
-rsync -a -e "$ssh_cmd" "$WORKSPACE/mirror-base.repo" ${IMAGE_SSH_USER}@${instance_ip}:./mirror-base.repo
-$ssh_cmd $IMAGE_SSH_USER@$instance_ip "sudo rm -f /etc/yum.repos.d/*; sudo cp mirror-base.repo /etc/yum.repos.d/"
+if [ -f $my_dir/../../mirrors/mirror-base-centos${VERSION_ID}.repo ]; then
+  echo "INFO: copy mirror-base-centos${VERSION_ID}.repo to host"
+  cat $my_dir/../../mirrors/mirror-base-centos${VERSION_ID}.repo | envsubst > "$WORKSPACE/mirror-base-centos${VERSION_ID}.repo"
+  rsync -a -e "$ssh_cmd" "$WORKSPACE/mirror-base-centos${VERSION_ID}.repo" ${IMAGE_SSH_USER}@${instance_ip}:./mirror-base-centos${VERSION_ID}.repo
+  $ssh_cmd $IMAGE_SSH_USER@$instance_ip "sudo rm -f /etc/yum.repos.d/*; sudo cp mirror-base-centos${VERSION_ID}.repo /etc/yum.repos.d/"
+fi
 
 # TODO: detect interface name
 echo "INFO: do not set default gateway for second interface"

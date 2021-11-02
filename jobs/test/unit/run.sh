@@ -25,16 +25,16 @@ mirror_list=""
 mirror_list_for_build=""
 # substitute repos only for centos7
 if [[ ${LINUX_DISTR} == 'centos' ]]; then
-  mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-docker.repo mirror-base.repo "
+  mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-docker.repo mirror-base-centos7.repo "
   # epel must not be there - it cause incorrect installs and fails at runtime
-  mirror_list="mirror-base.repo"
+  mirror_list="mirror-base-centos7.repo"
   # add empty CentOS repos to disable them
   mirror_list_for_build+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
   mirror_list_for_build+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
   mirror_list+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
   mirror_list+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
 fi
-for repofile in $mirror_list_for_build $mirror_list mirror-base.repo mirror-docker.repo mirror-pip.conf mirror-docker-daemon.json ; do
+for repofile in $mirror_list_for_build $mirror_list mirror-base-centos7.repo mirror-docker.repo mirror-pip.conf mirror-docker-daemon.json ; do
   file="${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}"
   cat $file | envsubst > $file.tmp
   mv $file.tmp $file
@@ -90,7 +90,7 @@ done
 # substitute repos only for centos7
 if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   # copy base & docker repo to local machine
-  sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-base.repo /etc/yum.repos.d/
+  sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-base-centos7.repo /etc/yum.repos.d/
   sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
 fi
 
