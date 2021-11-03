@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 REPOS_CENTOS7=(base centosplus extras updates)
-REPOS_YUM7=(centos-openstack-queens dockerrepo epel google-chrome k8s)
+REPOS_YUM7=(centos-openstack-queens dockerrepo epel k8s)
 MIRRORDIR=/repos
 DATE=$(date +"%Y%m%d")
 

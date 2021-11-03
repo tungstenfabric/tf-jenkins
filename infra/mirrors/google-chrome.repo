@@ -1,6 +1,0 @@
-[tf-mirrors.ci_repos_google-chrome]
-name=added from: http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/yum7/$REPOS_CHANNEL/google-chrome/
-baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/yum7/$REPOS_CHANNEL/google-chrome/
-enabled=1
-gpgcheck=0
-cost = 500

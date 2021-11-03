@@ -40,20 +40,20 @@ mirror_list=""
 mirror_list_for_build=""
 
 if [[ ${LINUX_DISTR} == 'rhel7' ]]; then
-  mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-rhel84-baseos.repo"
-  mirror_list="google-chrome.repo"
+  mirror_list_for_build="mirror-epel.repo mirror-rhel84-baseos.repo"
+  mirror_list=""
 elif [[ ${LINUX_DISTR} == 'centos' ]]; then
-  mirror_list_for_build="mirror-epel.repo google-chrome.repo mirror-docker.repo mirror-base-centos7.repo "
+  mirror_list_for_build="mirror-epel.repo mirror-docker.repo mirror-base-centos7.repo "
   # epel must not be there - it cause incorrect installs and fails at runtime
-  mirror_list="mirror-base-centos7.repo mirror-openstack.repo mirror-docker.repo google-chrome.repo"
+  mirror_list="mirror-base-centos7.repo mirror-openstack.repo mirror-docker.repo"
   # add empty CentOS repos to disable them
   mirror_list_for_build+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
   mirror_list_for_build+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
   mirror_list+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
   mirror_list+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
 elif [[ "${LINUX_DISTR}" =~ 'ubi7' ]] ; then
-  mirror_list_for_build="mirror-epel.repo google-chrome.repo ubi.repo mirror-rhel7.repo mirror-rhel84-baseos.repo"
-  mirror_list="google-chrome.repo ubi.repo mirror-rhel7.repo"
+  mirror_list_for_build="mirror-epel.repo ubi.repo mirror-rhel7.repo mirror-rhel84-baseos.repo"
+  mirror_list="ubi.repo mirror-rhel7.repo"
 fi
 
 # here we need only ubuntu18 mirror file cause we based build-init container on ubuntu18 only

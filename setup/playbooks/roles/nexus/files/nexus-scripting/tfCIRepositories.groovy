@@ -298,26 +298,6 @@ create_raw_hosted('contrail-third-party')
 ////////////
 // Yum Proxy
 
-// Docker
-// deprecated. create_yum_proxy('docker-ce-stable',    'https://download.docker.com/linux/centos/7/x86_64/stable')
-// deprecated. create_yum_proxy('google-chrome',       'http://dl.google.com/linux/chrome/rpm/stable/x86_64')
-// Openstack
-// deprecated. create_yum_proxy('openstack-ocata',     'http://mirror.centos.org/centos/7/cloud/x86_64/openstack-ocata')
-// deprecated. create_yum_proxy('openstack-queens',    'http://mirror.centos.org/centos/7/cloud/x86_64/openstack-queens')
-// deprecated. create_yum_proxy('openstack-rocky',     'http://mirror.centos.org/centos/7/cloud/x86_64/openstack-rocky')
-// Epel
-// deprecated. create_yum_proxy('epel',                'https://dl.fedoraproject.org/pub/epel/7/x86_64')
-// CentOS
-// deprecated. create_yum_proxy('centos7-os',          'http://centos.mirror.vexxhost.com/7/os/x86_64')
-// deprecated. create_yum_proxy('centos7-updates',     'http://centos.mirror.vexxhost.com/7/updates/x86_64')
-// deprecated. create_yum_proxy('centos7-extras',      'http://centos.mirror.vexxhost.com/7/extras/x86_64')
-// deprecated. create_yum_proxy('centos7-centosplus',  'http://centos.mirror.vexxhost.com/7/centosplus/x86_64')
-
-// for kernels in R1909 - 957.*
-// create_yum_proxy('centos7-updates-old', 'http://vault.centos.org/7.6.1810/updates/x86_64/')
-// for kernels in >=R1912 - 1062.*
-// deprecated. create_yum_proxy('centos7-updates-old', 'http://vault.centos.org/7.7.1908/updates/x86_64/')
-
 // TPC
 // hosted tpc binary has third party packages that was taken somewhere and it doesn't depend on branch
 create_yum_hosted('yum-tpc-binary', 0)
@@ -327,9 +307,9 @@ create_yum_hosted('yum-tpc-source-el7', 0)
 create_yum_hosted('yum-tpc-source-el8', 0)
 create_yum_group('yum-tpc-el7', ['yum-tpc-binary', 'yum-tpc-source-el7'])
 create_yum_group('yum-tpc-el8', ['yum-tpc-binary', 'yum-tpc-source-el8'])
-// TODO: legacy - remove as ubi8 support be done
-create_yum_hosted('yum-tpc-source', 0)
-create_yum_group('yum-tpc', ['yum-tpc-binary', 'yum-tpc-source'])
+// legacy - remove as ubi8 support be done. leave for compatibility
+create_yum_group('yum-tpc-source', ['yum-tpc-source-el7'])
+create_yum_group('yum-tpc', ['yum-tpc-binary', 'yum-tpc-source-el7'])
 
 /////////
 // Maven
