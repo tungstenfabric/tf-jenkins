@@ -97,6 +97,8 @@ export KERNEL_REPOSITORIES_RHEL8="--disablerepo=* --enablerepo=BaseOS --enablere
 export BUILD_MODE=$BUILD_MODE
 export DEBUGINFO=$DEBUGINFO
 
+export CONTRAIL_PARALLEL_BUILD=$CONTRAIL_PARALLEL_BUILD
+
 cd src/tungstenfabric/tf-dev-env
 
 # TODO: use in future generic mirror approach

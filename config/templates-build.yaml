@@ -303,6 +303,7 @@
           LINUX_DISTR_VER: stable
           TAG_SUFFIX: "-ubi8"
           INSECURE_REGISTRIES: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005
+          CONTRAIL_PARALLEL_BUILD: false
     jobs:
       prepare-sandbox-ubi8:
         # it creates worker
