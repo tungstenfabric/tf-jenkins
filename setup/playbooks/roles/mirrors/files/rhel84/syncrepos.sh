@@ -1,6 +1,20 @@
 #!/bin/bash -e
 
-REPOS_RH8=(rhel-8-for-x86_64-appstream-rpms rhel-8-for-x86_64-baseos-rpms rhel-8-for-x86_64-highavailability-rpms ansible-2.9-for-rhel-8-x86_64-rpms ansible-2-for-rhel-8-x86_64-rpms advanced-virt-for-rhel-8-x86_64-rpms satellite-tools-6.5-for-rhel-8-x86_64-rpms openstack-16.2-for-rhel-8-x86_64-rpms fast-datapath-for-rhel-8-x86_64-rpms rhceph-4-tools-for-rhel-8-x86_64-rpms)
+REPOS_RH8=(
+  advanced-virt-for-rhel-8-x86_64-rpms
+  ansible-2-for-rhel-8-x86_64-rpms
+  ansible-2.9-for-rhel-8-x86_64-rpms
+  codeready-builder-for-rhel-8-x86_64-rpms
+  fast-datapath-for-rhel-8-x86_64-rpms
+  openstack-16.2-for-rhel-8-x86_64-rpms
+  rhceph-4-mon-for-rhel-8-x86_64-rpms
+  rhceph-4-tools-for-rhel-8-x86_64-rpms
+  rhel-8-for-x86_64-appstream-rpms
+  rhel-8-for-x86_64-appstream-debug-rpms
+  rhel-8-for-x86_64-baseos-rpms
+  rhel-8-for-x86_64-highavailability-rpms
+  satellite-tools-6.5-for-rhel-8-x86_64-rpms
+)
 MIRRORDIR=/repos
 DATE=$(date +"%Y%m%d")
 
