@@ -4,13 +4,29 @@ enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/rhel-8-for-x86_64-baseos-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
-cost = 500
+cost = 600
+
+[CodeReadyBuilder]
+Name=Red Hat Enterprise Linux 8.4 CodeReadyBuilder
+enabled=1
+gpgcheck=1
+baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/codeready-builder-for-rhel-8-x86_64-rpms/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
 
 [AppStream]
 Name=Red Hat Enterprise Linux 8.4 AppStream
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/rhel-8-for-x86_64-appstream-rpms/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
+
+[AppStreamDebug]
+Name=Red Hat Enterprise Linux 8.4 AppStreamDebug
+enabled=1
+gpgcheck=1
+baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/rhel-8-for-x86_64-appstream-debug-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
@@ -62,10 +78,18 @@ baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/a
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
-[Ceph]
-Name=Ceph for Red Hat Enterprise Linux 8.4
+[Ceph Tools]
+Name=Ceph Tools for Red Hat Enterprise Linux 8.4
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/rhceph-4-tools-for-rhel-8-x86_64-rpms/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+cost = 600
+
+[Ceph Mon]
+Name=Ceph Mon for Red Hat Enterprise Linux 8.4
+enabled=1
+gpgcheck=1
+baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/rhceph-4-mon-for-rhel-8-x86_64-rpms/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
