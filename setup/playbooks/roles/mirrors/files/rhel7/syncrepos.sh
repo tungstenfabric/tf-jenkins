@@ -16,7 +16,7 @@ function retry() {
     if $@ ; then
       break
     fi
-    echo "COMMAND FAILED: $@" 
+    echo "COMMAND FAILED: $@"
     echo "RETRYING COMMAND (time=$i out of 5)"
   done
   if [[ $i == 5 ]]; then

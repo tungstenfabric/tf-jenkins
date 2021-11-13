@@ -15,6 +15,13 @@ REPOS_RH8=(
   rhel-8-for-x86_64-highavailability-rpms
   satellite-tools-6.5-for-rhel-8-x86_64-rpms
 )
+
+REPOS_UBI8=(
+  ubi-8-baseos
+  ubi-8-appstream
+  ubi-8-codeready-builder
+)
+
 MIRRORDIR=/repos
 DATE=$(date +"%Y%m%d")
 
@@ -54,7 +61,7 @@ subscription-manager release --set=8.4
 yum repolist
 yum install -y yum-utils createrepo
 
-for repo in "rhel84" ; do
+for repo in "rhel84" "ubi84" ; do
   if [ ! -d ${MIRRORDIR}/$repo/${DATE} ]; then
     mkdir -p ${MIRRORDIR}/$repo/${DATE}
     if [ -d ${MIRRORDIR}/$repo/latest ]; then
@@ -66,12 +73,22 @@ for repo in "rhel84" ; do
 done
 
 for r in ${REPOS_RH8[@]}; do
+  echo "INFO: sync $r"
   subscription-manager repos --enable=${r}
   retry reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/rhel84/${DATE}
-  #createrepo -v ${MIRRORDIR}/rhel84/${DATE}/${r}/
+  echo "INFO: update rpm repo ${MIRRORDIR}/rhel84/${DATE}/${r}/"
+  createrepo -v ${MIRRORDIR}/rhel84/${DATE}/${r}/
 done
 
-for repo in "rhel84"; do
+for r in ${REPOS_UBI8[@]}; do
+  echo "INFO: sync $r"
+  subscription-manager repos --enable=${r}
+  retry reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/ubi84/${DATE}
+  echo "INFO: update rpm repo ${MIRRORDIR}/ubi84/${DATE}/${r}/"
+  createrepo -v ${MIRRORDIR}/ubi84/${DATE}/${r}/
+done
+
+for repo in "rhel84" "ubi84" ; do
   pushd ${MIRRORDIR}/$repo
   rm -f stage
   ln -s ${DATE} stage
