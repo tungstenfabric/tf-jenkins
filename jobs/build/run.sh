@@ -54,6 +54,9 @@ elif [[ ${LINUX_DISTR} == 'centos' ]]; then
 elif [[ "${LINUX_DISTR}" =~ 'ubi7' ]] ; then
   mirror_list_for_build="mirror-epel.repo ubi.repo mirror-rhel7.repo mirror-rhel84-baseos.repo"
   mirror_list="ubi.repo mirror-rhel7.repo"
+elif [[ "${LINUX_DISTR}" =~ 'ubi8' ]] ; then
+  mirror_list_for_build="mirror-epel8.repo ubi84.repo mirror-rhel84.repo"
+  mirror_list="ubi84.repo mirror-rhel84.repo"
 fi
 
 # here we need only ubuntu18 mirror file cause we based build-init container on ubuntu18 only
