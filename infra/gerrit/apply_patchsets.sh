@@ -18,6 +18,6 @@ for ref in $(cat $patchsets_info_file | jq -r --arg project $project_fqdn '.[] |
   echo "INFO: FETCH_HEAD - $(git log -1 --oneline HEAD)"
   fetch_head_sha=$(git log -1 --oneline --no-abbrev-commit FETCH_HEAD | awk '{print $1}')
   if ! git log --oneline --no-abbrev-commit | grep $fetch_head_sha ; then
-    git cherry-pick FETCH_HEAD
+    git cherry-pick --allow-empty FETCH_HEAD
   fi
 done
