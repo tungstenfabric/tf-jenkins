@@ -33,12 +33,16 @@ function retry() {
 }
 
 for r in ${REPOS_CENTOS[@]}; do
+  echo "INFO: sync $r"
   retry reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/centos8/${DATE}
+  echo "INFO: updaterepo $r"
   createrepo -v ${MIRRORDIR}/centos8/${DATE}/${r}/
 done
 
 for r in ${REPOS_YUM[@]}; do
+  echo "INFO: sync $r"
   retry reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/yum8/${DATE}
+  echo "INFO: updaterepo $r"
   createrepo -v ${MIRRORDIR}/yum8/${DATE}/${r}/
 done
 
