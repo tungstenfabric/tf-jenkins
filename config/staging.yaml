@@ -174,11 +174,11 @@
           timeout: 600
           vars:
             REPOS_TYPE: 'centos8'
-        prepare-sandbox-centos:
-          depends-on:
-            - update-stage-repos-centos8
-          vars:
-            DEVENV_TAG: stage-centos8-$RANDOM
+        # prepare-sandbox-centos:
+        #   depends-on:
+        #     - update-stage-repos-centos8
+        #   vars:
+        #     DEVENV_TAG: stage-centos8-$RANDOM
         # deploy-platform-rhosp16.2:
         #   depends-on:
         #     - update-stage-repos-centos8
@@ -186,7 +186,8 @@
           job-name: publish-stage-repos
           vars:
             REPOS_TYPE: 'centos8'
-          # depends-on:
+          depends-on:
+            - update-stage-repos-centos8
           #   - test-sanity-rhosp16.2
 
 - project:
