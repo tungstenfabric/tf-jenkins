@@ -111,7 +111,7 @@ export BASE_EXTRA_RPMS=''
 rm -rf ./config/etc
 mkdir -p ./config/etc/yum.repos.d
 case "${ENVIRONMENT_OS,,}" in
-  rhel* )
+  rhel7* )
     export RHEL_HOST_REPOS=''
     # TODO: now no way to put gpg keys into containers for repo mirrors
     # disable gpgcheck as keys are not available inside the contianers
