@@ -1,5 +1,5 @@
 [BaseOS]
-Name=Red Hat Enterprise Linux 8.0 BaseOS
+name=Red Hat Enterprise Linux 8.0 BaseOS
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel82/$REPOS_CHANNEL/rhel-8-for-x86_64-baseos-rpms/
@@ -7,7 +7,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 500
 
 [AppStream]
-Name=Red Hat Enterprise Linux 8.0 AppStream
+name=Red Hat Enterprise Linux 8.0 AppStream
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel82/$REPOS_CHANNEL/rhel-8-for-x86_64-appstream-rpms/
@@ -15,7 +15,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
 [rhosp16.1]
-Name=Openstack 16 for Red Hat Enterprise Linux 8.2
+name=Openstack 16 for Red Hat Enterprise Linux 8.2
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel82/$REPOS_CHANNEL/openstack-16.1-for-rhel-8-x86_64-rpms/
@@ -23,7 +23,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
 [Satellite]
-Name=Satellite tools 6.5 for Red Hat Enterprise Linux 8.0
+name=Satellite tools 6.5 for Red Hat Enterprise Linux 8.0
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel82/$REPOS_CHANNEL/satellite-tools-6.5-for-rhel-8-x86_64-rpms/
@@ -31,7 +31,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
 [Ansible2.x]
-Name=Ansible 2.x for Red Hat Enterprise Linux 8.x
+name=Ansible 2.x for Red Hat Enterprise Linux 8.x
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel82/$REPOS_CHANNEL/ansible-2-for-rhel-8-x86_64-rpms/
@@ -39,7 +39,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
 [HighAvailability]
-Name=Red Hat Enterprise Linux 8.0 for High Availability
+name=Red Hat Enterprise Linux 8.0 for High Availability
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel82/$REPOS_CHANNEL/rhel-8-for-x86_64-highavailability-rpms/
@@ -47,7 +47,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
 [FastDatapath]
-Name=Fast Datapath for Red Hat Enterprise Linux 8.0
+name=Fast Datapath for Red Hat Enterprise Linux 8.0
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel82/$REPOS_CHANNEL/fast-datapath-for-rhel-8-x86_64-rpms/
@@ -55,7 +55,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
 [AdvancedVirtualization]
-Name=Advanced Virtualization for RHEL 8 x86_64
+name=Advanced Virtualization for RHEL 8 x86_64
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel82/$REPOS_CHANNEL/advanced-virt-for-rhel-8-x86_64-rpms/
@@ -63,7 +63,7 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
 [Ceph]
-Name=Ceph for Red Hat Enterprise Linux 8.0
+name=Ceph for Red Hat Enterprise Linux 8.0
 enabled=1
 gpgcheck=1
 baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel82/$REPOS_CHANNEL/rhceph-4-tools-for-rhel-8-x86_64-rpms/

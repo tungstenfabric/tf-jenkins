@@ -31,7 +31,7 @@ EOF
 
 # TODO: not clear.. it looks it is not needed as images use mirrors 
 
-repofile="$my_dir/../../mirrors/mirror-${ENVIRONMENT_OS}.repo"
+repofile="$my_dir/../../mirrors/$ENVIRONMENT_OS/mirror-${ENVIRONMENT_OS}.repo"
 if [[ -f $repofile ]]; then
     echo "INFO: Using repofile $repofile"
 else
