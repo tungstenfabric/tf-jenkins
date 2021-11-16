@@ -52,6 +52,7 @@
           name: REPOS_TYPE
           choices:
             - centos7
+            - centos8
             - rhel7
             - rhel82
             - rhel84
