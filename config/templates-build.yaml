@@ -299,6 +299,7 @@
     streams:
       build-ubi8:
         vars:
+          ENVIRONMENT_OS: rhel84
           LINUX_DISTR: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005/ubi8/ubi
           LINUX_DISTR_VER: stable
           TAG_SUFFIX: "-ubi8"
