@@ -78,7 +78,7 @@ baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/a
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
-[Ceph Tools]
+[CephTools]
 Name=Ceph Tools for Red Hat Enterprise Linux 8.4
 enabled=1
 gpgcheck=1
@@ -86,7 +86,7 @@ baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/rhel84/$REPOS_CHANNEL/r
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 cost = 600
 
-[Ceph Mon]
+[CephMon]
 Name=Ceph Mon for Red Hat Enterprise Linux 8.4
 enabled=1
 gpgcheck=1
