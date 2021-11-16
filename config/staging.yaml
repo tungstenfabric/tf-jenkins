@@ -162,6 +162,34 @@
             - test-sanity-ansible-k8s
 
 - project:
+    name: stage-repos-centos8
+    stage-repos:
+      templates:
+        # - build-ubi8
+        # - rhosp16.2
+        - cleanup
+      jobs:
+        update-stage-repos-centos8:
+          job-name: update-stage-repos
+          timeout: 600
+          vars:
+            REPOS_TYPE: 'centos8'
+        prepare-sandbox-centos:
+          depends-on:
+            - update-stage-repos-centos8
+          vars:
+            DEVENV_TAG: stage-centos8-$RANDOM
+        # deploy-platform-rhosp16.2:
+        #   depends-on:
+        #     - update-stage-repos-centos8
+        publish-stage-repos-centos8:
+          job-name: publish-stage-repos
+          vars:
+            REPOS_TYPE: 'centos8'
+          # depends-on:
+          #   - test-sanity-rhosp16.2
+
+- project:
     name: stage-repos-rhel7
     stage-repos:
       templates:
