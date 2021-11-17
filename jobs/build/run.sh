@@ -108,11 +108,11 @@ cd src/tungstenfabric/tf-dev-env
 # Copy yum repos for rhel from host to containers to use local mirrors
 
 export BASE_EXTRA_RPMS=''
+export RHEL_HOST_REPOS=''
 rm -rf ./config/etc
 mkdir -p ./config/etc/yum.repos.d
 case "${ENVIRONMENT_OS,,}" in
   rhel7* )
-    export RHEL_HOST_REPOS=''
     # TODO: now no way to put gpg keys into containers for repo mirrors
     # disable gpgcheck as keys are not available inside the contianers
     for frepo in \$(find /etc/yum.repos.d/ -name "*.repo" -printf "%P\\n") ; do
