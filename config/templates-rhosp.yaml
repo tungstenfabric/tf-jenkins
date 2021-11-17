@@ -181,12 +181,12 @@
     name: rhosp16.2
     # to use latest deployer's code
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp16.2:
         vars:
           ENVIRONMENT_OS: rhel84
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
@@ -198,7 +198,7 @@
         stream: rhosp16.2
         job-name: deploy-tf-rhosp16
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-rhosp16.2
       test-sanity-rhosp16.2:
         job-name: test-sanity
@@ -218,12 +218,12 @@
     name: rhosp16.2-ha
     # to use latest deployer's code
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp16.2-ha:
         vars:
           ENVIRONMENT_OS: rhel84
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
           SSL_ENABLE: true
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
@@ -237,7 +237,7 @@
         stream: rhosp16.2-ha
         job-name: deploy-tf-rhosp16
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-rhosp16.2-ha
       test-sanity-rhosp16.2-ha:
         job-name: test-sanity
