@@ -1,5 +1,5 @@
 
-[loal-ubi-8-baseos]
+[local-ubi-8-baseos]
 name = Red Hat Universal Base Image 8 (RPMs) - BaseOS
 baseurl = http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/ubi84/$REPOS_CHANNEL/ubi-8-baseos
 enabled = 1
