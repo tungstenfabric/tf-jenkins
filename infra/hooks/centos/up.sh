@@ -43,6 +43,14 @@ if [ -f $my_dir/../../mirrors/mirror-base-centos${VERSION_ID}.repo ]; then
   $ssh_cmd $IMAGE_SSH_USER@$instance_ip "sudo rm -f /etc/yum.repos.d/*; sudo cp mirror-base-centos${VERSION_ID}.repo /etc/yum.repos.d/"
 fi
 
+# must be after sync of mirror-base-centos as it does clea of /etc/yum.repos.d/*
+if [ -f $my_dir/../../mirrors/mirror-epel${VERSION_ID}.repo ]; then
+  echo "INFO: copy mirror-epel${VERSION_ID}.repo to host"
+  cat $my_dir/../../mirrors/mirror-epel${VERSION_ID}.repo | envsubst > "$WORKSPACE/mirror-epel${VERSION_ID}.repo"
+  rsync -a -e "$ssh_cmd" "$WORKSPACE/mirror-epel${VERSION_ID}.repo" ${IMAGE_SSH_USER}@${instance_ip}:./mirror-epel${VERSION_ID}.repo
+  $ssh_cmd $IMAGE_SSH_USER@$instance_ip "sudo cp mirror-epel${VERSION_ID}.repo /etc/yum.repos.d/"
+fi
+
 # TODO: detect interface name
 echo "INFO: do not set default gateway for second interface"
 if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
