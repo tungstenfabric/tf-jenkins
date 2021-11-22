@@ -147,13 +147,13 @@ function wait_for_free_resources() {
     local instances_limit=$(echo "$quotas" | awk '/ instances /{print $8}')
     local cores_used=$(echo "$quotas" | awk '/ cores /{print $4}')
     local cores_limit=$(echo "$quotas" | awk '/ cores /{print $8}')
+    echo "INFO: instances used=$instances_used  required=$NODES_COUNT  reserved=$RESERVED_INSTANCES_COUNT  limit=$instances_limit"
+    echo "INFO: cores used=$cores_used  required=$required_cores  reserved=$RESERVED_CORES_COUNT  limit=$cores_limit"
     if (( instances_used + required_instances + RESERVED_INSTANCES_COUNT < instances_limit )) &&
         (( cores_used + required_cores + RESERVED_CORES_COUNT < cores_limit )) ; then
       break
     fi
     echo "INFO: waiting for free resources...  $(date)"
-    echo "INFO: instances used=$instances_used  required=$NODES_COUNT  reserved=$RESERVED_INSTANCES_COUNT  limit=$instances_limit"
-    echo "INFO: cores used=$cores_used  required=$required_cores  reserved=$RESERVED_CORES_COUNT  limit=$cores_limit"
     sleep $VM_BOOT_DELAY
   done
   echo "INFO: waiting for resources is finished  $(date)"
