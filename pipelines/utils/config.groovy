@@ -40,20 +40,8 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
     if (item.get('project').containsKey('names') && !item.get('project').names.contains(project_name))
       continue
     if (item.get('project').containsKey('branch')) {
-      def branches = []
       def value = item.get('project').get('branch')
-      if (value instanceof java.util.ArrayList) {
-        branches = value
-      } else {
-        branches = [value]
-      }
-      found = false
-      for (branch in branches) {
-        if (_compare_branches(gerrit_branch, branch)) {
-          found = true
-          break
-        }
-      }
+      found = _compare_branches(gerrit_branch, value)
       print("Found = ${found}, value = ${value}")
       if (!found) {
         continue
@@ -97,9 +85,25 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
   return [streams, jobs, post_jobs]
 }
 
+def _compare_branches(gerrit_branch, config_value) {
+  def branches = []
+  if (config_value instanceof java.util.ArrayList) {
+    branches = config_value
+  } else {
+    branches = [config_value]
+  }
+  for (branch in branches) {
+    if (_compare_branches(gerrit_branch, branch)) {
+      return true
+    }
+  }
+
+  return false
+}
+
 // this method uses regexp search that is no serializable - thus apply NonCPS
 @NonCPS
-def _compare_branches(gerrit_branch, config_branch) {
+def _compare_branch(gerrit_branch, config_branch) {
   // return true/false - otherwise it will return matcher object
   if (gerrit_branch =~ "^${config_branch}\$")
     return true
@@ -129,25 +133,13 @@ def _add_templates_jobs(gerrit_branch, template_names, templates, streams, jobs,
       throw new Exception("ERROR: template ${template_name} is absent in configuration")
     }
     if (!(template instanceof String) && template[template_name].containsKey('branch')) {
-      def branches = []
       def value = template[template_name].get('branch')
-      if (value instanceof java.util.ArrayList) {
-        branches = value
-      } else {
-        branches = [value]
-      }
-      found = false
-      for (branch in branches) {
-        if (_compare_branches(gerrit_branch, branch)) {
-          found = true
-          break
-        }
-      }
+      found = _compare_branches(gerrit_branch, value)
       print("Found = ${found}, value = ${value}")
       if (!found) {
         continue
       }
-    } 
+    }
     template = templates[template_name]
     _update_map(streams, template.getOrDefault('streams', [:]))
     _update_map(jobs, template.getOrDefault('jobs', [:]))

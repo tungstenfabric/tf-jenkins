@@ -30,10 +30,7 @@
     gate:
       templates:
         - build-centos
-        - build-ubi8:
-            branch:
-              - master
-              - R21.4
+        - build-ubi8
         - cleanup
 
 # simple checks
