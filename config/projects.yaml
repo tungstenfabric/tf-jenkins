@@ -5,7 +5,6 @@
     names:
       - tungstenfabric/tf-deployers-containers
       - tungstenfabric/tf-openshift-ansible
-      - tungstenfabric/tf-dpdk
       - tungstenfabric/tf-java-api
       - tungstenfabric/tf-vijava
       - tungstenfabric/tf-vrouter-java-api
@@ -20,7 +19,24 @@
         - build-centos
         - cleanup
 
-# simple checks - no ubi
+# just build projects including ubi8
+- project:
+    names:
+      - tungstenfabric/tf-dpdk
+    check:
+      templates:
+        - build-centos
+        - cleanup
+    gate:
+      templates:
+        - build-centos
+        - build-ubi8:
+            branch:
+              - master
+              - R21.4
+        - cleanup
+
+# simple checks
 - project:
     names:
       - tungstenfabric/tf-vnc
@@ -35,6 +51,10 @@
         - cleanup
     gate:
       templates:
+        - build-ubi8:
+            branch:
+              - master
+              - R21.4
         - juju-k8s
         - ansible-os
         - cleanup
@@ -51,6 +71,10 @@
     gate:
       templates:
         - build-ubi
+        - build-ubi8:
+            branch:
+              - master
+              - R21.4
         - build-centos
         - juju-k8s
         - ansible-os
@@ -73,6 +97,10 @@
     gate:
       templates:
         - test-unit
+        - build-ubi8:
+            branch:
+              - master
+              - R21.4
         - juju-k8s
         - ansible-os
         - cleanup
@@ -91,6 +119,10 @@
     gate:
       templates:
         - build-ubi
+        - build-ubi8:
+            branch:
+              - master
+              - R21.4
         - build-centos
         - cleanup
 
@@ -130,6 +162,10 @@
     gate:
       templates:
         - build-ubi
+        - build-ubi8:
+            branch:
+              - master
+              - R21.4
         - juju-k8s
         - ansible-os
         - cleanup
@@ -145,6 +181,10 @@
     gate:
       templates:
         - test-unit
+        - build-ubi8:
+            branch:
+              - master
+              - R21.4
         - juju-k8s
         - ansible-os
         - cleanup
@@ -181,58 +221,48 @@
 
 - project:
     name: tungstenfabric/tf-tripleo-puppet
-    branch:
-      - master
     check:
       templates:
         - rhosp13
-        - rhosp16.2
+        - rhosp16.1:
+            branch:
+              - R.+
+        - rhosp16.2:
+            branch:
+              - master
         - cleanup
     gate:
       templates:
         - rhosp13
-        - rhosp16.2
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-tripleo-puppet
-    branch:
-      - R.+
-    check:
-      templates:
-        - rhosp13
-        - rhosp16.1
-        - cleanup
-    gate:
-      templates:
-        - rhosp13
-        - rhosp16.1
+        - rhosp16.1:
+            branch:
+              - R.+
+        - rhosp16.2:
+            branch:
+              - master
         - cleanup
 
 - project:
     name: tungstenfabric/tf-tripleo-heat-templates
-    branch: stable/queens
     check:
       templates:
-        - rhosp13
-        - rhosp13-1912
+        - rhosp13:
+            branch: stable/queens
+        - rhosp13-1912:
+            branch: stable/queens
+        - rhosp16.2:
+            branch: stable/train
         - cleanup
     gate:
       templates:
-        - rhosp13
-        - rhosp13-1912
-        - cleanup
-
-- project:
-    name: tungstenfabric/tf-tripleo-heat-templates
-    branch: stable/train
-    check:
-      templates:
-        - rhosp16.2
-        - cleanup
-    gate:
-      templates:
-        - rhosp16.2
+        - rhosp13:
+            branch: stable/queens
+        - rhosp13-1912:
+            branch: stable/queens
+        - rhosp16.1:
+            branch: stable/train
+        - rhosp16.2:
+            branch: stable/train
         - cleanup
 
 - project:
@@ -288,6 +318,7 @@
     gate:
       templates:
         - build-ubi
+        - build-ubi8
         - build-centos
         - build-r2011-centos
         - juju-k8s

@@ -13,9 +13,11 @@
 #                          nightly and other are used to manually run infra jobs
 
 # pipeline contains:
-#   templates array to specify templates for this pipeline
-#   jobs dictionary with overrides for included templates at stream level
-#   streams dictionary with overrides for included templates at job level
+#   templates - array to specify templates for this pipeline. Each element can be string or
+#               dictionary. Only 'branch' is supported key of dictionary.
+#               It should contain string or list of branches to apply.
+#   jobs - dictionary with overrides for included templates at stream level
+#   streams - dictionary with overrides for included templates at job level
 
 # template object may contain any set of jobs but best practice is to use it to one stream.
 #

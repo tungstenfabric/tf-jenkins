@@ -7,7 +7,8 @@ def get_templates_jobs(template_names) {
   def streams = [:]
   def jobs = [:]
   def post_jobs = [:]
-  _add_templates_jobs(template_names, templates, streams, jobs, post_jobs)
+  def branch = ''
+  _add_templates_jobs(branch, template_names, templates, streams, jobs, post_jobs)
 
   // Set empty dict for dicts without params
   _set_default_values(streams)
@@ -80,7 +81,7 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
   _update_map(post_jobs, project[gerrit_pipeline].getOrDefault('post-jobs', [:]))
   // then add templates to maintain higher precedence for job's definitions
   if (project[gerrit_pipeline].containsKey('templates')) {
-    _add_templates_jobs(project[gerrit_pipeline].templates, templates, streams, jobs, post_jobs)
+    _add_templates_jobs(gerrit_branch, project[gerrit_pipeline].templates, templates, streams, jobs, post_jobs)
   }
 
   // set empty dict for dicts without params
@@ -121,11 +122,32 @@ def _get_data() {
   return data
 }
 
-def _add_templates_jobs(template_names, templates, streams, jobs, post_jobs) {
-  for (template_name in template_names) {
+def _add_templates_jobs(gerrit_branch, template_names, templates, streams, jobs, post_jobs) {
+  for (template in template_names) {
+    def template_name = template instanceof String ? template : template.keySet().toArray()[0]
     if (!templates.containsKey(template_name)) {
       throw new Exception("ERROR: template ${template_name} is absent in configuration")
     }
+    if (!(template instanceof String) && template[template_name].containsKey('branch')) {
+      def branches = []
+      def value = template[template_name].get('branch')
+      if (value instanceof java.util.ArrayList) {
+        branches = value
+      } else {
+        branches = [value]
+      }
+      found = false
+      for (branch in branches) {
+        if (_compare_branches(gerrit_branch, branch)) {
+          found = true
+          break
+        }
+      }
+      print("Found = ${found}, value = ${value}")
+      if (!found) {
+        continue
+      }
+    } 
     template = templates[template_name]
     _update_map(streams, template.getOrDefault('streams', [:]))
     _update_map(jobs, template.getOrDefault('jobs', [:]))
