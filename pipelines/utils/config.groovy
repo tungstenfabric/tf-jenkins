@@ -93,7 +93,7 @@ def _compare_branches(gerrit_branch, config_value) {
     branches = [config_value]
   }
   for (branch in branches) {
-    if (_compare_branches(gerrit_branch, branch)) {
+    if (_compare_branch(gerrit_branch, branch)) {
       return true
     }
   }
