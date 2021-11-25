@@ -57,6 +57,9 @@ subscription-manager attach --pool=$RHEL_POOL_ID
 #Fix release to 8.4 for RHOSP16
 subscription-manager release --set=8.4
 
+dnf module disable -y container-tools:rhel8 || true
+dnf module enable -y container-tools:3.0
+
 yum repolist
 yum install -y yum-utils createrepo
 
@@ -81,7 +84,6 @@ done
 
 for r in ${REPOS_UBI8[@]}; do
   echo "INFO: sync $r"
-  subscription-manager repos --enable=${r}
   retry reposync --repoid=${r} --download-metadata --downloadcomps --download-path=${MIRRORDIR}/ubi84/${DATE}
   echo "INFO: update rpm repo ${MIRRORDIR}/ubi84/${DATE}/${r}/"
   createrepo -v ${MIRRORDIR}/ubi84/${DATE}/${r}/
