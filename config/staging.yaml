@@ -292,7 +292,6 @@
     name: stage-repos-rhel84
     stage-repos:
       templates:
-        - build-ubi
         - rhosp16.2
         - cleanup
       streams:
@@ -310,13 +309,13 @@
           vars:
             CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel84'
-        prepare-sandbox-ubi:
+        prepare-sandbox-ubi8:
           # it needs images job in deps cause contrail-general-base is based on clean ubi image
           depends-on:
             - update-stage-repos-rhel84
             - update-stage-images-rhel84
           vars:
-            DEVENV_TAG: stage-rhel8-$RANDOM
+            DEVENV_TAG: stage-rhel84-$RANDOM
         deploy-platform-rhosp16.2:
           job-name: deploy-platform-rhosp16
           depends-on:

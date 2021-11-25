@@ -38,9 +38,6 @@ subscription-manager attach --pool=$RHEL_POOL_ID
 #Fix release to 8.2 for RHOSP16
 subscription-manager release --set=8.2
 
-dnf module disable -y container-tools:rhel8 || true
-dnf module enable -y container-tools:2.0
-
 yum repolist
 yum install -y yum-utils createrepo
 
