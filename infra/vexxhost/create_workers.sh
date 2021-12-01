@@ -162,7 +162,7 @@ for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
             --min-count ${NODES_COUNT} \
             --tags "PipelineBuildTag=${PIPELINE_BUILD_TAG},${job_tag},${group_tag},SLAVE=${SLAVE},DOWN=${OS_IMAGES_DOWN["${ENVIRONMENT_OS^^}"]}" \
             $net_opts \
-            --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=80,bootindex=0 \
+            --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=$ROOT_DISK_SIZE,bootindex=0 \
             --poll \
             ${instance_name} || res=1
 
