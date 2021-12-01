@@ -11,6 +11,8 @@ export RESERVED_CORES_COUNT=16
 export VM_BOOT_RETRIES="${VM_BOOT_RETRIES:-120}"
 export VM_BOOT_DELAY="${VM_BOOT_DELAY:-60}"
 
+export ROOT_DISK_SIZE=60
+
 # vexx analog     CPU     Memory    AWS (Canada)   vm_type
 # v?-standard-1   1       4 GB      t2.small       xsmall
 # v?-standard-2   2       8 GB      t2.large       small
