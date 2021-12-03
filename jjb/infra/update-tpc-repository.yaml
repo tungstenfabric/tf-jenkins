@@ -59,6 +59,18 @@
               password: TPC_REPO_PASS
     builders:
       - shell: |
+          if [[ -n $GERRIT_CHANGE_ID ]] ; then
+            url=$(curl -Ls -o /dev/null -w %{url_effective} http://${GERRIT_HOST}/)
+            ./src/tungstenfabric/tf-jenkins/infra/gerrit/notify.py \
+              --gerrit $url \
+              --user $GERRIT_API_USER \
+              --password $GERRIT_API_PASSWORD \
+              --review $GERRIT_CHANGE_ID \
+              --patchset $GERRIT_PATCHSET_NUMBER \
+              --branch $GERRIT_BRANCH \
+              --message "Updating tpc-repository. ${BUILD_URL}"
+          fi
+      - shell: |
           # individual job - create global.env
           echo "export SLAVE=vexxhost" > $WORKSPACE/global.env
           echo "export REPOS_CHANNEL=latest" >> $WORKSPACE/global.env
