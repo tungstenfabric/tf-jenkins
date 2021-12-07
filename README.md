@@ -103,7 +103,7 @@ Current implementation is following: People sets only 'Code-Review' and 'Approve
 
 ## Used tools
 
-Various tools were used to build artifacts, set up TF, and test it. Please read README-s in these projects for more imformation.
+Various tools were used to build artifacts, set up TF, and test it. Please read README-s in these projects for more information.
 
 <https://github.com/tungstenfabric/tf-dev-env>
 This project is used for creation of TF's docker images.
