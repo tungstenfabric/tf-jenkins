@@ -15,7 +15,7 @@
               username: USER
               password: PASSWORD
           - username-password-separated:
-              credential-id: $GERRIT_HOST
+              credential-id: gerrit.tungsten.io
               username: GERRIT_API_USER
               password: GERRIT_API_PASSWORD
     scm:
