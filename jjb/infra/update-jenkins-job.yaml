@@ -14,10 +14,15 @@
               credential-id: self-jenkins
               username: USER
               password: PASSWORD
+          - username-password-separated:
+              credential-id: $GERRIT_HOST
+              username: GERRIT_API_USER
+              password: GERRIT_API_PASSWORD
     scm:
       - tf-jenkins
     builders:
       - shell: |
+          #!/bin/bash -x
           if [[ -n $GERRIT_CHANGE_ID ]] ; then
             url=$(curl -Ls -o /dev/null -w %{url_effective} http://${GERRIT_HOST}/)
             ./src/tungstenfabric/tf-jenkins/infra/gerrit/notify.py \
@@ -48,6 +53,8 @@
             unstable: true
             notbuilt: true
           trigger-on:
+            - comment-added-contains-event:
+                comment-contains-value: '(?i)^(post)$'
             - change-merged-event
           projects:
             - project-compare-type: 'PLAIN'
