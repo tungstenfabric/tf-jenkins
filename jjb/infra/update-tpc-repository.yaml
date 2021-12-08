@@ -57,8 +57,13 @@
               credential-id: tpc-repo
               username: TPC_REPO_USER
               password: TPC_REPO_PASS
+          - username-password-separated:
+              credential-id: gerrit.tungsten.io
+              username: GERRIT_API_USER
+              password: GERRIT_API_PASSWORD
     builders:
       - shell: |
+          #!/bin/bash -x
           if [[ -n $GERRIT_CHANGE_ID ]] ; then
             url=$(curl -Ls -o /dev/null -w %{url_effective} http://${GERRIT_HOST}/)
             ./src/tungstenfabric/tf-jenkins/infra/gerrit/notify.py \
