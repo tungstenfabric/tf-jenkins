@@ -73,7 +73,7 @@
         - cleanup
     post-merge:
       jobs:
-        - update-tpc-source-repository
+        - update-tpc-source-repository:
 
 # simple checks with ubi in gating
 - project:
@@ -115,7 +115,7 @@
         - cleanup
     post-merge:
       jobs:
-        - update-caches
+        - update-caches:
 
 # core TF projects with old style UT
 - project:
@@ -163,7 +163,7 @@
         - cleanup
     post-merge:
       jobs:
-        - update-caches
+        - update-caches:
 
 - project:
     names:
@@ -228,7 +228,7 @@
         - cleanup
     post-merge:
       jobs:
-        - update-caches
+        - update-caches:
 
 - project:
     name: tungstenfabric/tf-vrouter
@@ -386,8 +386,8 @@
         - cleanup
     post-merge:
       jobs:
-        - cleanup-tf-dev-sandbox
-        - update-caches
+        - cleanup-tf-dev-sandbox:
+        - update-caches:
 
 - project:
     name: tungstenfabric/tf-jenkins
@@ -398,8 +398,8 @@
         - cleanup
     post-merge:
       jobs:
-        - update-jenkins-jobs
-        - update-caches
+        - update-jenkins-jobs:
+        - update-caches:
 
 - project:
     name: tungstenfabric/tf-devstack
