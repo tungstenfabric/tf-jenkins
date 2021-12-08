@@ -91,7 +91,7 @@ Gating is started when gerrit labels are set to specific values. To start or res
 
 It is possible to stop all jobs running for the current review. To do this, add a comment `cancel` to your review.
 
-TF CI supports `Depends-On: I...` parameter in commit message. It should contain Commit-Id of dependent review. In this case CI cherry-picks both change sets into sources tree and run jobs with merged content. It calls explicit dependency. This technique is applicable for any tree of dependent reviews but this tree must not have circullar dependecies.
+TF CI supports `Depends-On: I...` parameter in commit message. It should contain Commit-Id of dependent review. In this case CI cherry-picks both change sets into sources tree and run jobs with merged content. It calls explicit dependency. This technique is applicable for any tree of dependent reviews but this tree must not have circular dependencies.
 Another option is implicit dependency - it's a dependency based on git tree. You can upload several commits for one repo at time - they will be shown in gerrit as a relation chain. And CI will take changes from parent commits by SHA for checking.
 If that review that current depends on gets new patchset then checks for current review will be cancelled.
 
