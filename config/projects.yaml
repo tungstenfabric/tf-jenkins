@@ -73,7 +73,7 @@
         - cleanup
     post-merge:
       jobs:
-        - update-tpc-repository
+        - update-tpc-source-repository
 
 # simple checks with ubi in gating
 - project:
@@ -398,7 +398,7 @@
         - cleanup
     post-merge:
       jobs:
-        - update-jenkins-job
+        - update-jenkins-jobs
         - update-caches
 
 - project:
