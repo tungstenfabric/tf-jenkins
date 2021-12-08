@@ -30,7 +30,7 @@ timestamps {
 
       if (env.GERRIT_PIPELINE == 'post-merge') {
         // wait some time for replication process from gerrit to github
-        sleep(15000)
+        sleep(15)
       }
 
       stage('init') {
