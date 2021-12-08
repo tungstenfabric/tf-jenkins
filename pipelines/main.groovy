@@ -28,6 +28,11 @@ timestamps {
         return
       }
 
+      if (env.GERRIT_PIPELINE == 'post-merge') {
+        // wait some time for replication process from gerrit to github
+        sleep(15000)
+      }
+
       stage('init') {
         try {
           cleanWs(disableDeferredWipeout: true, notFailBuild: true, deleteDirs: true)
