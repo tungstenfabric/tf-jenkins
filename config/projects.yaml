@@ -39,7 +39,6 @@
       - tungstenfabric/tf-vnc
       - tungstenfabric/tf-test
       - tungstenfabric/tf-dev-test
-      - tungstenfabric/tf-third-party-packages
       - tungstenfabric/tf-nova-vif-driver
       - tungstenfabric/tf-heat-plugin
     check:
@@ -56,10 +55,48 @@
         - ansible-os
         - cleanup
 
+- project:
+    names:
+      - tungstenfabric/tf-third-party-packages
+    check:
+      templates:
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - build-ubi8:
+            branch:
+              - master
+              - R21.4
+        - juju-k8s
+        - ansible-os
+        - cleanup
+    post-merge:
+      jobs:
+        - update-tpc-repository
+
 # simple checks with ubi in gating
 - project:
     names:
       - tungstenfabric/tf-packages
+    check:
+      templates:
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - build-ubi
+        - build-ubi8:
+            branch:
+              - master
+              - R21.4
+        - build-centos
+        - juju-k8s
+        - ansible-os
+        - cleanup
+
+- project:
+    names:
       - tungstenfabric/tf-third-party
     check:
       templates:
@@ -76,6 +113,9 @@
         - juju-k8s
         - ansible-os
         - cleanup
+    post-merge:
+      jobs:
+        - update-caches
 
 # core TF projects with old style UT
 - project:
@@ -107,6 +147,26 @@
     names:
       - tungstenfabric/tf-web-core
       - tungstenfabric/tf-web-controller
+    check:
+      templates:
+        - test-unit-ui
+        - ansible-os
+        - cleanup
+    gate:
+      templates:
+        - build-ubi
+        - build-ubi8:
+            branch:
+              - master
+              - R21.4
+        - build-centos
+        - cleanup
+    post-merge:
+      jobs:
+        - update-caches
+
+- project:
+    names:
       - tungstenfabric/tf-webui-third-party
     check:
       templates:
@@ -166,6 +226,9 @@
         - juju-k8s
         - ansible-os
         - cleanup
+    post-merge:
+      jobs:
+        - update-caches
 
 - project:
     name: tungstenfabric/tf-vrouter
@@ -321,6 +384,10 @@
         - juju-k8s
         - ansible-os
         - cleanup
+    post-merge:
+      jobs:
+        - cleanup-tf-dev-sandbox
+        - update-caches
 
 - project:
     name: tungstenfabric/tf-jenkins
@@ -329,6 +396,10 @@
         - build-centos
         - operator
         - cleanup
+    post-merge:
+      jobs:
+        - update-jenkins-job
+        - update-caches
 
 - project:
     name: tungstenfabric/tf-devstack

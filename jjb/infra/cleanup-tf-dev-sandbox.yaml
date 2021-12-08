@@ -17,41 +17,9 @@
               credential-id: logs_host
               key-file-variable: LOGS_HOST_SSH_KEY
               username-variable: LOGS_HOST_USERNAME
-          - username-password-separated:
-              credential-id: gerrit.tungsten.io
-              username: GERRIT_API_USER
-              password: GERRIT_API_PASSWORD
     builders:
-      - shell: |
-          #!/bin/bash -x
-          if [[ -n $GERRIT_CHANGE_ID ]] ; then
-            url=$(curl -Ls -o /dev/null -w %{url_effective} http://${GERRIT_HOST}/)
-            ./src/tungstenfabric/tf-jenkins/infra/gerrit/notify.py \
-              --gerrit $url \
-              --user $GERRIT_API_USER \
-              --password $GERRIT_API_PASSWORD \
-              --review $GERRIT_CHANGE_ID \
-              --patchset $GERRIT_PATCHSET_NUMBER \
-              --branch $GERRIT_BRANCH \
-              --message "Cleaning tf-dev-sandbox. ${BUILD_URL}"
-          fi
       - shell: |
           ./src/tungstenfabric/tf-jenkins/infra/cleanup-tf-dev-sandbox.sh
           SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
           LOGS_HOST="tf-nexus.$SLAVE_REGION.$CI_DOMAIN"
           ssh -i $LOGS_HOST_SSH_KEY $SSH_OPTIONS $LOGS_HOST_USERNAME@$LOGS_HOST "rm -f /var/www/logs/frozen/tag"
-    triggers:
-      - gerrit:
-          skip-vote:
-            successful: true
-            failed: true
-            unstable: true
-            notbuilt: true
-          trigger-on:
-            - change-merged-event
-          projects:
-            - project-compare-type: 'PLAIN'
-              project-pattern: 'tungstenfabric/tf-dev-env'
-              branches:
-                - branch-compare-type: 'ANT'
-                  branch-pattern: '**'

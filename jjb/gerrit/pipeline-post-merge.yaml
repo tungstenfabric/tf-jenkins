@@ -1,0 +1,41 @@
+---
+
+- job:
+    name: pipeline-post-merge
+    description: Please do not run this manually
+    project-type: pipeline
+    properties:
+      - build-discarder:
+          num-to-keep: 500
+    concurrent: true
+    parameters:
+      - choice:
+          name: SLAVE
+          choices:
+            - vexxhost
+            - aws
+          description: "Slave where all jobs will be run: vexxhost, aws"
+      - hidden:
+          name: GERRIT_PIPELINE
+          default: post-merge
+    pipeline-scm:
+      scm:
+        - tf-jenkins
+      script-path: pipelines/main.groovy
+      lightweight-checkout: true
+    triggers:
+      - gerrit:
+          skip-vote:
+            successful: true
+            failed: true
+            unstable: true
+            notbuilt: true
+          trigger-on:
+            - change-merged-event
+          trigger-for-unreviewed-patches: true
+          projects:
+            - project-compare-type: 'PLAIN'
+              project-pattern: 'tungstenfabric/tf-jenkins'
+              branches:
+                - branch-compare-type: 'ANT'
+                  branch-pattern: '**'
