@@ -8,6 +8,7 @@
       - build-discarder:
           num-to-keep: 500
     concurrent: true
+    quiet-period: 15
     parameters:
       - choice:
           name: SLAVE
@@ -32,10 +33,12 @@
             notbuilt: true
           trigger-on:
             - change-merged-event
-          trigger-for-unreviewed-patches: true
+            - comment-added-contains-event:
+                comment-contains-value: '(?i)^(post)$'
+          trigger-for-unreviewed-patches: false
           projects:
-            - project-compare-type: 'PLAIN'
-              project-pattern: 'tungstenfabric/tf-jenkins'
+            - project-compare-type: 'ANT'
+              project-pattern: '**'
               branches:
                 - branch-compare-type: 'ANT'
                   branch-pattern: '**'

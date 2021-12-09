@@ -2,6 +2,7 @@
     name: 'update-jenkins-jobs'
     description: "Updates jenkins jobs"
     defaults: global
+    concurrent: false
     properties:
       - build-discarder:
           num-to-keep: 30

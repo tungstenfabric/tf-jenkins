@@ -2,6 +2,7 @@
     name: "cleanup-tf-dev-sandbox"
     description: "Manually triggered job to remove tf-dev-sandbox image from tf-nexus registries"
     defaults: global
+    concurrent: false
     properties:
       - build-discarder:
           num-to-keep: 30
