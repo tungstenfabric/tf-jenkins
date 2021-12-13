@@ -531,6 +531,7 @@ def _run_job(def job_set, def name, def streams) {
   def job_name = job_set[name].getOrDefault('job-name', name)
   def stream = job_set[name].getOrDefault('stream', name)
   def timeout_value = job_set[name].getOrDefault('timeout', constants.JOB_TIMEOUT) as int
+  def job_params = job_set[name].getOrDefault('job-params', [:])
   def job_rnd = job_results[name]['job-rnd']
   def vars_env_file = "vars.${job_name}.${job_rnd}.env"
   def deps_env_file = "deps.${job_name}.${job_rnd}.env"
@@ -545,6 +546,11 @@ def _run_job(def job_set, def name, def streams) {
       string(name: 'PIPELINE_NAME', value: "${JOB_NAME}"),
       string(name: 'PIPELINE_NUMBER', value: "${BUILD_NUMBER}"),
       [$class: 'LabelParameterValue', name: 'NODE_NAME', label: "${NODE_NAME}"]]
+    if (job_params) {
+      for (param in job_params) {
+        params.add(string(name: param.key, value: param.value))
+      }
+    }
     println("JOB ${name}: Starting job: ${job_name}  rnd: #${job_rnd}")
     timeout(time: timeout_value, unit: 'MINUTES') {
       def job = build(job: job_name, parameters: params)

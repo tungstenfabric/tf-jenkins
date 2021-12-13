@@ -9,8 +9,9 @@
 #   name - the name of project from review system
 #   names - list of projects (to support forks or migration)
 #   branch - string or list of branches to apply the definition
-#   check/gate/nightly...: name of predefined pipeline. Check/gate is used for check/gate events.
-#                          nightly and other are used to manually run infra jobs
+#   check/gate/nightly/post-merge...: name of predefined pipeline. Check/gate is used for check/gate events.
+#                                     post-merge is used to run updates on affected projects
+#                                     nightly and other are used to manually run infra jobs
 
 # pipeline contains:
 #   templates - array to specify templates for this pipeline. Each element can be string or
@@ -58,6 +59,7 @@
 #          post-hook is used for cleanup job. it informs infra code to wait for all deps
 #          no-report means that this job shouldn't be included into user's report
 #   timeout - timeout in minutes. 180 by default
+#   job-params - map of a key:value elements to use them as parameters in the job
 
 # some type of deployments use special hardware. Please refer to JUMPHOST definition in templates/jobs
 

@@ -73,7 +73,14 @@
         - cleanup
     post-merge:
       jobs:
-        update-tpc-source-repository:
+        update-tpc-source-repository-7:
+          job-name: update-tpc-source-repository
+          job-params:
+            TPC_VERSION: el7
+        update-tpc-source-repository-8:
+          job-name: update-tpc-source-repository
+          job-params:
+            TPC_VERSION: el8
 
 # simple checks with ubi in gating
 - project:
