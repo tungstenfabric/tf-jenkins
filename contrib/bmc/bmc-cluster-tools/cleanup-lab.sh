@@ -14,6 +14,17 @@ source functions.sh
 virsh destroy $undercloud_vm
 virsh undefine --remove-all-storage $undercloud_vm
 
+if [[ -n $ipa_vm ]]; then
+    virsh destroy $ipa_vm
+    virsh undefine --remove-all-storage $ipa_vm
+fi
+
+if [[ -n $operator_vm ]]; then
+    virsh destroy ${operator_vm}
+    virsh undefine --remove-all-storage $operator_vm
+fi
+
+
 for vm in "${!node_4_vm[@]}"; do
   ip_addr=${node_4_vm[$vm]};
   #del_vbmc $ip_addr $vm
