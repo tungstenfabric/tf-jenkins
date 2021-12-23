@@ -22,7 +22,8 @@ echo "INFO: download cache for tf-dev-env/container/populate-cache.sh"
 
 echo "INFO: Upload containers cache files"
 pushd $CACHE_DIR
-for file in "$(find . -type f)" ; do
+IFS=$'\n'
+for file in $(find . -type f) ; do
   echo "INFO: upload $file"
   curl -fsS --user "${TPC_REPO_USER}:${TPC_REPO_PASS}" --ftp-create-dirs -T "$file" "$REPO_SOURCE/external-web-cache/$file"
 done
