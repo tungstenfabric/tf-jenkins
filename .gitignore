@@ -7,3 +7,4 @@ jjb/generated_xml
 setup/hosts.yml
 setup/hosts.yaml
 __pycache__
+.DS_Store
