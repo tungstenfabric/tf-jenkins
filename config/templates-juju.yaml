@@ -326,6 +326,44 @@
           - test-sanity-juju-os-containerd
 
 - template:
+    name: juju-os-ha-containerd
+    parents:
+      - build-centos
+    streams:
+      juju-os-ha-containerd:
+        vars:
+          MONITORING_DEPLOY_TARGET: HA
+          MONITORING_DEPLOYER: juju
+          MONITORING_ORCHESTRATOR: os
+          ENVIRONMENT_OS: ubuntu20
+          CONTAINER_RUNTIME: containerd
+    jobs:
+      deploy-platform-juju-os-ha-containerd:
+        job-name: deploy-platform-juju-os
+        stream: juju-os-ha-containerd
+        vars:
+          NODES: JUJU_CONTROLLER_NODES:xsmall:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-juju-os-ha-containerd:
+        job-name: deploy-tf-juju-os
+        stream: juju-os-ha-containerd
+        depends-on:
+          - package-centos
+          - deploy-platform-juju-os-ha-containerd
+      test-sanity-juju-os-ha-containerd:
+        job-name: test-sanity
+        stream: juju-os-ha-containerd
+        depends-on:
+          - deploy-tf-juju-os-ha-containerd
+      collect-logs-and-cleanup-juju-os-ha-containerd:
+        job-name: collect-logs-and-cleanup
+        stream: juju-os-ha-containerd
+        type: post-hook
+        depends-on:
+          - deploy-platform-juju-os-ha-containerd
+          - deploy-tf-juju-os-ha-containerd
+          - test-sanity-juju-os-ha-containerd
+
+- template:
     name: juju-hybrid-ha-ziu
     parents:
       - build-centos
