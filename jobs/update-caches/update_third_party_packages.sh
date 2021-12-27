@@ -57,6 +57,7 @@ for file in $(find . -type f) ; do
 done
 popd
 
+unset IFS
 # tpc binary cache
 
 CACHE_DIR="$(pwd)/tpc-binary"
