@@ -98,6 +98,7 @@ wait_ssh 10.87.72.65
 
 cd /tmp
 rm run.sh
+rm -rf tf-jenkins || true
 git clone "https://gerrit.tungsten.io/r/tungstenfabric/tf-jenkins"
 
 cat <<EOF | tee -a run.sh
