@@ -1,10 +1,11 @@
 #!/bin/bash -e
 
-REPOS_CENTOS7=(base centosplus extras updates)
+REPOS_CENTOS7=(base centosplus extras updates centos-sclo-rh)
 REPOS_YUM7=(centos-openstack-queens dockerrepo epel k8s)
 MIRRORDIR=/repos
 DATE=$(date +"%Y%m%d")
 
+echo "INFO: preparing temp folders for downloading"
 for repo in "centos7" "yum7" ; do
   if [ ! -d ${MIRRORDIR}/$repo/${DATE} ]; then
     mkdir -p ${MIRRORDIR}/$repo/${DATE}
@@ -17,15 +18,18 @@ for repo in "centos7" "yum7" ; do
 done
 
 for r in ${REPOS_CENTOS7[@]}; do
+  echo "INFO: updating centos7 repoid=$r"
   reposync -l --repoid=${r} --download-metadata --downloadcomps --download_path=${MIRRORDIR}/centos7/${DATE}
   createrepo -v ${MIRRORDIR}/centos7/${DATE}/${r}/
 done
 
 for r in ${REPOS_YUM7[@]}; do
+  echo "INFO: updating yum7 repoid=$r"
   reposync -l --repoid=${r} --download-metadata --downloadcomps --download_path=${MIRRORDIR}/yum7/${DATE}
   createrepo -v ${MIRRORDIR}/yum7/${DATE}/${r}/
 done
 
+echo "INFO: switching dowloaded repos to stage"
 for repo in "centos7" "yum7" ; do
   pushd ${MIRRORDIR}/$repo
   rm -f stage
