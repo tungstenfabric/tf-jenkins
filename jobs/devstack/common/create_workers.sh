@@ -18,6 +18,7 @@ rm -f new_key new_key.pub
 ssh-keygen -t rsa -N "" -f new_key
 pub_key=$(cat new_key.pub)
 env_export=""; instance_ip=""; ssh_user=""
+all_ips=""
 
 for nodes in $( echo $NODES | tr ',' ' ' ) ; do
     if [[ "$(echo "$nodes" | tr -cd ':' | wc -m)" != 2 ]]; then
@@ -41,6 +42,7 @@ for nodes in $( echo $NODES | tr ',' ' ' ) ; do
 
     INSTANCE_IDS+="$(cat $ENV_FILE | grep INSTANCE_IDS | cut -d'=' -f2)"
     NEW_NODES="$(cat $ENV_FILE | grep INSTANCE_IPS | cut -d'=' -f2)"
+    all_ips+="$NEW_NODES"
     # here is string added like CONTROLLER_NODES="some new nodes"
     env_export+="export $nodes_type_name=\"$NEW_NODES\"\n"
     if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" && "$nodes_type_name" == "CONTROLLER_NODES" ]]; then
@@ -53,11 +55,26 @@ for nodes in $( echo $NODES | tr ',' ' ' ) ; do
     sed -i '/INSTANCE_IPS=/d' "$ENV_FILE"
     sed -i '/DATA_NET_IPS=/d' "$ENV_FILE"
     for ip in $( echo $NEW_NODES | tr ',' ' ' ) ; do
-        ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $ssh_user@$ip "mkdir -p ~/.ssh ; chmod 700 ~/.ssh"
-        scp -i $WORKER_SSH_KEY $SSH_OPTIONS new_key $ssh_user@$ip:~/.ssh/id_rsa
-        scp -i $WORKER_SSH_KEY $SSH_OPTIONS new_key.pub $ssh_user@$ip:~/.ssh/id_rsa.pub
-        ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $ssh_user@$ip "echo $pub_key >> ~/.ssh/authorized_keys; chmod 400 ~/.ssh/id_rsa; chmod 400 ~/.ssh/id_rsa.pub; chmod 400 ~/.ssh/authorized_keys"
+        ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $ssh_user@$ip "mkdir -p ~/.ssh ; chmod 700 ~/.ssh" 2>/dev/null
+        scp -i $WORKER_SSH_KEY $SSH_OPTIONS new_key $ssh_user@$ip:~/.ssh/id_rsa 2>/dev/null
+        scp -i $WORKER_SSH_KEY $SSH_OPTIONS new_key.pub $ssh_user@$ip:~/.ssh/id_rsa.pub 2>/dev/null
+        ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $ssh_user@$ip "echo $pub_key >> ~/.ssh/authorized_keys; chmod 400 ~/.ssh/id_rsa; chmod 400 ~/.ssh/id_rsa.pub; chmod 400 ~/.ssh/authorized_keys" 2>/dev/null
     done
+done
+
+# DNS in vexxhost is not stable and we can't rely on it (juju-ha is most critical)
+# so fill /etc/hosts on all nodes with all nodes to be sure that name resolution works
+hosts="\n"
+for ip in $(echo $all_ips | tr ',' ' ') ; do
+    echo "INFO: collect hostname from node $ip"
+    hostname=$(ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $ssh_user@$ip "hostname -s" 2>/dev/null)
+    hosts+="$ip    $hostname\n"
+done
+echo "INFO: addition to /etc/hosts for all VM-s:"
+printf "$hosts"
+for ip in $(echo $all_ips | tr ',' ' ') ; do
+    echo "INFO: update /etc/hosts on node $ip"
+    ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $ssh_user@$ip "sudo bash -c 'printf \"$hosts\" >> /etc/hosts'" 2>/dev/null
 done
 
 sed -i '/instance_ip=/d' "$ENV_FILE"
