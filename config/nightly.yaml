@@ -8,6 +8,7 @@
         - build-r1912-ubi
         - build-r2011-ubi
         - build-r2011-centos
+        - build-r21.3-centos
         - test-unit
         - test-unit-ui
         - k8s-manifests
@@ -34,6 +35,7 @@
         - operator
         - operator-ha
         - operator-2011
+        # - openshift4-slave01
         # - openshift4-slave04
         - juju-os-not-implemented-targets
         - juju-k8s-not-implemented-targets
@@ -63,6 +65,9 @@
         build-r2011-centos:
           vars:
             DEBUGINFO: TRUE
+        build-r21.3-centos:
+          vars:
+            DEBUGINFO: TRUE
         # additional schedule for some streams
         ansible-k8s:
           frequency: 7
@@ -73,6 +78,8 @@
         rhosp13-2011:
           frequency: 7
         rhosp13-ha-ziu:
+          frequency: 7
+        operator-2011:
           frequency: 7
         # hack with locks due to lack of resources
         operator-ha:
@@ -112,6 +119,13 @@
           vars:
             TAG_SUFFIX: "-r2011-centos"
             GERRIT_BRANCH: "R2011"
+        publish-r21.3-centos-nightly:
+          job-name: publish
+          depends-on:
+            - package-r21.3-centos
+          vars:
+            TAG_SUFFIX: "-r21.3-centos"
+            GERRIT_BRANCH: "R21.3"
         # to use just built nightly images
         deploy-tf-juju-os-1912:
           # additional deps
