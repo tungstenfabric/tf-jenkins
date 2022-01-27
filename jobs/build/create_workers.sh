@@ -6,6 +6,11 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-source "$my_dir/definitions"
 
-"$my_dir/../../infra/${SLAVE}/create_workers.sh"
+if [[ -n "$JUMPHOST" ]]; then
+    source "$my_dir/../../infra/${JUMPHOST}/definitions"
+    "$my_dir/../../infra/${JUMPHOST}/create_workers.sh"
+else
+    source "$my_dir/definitions"
+    "$my_dir/../../infra/${SLAVE}/create_workers.sh"
+fi

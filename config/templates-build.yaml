@@ -392,3 +392,4 @@
         type: post-hook
         depends-on:
           - package-ubi8
+

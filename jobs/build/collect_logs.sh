@@ -6,7 +6,11 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-source "$my_dir/definitions"
+if [[ -n "$JUMPHOST" ]]; then
+    source "$my_dir/../../infra/${JUMPHOST}/definitions"
+else
+    source "$my_dir/definitions"
+fi
 
 if ! ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip "tar -czf logs.tgz -C \$HOME/output logs" ; then
   echo "INFO: logs folder is absent on target"

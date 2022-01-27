@@ -6,7 +6,11 @@ set -o pipefail
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-source "$my_dir/definitions"
+if [[ -n "$JUMPHOST" ]]; then
+    source "$my_dir/../../infra/${JUMPHOST}/definitions"
+else
+    source "$my_dir/definitions"
+fi
 
 if [[ "$STAGE" == 'freeze' ]] && [[ "$GERRIT_PIPELINE" != 'gate' || "$GERRIT_BRANCH" != 'master' ]]; then
   echo "INFO: Freeze works only for gate pipeline and for master branch"
