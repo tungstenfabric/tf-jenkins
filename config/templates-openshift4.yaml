@@ -10,8 +10,8 @@
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
-          CONTRAIL_CONTAINER_TAG: 'nightly-ubi7'
-          CONTRAIL_DEPLOYER_CONTAINER_TAG: 'nightly-ubi7'
+          CONTRAIL_CONTAINER_TAG: 'nightly-ubi8'
+          CONTRAIL_DEPLOYER_CONTAINER_TAG: 'nightly-ubi8'
           CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
           DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
     #parents:
@@ -60,9 +60,9 @@
           # need to use secure registries
           CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
     parents:
-      - build-ubi
+      - build-ubi8
     jobs:
       deploy-platform-openshift4-slave01:
         job-name: deploy-platform-openshift4
@@ -103,9 +103,9 @@
           # need to use secure registries
           CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
     parents:
-      - build-ubi
+      - build-ubi8
     jobs:
       deploy-platform-openshift4-slave04:
         job-name: deploy-platform-openshift4
@@ -146,10 +146,10 @@
           # need to use secure registries
           CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
           OPENSHIFT_VERSION: "4.5"
     parents:
-      - build-ubi
+      - build-ubi8
     jobs:
       deploy-platform-openshift4.5-slave04:
         job-name: deploy-platform-openshift4

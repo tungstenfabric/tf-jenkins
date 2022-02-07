@@ -1,5 +1,7 @@
 // config utils
 
+import groovy.lang.GroovyShell
+
 def get_templates_jobs(template_names) {
   def data = _get_data()
   def templates = _resolve_templates(data)
@@ -86,28 +88,38 @@ def get_project_jobs(project_name, gerrit_pipeline, gerrit_branch) {
 }
 
 def _compare_branches(gerrit_branch, config_value) {
-  def branches = []
-  if (config_value instanceof java.util.ArrayList) {
-    branches = config_value
-  } else {
-    branches = [config_value]
+  def output_line = ''
+  def branch = ''
+  for (s in config_value) {
+      if (s == ' ')
+        continue
+      if (s in ['!', '&', '|', '(', ')']) {
+        output_line += _compare_branch(gerrit_branch, branch)
+        output_line += s
+        branch = ''
+      }
+      else
+        branch += s
   }
-  for (branch in branches) {
-    if (_compare_branch(gerrit_branch, branch)) {
-      return true
-    }
-  }
-
-  return false
+  output_line += _compare_branch(gerrit_branch, branch)
+  return _evaluate(output_line)
 }
 
 // this method uses regexp search that is no serializable - thus apply NonCPS
 @NonCPS
 def _compare_branch(gerrit_branch, config_branch) {
   // return true/false - otherwise it will return matcher object
+  if (config_branch.length() == 0)
+    return ''
   if (gerrit_branch =~ "^${config_branch}\$")
-    return true
-  return false
+    return 'true'
+  return 'false'
+}
+
+@NonCPS
+def _evaluate(evaluate_string) {
+  def shell = new GroovyShell()
+  return shell.evaluate(evaluate_string)
 }
 
 def _get_data() {

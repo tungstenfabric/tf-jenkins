@@ -21,12 +21,12 @@
 - template:
     name: rhosp13
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp13:
         vars:
-          ENVIRONMENT_OS: rhel7
-          TAG_SUFFIX: "-ubi7"
+          ENVIRONMENT_OS: rhel82
+          TAG_SUFFIX: "-ubi8"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
@@ -59,12 +59,12 @@
     name: rhosp13-1912
     # to use latest deployer's code
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp13-1912:
         vars:
-          ENVIRONMENT_OS: rhel7
-          TAG_SUFFIX: "-ubi7"
+          ENVIRONMENT_OS: rhel82
+          TAG_SUFFIX: "-ubi8"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
@@ -99,12 +99,12 @@
     name: rhosp13-2011
     # to use latest deployer's code
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp13-2011:
         vars:
-          ENVIRONMENT_OS: rhel7
-          TAG_SUFFIX: "-ubi7"
+          ENVIRONMENT_OS: rhel82
+          TAG_SUFFIX: "-ubi8"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
@@ -141,12 +141,12 @@
 - template:
     name: rhosp16.1
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp16.1:
         vars:
           ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
@@ -257,12 +257,12 @@
     name: rhosp16.1-2011
     # to use latest deployer's code
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp16.1-2011:
         vars:
           ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
@@ -299,12 +299,12 @@
 - template:
     name: rhosp16.1-ha
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp16.1-ha:
         vars:
           ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
           SSL_ENABLE: true
           ENABLE_RHEL_REGISTRATION: false
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
@@ -339,14 +339,14 @@
 - template:
     name: rhosp13-bmc
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp13-bmc:
         lock: openlab1
         vars:
           JUMPHOST: openlab1
           ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
           ENABLE_RHEL_REGISTRATION: false
           ENABLE_NETWORK_ISOLATION: true
           OPENSTACK_CONTAINER_REGISTRY: "10.10.50.2:5000"
@@ -381,14 +381,14 @@
 - template:
     name: rhosp16.1-bmc
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp16.1-bmc:
         lock: openlab1
         vars:
           JUMPHOST: openlab1
           ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
           ENABLE_RHEL_REGISTRATION: false
           ENABLE_NETWORK_ISOLATION: true
           OPENSTACK_CONTAINER_REGISTRY: "10.10.50.3:5000"
@@ -423,7 +423,7 @@
 - template:
     name: rhosp16.1-slave01
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp16.1-slave01:
         lock: openlab3
@@ -431,7 +431,7 @@
           DEBUG: true
           JUMPHOST: openlab3
           ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
           ENABLE_RHEL_REGISTRATION: true
           ENABLE_NETWORK_ISOLATION: false
     jobs:
@@ -462,12 +462,12 @@
 - template:
     name: rhosp13-ha
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp13-ha:
         vars:
-          ENVIRONMENT_OS: rhel7
-          TAG_SUFFIX: "-ubi7"
+          ENVIRONMENT_OS: rhel82
+          TAG_SUFFIX: "-ubi8"
           SSL_ENABLE: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
@@ -502,12 +502,12 @@
 - template:
     name: rhosp13-ha-ziu
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp13-ha-ziu:
         vars:
-          ENVIRONMENT_OS: rhel7
-          TAG_SUFFIX: "-ubi7"
+          ENVIRONMENT_OS: rhel82
+          TAG_SUFFIX: "-ubi8"
           SSL_ENABLE: true
           CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
@@ -555,12 +555,12 @@
 - template:
     name: rhosp16.1-ha-ziu
     parents:
-      - build-ubi
+      - build-ubi8
     streams:
       rhosp16.1-ha-ziu:
         vars:
           ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
           SSL_ENABLE: true
           CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011

@@ -48,9 +48,7 @@
     gate:
       templates:
         - build-ubi8:
-            branch:
-              - master
-              - R21.4
+            branch: master || R21.4
         - juju-k8s
         - ansible-os
         - cleanup
@@ -65,9 +63,7 @@
     gate:
       templates:
         - build-ubi8:
-            branch:
-              - master
-              - R21.4
+            branch: master || R21.4
         - juju-k8s
         - ansible-os
         - cleanup
@@ -92,11 +88,10 @@
         - cleanup
     gate:
       templates:
-        - build-ubi
+        - build-ubi:
+            branch: "!(master || R21.4)"
         - build-ubi8:
-            branch:
-              - master
-              - R21.4
+            branch: master || R21.4
         - build-centos
         - juju-k8s
         - ansible-os
@@ -111,11 +106,10 @@
         - cleanup
     gate:
       templates:
-        - build-ubi
+        - build-ubi:
+            branch: "!(master || R21.4)"
         - build-ubi8:
-            branch:
-              - master
-              - R21.4
+            branch: master || R21.4
         - build-centos
         - juju-k8s
         - ansible-os
@@ -142,9 +136,7 @@
       templates:
         - test-unit
         - build-ubi8:
-            branch:
-              - master
-              - R21.4
+            branch: master || R21.4
         - juju-k8s
         - ansible-os
         - cleanup
@@ -161,11 +153,10 @@
         - cleanup
     gate:
       templates:
-        - build-ubi
+        - build-ubi:
+            branch: "!(master || R21.4)"
         - build-ubi8:
-            branch:
-              - master
-              - R21.4
+            branch: master || R21.4
         - build-centos
         - cleanup
     post-merge:
@@ -182,11 +173,10 @@
         - cleanup
     gate:
       templates:
-        - build-ubi
+        - build-ubi:
+            branch: "!(master || R21.4)"
         - build-ubi8:
-            branch:
-              - master
-              - R21.4
+            branch: master || R21.4
         - build-centos
         - cleanup
 
@@ -225,11 +215,10 @@
         - cleanup
     gate:
       templates:
-        - build-ubi
+        - build-ubi:
+            branch: "!(master || R21.4)"
         - build-ubi8:
-            branch:
-              - master
-              - R21.4
+            branch: master || R21.4
         - juju-k8s
         - ansible-os
         - cleanup
@@ -292,21 +281,17 @@
       templates:
         - rhosp13
         - rhosp16.1:
-            branch:
-              - R.+
+            branch: R.+
         - rhosp16.2:
-            branch:
-              - master
+            branch: master
         - cleanup
     gate:
       templates:
         - rhosp13
         - rhosp16.1:
-            branch:
-              - R.+
+            branch: R.+
         - rhosp16.2:
-            branch:
-              - master
+            branch: master
         - cleanup
 
 - project:
