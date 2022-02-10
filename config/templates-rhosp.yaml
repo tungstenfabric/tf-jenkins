@@ -79,7 +79,7 @@
         job-name: deploy-tf-rhosp13
         depends-on:
           # to use latest deployer's code
-          - package-deployers-ubi
+          - package-deployers-ubi8
           - deploy-platform-rhosp13-1912
       test-sanity-rhosp13-1912:
         job-name: test-sanity
@@ -122,7 +122,7 @@
         job-name: deploy-tf-rhosp13
         depends-on:
           # to use latest deployer's code
-          - package-deployers-ubi
+          - package-deployers-ubi8
           - deploy-platform-rhosp13-2011
       test-sanity-rhosp13-2011:
         job-name: test-sanity
@@ -280,7 +280,7 @@
         job-name: deploy-tf-rhosp16
         depends-on:
           # to use latest deployer's code
-          - package-deployers-ubi
+          - package-deployers-ubi8
           - deploy-platform-rhosp16.1-2011
       test-sanity-rhosp16.1-2011:
         job-name: test-sanity
