@@ -71,7 +71,7 @@
         job-name: deploy-tf-openshift4
         stream: openshift4-slave01
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-openshift4-slave01
       test-deployment-openshift4-slave01:
         job-name: test-deployment
@@ -114,7 +114,7 @@
         job-name: deploy-tf-openshift4
         stream: openshift4-slave04
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-openshift4-slave04
       test-deployment-openshift4-slave04:
         job-name: test-deployment
@@ -158,7 +158,7 @@
         job-name: deploy-tf-openshift4
         stream: openshift4.5-slave04
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-openshift4.5-slave04
       test-deployment-openshift4.5-slave04:
         job-name: test-deployment

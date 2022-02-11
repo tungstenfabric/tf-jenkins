@@ -21,15 +21,17 @@
 - template:
     name: rhosp13
     parents:
-      - build-ubi8
+      - build-ubi
     streams:
       rhosp13:
         vars:
-          ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi8"
+          ENVIRONMENT_OS: rhel7
+          TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
+          CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
+          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: rhosp13
           MONITORING_ORCHESTRATOR: os
@@ -39,7 +41,8 @@
       deploy-tf-rhosp13:
         stream: rhosp13
         depends-on:
-          - package-ubi
+          # to use latest deployer's code
+          - package-deployers-ubi
           - deploy-platform-rhosp13
       test-sanity-rhosp13:
         job-name: test-sanity
@@ -59,12 +62,12 @@
     name: rhosp13-1912
     # to use latest deployer's code
     parents:
-      - build-ubi8
+      - build-ubi
     streams:
       rhosp13-1912:
         vars:
-          ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi8"
+          ENVIRONMENT_OS: rhel7
+          TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
@@ -79,7 +82,7 @@
         job-name: deploy-tf-rhosp13
         depends-on:
           # to use latest deployer's code
-          - package-deployers-ubi8
+          - package-deployers-ubi
           - deploy-platform-rhosp13-1912
       test-sanity-rhosp13-1912:
         job-name: test-sanity
@@ -99,12 +102,12 @@
     name: rhosp13-2011
     # to use latest deployer's code
     parents:
-      - build-ubi8
+      - build-ubi
     streams:
       rhosp13-2011:
         vars:
-          ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi8"
+          ENVIRONMENT_OS: rhel7
+          TAG_SUFFIX: "-ubi7"
           DEPLOY_COMPACT_AIO: true
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
@@ -122,7 +125,7 @@
         job-name: deploy-tf-rhosp13
         depends-on:
           # to use latest deployer's code
-          - package-deployers-ubi8
+          - package-deployers-ubi
           - deploy-platform-rhosp13-2011
       test-sanity-rhosp13-2011:
         job-name: test-sanity
@@ -137,6 +140,7 @@
           - deploy-platform-rhosp13-2011
           - deploy-tf-rhosp13-2011
           - test-sanity-rhosp13-2011
+
 
 - template:
     name: rhosp16.1
@@ -161,7 +165,7 @@
         stream: rhosp16.1
         job-name: deploy-tf-rhosp16
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-rhosp16.1
       test-sanity-rhosp16.1:
         job-name: test-sanity
@@ -320,7 +324,7 @@
         job-name: deploy-tf-rhosp16
         stream: rhosp16.1-ha
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-rhosp16.1-ha
       test-sanity-rhosp16.1-ha:
         job-name: test-sanity
@@ -362,7 +366,7 @@
         stream: rhosp13-bmc
         timeout: 240
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-rhosp13-bmc
       test-sanity-rhosp13-bmc:
         job-name: test-sanity
@@ -404,7 +408,7 @@
         stream: rhosp16.1-bmc
         timeout: 240
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-rhosp16.1-bmc
       test-sanity-rhosp16.1-bmc:
         job-name: test-sanity
@@ -443,7 +447,7 @@
         stream: rhosp16.1-slave01
         timeout: 240
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-rhosp16.1-slave01
       test-sanity-rhosp16.1-slave01:
         job-name: test-sanity
@@ -483,7 +487,7 @@
         stream: rhosp13-ha
         job-name: deploy-tf-rhosp13
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-platform-rhosp13-ha
       test-sanity-rhosp13-ha:
         job-name: test-sanity
@@ -533,7 +537,7 @@
           DEPLOYMENT_TEST_TAGS: ziu
           TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-tf-rhosp13-ha-ziu
       test-sanity-rhosp13-ha-ziu:
         job-name: test-sanity
@@ -587,7 +591,7 @@
           DEPLOYMENT_TEST_TAGS: ziu
           TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX
         depends-on:
-          - package-ubi
+          - package-ubi8
           - deploy-tf-rhosp16.1-ha-ziu
       test-sanity-rhosp16.1-ha-ziu:
         job-name: test-sanity

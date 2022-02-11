@@ -128,6 +128,10 @@
           # additional deps
           depends-on:
             - package-r2011-centos
+        deploy-tf-rhosp13:
+          # additional deps
+          depends-on:
+            - package-ubi
         deploy-tf-rhosp13-1912:
           # additional deps
           depends-on:
@@ -159,9 +163,9 @@
         aquascan-ubi-nightly:
           job-name: aquascan
           depends-on:
-            - package-ubi
+            - package-ubi8
           vars:
-            TAG_SUFFIX: "-ubi7"
+            TAG_SUFFIX: "-ubi8"
       post-jobs:
         publish-centos-stable:
           job-name: publish
