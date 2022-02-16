@@ -6,14 +6,14 @@ Host *
 
 #Section added manually for transparent proxy to openlab1
 ### The Bastion Host
-Host vexslave-old
-  HostName slave-1.sjc1.progmaticlab.com
-  IdentityFile /home/jenkins/.ssh/workers
+Host bmc-jumphost
+  HostName 66.129.240.253
+  User tfciadmin
+  IdentityFile /home/ubuntu/.ssh/workers
 
 ### The Remote Host
 Host openlab1
-  HostName openlab.tf-jenkins.progmaticlab.com
-  Port 30001
-  ProxyJump vexslave-old
-  IdentityFile /home/jenkins/.ssh/workers
-
+  HostName 10.39.0.21
+  ProxyJump bmc-jumphost
+  IdentityFile /home/ubuntu/.ssh/workers
+  User root

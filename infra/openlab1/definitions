@@ -1,11 +1,17 @@
 export PROVIDER=bmc
 
 export IMAGE_SSH_USER="stack"
-export ORIGIN_VM_NAME="$ENVIRONMENT_OS"
-export VM_NAME="undercloud"
-export ORIGIN_IPA_VM_NAME="${ENVIRONMENT_OS}-ipa"
-export IPA_VM_NAME="ipa"
 export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
-export instance_ip="10.10.50.10"
-export ipa_mgmt_ip="10.10.50.11"
+#openlab1 infra
+declare INSTANCE_IP = ( ['rhel7']='10.39.0.51' \
+                        ['rhel82']='10.39.0.52' \
+                        ['rhel84']='10.39.0.53' )
+
+declare IPA_MGMT_IP = ( ['rhel7']='10.39.0.54' \
+                        ['rhel82']='10.39.0.55' \
+                        ['rhel84']='10.39.0.56' )
+
+declare LAB = ( ['rhel7']='rhosp13-ha' \
+                ['rhel82']='rhosp16.1-ha' \
+                ['rhel84']='rhosp16.2-ha' )

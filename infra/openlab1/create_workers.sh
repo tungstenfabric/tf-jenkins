@@ -9,27 +9,17 @@ my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 source "$my_dir/definitions"
 
+instance_ip=${INSTANCE_IP[$ENVIRONMENT_OS]}
+ipa_mgmt_ip=${IPA_MGMT_IP[$ENVIRONMENT_OS]}
+lab=${LAB[$ENVIRONMENT_OS]}
+
 cat <<EOF | ssh -F $my_dir/ssh_config openlab1
 [ "${DEBUG,,}" == "true" ] && set -x
-export LIBVIRT_DEFAULT_URI=qemu:///system
-export PATH=\$PATH:/usr/sbin
-function _run_vm() {
-  local origin=\$1
-  local vm=\$2
-  echo "Cleanup old VM \$vm"
-  virsh destroy \$vm || /bin/true
-  virsh undefine \$vm  || /bin/true
-  rm -f \$vm.qcow2
-  echo "Clone VM \$vm from original \$origin"
-  virt-clone --original \$origin --name \$vm --auto-clone --file \$vm.qcow2
-  virsh start \$vm
-  echo "VM \$vm is spinned"
-}
-_run_vm $ORIGIN_VM_NAME $VM_NAME
-if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then
-  _run_vm $ORIGIN_IPA_VM_NAME $IPA_VM_NAME
-fi
-echo "VMs are started"
+#cd /tmp
+#rm -rf tf-jenkins
+#git clone https://github.com/tungstenfabric/tf-jenkins.git
+cd tf-jenkins/contrib/bmc/bmc-cluster-tools/
+./reinit-lab.sh $lab
 EOF
 
 ssh_config="$(cat $my_dir/ssh_config | base64 -w 0)"
@@ -54,7 +44,7 @@ function wait_machine() {
 
 wait_machine $instance_ip
 ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
-rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$my_dir/instackenv.json} $IMAGE_SSH_USER@$instance_ip:./
+rsync -a -e "$ssh_cmd" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then
   wait_machine $ipa_mgmt_ip
 fi
