@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o pipefail
+
 if [[ -z $1 ]]; then
     echo "$0 LAB"
     exit 1;
@@ -8,11 +10,10 @@ fi
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
-rhosp_version=$1
-source $my_dir/$rhosp_version.env
+source $my_dir/$1.env
 source $my_dir/functions.sh
 
-output_file="instackenv-${rhosp_version}.json"
+output_file="${my_dir}/${1}-instackenv.json"
 
 echo "Generating new $output_file"
 
@@ -23,7 +24,17 @@ cat <<EOF> $output_file
     "nodes":[
 EOF
 
-
+#Include static json blocks for baremetal nodes
+if [[ -n $baremetal_nodes ]]; then
+  for bm in $baremetal_nodes; do
+    if [[ -f ${my_dir}/${bm}.json ]]; then
+      cat ${my_dir}/${bm}.json >> $output_file
+    else 
+      echo "File not found: ${my_dir}/${bm}.json"
+      exit 1;
+    fi
+  done
+fi
 
 for vm in "${!node_4_vm[@]}"; do
   ip_addr=${node_4_vm[$vm]};

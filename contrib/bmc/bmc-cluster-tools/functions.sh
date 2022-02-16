@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -o pipefail
 
 function add_vbmc {
   ipmi_address=$1
@@ -21,7 +22,13 @@ function get_mac_address {
   ipmi_address=$1
   vm=$2
   mac_address=$(ssh $ipmi_address "virsh dumpxml $vm | grep 'mac address=' | grep -Eo '[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}'")
-  echo "$mac_address"
+  if [[ $mac_address =~ [0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2} ]]; then
+    echo "$mac_address"
+  else
+    echo "Can't get mac address for VM $vm"
+    exit 1
+  fi
+
 }
 
 function generate_instackenv_block {
@@ -48,4 +55,14 @@ cat <<EOF>> $file
 EOF
 
 }	
+
+function wait_machine() {
+  local addr="$1"
+  timeout 300 bash -c "\
+  while /bin/true ; do \
+    ssh $addr 'uname -a' && break ; \
+    sleep 10 ; \
+  done"
+}
+
 

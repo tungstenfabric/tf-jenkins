@@ -6,6 +6,14 @@
   with_items:
     - /var/local/images
 
+- name: Fix file resolv.conf
+  ansible.builtin.copy:
+    src: "files/resolv.conf"
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: Create file local.repo
   template:
     src: "files/local.repo.j2"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source rhosp13.env
+source rhosp16.1-ha.env
 source functions.sh
 
 
