@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o pipefail
+
 if [[ -z $1 ]]; then
     echo "$0 LAB"
     exit 1;

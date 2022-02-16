@@ -9,7 +9,11 @@ DEVICE={{ item.value }}
 ONBOOT=yes
 {% if item.value == 'br-mgmt' %}
 IPADDR={{ ansible_host }}
-PREFIX=25
+PREFIX=24
 GATEWAY={{ gateway }}
+{% endif %}
+{% if item.value == 'br-data' %}
+IPADDR={{ data_ip }}
+PREFIX=24
 {% endif %}
 

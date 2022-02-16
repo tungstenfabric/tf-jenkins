@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+set -o pipefail
+
 if [[ -z $1 ]]; then
     echo "$0 LAB [backup_prefix]"
     exit 1;

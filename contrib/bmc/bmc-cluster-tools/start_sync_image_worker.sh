@@ -34,7 +34,7 @@ fi
 
 CEPH_NAMESPACE="rhceph"
 REDHAT_REGISTRY="registry.redhat.io"
-MIRROR_REGISTRY="10.87.72.66:5005"
+MIRROR_REGISTRY="mirrors:5005"
 
 function wait_cmd_success() {
   # silent mode = don't print output of input cmd for each attempt.
@@ -94,7 +94,7 @@ dt=$(date +"%m-%d-%Y")
 virt-clone --original sync_image_worker --name sync_image_worker-$dt --auto-clone
 
 virsh start sync_image_worker-$dt
-wait_ssh 10.87.72.65
+wait_ssh sync_image_worker
 
 cd /tmp
 rm run.sh
@@ -117,9 +117,11 @@ export RHOSP_NAMESPACE=${RHOSP_NAMESPACE}
 ./tf-jenkins/jobs/update-stage-images/publish_docker_images.sh
 EOF
 
-scp -r tf-jenkins run.sh root@10.87.72.65:
-ssh root@10.87.72.65 chmod 755 ./run.sh
-ssh root@10.87.72.65 ./run.sh
+mirrors_host=$(grep mirrors /etc/hosts)
+scp -r tf-jenkins run.sh root@sync_image_worker:
+ssh root@sync_image_worker "echo $mirrors_host >>/etc/hosts"
+ssh root@sync_image_worker chmod 755 ./run.sh
+ssh root@sync_image_worker ./run.sh
 
 
 virsh destroy sync_image_worker-$dt
