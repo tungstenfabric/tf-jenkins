@@ -61,6 +61,7 @@
           LINUX_DISTR: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005/ubi7/ubi
           LINUX_DISTR_VER: stable
           TAG_SUFFIX: "-ubi7"
+          GERRIT_BRANCH: "R2011"
           INSECURE_REGISTRIES: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005
     jobs:
       prepare-sandbox-ubi:

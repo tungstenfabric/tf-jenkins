@@ -75,8 +75,6 @@
           frequency: 7
         rhosp13-1912:
           frequency: 7
-        rhosp13-2011:
-          frequency: 7
         rhosp13-ha-ziu:
           frequency: 7
         operator-2011:
@@ -131,19 +129,19 @@
         deploy-tf-rhosp13:
           # additional deps
           depends-on:
-            - package-ubi
+            - package-deployers-r2011-ubi
         deploy-tf-rhosp13-1912:
           # additional deps
           depends-on:
-            - package-r1912-ubi
+            - package-deployers-r1912-ubi
         deploy-tf-rhosp13-2011:
           # additional deps
           depends-on:
-            - package-r2011-ubi
+            - package-deployers-r2011-ubi
         deploy-tf-rhosp16.1-2011:
           # additional deps
           depends-on:
-            - package-r2011-ubi
+            - package-deployers-r2011-ubi
 
         #publish-centos-r1912:
         #  job-name: publish
