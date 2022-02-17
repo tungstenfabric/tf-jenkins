@@ -43,11 +43,10 @@
           - deploy-tf-openshift4-ha
           - test-deployment-openshift4-ha
 
-
 - template:
-    name: openshift4-slave01
+    name: openshift4-slave01-upi
     streams:
-      openshift4-slave01:
+      openshift4-slave01-upi:
         lock: openlab3
         vars:
           JUMPHOST: openlab3
@@ -61,36 +60,37 @@
           CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           TAG_SUFFIX: "-ubi8"
+          OPENSHIFT_AI_INSTALLER: false
     parents:
       - build-ubi8
     jobs:
-      deploy-platform-openshift4-slave01:
+      deploy-platform-openshift4-slave01-upi:
         job-name: deploy-platform-openshift4
-        stream: openshift4-slave01
-      deploy-tf-openshift4-slave01:
+        stream: openshift4-slave01-upi
+      deploy-tf-openshift4-slave01-upi:
         job-name: deploy-tf-openshift4
-        stream: openshift4-slave01
+        stream: openshift4-slave01-upi
         depends-on:
           - package-ubi8
-          - deploy-platform-openshift4-slave01
-      test-deployment-openshift4-slave01:
+          - deploy-platform-openshift4-slave01-upi
+      test-deployment-openshift4-slave01-upi:
         job-name: test-deployment
-        stream: openshift4-slave01
+        stream: openshift4-slave01-upi
         depends-on:
-          - deploy-tf-openshift4-slave01
-      collect-logs-and-cleanup-openshift4-slave01:
+          - deploy-tf-openshift4-slave01-upi
+      collect-logs-and-cleanup-openshift4-slave01-upi:
         job-name: collect-logs-and-cleanup
-        stream: openshift4-slave01
+        stream: openshift4-slave01-upi
         type: post-hook
         depends-on:
-          - deploy-platform-openshift4-slave01
-          - deploy-tf-openshift4-slave01
-          - test-deployment-openshift4-slave01
+          - deploy-platform-openshift4-slave01-upi
+          - deploy-tf-openshift4-slave01-upi
+          - test-deployment-openshift4-slave01-upi
 
 - template:
-    name: openshift4-slave04
+    name: openshift4-slave04-upi
     streams:
-      openshift4-slave04:
+      openshift4-slave04-upi:
         lock: openlab4
         vars:
           JUMPHOST: openlab4
@@ -104,31 +104,121 @@
           CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           TAG_SUFFIX: "-ubi8"
+          OPENSHIFT_AI_INSTALLER: false
+          DEBUG: true
     parents:
       - build-ubi8
     jobs:
-      deploy-platform-openshift4-slave04:
+      deploy-platform-openshift4-slave04-upi:
         job-name: deploy-platform-openshift4
-        stream: openshift4-slave04
-      deploy-tf-openshift4-slave04:
+        stream: openshift4-slave04-upi
+      deploy-tf-openshift4-slave04-upi:
         job-name: deploy-tf-openshift4
-        stream: openshift4-slave04
+        stream: openshift4-slave04-upi
         depends-on:
           - package-ubi8
-          - deploy-platform-openshift4-slave04
-      test-deployment-openshift4-slave04:
+          - deploy-platform-openshift4-slave04-upi
+      test-deployment-openshift4-slave04-upi:
         job-name: test-deployment
-        stream: openshift4-slave04
+        stream: openshift4-slave04-upi
         depends-on:
-          - deploy-tf-openshift4-slave04
-      collect-logs-and-cleanup-openshift4-slave04:
+          - deploy-tf-openshift4-slave04-upi
+      collect-logs-and-cleanup-openshift4-slave04-upi:
         job-name: collect-logs-and-cleanup
-        stream: openshift4-slave04
+        stream: openshift4-slave04-upi
         type: post-hook
         depends-on:
-          - deploy-platform-openshift4-slave04
-          - deploy-tf-openshift4-slave04
-          - test-deployment-openshift4-slave04
+          - deploy-platform-openshift4-slave04-upi
+          - deploy-tf-openshift4-slave04-upi
+          - test-deployment-openshift4-slave04-upi
+
+- template:
+    name: openshift4-slave01-ai
+    streams:
+      openshift4-slave01-ai:
+        lock: openlab3
+        vars:
+          JUMPHOST: openlab3
+          PROVIDER: "kvm"
+          CONTROLLER_NODES: "C1,C2,C3"
+          AGENT_NODES: "A1,A2"
+          MONITORING_DEPLOY_TARGET: PROD
+          MONITORING_DEPLOYER: openshift
+          MONITORING_ORCHESTRATOR: k8s
+          # need to use secure registries
+          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          TAG_SUFFIX: "-ubi8"
+          OPENSHIFT_AI_INSTALLER: true
+    parents:
+      - build-ubi8
+    jobs:
+      deploy-platform-openshift4-slave01-ai:
+        job-name: deploy-platform-openshift4
+        stream: openshift4-slave01-ai
+      deploy-tf-openshift4-slave01-ai:
+        job-name: deploy-tf-openshift4
+        stream: openshift4-slave01-ai
+        depends-on:
+          - package-ubi8
+          - deploy-platform-openshift4-slave01-ai
+      test-deployment-openshift4-slave01-ai:
+        job-name: test-deployment
+        stream: openshift4-slave01-ai
+        depends-on:
+          - deploy-tf-openshift4-slave01-ai
+      collect-logs-and-cleanup-openshift4-slave01-ai:
+        job-name: collect-logs-and-cleanup
+        stream: openshift4-slave01-ai
+        type: post-hook
+        depends-on:
+          - deploy-platform-openshift4-slave01-ai
+          - deploy-tf-openshift4-slave01-ai
+          - test-deployment-openshift4-slave01-ai
+
+- template:
+    name: openshift4-slave04-ai
+    streams:
+      openshift4-slave04-ai:
+        lock: openlab4
+        vars:
+          JUMPHOST: openlab4
+          PROVIDER: "kvm"
+          CONTROLLER_NODES: "C1,C2,C3"
+          AGENT_NODES: "A1,A2"
+          MONITORING_DEPLOY_TARGET: PROD
+          MONITORING_DEPLOYER: openshift
+          MONITORING_ORCHESTRATOR: k8s
+          # need to use secure registries
+          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          TAG_SUFFIX: "-ubi8"
+          OPENSHIFT_AI_INSTALLER: true
+    parents:
+      - build-ubi8
+    jobs:
+      deploy-platform-openshift4-slave04-ai:
+        job-name: deploy-platform-openshift4
+        stream: openshift4-slave04-ai
+      deploy-tf-openshift4-slave04-ai:
+        job-name: deploy-tf-openshift4
+        stream: openshift4-slave04-ai
+        depends-on:
+          - package-ubi8
+          - deploy-platform-openshift4-slave04-ai
+      test-deployment-openshift4-slave04-ai:
+        job-name: test-deployment
+        stream: openshift4-slave04-ai
+        depends-on:
+          - deploy-tf-openshift4-slave04-ai
+      collect-logs-and-cleanup-openshift4-slave04-ai:
+        job-name: collect-logs-and-cleanup
+        stream: openshift4-slave04-ai
+        type: post-hook
+        depends-on:
+          - deploy-platform-openshift4-slave04-ai
+          - deploy-tf-openshift4-slave04-ai
+          - test-deployment-openshift4-slave04-ai
 
 - template:
     name: openshift4.5-slave04
