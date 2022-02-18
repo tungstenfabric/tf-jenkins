@@ -21,7 +21,7 @@ function del_vbmc {
 function get_mac_address {
   ipmi_address=$1
   vm=$2
-  mac_address=$(ssh $ipmi_address "virsh dumpxml $vm | grep 'mac address=' | grep -Eo '[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}'")
+  mac_address=$(ssh $ipmi_address "virsh dumpxml $vm | grep -m1 'mac address=' | grep -Eo '[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}'")
   if [[ $mac_address =~ [0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2}:[0-9a-f]{2} ]]; then
     echo "$mac_address"
   else

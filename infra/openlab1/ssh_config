@@ -9,11 +9,11 @@ Host *
 Host bmc-jumphost
   HostName 66.129.240.253
   User tfciadmin
-  IdentityFile /home/ubuntu/.ssh/workers
+  IdentityFile /home/jenkins/.ssh/workers
 
 ### The Remote Host
 Host openlab1
   HostName 10.39.0.21
   ProxyJump bmc-jumphost
-  IdentityFile /home/ubuntu/.ssh/workers
+  IdentityFile /home/jenkins/.ssh/workers
   User root

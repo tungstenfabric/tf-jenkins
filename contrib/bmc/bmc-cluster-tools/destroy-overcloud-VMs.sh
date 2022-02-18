@@ -16,7 +16,7 @@ source functions.sh
 
 for vm in "${!node_4_vm[@]}"; do
   ip_addr=${node_4_vm[$vm]};
-  ssh $ip_addr virsh destroy $vm
+  ssh $ip_addr virsh destroy $vm || true
 done
 
 

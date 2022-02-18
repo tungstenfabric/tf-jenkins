@@ -356,6 +356,7 @@
           JUMPHOST: openlab1
           ENVIRONMENT_OS: rhel7
           TAG_SUFFIX: "-ubi7"
+          SSL_ENABLE: true
           ENABLE_RHEL_REGISTRATION: false
           ENABLE_NETWORK_ISOLATION: true
           OPENSTACK_CONTAINER_REGISTRY: "10.10.50.2:5000"
@@ -399,12 +400,14 @@
         vars:
           JUMPHOST: openlab1
           ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi7"
+          TAG_SUFFIX: "-ubi8"
+          SSL_ENABLE: true
           ENABLE_RHEL_REGISTRATION: false
           ENABLE_NETWORK_ISOLATION: true
-          OPENSTACK_CONTAINER_REGISTRY: "10.10.50.3:5000"
-          CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
+          OPENSTACK_CONTAINER_REGISTRY: "mirrors:5005"
+          DEPLOYER_CONTAINER_REGISTRY: "tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5102"
+          CONTRAIL_CONTAINER_TAG: 'nightly'
+          CONTAINER_REGISTRY: "tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5102"
           MONITORING_DEPLOY_TARGET: PROD,SR-IOV,DPDK
           MONITORING_DEPLOYER: rhosp16
           MONITORING_ORCHESTRATOR: os
@@ -432,6 +435,52 @@
           - deploy-platform-rhosp16.1-bmc
           - deploy-tf-rhosp16.1-bmc
           - test-sanity-rhosp16.1-bmc
+
+- template:
+    name: rhosp16.2-bmc
+    parents:
+      - build-ubi8
+    streams:
+      rhosp16.2-bmc:
+        lock: openlab1
+        vars:
+          JUMPHOST: openlab1
+          ENVIRONMENT_OS: rhel84
+          TAG_SUFFIX: "-ubi8"
+          SSL_ENABLE: true
+          ENABLE_RHEL_REGISTRATION: false
+          ENABLE_NETWORK_ISOLATION: true
+          OPENSTACK_CONTAINER_REGISTRY: "mirrors:5005"
+          DEPLOYER_CONTAINER_REGISTRY: "tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5102"
+          CONTRAIL_CONTAINER_TAG: 'nightly'
+          CONTAINER_REGISTRY: "tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5102"
+          MONITORING_DEPLOY_TARGET: PROD,SR-IOV,DPDK
+          MONITORING_DEPLOYER: rhosp16
+          MONITORING_ORCHESTRATOR: os
+    jobs:
+      deploy-platform-rhosp16.2-bmc:
+        job-name: deploy-platform-rhosp16
+        stream: rhosp16.2-bmc
+      deploy-tf-rhosp16.2-bmc:
+        job-name: deploy-tf-rhosp16
+        stream: rhosp16.2-bmc
+        timeout: 240
+        depends-on:
+          - package-deployers-ubi8
+          - deploy-platform-rhosp16.2-bmc
+      test-sanity-rhosp16.2-bmc:
+        job-name: test-sanity
+        stream: rhosp16.2-bmc
+        depends-on:
+          - deploy-tf-rhosp16.2-bmc
+      collect-logs-and-cleanup-rhosp16.2-bmc:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp16.2-bmc
+        type: post-hook
+        depends-on:
+          - deploy-platform-rhosp16.2-bmc
+          - deploy-tf-rhosp16.2-bmc
+          - test-sanity-rhosp16.2-bmc
 
 - template:
     name: rhosp16.1-slave01

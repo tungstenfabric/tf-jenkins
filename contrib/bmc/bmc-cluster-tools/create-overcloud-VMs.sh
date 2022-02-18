@@ -22,12 +22,19 @@ for vm in "${!node_4_vm[@]}"; do
   vcpu=8
   if [[ "$vm" =~ "compute" ]]; then
       vram=65536
+      diskspace='30G'
+  elif [[ "$vm" =~ "ceph" ]]; then
+      vcpu=2
+      vram=4096
+      diskspace='20G'
   else
       vram=32768
+      diskspace='50G'
   fi
-  ssh $ip_addr ./create_VM.sh $vm $rhel_version $pool $vcpu $vram
+  ssh $ip_addr ./create_VM.sh $vm $rhel_version $pool $vcpu $vram $diskspace
   add_vbmc $ip_addr $vm $vbmc_port
 done
 
 
 $my_dir/generate_instackenv.sh $1
+

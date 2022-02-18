@@ -12,8 +12,12 @@ IPADDR={{ ansible_host }}
 PREFIX=24
 GATEWAY={{ gateway }}
 {% endif %}
-{% if item.value == 'br-data' %}
-IPADDR={{ data_ip }}
+{% if item.value == 'br0' %}
+IPADDR={{ br0_ip }}
+PREFIX=24
+{% endif %}
+{% if item.value == 'br1' %}
+IPADDR={{ br1_ip }}
 PREFIX=24
 {% endif %}
 
