@@ -61,7 +61,6 @@
           LINUX_DISTR: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005/ubi7/ubi
           LINUX_DISTR_VER: stable
           TAG_SUFFIX: "-ubi7"
-          GERRIT_BRANCH: "R2011"
           INSECURE_REGISTRIES: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005
     jobs:
       prepare-sandbox-ubi:
@@ -394,3 +393,41 @@
         depends-on:
           - package-ubi8
 
+- template:
+    name: build-ubi-deployers
+    streams:
+      build-ubi-deployers:
+        vars:
+          LINUX_DISTR: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005/ubi7/ubi
+          LINUX_DISTR_VER: stable
+          TAG_SUFFIX: "-ubi7"
+          INSECURE_REGISTRIES: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005
+    jobs:
+      prepare-sandbox-ubi-deployers:
+        # it creates worker
+        job-name: build-prepare-sandbox
+        stream: build-ubi-deployers
+        vars:
+          PUBLISH_TYPE: stable
+      fetch-sources-ubi-deployers:
+        job-name: build-fetch-sources
+        stream: build-ubi-deployers
+        depends-on:
+          - prepare-sandbox-ubi-deployers
+      configure-ubi-deployers:
+        job-name: build-configure
+        stream: build-ubi-deployers
+        depends-on:
+          - fetch-sources-ubi-deployers
+      package-deployers-ubi-deployers:
+        job-name: build-package-deployers
+        stream: build-ubi-deployers
+        depends-on:
+          - configure-ubi-deployers
+      cleanup-ubi-deployers:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
+        stream: build-ubi-deployers
+        type: post-hook
+        depends-on:
+          - package-deployers-ubi-deployers

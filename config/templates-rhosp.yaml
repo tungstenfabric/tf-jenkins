@@ -146,7 +146,7 @@
 - template:
     name: rhosp16.1
     parents:
-      - build-ubi8
+      - build-ubi-deployers
     streams:
       rhosp16.1:
         vars:
@@ -168,7 +168,7 @@
         stream: rhosp16.1
         job-name: deploy-tf-rhosp16
         depends-on:
-          - package-deployers-ubi8
+          - package-deployers-ubi-deployers
           - deploy-platform-rhosp16.1
       test-sanity-rhosp16.1:
         job-name: test-sanity
@@ -524,14 +524,11 @@
       rhosp13-ha-ziu:
         vars:
           ENVIRONMENT_OS: rhel7
-          TAG_SUFFIX: "-ubi7"
           SSL_ENABLE: true
           CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
-          CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: rhosp13
@@ -540,9 +537,13 @@
       deploy-platform-rhosp13-ha-ziu:
         stream: rhosp13-ha-ziu
         job-name: deploy-platform-rhosp13
+        vars:
+          TAG_SUFFIX: "-ubi7"
       deploy-tf-rhosp13-ha-ziu:
         stream: rhosp13-ha-ziu
         job-name: deploy-tf-rhosp13
+        vars:
+          TAG_SUFFIX: "-ubi7"
         depends-on:
           - deploy-platform-rhosp13-ha-ziu
       test-deployment-rhosp13-ha-ziu:
@@ -550,7 +551,7 @@
         job-name: test-deployment
         vars:
           DEPLOYMENT_TEST_TAGS: ziu
-          TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
+          TF_DEPLOYMENT_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/tf-deployment-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX
           TAG_SUFFIX: "-ubi8"
         depends-on:
           - package-ubi8
@@ -559,7 +560,7 @@
         job-name: test-sanity
         stream: rhosp13-ha-ziu
         vars:
-          TF_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/contrail-test-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL
+          TF_TEST_IMAGE: $CONTAINER_REGISTRY_ORIGINAL/contrail-test-test:$CONTRAIL_CONTAINER_TAG_ORIGINAL$TAG_SUFFIX
           TAG_SUFFIX: "-ubi8"
         depends-on:
           - test-deployment-rhosp13-ha-ziu
@@ -581,14 +582,11 @@
       rhosp16.1-ha-ziu:
         vars:
           ENVIRONMENT_OS: rhel82
-          TAG_SUFFIX: "-ubi7"
           SSL_ENABLE: true
           CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011
           ENABLE_RHEL_REGISTRATION: false
           OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
-          CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
           NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:1'
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: rhosp16
@@ -597,9 +595,13 @@
       deploy-platform-rhosp16.1-ha-ziu:
         stream: rhosp16.1-ha-ziu
         job-name: deploy-platform-rhosp16
+        vars:
+          TAG_SUFFIX: "-ubi7"
       deploy-tf-rhosp16.1-ha-ziu:
         stream: rhosp16.1-ha-ziu
         job-name: deploy-tf-rhosp16
+        vars:
+          TAG_SUFFIX: "-ubi7"
         depends-on:
           - deploy-platform-rhosp16.1-ha-ziu
       test-deployment-rhosp16.1-ha-ziu:
