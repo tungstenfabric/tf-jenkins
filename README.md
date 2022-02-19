@@ -15,7 +15,7 @@ For now it's a bit outdated - we're working on actualisation.
 
 ### Jenkins master
 
-Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 500Gb for root volume.
+Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 300Gb for root volume.
 URL: <https://tf-jenkins.progmaticlab.com/>
 Source code: <https://github.com/tungstenfabric/tf-jenkins>
 
@@ -25,7 +25,7 @@ Architecture of CI code requires Jenkins slave with mirrors in the same private 
 
 ### Jenkins slave
 
-Ubuntu 18.04 based VM, 8 CPU, 32 Gb RAM, 500Gb for root volume.
+Ubuntu 18.04 based VM, 8 CPU, 32 Gb RAM, 300Gb for root volume.
 
 To be able to create/remove workers/networks infra must have individual slave in each region.
 
@@ -33,7 +33,7 @@ For now we have only one slave in one region of vexxhost. But we checked that co
 
 ### Nexus
 
-Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 2Tb for root volume, 2Tb for /var/lib/docker.
+Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 1Tb for root volume, 2Tb for /var/lib/docker.
 URL: <https://tf-nexus.progmaticlab.com/>
 
 For now it serves:
@@ -66,13 +66,17 @@ Second purpose is to show checking and gating status for reviews.
 
 ### Aquasec
 
+TODO.
+
 Centos 7 based VM, 2 CPU, 8 Gb RAM.
 
 Hosts software from <https://www.aquasec.com/> and uses for collecting reports about vulnerabilities.
 
 ### Mirrors
 
-TODO
+Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 200Mb for root volume, 2Tb for /var/local/mirror
+
+Contains various mirrors of yum, pip, apt, docker, ...
 
 ## Support of https://gerrit.tungsten.io
 
