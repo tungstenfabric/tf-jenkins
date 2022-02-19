@@ -204,6 +204,7 @@
         build-ubi:
           vars:
             LINUX_DISTR_VER: 'stage'
+            GERRIT_BRANCH: "R2011"
       jobs:
         update-stage-repos-rhel7:
           job-name: update-stage-repos

@@ -48,9 +48,6 @@
         build-centos:
           vars:
             DEBUGINFO: TRUE
-        build-ubi:
-          vars:
-            DEBUGINFO: TRUE
         build-r1912:
           frequency: 7
           vars:
