@@ -135,6 +135,11 @@ function do_publish_impl() {
 function do_publish() {
   local container=$1
 
+  if [[ "$container" == "contrail-vrouter-plugin-n3000-init-redhat" ]]; then
+    warn "$container skipped"
+    return 0
+  fi
+
   local full_name_list=$(get_container_full_name_list $container $CONTAINER_TAG)
   if [[ "$?" != "0" || -z "$full_name_list" ]] ; then
     warn "$container skipped"
