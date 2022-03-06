@@ -166,6 +166,44 @@
           - test-sanity-ansible-os-ha
 
 - template:
+    name: ansible-os-ha-ubi8
+    streams:
+      ansible-os-ha-ubi8:
+        vars:
+          TAG_SUFFIX: "-ubi8"
+          USE_DATAPLANE_NETWORK: true
+    parents:
+      - build-ubi8
+    jobs:
+      deploy-platform-ansible-os-ha-ubi8:
+        job-name: deploy-platform-ansible-os
+        stream: ansible-os-ha-ubi8
+        depends-on:
+          # temporary solution
+          - package-ubi8
+        vars:
+          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2
+      deploy-tf-ansible-os-ha-ubi8:
+        job-name: deploy-tf-ansible-os
+        stream: ansible-os-ha-ubi8
+        depends-on:
+          - package-ubi8
+          - deploy-platform-ansible-os-ha-ubi8
+      test-sanity-ansible-os-ha-ubi8:
+        job-name: test-sanity
+        stream: ansible-os-ha-ubi8
+        depends-on:
+          - deploy-tf-ansible-os-ha-ubi8
+      collect-logs-and-cleanup-ansible-os-ha-ubi8:
+        job-name: collect-logs-and-cleanup
+        stream: ansible-os-ha-ubi8
+        type: post-hook
+        depends-on:
+          - deploy-platform-ansible-os-ha-ubi8
+          - deploy-tf-ansible-os-ha-ubi8
+          - test-sanity-ansible-os-ha-ubi8
+
+- template:
     name: ansible-os-ha-ziu
     streams:
       ansible-os-ha-ziu:
