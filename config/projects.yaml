@@ -1,5 +1,13 @@
 ---
 
+# cache project
+- project:
+    names:
+      - tungstenfabric/tf-third-party-cache
+    post-merge:
+      jobs:
+        update-caches:
+
 # just build projects
 - project:
     names:
