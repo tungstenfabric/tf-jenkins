@@ -370,16 +370,16 @@
 
 - project:
     name: tungstenfabric/tf-dev-env
-    streams:
-      build-ubi:
-        vars:
-          GERRIT_BRANCH: "R2011"
     check:
       templates:
         - build-centos
         - ansible-os
         - cleanup
     gate:
+      streams:
+        build-ubi:
+          vars:
+            GERRIT_BRANCH: "R2011"
       templates:
         - build-ubi
         - build-ubi8
