@@ -195,10 +195,10 @@
     stage-repos:
       templates:
         - build-ubi
-        - rhosp13
+        - rhosp13-2011
         - cleanup
       streams:
-        rhosp13:
+        rhosp13-2011:
           vars:
             OPENSTACK_CONTAINER_TAG: '13.0-stage'
         build-ubi:
@@ -223,7 +223,7 @@
             - update-stage-images-rhel7
           vars:
             DEVENV_TAG: stage-rhel7-$RANDOM
-        deploy-platform-rhosp13:
+        deploy-platform-rhosp13-2011:
           depends-on:
             - update-stage-repos-rhel7
             - update-stage-images-rhel7
@@ -232,24 +232,23 @@
           vars:
             REPOS_TYPE: 'rhel7'
           depends-on:
-            - test-sanity-rhosp13
+            - test-sanity-rhosp13-2011
         publish-stage-images-rhel7:
           job-name: publish-stage-images
           vars:
             CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel7'
           depends-on:
-            - test-sanity-rhosp13
+            - test-sanity-rhosp13-2011
 
 - project:
     name: stage-repos-rhel82
     stage-repos:
       templates:
-        - build-ubi8
-        - rhosp16.1
+        - rhosp16.1-2011
         - cleanup
       streams:
-        rhosp16.1:
+        rhosp16.1-2011:
           vars:
             OPENSTACK_CONTAINER_TAG: '16.1-stage'
       jobs:
@@ -263,14 +262,7 @@
           vars:
             CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel82'
-        prepare-sandbox-ubi8:
-          # it needs images job in deps cause contrail-general-base is based on clean ubi image
-          depends-on:
-            - update-stage-repos-rhel82
-            - update-stage-images-rhel82
-          vars:
-            DEVENV_TAG: stage-rhel82-$RANDOM
-        deploy-platform-rhosp16.1:
+        deploy-platform-rhosp16.1-2011:
           job-name: deploy-platform-rhosp16
           depends-on:
             - update-stage-repos-rhel82
@@ -280,14 +272,14 @@
           vars:
             REPOS_TYPE: 'rhel82'
           depends-on:
-            - test-sanity-rhosp16.1
+            - test-sanity-rhosp16.1-2011
         publish-stage-images-rhel82:
           job-name: publish-stage-images
           vars:
             CONTAINER_REGISTRY: 'tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005'
             REPOS_TYPE: 'rhel82'
           depends-on:
-            - test-sanity-rhosp16.1
+            - test-sanity-rhosp16.1-2011
 
 - project:
     name: stage-repos-rhel84

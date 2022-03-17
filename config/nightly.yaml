@@ -23,11 +23,9 @@
         - juju-os-1912
         - juju-os-2011
         - juju-hybrid-ha-ziu
-        - rhosp13
         - rhosp13-1912
         - rhosp13-2011
         - rhosp13-ha-ziu
-        - rhosp16.1
         - rhosp16.1-2011
         - rhosp16.1-ha-ziu
         - rhosp16.2-ha
@@ -123,10 +121,6 @@
           # additional deps
           depends-on:
             - package-r2011-centos
-        deploy-tf-rhosp13:
-          # additional deps
-          depends-on:
-            - package-deployers-r2011-ubi
         deploy-tf-rhosp13-1912:
           # additional deps
           depends-on:

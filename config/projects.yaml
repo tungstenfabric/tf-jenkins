@@ -287,16 +287,16 @@
     name: tungstenfabric/tf-tripleo-puppet
     check:
       templates:
-        - rhosp13
-        - rhosp16.1:
+        - rhosp13-2011
+        - rhosp16.1-2011:
             branch: R.+
         - rhosp16.2:
             branch: master
         - cleanup
     gate:
       templates:
-        - rhosp13
-        - rhosp16.1:
+        - rhosp13-2011
+        - rhosp16.1-2011:
             branch: R.+
         - rhosp16.2:
             branch: master
@@ -306,7 +306,7 @@
     name: tungstenfabric/tf-tripleo-heat-templates
     check:
       templates:
-        - rhosp13:
+        - rhosp13-2011:
             branch: stable/queens
         - rhosp13-1912:
             branch: stable/queens
@@ -315,11 +315,11 @@
         - cleanup
     gate:
       templates:
-        - rhosp13:
+        - rhosp13-2011:
             branch: stable/queens
         - rhosp13-1912:
             branch: stable/queens
-        - rhosp16.1:
+        - rhosp16.1-2011:
             branch: stable/train
         - rhosp16.2:
             branch: stable/train
