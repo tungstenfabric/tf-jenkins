@@ -30,9 +30,10 @@
         - rhosp16.1-ha-ziu
         - rhosp16.2-ha
         #- rhosp13-bmc
-        #- rhosp16.2-bmc
+        - rhosp16.2-bmc
         - operator
         - operator-ha
+        - operator-ha-ipa
         - operator-2011
         # - openshift4-slave01
         # - openshift4-slave04
