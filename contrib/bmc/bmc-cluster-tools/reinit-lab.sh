@@ -12,6 +12,8 @@ LAB=$1
 my_file="$(readlink -e "$0")"
 my_dir="$(dirname $my_file)"
 
+echo "INFO: Reinit lab $0 started"
+
 source $my_dir/$1.env
 source functions.sh
 
@@ -49,4 +51,5 @@ if [[ -n $ipa_vm ]]; then
     wait_machine  $ipa_vm
 fi
 
+echo "INFO: $0 finished successfully"
 
