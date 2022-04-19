@@ -46,24 +46,27 @@
       streams:
         build-centos:
           vars:
-            DEBUGINFO: TRUE
+            DEBUGINFO: "TRUE"
+        build-ubi8:
+          vars:
+            DEBUGINFO: "TRUE"
         build-r1912:
           frequency: 7
           vars:
-            DEBUGINFO: TRUE
+            DEBUGINFO: "TRUE"
         build-r1912-ubi:
           frequency: 7
           vars:
-            DEBUGINFO: TRUE
+            DEBUGINFO: "TRUE"
         build-r2011-ubi:
           vars:
-            DEBUGINFO: TRUE
+            DEBUGINFO: "TRUE"
         build-r2011-centos:
           vars:
-            DEBUGINFO: TRUE
+            DEBUGINFO: "TRUE"
         build-r21.3-centos:
           vars:
-            DEBUGINFO: TRUE
+            DEBUGINFO: "TRUE"
         # additional schedule for some streams
         ansible-k8s:
           frequency: 7
