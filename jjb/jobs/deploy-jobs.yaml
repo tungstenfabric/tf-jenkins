@@ -333,6 +333,10 @@
           environment_os: rhel82
           deployer: rhosp
           orchestrator: openstack
+      - rhosp-operator:
+          environment_os: rhel84
+          deployer: rhosp-operator
+          orchestrator: openstack
       - operator:
           environment_os: centos7
           deployer: operator
