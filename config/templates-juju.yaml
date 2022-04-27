@@ -121,7 +121,7 @@
         job-name: deploy-platform-juju-k8s
         stream: juju-k8s-containerd
         vars:
-          NODES: JUJU_CONTROLLER_NODES:xsmall:1,CONTROLLER_NODES:large:1
+          NODES: JUJU_CONTROLLER_NODES:xsmall:1,CONTROLLER_NODES:medium:1,AGENT_NODES:small:1
       deploy-tf-juju-k8s-containerd:
         job-name: deploy-tf-juju-k8s
         stream: juju-k8s-containerd
