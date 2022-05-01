@@ -28,8 +28,10 @@ fi
 echo "export ENABLE_NETWORK_ISOLATION=$ENABLE_NETWORK_ISOLATION" >> "$stackrc_file_path"
 echo "export OPENSTACK_CONTAINER_REGISTRY=$OPENSTACK_CONTAINER_REGISTRY" >> "$stackrc_file_path"
 echo "export OPENSTACK_CONTAINER_TAG=$OPENSTACK_CONTAINER_TAG" >> "$stackrc_file_path"
-if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then 
+if [[ "${SSL_ENABLE,,}" == 'true' ]] ; then
   echo "export ENABLE_TLS='ipa'" >> "$stackrc_file_path"
+else
+  echo "export ENABLE_TLS='local'" >> "$stackrc_file_path"
 fi
 
 if [[ -n "$JUMPHOST" ]]; then
