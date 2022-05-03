@@ -59,6 +59,7 @@
             branch: master || R21.4
         - juju-k8s
         - ansible-os
+        - operator
         - cleanup
 
 - project:
@@ -147,6 +148,7 @@
             branch: master || R21.4
         - juju-k8s
         - ansible-os
+        - operator
         - cleanup
 
 # old web UI projects
@@ -229,6 +231,7 @@
             branch: master || R21.4
         - juju-k8s
         - ansible-os
+        - operator
         - cleanup
     post-merge:
       jobs:
