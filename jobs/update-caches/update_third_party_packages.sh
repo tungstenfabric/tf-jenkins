@@ -66,8 +66,6 @@ pushd $CACHE_DIR
 
 # archived packages
 kernels="
-  https://vault.centos.org/7.6.1810/updates/x86_64/Packages/kernel-3.10.0-957.27.2.el7.x86_64.rpm
-  https://vault.centos.org/7.6.1810/updates/x86_64/Packages/kernel-devel-3.10.0-957.27.2.el7.x86_64.rpm
   https://vault.centos.org/7.6.1810/updates/x86_64/Packages/kernel-3.10.0-957.12.2.el7.x86_64.rpm
   https://vault.centos.org/7.6.1810/updates/x86_64/Packages/kernel-devel-3.10.0-957.12.2.el7.x86_64.rpm
   https://vault.centos.org/7.7.1908/os/x86_64/Packages/kernel-3.10.0-1062.el7.x86_64.rpm
