@@ -71,11 +71,9 @@ for repofile in $mirror_list_for_build $mirror_list mirror-base-centos7.repo mir
   mv $file.tmp $file
 done
 
-# sync should be made after optional repo URLs updating
-rsync -a -e "$ssh_cmd" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
-
 res=0
-cat <<EOF | $ssh_cmd $IMAGE_SSH_USER@$instance_ip || res=1
+script="build-$STAGE-$TARGET.sh"
+cat <<EOF > $WORKSPACE/$script
 [ "${DEBUG,,}" == "true" ] && set -x
 export DEBUG=$DEBUG
 export PATH=\$PATH:/usr/sbin
@@ -154,6 +152,13 @@ free -h
 
 ./run.sh "$STAGE" "$TARGET"
 EOF
+chmod a+x $WORKSPACE/$script
+
+# sync should be made after optional repo URLs updating
+rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/$script} $IMAGE_SSH_USER@$instance_ip:./
+
+# run this via eval due to special symbols in ssh_cmd
+eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./$script || res=1
 
 if [[ "$res" != '0' ]] ; then
   echo "ERROR: Run failed. Stage: $STAGE  Target: $TARGET"
