@@ -11,6 +11,8 @@ source "$my_dir/definitions"
 # Note: Base images centos8 rhel7 rhel8 must be updated manually.
 # The image name should follow the example: base-rhel8-202012321201.
 
+# rhel8 - https://access.redhat.com/downloads/content/479/ver=/rhel---8/8.4/x86_64/product-software
+
 date_suffix=$(date +%Y%m%d%H%M)
 
 images=''
