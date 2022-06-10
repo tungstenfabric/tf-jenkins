@@ -12,11 +12,11 @@ source "$my_dir/../../infra/${SLAVE}/functions.sh"
 AQUASEC_HOST="tf-aquascan.$SLAVE_REGION.$CI_DOMAIN"
 SCAN_REPORTS_STASH=/tmp/scan_reports
 
-env_file="$WORKSPACE/scan.env"
+env_file="scan.env"
 cat <<EOF > $env_file
-LC_ALL=en_US.UTF-8
-LANG=en_US.UTF-8
-LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
 CONTAINER_REGISTRY=$CONTAINER_REGISTRY
 CONTAINER_TAG=$CONTRAIL_CONTAINER_TAG$TAG_SUFFIX
 DEVENV_IMAGE_NAME=tf-dev-sandbox
@@ -31,7 +31,7 @@ SCANNER_USER=$AQUASEC_SCANNER_USERNAME
 SCANNER_PASSWORD=$AQUASEC_SCANNER_PASSWORD
 EOF
 
-scp -i $WORKER_SSH_KEY $SSH_OPTIONS $env_file $my_dir/{scan.sh,excel.py,new_cves.py} $AQUASEC_HOST_USERNAME@$AQUASEC_HOST:
+scp -i $WORKER_SSH_KEY $SSH_OPTIONS $WORKSPACE/$env_file $my_dir/{scan.sh,excel.py,new_cves.py} $AQUASEC_HOST_USERNAME@$AQUASEC_HOST:
 
 echo "INFO: Prepare the Aquasec environment"
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST
@@ -58,18 +58,18 @@ scan_report=aquasec-report-${suffix}.xlsx
 new_cves_report=aquasec-new-cves-${suffix}.xlsx
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST
 export WORKSPACE=\$HOME
-source ./scan.env
+source ./$env_file
 if ! sudo -E ./scan.sh; then
     exit 1
 fi
 i="\${CONTAINER_REGISTRY}/tf-container-builder-src:\${CONTAINER_TAG}"
 if sudo docker pull \${i} >/dev/null ; then
-    I=\$(sudo docker create \${i} cat)
-    sudo docker cp \${I}:/src/security_vulnerabilities_whitelist \${SCAN_REPORTS_STASH}/
-    sudo docker rm -f \${I}
-    sudo docker image rm -f \${i}
-    sudo python ./new_cves.py -i \${SCAN_REPORTS_STASH} -o $new_cves_report \
-      -w \${SCAN_REPORTS_STASH}/security_vulnerabilities_whitelist
+  I=\$(sudo docker create \${i} cat)
+  sudo docker cp \${I}:/src/security_vulnerabilities_whitelist \${SCAN_REPORTS_STASH}/
+  sudo docker rm -f \${I}
+  sudo docker image rm -f \${i}
+  sudo python ./new_cves.py -i \${SCAN_REPORTS_STASH} -o $new_cves_report \
+    -w \${SCAN_REPORTS_STASH}/security_vulnerabilities_whitelist
 fi
 sudo -E python ./excel.py -i \${SCAN_REPORTS_STASH} -o $scan_report
 EOF
