@@ -59,6 +59,12 @@ new_cves_report=aquasec-new-cves-${suffix}.xlsx
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $AQUASEC_HOST_USERNAME@$AQUASEC_HOST
 export WORKSPACE=\$HOME
 source ./$env_file
+
+sudo locale-gen en_US.UTF-8
+sudo update-locale LC_ALL=en_US.UTF-8
+source /etc/default/locale
+locale
+
 if ! sudo -E ./scan.sh; then
     exit 1
 fi
