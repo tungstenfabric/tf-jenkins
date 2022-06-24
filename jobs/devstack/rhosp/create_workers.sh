@@ -39,7 +39,6 @@ if [[ -n "$JUMPHOST" ]]; then
   if [[ "$PROVIDER" == 'bmc' ]]; then
     $WORKSPACE/src/tungstenfabric/tf-devstack/rhosp/create_env.sh
   elif [[ "$PROVIDER" == 'kvm' ]]; then
-
     # devstack requires to run scripts on KVM host
     # TODO: make it symmetric with openstack/bmc - rework devstack scripts
     script="create_env.sh"
@@ -50,10 +49,18 @@ export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export ORCHESTRATOR=$ORCHESTRATOR
 export OPENSTACK_VERSION=$OPENSTACK_VERSION
+export HUGEPAGES_ENABLED=$HUGEPAGES_ENABLED
 export SSL_ENABLE=$SSL_ENABLE
 export stackrc_file=$stackrc_file
 source \$WORKSPACE/\$stackrc_file
 export SSH_USER=stack
+EOF
+    for n in ${NODES//,/ }; do
+      var=$(echo $n | cut -d ':' -f1)
+      val=$(echo $n | cut -d ':' -f2,3)
+      echo "export $var=\"$val\"" >> $WORKSPACE/$script
+    done
+    cat <<EOF >> $WORKSPACE/$script
 src/tungstenfabric/tf-devstack/rhosp/cleanup.sh
 src/tungstenfabric/tf-devstack/rhosp/create_env.sh
 EOF

@@ -411,6 +411,8 @@
           CONTRAIL_CONTAINER_TAG: 'nightly-r2011'
           CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
           ENABLE_NETWORK_ISOLATION: false
+          HUGEPAGES_ENABLED: false
+          NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:1,AGENT_NODES:small:1'
     jobs:
       deploy-platform-rhosp16.1-slave01:
         job-name: deploy-platform-rhosp16
@@ -435,6 +437,50 @@
           - deploy-platform-rhosp16.1-slave01
           - deploy-tf-rhosp16.1-slave01
           - test-sanity-rhosp16.1-slave01
+
+- template:
+    name: rhosp16.2-slave04
+    parents:
+      - build-ubi-deployers
+    streams:
+      rhosp16.2-slave04:
+        lock: openlab4
+        vars:
+          DEBUG: true
+          JUMPHOST: openlab4
+          ENVIRONMENT_OS: rhel84
+          TAG_SUFFIX: "-ubi8"
+          ENABLE_RHEL_REGISTRATION: true
+          CONTRAIL_CONTAINER_TAG: 'nightly'
+          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
+          ENABLE_NETWORK_ISOLATION: false
+          HUGEPAGES_ENABLED: false
+          SSL_ENABLE: true
+          NODES: 'OPENSTACK_CONTROLLER_NODES:medium:1,CONTROLLER_NODES:medium:1,AGENT_NODES:small:1'
+    jobs:
+      deploy-platform-rhosp16.2-slave04:
+        job-name: deploy-platform-rhosp16
+        stream: rhosp16.2-slave04
+      deploy-tf-rhosp16.2-slave04:
+        job-name: deploy-tf-rhosp16
+        stream: rhosp16.2-slave04
+        timeout: 240
+        depends-on:
+          - package-deployers-ubi-deployers
+          - deploy-platform-rhosp16.2-slave04
+      test-sanity-rhosp16.2-slave04:
+        job-name: test-sanity
+        stream: rhosp16.2-slave04
+        depends-on:
+          - deploy-tf-rhosp16.2-slave04
+      collect-logs-and-cleanup-rhosp16.2-slave04:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp16.2-slave04
+        type: post-hook
+        depends-on:
+          - deploy-platform-rhosp16.2-slave04
+          - deploy-tf-rhosp16.2-slave04
+          - test-sanity-rhosp16.2-slave04
 
 - template:
     name: rhosp13-ha
