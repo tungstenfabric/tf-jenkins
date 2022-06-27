@@ -396,6 +396,49 @@
           - test-sanity-rhosp16.2-bmc
 
 - template:
+    name: rhosp16.2-bmc-2011
+    parents:
+      - build-ubi
+    streams:
+      rhosp16.2-bmc-2011:
+        lock: openlab1
+        vars:
+          JUMPHOST: openlab1
+          ENVIRONMENT_OS: rhel84
+          TAG_SUFFIX: "-ubi7"
+          SSL_ENABLE: true
+          ENABLE_RHEL_REGISTRATION: false
+          ENABLE_NETWORK_ISOLATION: true
+          OPENSTACK_CONTAINER_REGISTRY: "mirrors:5005"
+          MONITORING_DEPLOY_TARGET: PROD,SR-IOV,DPDK
+          MONITORING_DEPLOYER: rhosp16
+          MONITORING_ORCHESTRATOR: os
+    jobs:
+      deploy-platform-rhosp16.2-bmc-2011:
+        job-name: deploy-platform-rhosp16
+        stream: rhosp16.2-bmc-2011
+      deploy-tf-rhosp16.2-bmc-2011:
+        job-name: deploy-tf-rhosp16
+        stream: rhosp16.2-bmc-2011
+        timeout: 240
+        depends-on:
+          - package-ubi7
+          - deploy-platform-rhosp16.2-bmc-2011
+      test-sanity-rhosp16.2-bmc-2011:
+        job-name: test-sanity
+        stream: rhosp16.2-bmc-2011
+        depends-on:
+          - deploy-tf-rhosp16.2-bmc-2011
+      collect-logs-and-cleanup-rhosp16.2-bmc-2011:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp16.2-bmc-2011
+        type: post-hook
+        depends-on:
+          - deploy-platform-rhosp16.2-bmc-2011
+          - deploy-tf-rhosp16.2-bmc-2011
+          - test-sanity-rhosp16.2-bmc-2011
+
+- template:
     name: rhosp16.1-slave01
     parents:
       - build-ubi-deployers
