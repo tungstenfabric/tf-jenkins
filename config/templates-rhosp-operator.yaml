@@ -38,3 +38,103 @@
           - deploy-tf-rhosp-operator
           - test-sanity-rhosp-operator
 
+- template:
+    name: rhosp-operator-ha
+    streams:
+      rhosp-operator-ha:
+        voting: false
+        vars:
+          ENVIRONMENT_OS: rhel84
+          TAG_SUFFIX: "-ubi8"
+          ENABLE_RHEL_REGISTRATION: false
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
+          NODES: 'OPENSTACK_CONTROLLER_NODES:large:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:2'
+          CONTROL_PLANE_ORCHESTRATOR: 'operator'
+          CONFIG_API_WORKER_COUNT: 3
+    parents:
+      - build-ubi8
+    jobs:
+      deploy-platform-rhosp-operator-ha:
+        job-name: deploy-platform-operator
+        stream: rhosp-operator-ha
+      deploy-tf-rhosp-operator-ha:
+        job-name: deploy-tf-operator
+        stream: rhosp-operator-ha
+        depends-on:
+          - package-ubi8
+          - deploy-platform-rhosp-operator-ha
+      test-sanity-rhosp-operator-ha:
+        job-name: test-sanity
+        stream: rhosp-operator-ha
+        depends-on:
+          - deploy-tf-rhosp-operator-ha
+      test-deployment-rhosp-operator-ha:
+        job-name: test-deployment
+        stream: rhosp-operator-ha
+        depends-on:
+          - test-sanity-rhosp-operator-ha
+      collect-logs-and-cleanup-rhosp-operator-ha:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp-operator-ha
+        type: post-hook
+        depends-on:
+          - deploy-platform-rhosp-operator-ha
+          - deploy-tf-rhosp-operator-ha
+          - test-sanity-rhosp-operator-ha
+          - test-deployment-rhosp-operator-ha
+
+- template:
+    name: rhosp-operator-ha-ipa
+    streams:
+      rhosp-operator-ha-ipa:
+        voting: false
+        vars:
+          ENVIRONMENT_OS: rhel84
+          TAG_SUFFIX: "-ubi8"
+          ENABLE_RHEL_REGISTRATION: false
+          OPENSTACK_CONTAINER_REGISTRY: "tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005"
+          NODES: 'OPENSTACK_CONTROLLER_NODES:large:1,CONTROLLER_NODES:medium:3,AGENT_NODES:small:2,IPA_NODES:small:1'
+          CONTROL_PLANE_ORCHESTRATOR: 'operator'
+          CONFIG_API_WORKER_COUNT: 3
+          # operator is always ssl
+          SSL_ENABLE: true
+          HUGE_PAGES_2MB: 512
+          CONTAINER_RUNTIME: docker
+          K8S_CA: ipa
+          CERT_SIGNER: External
+          DOMAIN: 'vexxhost.local'
+    parents:
+      - build-ubi8
+    jobs:
+      deploy-platform-rhosp-operator-ha-ipa:
+        job-name: deploy-platform-operator
+        stream: rhosp-operator-ha-ipa
+        vars:
+          K8S_CA: ipa
+          DEPLOY_IPA_SERVER: true
+          IPA_PASSWORD: IpA_pAsSwOrD
+      deploy-tf-rhosp-operator-ha-ipa:
+        job-name: deploy-tf-operator
+        stream: rhosp-operator-ha-ipa
+        depends-on:
+          - package-centos
+          - deploy-platform-rhosp-operator-ha-ipa
+      test-sanity-rhosp-operator-ha-ipa:
+        job-name: test-sanity
+        stream: rhosp-operator-ha-ipa
+        depends-on:
+          - deploy-tf-rhosp-operator-ha-ipa
+      test-deployment-rhosp-operator-ha-ipa:
+        job-name: test-deployment
+        stream: rhosp-operator-ha-ipa
+        depends-on:
+          - test-sanity-rhosp-operator-ha-ipa
+      collect-logs-and-cleanup-rhosp-operator-ha-ipa:
+        job-name: collect-logs-and-cleanup
+        stream: rhosp-operator-ha-ipa
+        type: post-hook
+        depends-on:
+          - deploy-platform-rhosp-operator-ha-ipa
+          - deploy-tf-rhosp-operator-ha-ipa
+          - test-sanity-rhosp-operator-ha-ipa
+          - test-deployment-rhosp-operator-ha-ipa
