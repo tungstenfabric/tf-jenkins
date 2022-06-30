@@ -32,7 +32,7 @@ def craftSink(path_):
 
 def addVulnerability(data_, sink_, lineno_):
   for i, c in enumerate(ROW_TEMPLATE, start=0):
-    sink_.write_string(lineno_, i, str(data_[c]) if c in data_ else ' ')
+    sink_.write_string(lineno_, i, data_[c].encode('utf-8') if c in data_ else ' ')
 
   return lineno_ + 1
 
