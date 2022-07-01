@@ -55,10 +55,10 @@
       - build-ubi8
     jobs:
       deploy-platform-rhosp-operator-ha:
-        job-name: deploy-platform-operator
+        job-name: deploy-platform-rhosp-operator
         stream: rhosp-operator-ha
       deploy-tf-rhosp-operator-ha:
-        job-name: deploy-tf-operator
+        job-name: deploy-tf-rhosp-operator
         stream: rhosp-operator-ha
         depends-on:
           - package-ubi8
@@ -107,14 +107,14 @@
       - build-ubi8
     jobs:
       deploy-platform-rhosp-operator-ha-ipa:
-        job-name: deploy-platform-operator
+        job-name: deploy-platform-rhosp-operator
         stream: rhosp-operator-ha-ipa
         vars:
           K8S_CA: ipa
           DEPLOY_IPA_SERVER: true
           IPA_PASSWORD: IpA_pAsSwOrD
       deploy-tf-rhosp-operator-ha-ipa:
-        job-name: deploy-tf-operator
+        job-name: deploy-tf-rhosp-operator
         stream: rhosp-operator-ha-ipa
         depends-on:
           - package-centos
