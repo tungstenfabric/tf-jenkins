@@ -76,7 +76,7 @@ if sudo docker pull \${i} >/dev/null ; then
   sudo docker rm -f \${I}
   sudo docker image rm -f \${i}
   echo "INFO: prepare filtered report with new CVE-s"
-  sudo -E python ./new_cves.py -i \${SCAN_REPORTS_STASH} -o $new_cves_report \
+  sudo -E python3 ./new_cves.py -i \${SCAN_REPORTS_STASH} -o $new_cves_report \
     -w \${SCAN_REPORTS_STASH}/security_vulnerabilities_whitelist
 fi
 echo "INFO: prepare full report"
