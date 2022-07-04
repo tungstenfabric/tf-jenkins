@@ -422,7 +422,7 @@
         stream: rhosp16.2-bmc-2011
         timeout: 240
         depends-on:
-          - package-ubi7
+          - package-ubi
           - deploy-platform-rhosp16.2-bmc-2011
       test-sanity-rhosp16.2-bmc-2011:
         job-name: test-sanity
