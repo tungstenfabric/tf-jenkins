@@ -70,6 +70,7 @@ if ! sudo -E ./scan.sh; then
 fi
 i="\${CONTAINER_REGISTRY}/tf-container-builder-src:\${CONTAINER_TAG}"
 if sudo docker pull \${i} >/dev/null ; then
+  export PYTHONIOENCODING=utf8
   echo "INFO: pull whitelist from container-builder-src"
   I=\$(sudo docker create \${i} cat)
   sudo docker cp \${I}:/src/security_vulnerabilities_whitelist \${SCAN_REPORTS_STASH}/
