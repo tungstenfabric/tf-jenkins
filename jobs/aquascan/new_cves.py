@@ -25,7 +25,7 @@ def main():
       elif '-w' == o:
         w = a
 
-  except getopt.GetoptError, error_:
+  except getopt.GetoptError as error_:
     print >> sys.stderr, str(error_)
     sys.exit(1)
 

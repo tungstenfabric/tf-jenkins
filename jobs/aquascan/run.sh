@@ -70,7 +70,6 @@ if ! sudo -E ./scan.sh; then
 fi
 i="\${CONTAINER_REGISTRY}/tf-container-builder-src:\${CONTAINER_TAG}"
 if sudo docker pull \${i} >/dev/null ; then
-  export PYTHONIOENCODING=utf8
   echo "INFO: pull whitelist from container-builder-src"
   I=\$(sudo docker create \${i} cat)
   sudo docker cp \${I}:/src/security_vulnerabilities_whitelist \${SCAN_REPORTS_STASH}/
@@ -81,7 +80,7 @@ if sudo docker pull \${i} >/dev/null ; then
     -w \${SCAN_REPORTS_STASH}/security_vulnerabilities_whitelist
 fi
 echo "INFO: prepare full report"
-sudo -E python ./excel.py -i \${SCAN_REPORTS_STASH} -o $scan_report
+sudo -E python3 ./excel.py -i \${SCAN_REPORTS_STASH} -o $scan_report
 EOF
 rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST:$scan_report . || true
 rsync -a --remove-source-files -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $AQUASEC_HOST_USERNAME@$AQUASEC_HOST:$new_cves_report . 2>/dev/null || true
