@@ -42,7 +42,6 @@
     name: rhosp-operator-ha
     streams:
       rhosp-operator-ha:
-        voting: false
         vars:
           ENVIRONMENT_OS: rhel84
           TAG_SUFFIX: "-ubi8"
@@ -87,7 +86,6 @@
     name: rhosp-operator-ha-ipa
     streams:
       rhosp-operator-ha-ipa:
-        voting: false
         vars:
           ENVIRONMENT_OS: rhel84
           TAG_SUFFIX: "-ubi8"
@@ -112,12 +110,12 @@
         vars:
           K8S_CA: ipa
           DEPLOY_IPA_SERVER: true
-          IPA_PASSWORD: IpA_pAsSwOrD
+          IPA_PASSWORD: qwe123QWE
       deploy-tf-rhosp-operator-ha-ipa:
         job-name: deploy-tf-rhosp-operator
         stream: rhosp-operator-ha-ipa
         depends-on:
-          - package-centos
+          - package-ubi8
           - deploy-platform-rhosp-operator-ha-ipa
       test-sanity-rhosp-operator-ha-ipa:
         job-name: test-sanity
