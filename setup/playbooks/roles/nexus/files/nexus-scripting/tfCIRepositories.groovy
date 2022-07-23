@@ -305,19 +305,11 @@ create_yum_hosted('yum-tpc-binary', 0)
 // because contrail-third-party-packages doesn't have branches
 create_yum_hosted('yum-tpc-source-el7', 0)
 create_yum_hosted('yum-tpc-source-el8', 0)
-create_yum_group('yum-tpc-el7', ['yum-tpc-binary', 'yum-tpc-source-el7'])
-create_yum_group('yum-tpc-el8', ['yum-tpc-binary', 'yum-tpc-source-el8'])
-// legacy - remove as ubi8 support be done. leave for compatibility
-create_yum_group('yum-tpc-source', ['yum-tpc-source-el7'])
+create_yum_group('yum-tpc7', ['yum-tpc-binary', 'yum-tpc-source-el7'])
+create_yum_group('yum-tpc7Server', ['yum-tpc-binary', 'yum-tpc-source-el7'])
+create_yum_group('yum-tpc8', ['yum-tpc-binary', 'yum-tpc-source-el8'])
+// legacy - left for compatibility
 create_yum_group('yum-tpc', ['yum-tpc-binary', 'yum-tpc-source-el7'])
-
-/////////
-// Maven
-create_maven_hosted('maven-releases')
-create_maven_hosted('maven-snapshots')
-create_maven_hosted('vmware-releases')
-create_maven_proxy('maven-central', 'https://repo1.maven.org/maven2')
-create_maven_group('maven-public', ['maven-releases', 'maven-snapshots', 'maven-central', 'vmware-releases'])
 
 // Remove web proxies if any
 core.removeHTTPProxy()
