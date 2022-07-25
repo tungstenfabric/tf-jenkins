@@ -8,7 +8,6 @@
         - build-r1912-ubi
         - build-r2011-ubi
         - build-r2011-centos
-        #- build-r21.3-centos
         - test-unit
         - test-unit-ui
         - k8s-manifests
@@ -35,8 +34,6 @@
         - operator-ha
         - operator-ha-ipa
         - operator-2011
-        # - openshift4-slave01
-        # - openshift4-slave04
         - juju-os-not-implemented-targets
         - juju-k8s-not-implemented-targets
         - juju-hybrid-not-implemented-targets
@@ -117,6 +114,7 @@
           vars:
             TAG_SUFFIX: "-r2011-centos"
             GERRIT_BRANCH: "R2011"
+
         # to use just built nightly images
         deploy-tf-juju-os-1912:
           # additional deps
@@ -129,15 +127,31 @@
         deploy-tf-rhosp13-1912:
           # additional deps
           depends-on:
-            - package-deployers-r1912-ubi
+            - package-r1912-ubi
         deploy-tf-rhosp13-2011:
           # additional deps
           depends-on:
-            - package-deployers-r2011-ubi
+            - package-r2011-ubi
         deploy-tf-rhosp16.1-2011:
           # additional deps
           depends-on:
-            - package-deployers-r2011-ubi
+            - package-r2011-ubi
+        deploy-platform-ansible-os-ha-ziu:
+          # additional deps
+          depends-on:
+            - package-deployers-r2011-centos
+        deploy-tf-juju-hybrid-ha-ziu:
+          # additional deps
+          depends-on:
+            - package-r2011-ubi
+        deploy-tf-rhosp13-ha-ziu:
+          # additional deps
+          depends-on:
+            - package-r2011-ubi
+        deploy-tf-rhosp16.1-ha-ziu:
+          # additional deps
+          depends-on:
+            - package-r2011-ubi
 
         #publish-centos-r1912:
         #  job-name: publish
