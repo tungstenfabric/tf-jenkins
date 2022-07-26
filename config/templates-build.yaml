@@ -103,6 +103,56 @@
           - package-ubi
 
 - template:
+    name: build-ubi-debuginfo
+    streams:
+      build-ubi-debuginfo:
+        vars:
+          LINUX_DISTR: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005/ubi7/ubi
+          LINUX_DISTR_VER: stable
+          TAG_SUFFIX: "-ubi7"
+          INSECURE_REGISTRIES: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005
+          DEBUGINFO: "TRUE"
+    jobs:
+      prepare-sandbox-ubi-debuginfo:
+        # it creates worker
+        job-name: build-prepare-sandbox
+        stream: build-ubi-debuginfo
+        vars:
+          PUBLISH_TYPE: stable
+      fetch-sources-ubi-debuginfo:
+        job-name: build-fetch-sources
+        stream: build-ubi-debuginfo
+        depends-on:
+          - prepare-sandbox-ubi-debuginfo
+      configure-ubi-debuginfo:
+        job-name: build-configure
+        stream: build-ubi-debuginfo
+        depends-on:
+          - fetch-sources-ubi-debuginfo
+      package-deployers-ubi-debuginfo:
+        job-name: build-package-deployers
+        stream: build-ubi-debuginfo
+        depends-on:
+          - configure-ubi-debuginfo
+      compile-ubi-debuginfo:
+        job-name: build-compile
+        stream: build-ubi-debuginfo
+        depends-on:
+          - package-deployers-ubi-debuginfo
+      package-ubi-debuginfo:
+        job-name: build-package
+        stream: build-ubi-debuginfo
+        depends-on:
+          - compile-ubi-debuginfo
+      cleanup-ubi-debuginfo:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
+        stream: build-ubi-debuginfo
+        type: post-hook
+        depends-on:
+          - package-ubi-debuginfo
+
+- template:
     name: build-r1912-ubi
     streams:
       build-r1912-ubi:
@@ -392,6 +442,58 @@
         type: post-hook
         depends-on:
           - package-ubi8
+
+- template:
+    name: build-ubi8-debuginfo
+    streams:
+      build-ubi8-debuginfo:
+        vars:
+          ENVIRONMENT_OS: rhel84
+          LINUX_DISTR: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005/ubi8/ubi
+          LINUX_DISTR_VER: stable
+          TAG_SUFFIX: "-ubi8"
+          INSECURE_REGISTRIES: tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005
+          CONTRAIL_PARALLEL_BUILD: false
+          DEBUGINFO: "TRUE"
+    jobs:
+      prepare-sandbox-ubi8-debuginfo:
+        # it creates worker
+        job-name: build-prepare-sandbox
+        stream: build-ubi8-debuginfo
+        vars:
+          PUBLISH_TYPE: stable
+      fetch-sources-ubi8-debuginfo:
+        job-name: build-fetch-sources
+        stream: build-ubi8-debuginfo
+        depends-on:
+          - prepare-sandbox-ubi8-debuginfo
+      configure-ubi8-debuginfo:
+        job-name: build-configure
+        stream: build-ubi8-debuginfo
+        depends-on:
+          - fetch-sources-ubi8-debuginfo
+      package-deployers-ubi8-debuginfo:
+        job-name: build-package-deployers
+        stream: build-ubi8-debuginfo
+        depends-on:
+          - configure-ubi8-debuginfo
+      compile-ubi8-debuginfo:
+        job-name: build-compile
+        stream: build-ubi8-debuginfo
+        depends-on:
+          - package-deployers-ubi8-debuginfo
+      package-ubi8-debuginfo:
+        job-name: build-package
+        stream: build-ubi8-debuginfo
+        depends-on:
+          - compile-ubi8-debuginfo
+      cleanup-ubi8-debuginfo:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
+        stream: build-ubi8-debuginfo
+        type: post-hook
+        depends-on:
+          - package-ubi8-debuginfo
 
 - template:
     name: build-ubi-deployers
