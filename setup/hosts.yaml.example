@@ -81,6 +81,7 @@ all:
     dockerhub_password: "dockerhub_password"
 
     gerrit_user: "gerrit_user"
+    #Gerrit http token which has been generated in gerrit UI
     gerrit_password: "gerrit_password"
 
     maas_api_key: "maas_api_key"
