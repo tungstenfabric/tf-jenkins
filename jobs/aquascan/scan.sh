@@ -25,14 +25,12 @@ log "Scan TF containers"
 [ -z "$CONTAINER_TAG" ] && { err "empty CONTAINER_TAG" && exit -1; }
 [ -z "${SCAN_REPORTS_STASH}" ] && { err "empty SCAN_REPORTS_STASH" && exit -1; }
 
-CONTAINER_REGISTRY_INSECURE=${CONTAINER_REGISTRY_INSECURE:-"false"}
 AQUASEC_REGISTRY=registry.aquasec.com
 SCAN_INCLUDE_REGEXP=${SCAN_INCLUDE_REGEXP:-"contrail-\|tf-"}
 SCAN_EXCLUDE_REGEXP=${SCAN_EXCLUDE_REGEXP:-"base\|contrail-third-party-packages\|${DEVENV_IMAGE_NAME}\|-src"}
 SCAN_CONTAINERS_LIST=${SCAN_CONTAINERS_LIST:-'auto'}
 
 log_msg="\n CONTAINER_REGISTRY=$CONTAINER_REGISTRY"
-log_msg+="\n CONTAINER_REGISTRY_INSECURE=$CONTAINER_REGISTRY_INSECURE"
 log_msg+="\n SCAN_INCLUDE_REGEXP=${SCAN_INCLUDE_REGEXP}"
 log_msg+="\n SCAN_EXCLUDE_REGEXP=${SCAN_EXCLUDE_REGEXP}"
 log "Options:$log_msg"
@@ -61,14 +59,18 @@ function run_with_retry() {
   return 1
 }
 
-if [[ "$CONTAINER_REGISTRY_INSECURE" == 'true' ]]; then
-  src_scheme="http"
+container_registry_url="http://${CONTAINER_REGISTRY}"
+log "Trying autodetect protocol for container registry"
+log "Trying HTTP" 
+if raw_repos=$(run_with_retry timeout -s 9 10 curl -s --show-error ${container_registry_url}/v2/_catalog) ; then
+  log "Detected insecure docker registry ${CONTAINER_REGISTRY}"
+  log "Setup insecure registry in /etc/docker/daemon.json"
   echo $(jq '. + {"insecure-registries" : ["'${CONTAINER_REGISTRY}'"]}' /etc/docker/daemon.json) > /etc/docker/daemon.json
   systemctl reload docker
 else
-  src_scheme="https"
+  log "Trying HTTPS"
+  container_registry_url="https://${CONTAINER_REGISTRY}"
 fi
-container_registry_url="${src_scheme}://${CONTAINER_REGISTRY}"
 
 if [[ "${SCAN_CONTAINERS_LIST}" == 'auto' ]] ; then
   log "Query containers to scan"

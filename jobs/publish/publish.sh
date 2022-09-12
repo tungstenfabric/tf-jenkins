@@ -23,7 +23,6 @@ log "Publish TF container"
 [ -z "$CONTAINER_TAG" ] && { err "empty CONTAINER_TAG" && exit -1; }
 [ -z "$PUBLISH_TAGS" ] && { err "empty PUBLISH_TAGS" && exit -1; }
 
-CONTAINER_REGISTRY_INSECURE=${CONTAINER_REGISTRY_INSECURE:-"false"}
 PUBLISH_REGISTRY=${PUBLISH_REGISTRY:-}
 PUBLISH_REGISTRY_USER=${PUBLISH_REGISTRY_USER:-}
 PUBLISH_REGISTRY_PASSWORD=${PUBLISH_REGISTRY_PASSWORD:-}
@@ -32,7 +31,6 @@ PUBLISH_EXCLUDE_REGEXP=${PUBLISH_EXCLUDE_REGEXP:-"base\|contrail-third-party-pac
 PUBLISH_CONTAINERS_LIST=${PUBLISH_CONTAINERS_LIST:-'auto'}
 
 log_msg="\n CONTAINER_REGISTRY=$CONTAINER_REGISTRY"
-log_msg+="\n CONTAINER_REGISTRY_INSECURE=$CONTAINER_REGISTRY_INSECURE"
 log_msg+="\n PUBLISH_REGISTRY=${PUBLISH_REGISTRY}"
 log_msg+="\n PUBLISH_REGISTRY_USER=${PUBLISH_REGISTRY_USER}"
 log_msg+="\n PUBLISH_INCLUDE_REGEXP=${PUBLISH_INCLUDE_REGEXP}"
@@ -59,9 +57,18 @@ function run_with_retry() {
   return 1
 }
 
-src_scheme="http"
-[[ "$CONTAINER_REGISTRY_INSECURE" != 'true' ]] && src_scheme="https"
-container_registry_url="${src_scheme}://${CONTAINER_REGISTRY}"
+container_registry_url="http://${CONTAINER_REGISTRY}"
+log "Trying autodetect protocol for container registry"
+log "Trying HTTP" 
+if raw_repos=$(run_with_retry timeout -s 9 10 curl -s --show-error ${container_registry_url}/v2/_catalog) ; then
+  log "Detected insecure docker registry ${CONTAINER_REGISTRY}"
+  log "Setup insecure registry in /etc/docker/daemon.json"
+  echo $(jq '. + {"insecure-registries" : ["'${CONTAINER_REGISTRY}'"]}' /etc/docker/daemon.json) > /etc/docker/daemon.json
+  systemctl reload docker
+else
+  log "Trying HTTPS" 
+  container_registry_url="https://${CONTAINER_REGISTRY}"   
+fi
 
 if [[ "${PUBLISH_CONTAINERS_LIST}" == 'auto' ]] ; then
   log "Request containers for publishing"
