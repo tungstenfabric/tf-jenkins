@@ -7,15 +7,15 @@ my_dir="$(dirname $my_file)"
 
 function log(){
   echo -e "INFO: $(date): $@"
-} 
+}
 
 function warn(){
   echo -e "WARNING: $(date): $@" >&2
-} 
+}
 
 function err(){
   echo -e "ERROR: $(date): $@" >&2
-} 
+}
 
 log "Scan TF containers"
 
@@ -61,8 +61,9 @@ function run_with_retry() {
 
 container_registry_url="http://${CONTAINER_REGISTRY}"
 log "Trying autodetect protocol for container registry"
-log "Trying HTTP" 
-if raw_repos=$(run_with_retry timeout -s 9 10 curl -s --show-error ${container_registry_url}/v2/_catalog) ; then
+log "Trying HTTP"
+if curl -s -f --show-error ${container_registry_url}/v2/_catalog ; then
+  raw_repos=$(run_with_retry timeout -s 9 10 curl -s --show-error ${container_registry_url}/v2/_catalog)
   log "Detected insecure docker registry ${CONTAINER_REGISTRY}"
   log "Setup insecure registry in /etc/docker/daemon.json"
   echo $(jq '. + {"insecure-registries" : ["'${CONTAINER_REGISTRY}'"]}' /etc/docker/daemon.json) > /etc/docker/daemon.json

@@ -7,15 +7,15 @@ my_dir="$(dirname $my_file)"
 
 function log(){
   echo -e "INFO: $(date): $@"
-} 
+}
 
 function warn(){
   echo -e "WARNING: $(date): $@" >&2
-} 
+}
 
 function err(){
   echo -e "ERROR: $(date): $@" >&2
-} 
+}
 
 log "Publish TF container"
 
@@ -59,15 +59,16 @@ function run_with_retry() {
 
 container_registry_url="http://${CONTAINER_REGISTRY}"
 log "Trying autodetect protocol for container registry"
-log "Trying HTTP" 
-if raw_repos=$(run_with_retry timeout -s 9 10 curl -s --show-error ${container_registry_url}/v2/_catalog) ; then
+log "Trying HTTP"
+if curl -s -f --show-error ${container_registry_url}/v2/_catalog ; then
+  raw_repos=$(run_with_retry timeout -s 9 10 curl -s -f --show-error ${container_registry_url}/v2/_catalog)
   log "Detected insecure docker registry ${CONTAINER_REGISTRY}"
   log "Setup insecure registry in /etc/docker/daemon.json"
   echo $(jq '. + {"insecure-registries" : ["'${CONTAINER_REGISTRY}'"]}' /etc/docker/daemon.json) > /etc/docker/daemon.json
   systemctl reload docker
 else
-  log "Trying HTTPS" 
-  container_registry_url="https://${CONTAINER_REGISTRY}"   
+  log "Trying HTTPS"
+  container_registry_url="https://${CONTAINER_REGISTRY}"
 fi
 
 if [[ "${PUBLISH_CONTAINERS_LIST}" == 'auto' ]] ; then
@@ -101,7 +102,7 @@ function get_container_full_name_list() {
       full_names="${CONTAINER_REGISTRY}/${container}:${lookup_tag}"
     elif echo "$tags" | grep -q "^\(\(queens\)\|\(rocky\)\|\(stein\)\)-$lookup_tag\$" ; then
       full_names=$(echo "$tags" | awk "/^(queens|rocky|stein)-$lookup_tag\$/{print(\"${CONTAINER_REGISTRY}/${container}:\"\$0)}")
-    else 
+    else
       warn "No requested tag $lookup_tag in available tags for $container , available tags: "$tags
       return 1
     fi
@@ -115,7 +116,7 @@ function do_publish_impl() {
   log "Pull $full_name"
   if ! run_with_retry docker pull $full_name ; then
     err "Failed to execute docker pull ${full_name}"
-    return 1  
+    return 1
   fi
   local t=''
   local ret=0
