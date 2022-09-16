@@ -226,9 +226,9 @@
     gate:
       templates:
         - build-ubi:
-            branch: "!(master || R21.4)"
+            branch: "!(master || R21.4 || R21.4.1)"
         - build-ubi8:
-            branch: master || R21.4
+            branch: master || R21.4 || R21.4.1
         - juju-k8s
         - ansible-os
         - operator
