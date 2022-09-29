@@ -22,3 +22,4 @@ timestamper
 workflow-aggregator
 ws-cleanup
 yet-another-build-visualizer
+lockable-resources
