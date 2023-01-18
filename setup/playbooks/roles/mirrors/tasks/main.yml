@@ -99,6 +99,10 @@
     volumes:
       - /opt/mirrors/traefik/traefik.yml:/etc/traefik/traefik.yml
       - /var/run/docker.sock:/var/run/docker.sock
+    log_driver: "json-file"
+    log_options:
+      max-size: "50m"
+      max-file: "3"
 
 - name: Start docker registry mirror
   docker_container:
@@ -111,6 +115,10 @@
     labels:
       traefik.http.routers.dockerhub.entrypoints: dockerhub
       traefik.http.routers.dockerhub.rule: PathPrefix(`/`)
+    log_driver: "json-file"
+    log_options:
+      max-size: "50m"
+      max-file: "3"
 
 - name: Start devpi
   docker_container:
@@ -122,6 +130,10 @@
     labels:
       traefik.http.routers.pypi.entrypoints: web
       traefik.http.routers.pypi.rule: PathPrefix(`/root`)
+    log_driver: "json-file"
+    log_options:
+      max-size: "50m"
+      max-file: "3"
 
 - name: Start repos nginx
   docker_container:
@@ -134,6 +146,10 @@
     labels:
       traefik.http.routers.repos.entrypoints: web
       traefik.http.routers.repos.rule: PathPrefix(`/repos`)
+    log_driver: "json-file"
+    log_options:
+      max-size: "50m"
+      max-file: "3"
 
 - name: Start docker registry :5005
   docker_container:
@@ -144,6 +160,10 @@
       - 5005:5000
     volumes:
       - /var/local/mirror/registry5005:/var/lib/registry
+    log_driver: "json-file"
+    log_options:
+      max-size: "50m"
+      max-file: "3"
 
 - name: Make sure we have a 'wheel' group
   group:

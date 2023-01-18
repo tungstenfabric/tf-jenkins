@@ -7,6 +7,11 @@ services:
     network_mode: host
     volumes:
       - nexus-data:/nexus-data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
   rproxy:
     image: nginx:1.15
     restart: always
@@ -18,6 +23,11 @@ services:
       - "/opt/nexus/nginx.restricted.whitelist:/etc/nginx/conf.d/restricted.whitelist"
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
   docker-tls:
     image: traefik
     restart: always
@@ -30,6 +40,11 @@ services:
       - 5101:5101
       - 5102:5102
       - 443:443
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
 
 volumes:
   nexus-data:
