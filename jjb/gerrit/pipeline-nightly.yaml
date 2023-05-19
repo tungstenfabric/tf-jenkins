@@ -24,4 +24,4 @@
       script-path: pipelines/main.groovy
       lightweight-checkout: true
     triggers:
-      - timed: "0 0 * * 1-6"
+      - timed: "0 0 * * 1,4"
