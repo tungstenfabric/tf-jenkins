@@ -47,23 +47,23 @@
         build-centos:
           vars:
             DEBUGINFO: "TRUE"
-        build-ubi8:
-          vars:
-            DEBUGINFO: "TRUE"
-        build-r1912:
-          frequency: 7
-          vars:
-            DEBUGINFO: "TRUE"
-        build-r1912-ubi:
-          frequency: 7
-          vars:
-            DEBUGINFO: "TRUE"
-        build-r2011-ubi:
-          vars:
-            DEBUGINFO: "TRUE"
-        build-r2011-centos:
-          vars:
-            DEBUGINFO: "TRUE"
+        #build-ubi8:
+        #  vars:
+        #    DEBUGINFO: "TRUE"
+        #build-r1912:
+        #  frequency: 7
+        #  vars:
+        #    DEBUGINFO: "TRUE"
+        #build-r1912-ubi:
+        #  frequency: 7
+        #  vars:
+        #    DEBUGINFO: "TRUE"
+        #build-r2011-ubi:
+        #  vars:
+        #    DEBUGINFO: "TRUE"
+        #build-r2011-centos:
+        #  vars:
+        #    DEBUGINFO: "TRUE"
         build-r21.3-centos:
           vars:
             DEBUGINFO: "TRUE"
@@ -112,51 +112,51 @@
           job-name: publish
           depends-on:
             - package-centos
-        publish-r2011-centos-nightly:
-          job-name: publish
-          depends-on:
-            - package-r2011-centos
-          vars:
-            TAG_SUFFIX: "-r2011-centos"
-            GERRIT_BRANCH: "R2011"
+        #publish-r2011-centos-nightly:
+        #  job-name: publish
+        #  depends-on:
+        #    - package-r2011-centos
+        #  vars:
+        #    TAG_SUFFIX: "-r2011-centos"
+        #    GERRIT_BRANCH: "R2011"
 
         # to use just built nightly images
-        deploy-tf-juju-os-1912:
-          # additional deps
-          depends-on:
-            - package-r1912
-        deploy-tf-juju-os-2011:
-          # additional deps
-          depends-on:
-            - package-r2011-centos
-        deploy-tf-rhosp13-1912:
-          # additional deps
-          depends-on:
-            - package-r1912-ubi
-        deploy-tf-rhosp13-2011:
-          # additional deps
-          depends-on:
-            - package-r2011-ubi
-        deploy-tf-rhosp16.1-2011:
-          # additional deps
-          depends-on:
-            - package-r2011-ubi
-        deploy-platform-ansible-os-ha-ziu:
-          # additional deps
-          depends-on:
-            - package-deployers-r2011-centos
-        deploy-tf-juju-hybrid-ha-ziu:
-          # additional deps
-          depends-on:
-            - package-r2011-ubi
-        deploy-tf-rhosp13-ha-ziu:
-          # additional deps
-          depends-on:
-            - package-r2011-ubi
-        deploy-tf-rhosp16.1-ha-ziu:
-          # additional deps
-          depends-on:
-            - package-r2011-ubi
+        #deploy-tf-juju-os-1912:
+        #  # additional deps
+        #  depends-on:
+        #    - package-r1912
+        #deploy-tf-juju-os-2011:
+        #  # additional deps
+        #  depends-on:
+        #    - package-r2011-centos
+        #deploy-tf-rhosp13-1912:
+        #  # additional deps
+        #  depends-on:
+        #    - package-r1912-ubi
+        #deploy-tf-rhosp13-2011:
+        #  # additional deps
+        #  depends-on:
+        #    - package-r2011-ubi
+        #deploy-tf-rhosp16.1-2011:
+        #  # additional deps
+        #  depends-on:
+        #    - package-r2011-ubi
+        #deploy-platform-ansible-os-ha-ziu:
+        #  # additional deps
+        #  depends-on:
+        #    - package-deployers-r2011-centos
+        #deploy-tf-juju-hybrid-ha-ziu:
+        #  # additional deps
+        #  depends-on:
+        #    - package-r2011-ubi
+        #deploy-tf-rhosp13-ha-ziu:
+        #  # additional deps
+        #  depends-on:
+        #    - package-r2011-ubi
+        #deploy-tf-rhosp16.1-ha-ziu:
+        #  # additional deps
+        #  depends-on:
+        #    - package-r2011-ubi
 
         #publish-centos-r1912:
         #  job-name: publish
@@ -180,12 +180,12 @@
             TAG_SUFFIX: "-r21.4-centos"
             GERRIT_BRANCH: "R21.4"
 
-        aquascan-ubi-nightly:
-          job-name: aquascan
-          depends-on:
-            - package-ubi8
-          vars:
-            TAG_SUFFIX: "-ubi8"
+        #aquascan-ubi-nightly:
+        #  job-name: aquascan
+        #  depends-on:
+        #    - package-ubi8
+        #  vars:
+        #    TAG_SUFFIX: "-ubi8"
       post-jobs:
         publish-centos-stable:
           job-name: publish
