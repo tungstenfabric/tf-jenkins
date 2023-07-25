@@ -393,6 +393,54 @@
           - package-r21.3-centos
 
 - template:
+    name: build-r21.4-centos
+    streams:
+      build-r21.4-centos:
+        vars:
+          LINUX_DISTR: centos
+          GERRIT_BRANCH: "R21.4"
+          TAG_SUFFIX: "-r21.4-centos"
+    jobs:
+      prepare-sandbox-r21.4-centos:
+        # it creates worker
+        job-name: build-prepare-sandbox
+        stream: build-r21.4-centos
+        vars:
+          PUBLISH_TYPE: stable
+      fetch-sources-r21.4-centos:
+        job-name: build-fetch-sources
+        stream: build-r21.4-centos
+        depends-on:
+          - prepare-sandbox-r21.4-centos
+      configure-r21.4-centos:
+        job-name: build-configure
+        stream: build-r21.4-centos
+        depends-on:
+          - fetch-sources-r21.4-centos
+      package-deployers-r21.4-centos:
+        job-name: build-package-deployers
+        stream: build-r21.4-centos
+        depends-on:
+          - configure-r21.4-centos
+      compile-r21.4-centos:
+        job-name: build-compile
+        stream: build-r21.4-centos
+        depends-on:
+          - package-deployers-r21.4-centos
+      package-r21.4-centos:
+        job-name: build-package
+        stream: build-r21.4-centos
+        depends-on:
+          - compile-r21.4-centos
+      cleanup-r21.4-centos:
+        # it doesn't call devenv - it removes worker completly
+        job-name: build-cleanup
+        stream: build-r21.4-centos
+        type: post-hook
+        depends-on:
+          - package-r21.4-centos
+
+- template:
     name: build-ubi8
     streams:
       build-ubi8:

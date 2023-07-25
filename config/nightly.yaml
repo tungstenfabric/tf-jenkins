@@ -4,10 +4,12 @@
     name: tungstenfabric
     nightly:
       templates:
-        - build-r1912
-        - build-r1912-ubi
-        - build-r2011-ubi
-        - build-r2011-centos
+        #- build-r1912
+        #- build-r1912-ubi
+        #- build-r2011-ubi
+        #- build-r2011-centos
+        - build-r21.3-centos
+        - build-r21.4-centos
         - test-unit
         - test-unit-ui
         - k8s-manifests
@@ -19,21 +21,21 @@
         - juju-k8s
         - juju-os
         #- juju-os-maas
-        - juju-os-1912
-        - juju-os-2011
-        - juju-hybrid-ha-ziu
-        - rhosp13-1912
-        - rhosp13-2011
-        - rhosp13-ha-ziu
-        - rhosp16.1-2011
-        - rhosp16.1-ha-ziu
-        - rhosp16.2-ha
+        #- juju-os-1912
+        #- juju-os-2011
+        #- juju-hybrid-ha-ziu
+        #- rhosp13-1912
+        #- rhosp13-2011
+        #- rhosp13-ha-ziu
+        #- rhosp16.1-2011
+        #- rhosp16.1-ha-ziu
+        #- rhosp16.2-ha
         #- rhosp13-bmc
-        - rhosp16.2-bmc
+        #- rhosp16.2-bmc
         - operator
         - operator-ha
-        - operator-ha-ipa
-        - operator-2011
+        #- operator-ha-ipa
+        #- operator-2011
         - juju-os-not-implemented-targets
         - juju-k8s-not-implemented-targets
         - juju-hybrid-not-implemented-targets
@@ -63,6 +65,9 @@
           vars:
             DEBUGINFO: "TRUE"
         build-r21.3-centos:
+          vars:
+            DEBUGINFO: "TRUE"
+        build-r21.4-centos:
           vars:
             DEBUGINFO: "TRUE"
         # additional schedule for some streams
@@ -160,13 +165,20 @@
         #  vars:
         #    TAG_SUFFIX: "-r1912"
         #    PUBLISH_TAGS: "R1912"
-        #publish-r21.3-centos-nightly:
-        #  job-name: publish
-        #  depends-on:
-        #    - package-r21.3-centos
-        #  vars:
-        #    TAG_SUFFIX: "-r21.3-centos"
-        #    GERRIT_BRANCH: "R21.3"
+        publish-r21.3-centos-nightly:
+          job-name: publish
+          depends-on:
+            - package-r21.3-centos
+          vars:
+            TAG_SUFFIX: "-r21.3-centos"
+            GERRIT_BRANCH: "R21.3"
+        publish-r21.4-centos-nightly:
+          job-name: publish
+          depends-on:
+            - package-r21.4-centos
+          vars:
+            TAG_SUFFIX: "-r21.4-centos"
+            GERRIT_BRANCH: "R21.4"
 
         aquascan-ubi-nightly:
           job-name: aquascan
