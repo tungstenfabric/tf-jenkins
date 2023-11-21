@@ -13,6 +13,7 @@ source "$WORKSPACE/global.env"
 # parameters for workers
 VM_TYPE=${VM_TYPE:-'medium'}
 NODES_COUNT=${NODES_COUNT:-1}
+AZ=${AVAILABILITY_ZONE:-${SLAVE_REGION^^}}
 
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
@@ -62,14 +63,17 @@ echo "INFO: VM_TYPE=$VM_TYPE  INSTANCE_TYPE=$INSTANCE_TYPE"
 function cleanup () {
   local cleanup_tag=$1
   local termination_list="$(list_instances ${cleanup_tag})"
+  local volumes=''
   if [[ -n "${termination_list}" ]] ; then
     echo "INFO: Instances to terminate: $termination_list"
     for instance_id in $termination_list ; do
       if nova show "$instance_id" | grep 'locked' | grep 'False'; then
+        volumes+=" $(get_volume_list $instance_id)"
         down_instances $instance_id || true
-        openstack server delete "$instance_id"
+        openstack server delete "$instance_id" --wait
       fi
     done
+    openstack volume delete $volumes
   fi
 }
 
@@ -160,18 +164,34 @@ for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
 
   res=0
 
+  # large instances flavor has a small hdd, so change it during creation
+  if [[ $INSTANCE_TYPE == 'Advanced-8-32-50' ]] ; then
+    boot_from_volume="--boot-from-volume 160"
+  fi
+  echo "INFO: openstack server create $boot_from_volume --flavor ${INSTANCE_TYPE} \
+    --security-group ${OS_SG} --availability-zone ${AZ} --key-name=worker --min ${NODES_COUNT} \
+    --max ${NODES_COUNT} --network ${OS_NETWORK} --image $IMAGE --wait ${instance_name}"
   openstack server create \
+    $boot_from_volume \
     --flavor ${INSTANCE_TYPE} \
     --security-group ${OS_SG} \
+    --availability-zone ${AZ} \
     --key-name=worker \
-    --min ${NODES_COUNT} --max ${NODES_COUNT} \
+    --min ${NODES_COUNT} \
+    --max ${NODES_COUNT} \
     --network ${OS_NETWORK} \
     --image $IMAGE \
     --wait \
     ${instance_name} || res=1
-  nova server-tag-add ${instance_name} PipelineBuildTag=${PIPELINE_BUILD_TAG} \
+
+  # if there are several instances the instance name is changed and tag can't be added 
+  instances=$(openstack server list | grep ${instance_name} | awk '{print$2}')
+  for instance_id in $instances ; do
+    nova server-tag-add ${instance_id} PipelineBuildTag=${PIPELINE_BUILD_TAG} \
                                        ${job_tag} ${group_tag} SLAVE=${SLAVE} \
-                                       DOWN=${OS_IMAGES_DOWN["${ENVIRONMENT_OS^^}"]} || res=1
+                                       DOWN=${OS_IMAGES_DOWN["${ENVIRONMENT_OS^^}"]}
+  done
+
   if [[ $res == 1 ]]; then
     echo "ERROR: Instances creation is failed on nova boot. Retry"
     cleanup ${group_tag}

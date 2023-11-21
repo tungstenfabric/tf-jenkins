@@ -49,15 +49,15 @@ fi
 #   images="$images base-ubuntu18-$date_suffix"
 # fi
 
-if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'UBUNTU20' ]]; then
-  echo "INFO: download ubuntu20 from cloud-images"
-  curl -LOs "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
-  curl -Ls "https://cloud-images.ubuntu.com/focal/current/SHA256SUMS" -o ubuntu20-SHA256SUMS
-  sha256sum -c ubuntu20-SHA256SUMS --ignore-missing --status
-  echo "INFO: upload ubuntu20 to openstack"
-  openstack image create --disk-format qcow2 --tag ubuntu20 --file focal-server-cloudimg-amd64.img base-ubuntu20-$date_suffix
-  rm -f focal-server-cloudimg-amd64.img
-  images="$images base-ubuntu20-$date_suffix"
+if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'UBUNTU22' ]]; then
+  echo "INFO: download ubuntu22 from cloud-images"
+  curl -LOs "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+  curl -Ls "https://cloud-images.ubuntu.com/jammy/current/SHA256SUMS" -o ubuntu22-SHA256SUMS
+  sha256sum -c ubuntu22-SHA256SUMS --ignore-missing --status
+  echo "INFO: upload ubuntu22 to openstack"
+  openstack image create --disk-format qcow2 --tag ubuntu22 --file jammy-server-cloudimg-amd64.img base-ubuntu22-$date_suffix
+  rm -f jammy-server-cloudimg-amd64.img
+  images="$images base-ubuntu22-$date_suffix"
 fi
 
 if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then

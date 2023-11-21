@@ -119,6 +119,15 @@ function down_instances() {
   done
 }
 
+function get_volume_list() {
+  local volumes=""
+  local i=''
+  for i in $@ ; do
+    volumes+=" $(openstack server show $i |  grep volumes_attached | awk -F[\'\'] '{print $2}')"
+  done
+  echo $volumes
+}
+
 function wait_for_free_resources() {
   local required_instances=$1
   local required_cores=$2

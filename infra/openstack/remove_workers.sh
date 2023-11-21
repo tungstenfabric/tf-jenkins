@@ -17,7 +17,9 @@ for instance_id in $instance_ids ; do
   if nova show "$instance_id" | grep 'locked' | grep 'False' ; then
     if down_instances $instance_id ; then
       openstack server show $instance_id
-      nova delete "$instance_id"
+      volume=$(openstack server show $instance_id |  grep volumes_attached | awk -F[\'\'] '{print $2}')
+      openstack server delete --wait "$instance_id"
+      openstack volume delete $volume
     fi
   fi
 done

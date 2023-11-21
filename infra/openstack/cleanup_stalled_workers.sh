@@ -35,7 +35,9 @@ if [[ -n "$TERMINATION_LIST_TAGS" ]]; then
   TERMINATION_LIST_INSTANCE=$(nova list --tags-any $(IFS=","; echo "${TAGS[*]}") --status ACTIVE --field locked | grep -v 'True' | awk '{print $2}' | grep -v 'ID'  | grep -v "^$" || true)
   if [[ -n "$TERMINATION_LIST_INSTANCE" ]]; then
     down_instances $TERMINATION_LIST_INSTANCE || true
-    nova delete $TERMINATION_LIST_INSTANCE
+    volumes=$(get_volume_list $TERMINATION_LIST_INSTANCE)
+    openstack server delete --wait $TERMINATION_LIST_INSTANCE
+    openstack volume delete $volumes
   fi
   TERMINATION_LIST_SUBNET=$(openstack subnet list --any-tags $(IFS=","; echo "${TAGS[*]}") -c ID -f value)
   if [[ -n "$TERMINATION_LIST_SUBNET" ]]; then

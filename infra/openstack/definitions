@@ -28,22 +28,22 @@ declare -A VM_TYPES=( ['xsmall']='Basic-1-4-50' \
 declare -A OS_IMAGES=( ['CENTOS7']='prepared-centos7' \
                        ['CENTOS8']='prepared-centos8' \
                        ['UBUNTU18']='prepared-ubuntu18' \
-                       ['UBUNTU20']='prepared-ubuntu20' )
+                       ['UBUNTU22']='prepared-ubuntu22' )
 
 declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' \
                             ['CENTOS8']='centos' \
                             ['UBUNTU18']='ubuntu' \
-                            ['UBUNTU20']='ubuntu' )
+                            ['UBUNTU22']='ubuntu' )
 
 declare -A OS_IMAGES_UP=( ['CENTOS7']='centos' \
                           ['CENTOS8']='centos' \
                           ['UBUNTU18']='ubuntu' \
-                          ['UBUNTU20']='ubuntu' )
+                          ['UBUNTU22']='ubuntu' )
 
 declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['CENTOS8']='' \
                             ['UBUNTU18']='' \
-                            ['UBUNTU20']='' )
+                            ['UBUNTU22']='' )
 
 
 SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"

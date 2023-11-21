@@ -20,10 +20,12 @@ if TERMINATION_LIST=$(list_instances PipelineBuildTag=${PIPELINE_BUILD_TAG}) ; t
     down_instances $DOWN_LIST || true
   fi
 
+  volumes=$(get_volume_list $TERMINATION_LIST)
   for instance in $TERMINATION_LIST ; do
     openstack server show $instance
   done
 
   echo "INFO: Instances to terminate: $TERMINATION_LIST"
-  nova delete $(echo "$TERMINATION_LIST")
+  openstack server delete --wait $(echo "$TERMINATION_LIST")
+  openstack volume delete $volumes
 fi
