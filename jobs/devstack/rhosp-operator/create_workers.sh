@@ -20,6 +20,8 @@ export RHOSP_VERSION
 echo "# env file created by Jenkins" > "$stackrc_file_path"
 echo "export DEPLOY_COMPACT_AIO=$DEPLOY_COMPACT_AIO" >> "$stackrc_file_path"
 echo "export RHEL_POOL_ID=$RHEL_POOL_ID" >> "$stackrc_file_path"
+echo "export NAMESERVER_LIST=$NAMESERVER_LIST" >> "$stackrc_file_path"
+echo "export NTP_SERVERS=$NTP_SERVERS" >> "$stackrc_file_path"
 echo "export ENABLE_RHEL_REGISTRATION=$ENABLE_RHEL_REGISTRATION" >> "$stackrc_file_path"
 if [[ "$ENABLE_RHEL_REGISTRATION" == 'true' ]] ; then
   echo "export RHEL_USER=$RHEL_USER" >> "$stackrc_file_path"

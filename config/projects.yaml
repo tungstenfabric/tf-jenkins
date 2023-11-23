@@ -38,7 +38,6 @@
     gate:
       templates:
         - build-centos
-        - build-ubi8
         - cleanup
 
 # simple checks
@@ -55,8 +54,6 @@
         - cleanup
     gate:
       templates:
-        - build-ubi8:
-            branch: master || R21.4.*
         - juju-k8s
         - ansible-os
         - operator
@@ -71,8 +68,6 @@
         - cleanup
     gate:
       templates:
-        - build-ubi8:
-            branch: master || R21.4.*
         - juju-k8s
         - ansible-os
         - cleanup
@@ -97,10 +92,6 @@
         - cleanup
     gate:
       templates:
-        - build-ubi:
-            branch: "!(master || R21.4.*)"
-        - build-ubi8:
-            branch: master || R21.4.*
         - build-centos
         - juju-k8s
         - ansible-os
@@ -115,10 +106,6 @@
         - cleanup
     gate:
       templates:
-        - build-ubi:
-            branch: "!(master || R21.4.*)"
-        - build-ubi8:
-            branch: master || R21.4.*
         - build-centos
         - juju-k8s
         - ansible-os
@@ -144,8 +131,6 @@
     gate:
       templates:
         - test-unit
-        - build-ubi8:
-            branch: master || R21.4.*
         - juju-k8s
         - ansible-os
         - operator
@@ -163,10 +148,6 @@
         - cleanup
     gate:
       templates:
-        - build-ubi:
-            branch: "!(master || R21.4.*)"
-        - build-ubi8:
-            branch: master || R21.4.*
         - build-centos
         - cleanup
     post-merge:
@@ -183,10 +164,6 @@
         - cleanup
     gate:
       templates:
-        - build-ubi:
-            branch: "!(master || R21.4.*)"
-        - build-ubi8:
-            branch: master || R21.4.*
         - build-centos
         - cleanup
 
@@ -225,10 +202,6 @@
         - cleanup
     gate:
       templates:
-        - build-ubi:
-            branch: "!(master || R21.4.*)"
-        - build-ubi8:
-            branch: master || R21.4.*
         - juju-k8s
         - ansible-os
         - operator
@@ -248,10 +221,6 @@
     gate:
       templates:
         - test-unit
-        - build-ubi8:
-            branch:
-              - master
-              - R21.4.*
         - juju-k8s
         - ansible-os
         - cleanup
@@ -286,47 +255,47 @@
         - juju-k8s
         - juju-os
 
-- project:
-    name: tungstenfabric/tf-tripleo-puppet
-    check:
-      templates:
-        - rhosp13-2011
-        - rhosp16.1-2011:
-            branch: R.+
-        - rhosp16.2:
-            branch: master
-        - cleanup
-    gate:
-      templates:
-        - rhosp13-2011
-        - rhosp16.1-2011:
-            branch: R.+
-        - rhosp16.2:
-            branch: master
-        - cleanup
+# - project:
+#     name: tungstenfabric/tf-tripleo-puppet
+#     check:
+#       templates:
+#         - rhosp13-2011
+#         - rhosp16.1-2011:
+#             branch: R.+
+#         - rhosp16.2:
+#             branch: master
+#         - cleanup
+#     gate:
+#       templates:
+#         - rhosp13-2011
+#         - rhosp16.1-2011:
+#             branch: R.+
+#         - rhosp16.2:
+#             branch: master
+#         - cleanup
 
-- project:
-    name: tungstenfabric/tf-tripleo-heat-templates
-    check:
-      templates:
-        - rhosp13-2011:
-            branch: stable/queens
-        - rhosp13-1912:
-            branch: stable/queens
-        - rhosp16.2:
-            branch: stable/train
-        - cleanup
-    gate:
-      templates:
-        - rhosp13-2011:
-            branch: stable/queens
-        - rhosp13-1912:
-            branch: stable/queens
-        - rhosp16.1-2011:
-            branch: stable/train
-        - rhosp16.2:
-            branch: stable/train
-        - cleanup
+# - project:
+#     name: tungstenfabric/tf-tripleo-heat-templates
+#     check:
+#       templates:
+#         - rhosp13-2011:
+#             branch: stable/queens
+#         - rhosp13-1912:
+#             branch: stable/queens
+#         - rhosp16.2:
+#             branch: stable/train
+#         - cleanup
+#     gate:
+#       templates:
+#         - rhosp13-2011:
+#             branch: stable/queens
+#         - rhosp13-1912:
+#             branch: stable/queens
+#         - rhosp16.1-2011:
+#             branch: stable/train
+#         - rhosp16.2:
+#             branch: stable/train
+#         - cleanup
 
 - project:
     name: tungstenfabric/tf-operator
@@ -379,13 +348,7 @@
         - ansible-os
         - cleanup
     gate:
-      streams:
-        build-ubi:
-          vars:
-            GERRIT_BRANCH: "R2011"
       templates:
-        - build-ubi
-        - build-ubi8
         - build-centos
         - build-r2011-centos
         - juju-k8s

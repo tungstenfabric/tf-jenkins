@@ -157,9 +157,9 @@
     mode: "0700"
     state: directory
 
-- name: copy private keypair for gerrit useer
+- name: copy private keypair for gerrit user
   copy:
-    src: "{{ ssh_keys_dir }}/zuul_rsa"
+    src: "{{ ssh_keys_dir }}/gerrit_rsa"
     dest: "{{ volume_jenkins.volume.Mountpoint }}/.ssh/{{ gerrit_user }}_id_rsa"
     owner: "{{ st.stat.uid }}"
     group: "{{ st.stat.gid }}"

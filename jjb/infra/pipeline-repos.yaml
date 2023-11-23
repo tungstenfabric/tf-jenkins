@@ -12,17 +12,18 @@
       - choice:
           name: SLAVE
           choices:
-            - vexxhost
-            - aws
-          description: "Slave where all jobs will be run: vexxhost, aws"
+            # - vexxhost
+            # - aws
+            - openstack
+          description: "Slave where all jobs will be run: openstack"
       - choice:
           name: REPOS_TYPE
           choices:
             - centos7
             - centos8
-            - rhel7
-            - rhel82
-            - rhel84
+            # - rhel7
+            # - rhel82
+            # - rhel84
             - ubuntu
             #- pip
       - hidden:
@@ -46,17 +47,18 @@
       - choice:
           name: SLAVE
           choices:
-            - vexxhost
-            - aws
-          description: "Slave where all jobs will be run: vexxhost, aws"
+            # - vexxhost
+            # - aws
+            - openstack
+          description: "Slave where all jobs will be run: openstack"
       - choice:
           name: REPOS_TYPE
           choices:
             - centos7
             - centos8
-            - rhel7
-            - rhel82
-            - rhel84
+            # - rhel7
+            # - rhel82
+            # - rhel84
             - ubuntu
             #- pip
       - hidden:

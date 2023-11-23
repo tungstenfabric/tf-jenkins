@@ -133,54 +133,54 @@
           - test-sanity-operator-ha
           - test-deployment-operator-ha
 
-- template:
-    name: operator-ha-ipa
-    streams:
-      operator-ha-ipa:
-        voting: false
-        vars:
-          ENVIRONMENT_OS: rhel84
-          CONFIG_API_WORKER_COUNT: 3
-          # operator is always ssl
-          SSL_ENABLE: true
-          HUGE_PAGES_2MB: 512
-          CONTAINER_RUNTIME: docker
-          K8S_CA: ipa
-          CERT_SIGNER: External
-          DOMAIN: 'vexxhost.local'
-    parents:
-      - build-centos
-    jobs:
-      deploy-platform-operator-ha-ipa:
-        job-name: deploy-platform-operator
-        stream: operator-ha-ipa
-        vars:
-          NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2,IPA_NODES:small:1
-          K8S_CA: ipa
-          DEPLOY_IPA_SERVER: true
-          IPA_PASSWORD: IpA_pAsSwOrD
-      deploy-tf-operator-ha-ipa:
-        job-name: deploy-tf-operator
-        stream: operator-ha-ipa
-        depends-on:
-          - package-centos
-          - deploy-platform-operator-ha-ipa
-      test-sanity-operator-ha-ipa:
-        job-name: test-sanity
-        stream: operator-ha-ipa
-        depends-on:
-          - deploy-tf-operator-ha-ipa
-      test-deployment-operator-ha-ipa:
-        job-name: test-deployment
-        stream: operator-ha-ipa
-        depends-on:
-          - test-sanity-operator-ha-ipa
-      collect-logs-and-cleanup-operator-ha-ipa:
-        job-name: collect-logs-and-cleanup
-        stream: operator-ha-ipa
-        type: post-hook
-        depends-on:
-          - deploy-platform-operator-ha-ipa
-          - deploy-tf-operator-ha-ipa
-          - test-sanity-operator-ha-ipa
-          - test-deployment-operator-ha-ipa
+# - template:
+#     name: operator-ha-ipa
+#     streams:
+#       operator-ha-ipa:
+#         voting: false
+#         vars:
+#           ENVIRONMENT_OS: rhel84
+#           CONFIG_API_WORKER_COUNT: 3
+#           # operator is always ssl
+#           SSL_ENABLE: true
+#           HUGE_PAGES_2MB: 512
+#           CONTAINER_RUNTIME: docker
+#           K8S_CA: ipa
+#           CERT_SIGNER: External
+#           DOMAIN: 'vexxhost.local'
+#     parents:
+#       - build-centos
+#     jobs:
+#       deploy-platform-operator-ha-ipa:
+#         job-name: deploy-platform-operator
+#         stream: operator-ha-ipa
+#         vars:
+#           NODES: CONTROLLER_NODES:medium:3,AGENT_NODES:small:2,IPA_NODES:small:1
+#           K8S_CA: ipa
+#           DEPLOY_IPA_SERVER: true
+#           IPA_PASSWORD: IpA_pAsSwOrD
+#       deploy-tf-operator-ha-ipa:
+#         job-name: deploy-tf-operator
+#         stream: operator-ha-ipa
+#         depends-on:
+#           - package-centos
+#           - deploy-platform-operator-ha-ipa
+#       test-sanity-operator-ha-ipa:
+#         job-name: test-sanity
+#         stream: operator-ha-ipa
+#         depends-on:
+#           - deploy-tf-operator-ha-ipa
+#       test-deployment-operator-ha-ipa:
+#         job-name: test-deployment
+#         stream: operator-ha-ipa
+#         depends-on:
+#           - test-sanity-operator-ha-ipa
+#       collect-logs-and-cleanup-operator-ha-ipa:
+#         job-name: collect-logs-and-cleanup
+#         stream: operator-ha-ipa
+#         type: post-hook
+#         depends-on:
+#           - deploy-platform-operator-ha-ipa
+#           - deploy-tf-operator-ha-ipa
+#           - test-sanity-operator-ha-ipa
+#           - test-deployment-operator-ha-ipa

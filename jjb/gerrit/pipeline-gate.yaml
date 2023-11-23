@@ -12,9 +12,10 @@
       - choice:
           name: SLAVE
           choices:
-            - vexxhost
-            - aws
-          description: "Slave where all jobs will be run: vexxhost, aws"
+            # - vexxhost
+            # - aws
+            - openstack
+          description: "Slave where all jobs will be run: openstack"
       - hidden:
           name: GERRIT_PIPELINE
           default: gate
@@ -34,9 +35,6 @@
             - comment-added-event:
                 approval-category: 'Code-Review'
                 approval-value: 2
-            - comment-added-event:
-                approval-category: 'Approved'
-                approval-value: 1
             - comment-added-event:
                 approval-category: 'Verified'
                 approval-value: 1

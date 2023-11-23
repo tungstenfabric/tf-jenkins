@@ -27,7 +27,7 @@
       - python-glanceclient>=2.8.0
       - python-novaclient
     executable: pip3
-  when: "'vexxhost' in group_names"
+  when: "'vexxhost' in group_names or 'openstack' in group_names"
 
 - name: Add user jenkins
   user:

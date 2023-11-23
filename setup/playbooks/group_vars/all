@@ -8,6 +8,9 @@ jenkins_default_user: "self-jenkins"
 nexus_name: "tf-nexus"
 nexus_user: "admin"
 
+gerrit_name: "tf-gerrit"
+gerrit_user: "gerrit"
+
 monitoring_name: "tf-monitoring"
 
 ssh_keys_dir: "{{ lookup('env', 'HOME') }}/tfci/ssh" 

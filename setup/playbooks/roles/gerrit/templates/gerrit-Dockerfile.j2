@@ -1,0 +1,11 @@
+FROM gerritcodereview/gerrit:3.8.1
+USER root
+
+COPY entrypoint.sh /entrypoint.sh
+COPY oauth.jar /var/gerrit/plugins/
+RUN \
+    chown gerrit:gerrit /var/gerrit/plugins/oauth.jar && \
+    chmod a+x /entrypoint.sh
+
+USER gerrit
+ENTRYPOINT ["/entrypoint.sh"]

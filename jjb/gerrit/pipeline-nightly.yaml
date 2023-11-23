@@ -12,9 +12,10 @@
       - choice:
           name: SLAVE
           choices:
-            - vexxhost
-            - aws
-          description: "Slave where all jobs will be run: vexxhost, aws"
+            # - vexxhost
+            # - aws
+            - openstack
+          description: "Slave where all jobs will be run: openstack"
       - hidden:
           name: GERRIT_PIPELINE
           default: nightly

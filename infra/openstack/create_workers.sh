@@ -14,11 +14,6 @@ source "$WORKSPACE/global.env"
 VM_TYPE=${VM_TYPE:-'medium'}
 NODES_COUNT=${NODES_COUNT:-1}
 
-networks=$OS_NETWORK
-if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
-  networks+=" $OS_DATA_NETWORK"
-fi
-
 ENV_FILE="$WORKSPACE/stackrc.$JOB_NAME.env"
 touch "$ENV_FILE"
 echo "# env file created by Jenkins" > "$ENV_FILE"
@@ -72,7 +67,7 @@ function cleanup () {
     for instance_id in $termination_list ; do
       if nova show "$instance_id" | grep 'locked' | grep 'False'; then
         down_instances $instance_id || true
-        nova delete "$instance_id"
+        openstack server delete "$instance_id"
       fi
     done
   fi
@@ -90,8 +85,18 @@ function wait_for_instance_availability () {
     echo "ERROR: VM  with ip $instance_ip is unreachable. Exit "
     return 1
   fi
+}
+
+function update_instance_network () {
+  local instance_id=$1
+  local instance_ip=$2
+  if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
+    if ! openstack server add network $instance_id $OS_DATA_NETWORK ; then
+      echo "ERROR: Can't add data network for vm $instance_id"
+    fi
+  fi
   export instance_ip
-  image_up_script=${OS_IMAGES_UP["${ENVIRONMENT_OS^^}"]}
+  local image_up_script=${OS_IMAGES_UP["${ENVIRONMENT_OS^^}"]}
   if [[ -n "$image_up_script" && -e ${my_dir}/../hooks/${image_up_script}/up.sh ]] ; then
     ${my_dir}/../hooks/${image_up_script}/up.sh
   fi
@@ -144,7 +149,6 @@ if [[ -z "$instance_vcpu" ]]; then
   exit 1
 fi
 required_cores=$(( instance_vcpu * $NODES_COUNT ))
-net_opts=$(printf -- "--nic net-name=%s " $networks)
 
 for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
   ready_nodes=0
@@ -156,16 +160,18 @@ for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
 
   res=0
 
-  nova boot --flavor ${INSTANCE_TYPE} \
-            --security-groups ${OS_SG} \
-            --key-name=worker \
-            --min-count ${NODES_COUNT} \
-            --tags "PipelineBuildTag=${PIPELINE_BUILD_TAG},${job_tag},${group_tag},SLAVE=${SLAVE},DOWN=${OS_IMAGES_DOWN["${ENVIRONMENT_OS^^}"]}" \
-            $net_opts \
-            --block-device source=image,id=$IMAGE,dest=volume,shutdown=remove,size=$ROOT_DISK_SIZE,bootindex=0 \
-            --poll \
-            ${instance_name} || res=1
-
+  openstack server create \
+    --flavor ${INSTANCE_TYPE} \
+    --security-group ${OS_SG} \
+    --key-name=worker \
+    --min ${NODES_COUNT} --max ${NODES_COUNT} \
+    --network ${OS_NETWORK} \
+    --image $IMAGE \
+    --wait \
+    ${instance_name} || res=1
+  nova server-tag-add ${instance_name} PipelineBuildTag=${PIPELINE_BUILD_TAG} \
+                                       ${job_tag} ${group_tag} SLAVE=${SLAVE} \
+                                       DOWN=${OS_IMAGES_DOWN["${ENVIRONMENT_OS^^}"]} || res=1
   if [[ $res == 1 ]]; then
     echo "ERROR: Instances creation is failed on nova boot. Retry"
     cleanup ${group_tag}
@@ -186,6 +192,12 @@ for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
       cleanup ${group_tag}
       break
     fi
+    if ! update_instance_network $instance_id $instance_ip ; then
+      echo "ERROR: Can't update network for $instance_id. Clean up"
+      cleanup ${group_tag}
+      break
+    fi
+
     ready_nodes=$(( ready_nodes + 1 ))
     INSTANCE_IPS+="$instance_ip,"
 

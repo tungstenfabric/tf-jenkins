@@ -42,3 +42,10 @@
     update_cache: yes
   when: ansible_distribution_release == 'bionic'
 
+# focal has another package version
+- name: install docker for focal
+  apt:
+    name: docker-ce
+    state: present
+    update_cache: yes
+  when: ansible_distribution_release == 'focal'

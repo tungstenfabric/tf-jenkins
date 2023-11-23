@@ -6,7 +6,7 @@
     properties:
       - build-discarder:
           num-to-keep: 30
-    node: vexxhost
+    node: openstack
     scm:
       - tf-jenkins
     wrappers:

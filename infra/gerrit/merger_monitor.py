@@ -13,7 +13,7 @@ import os
 
 DELAY = 1
 SSH_CMD = 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
-SSH_DEST = '-p 29418 zuul-tf@gerrit.tungsten.io'
+SSH_DEST = '-p 29418 tf-gerrit@progmaticlab.com'
 BRANCH = 'master'
 GERRIT_CMD = 'gerrit query --comments --patch-sets --format=JSON branch:' + BRANCH + ' status:merged projects:tungstenfabric limit:{}'
 

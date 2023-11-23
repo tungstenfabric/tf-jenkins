@@ -10,7 +10,7 @@ source "$my_dir/definitions"
 
 MAX_DURATION="259200"
 
-LOCKED=$(nova list --tags-any "SLAVE=vexxhost" --status ACTIVE --field locked,name | grep 'True' | tr -d '|' | awk '{print $1}' || true)
+LOCKED=$(nova list --tags-any "SLAVE=openstack" --status ACTIVE --field locked,name | grep 'True' | tr -d '|' | awk '{print $1}' || true)
 if [[ -z "$LOCKED" ]]; then
   exit
 fi
@@ -29,8 +29,8 @@ if [[ "${#EXCEED[*]}" == "0" ]]; then
   exit
 fi
 
-report_file="vexxhost.report.txt"
-echo "VEXXHOST instances alive more than 3 days:" > $report_file
+report_file="openstack.report.txt"
+echo "OPENSTACK instances alive more than 3 days:" > $report_file
 for h in "${EXCEED[@]}"; do
   echo "${h} $(openstack server show ${h} -f json | jq -r '.name')" >> $report_file
 done

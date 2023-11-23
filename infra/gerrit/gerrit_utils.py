@@ -287,18 +287,6 @@ class Expert(object):
 
         return True
 
-    def is_approved(self, change_):
-        A = change_.labels.get('Approved', {}).get('all', [])
-        if 0 < len(list(filter(lambda r_: -1 == r_.get('value', 0), A))):
-            dbg("there is an Approved -1")
-            return False
-
-        if 0 == len(list(filter(lambda r_: 1 == r_.get('value', 0), A))):
-            dbg("there is no Approved +1")
-            return False
-
-        return True
-
     def is_verified(self, change_, factor_):
         V = change_.labels.get('Verified', {}).get('all', [])
         if 0 == len(list(filter(lambda r_: factor_ == r_.get('value', 0), V))):
@@ -324,10 +312,10 @@ class Expert(object):
 
     def is_eligible_for_gating(self, change_):
         return self.__is_eligible_general_test(change_) and \
-            self.is_mergeable(change_) and self.is_approved(change_) and \
+            self.is_mergeable(change_) and \
             (self.is_verified(change_, 1) or self.is_verified(change_, -2))
 
     def is_eligible_for_submit(self, change_):
         return self.__is_eligible_general_test(change_) and \
-            self.is_mergeable(change_) and self.is_approved(change_) and \
+            self.is_mergeable(change_) and \
             self.is_verified(change_, 2) and not self.has_unmerged_parents(change_)

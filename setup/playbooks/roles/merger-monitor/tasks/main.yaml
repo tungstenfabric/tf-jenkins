@@ -14,9 +14,9 @@
     mode: "0700"
     state: directory
 
-- name: copy private keypair for zuul
+- name: copy private keypair for gerrit
   copy:
-    src: "{{ ssh_keys_dir }}/zuul_rsa"
+    src: "{{ ssh_keys_dir }}/gerrit_rsa"
     dest: "/root/.ssh/id_rsa"
     force: true
     owner: "root"

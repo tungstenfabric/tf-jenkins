@@ -32,7 +32,7 @@ jenkins:
       excludeClientIPFromCrumb: false
   remotingSecurity:
     enabled: true
-{% if ('aws' in groups and groups['aws']) or ('vexxhost' in groups and groups['vexxhost']) %}
+{% if ('aws' in groups and groups['aws']) or ('vexxhost' in groups and groups['vexxhost']) or ('openstack' in groups and groups['openstack']) %}
   nodes:
 {% if ('aws' in groups and groups['aws']) %}
 {% for host in groups['aws'] %}
@@ -73,8 +73,41 @@ jenkins:
               value: "{{ hostvars[host].default_network }}"
             - key: "OS_SG"
               value: "default"
-            - key: "RHEL_POOL_ID"
-              value: "{{ rhel_pool_id | default('NotDefined') }}"
+            # - key: "RHEL_POOL_ID"
+            #   value: "{{ rhel_pool_id | default('NotDefined') }}"
+{% endfor %}
+{% endif %}
+{% if ('openstack' in groups and groups['openstack']) %}
+{% for host in groups['openstack'] %}
+    - permanent:
+        labelString: "openstack"
+        launcher:
+          ssh:
+            credentialsId: "jenkins-ssh-key"
+            host: "{{ host }}"
+            port: 22
+            sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
+        name: "slave-openstack-{{ hostvars[host].region }}_{{ loop.index }}"
+        numExecutors: "{{ hostvars[host].executors | default(20) }}"
+        remoteFS: "/home/jenkins"
+        retentionStrategy: "always"
+        nodeProperties:
+        - envVars:
+            env:
+            # OS variables are defined in the properties of the Jenkins node
+            # Region name for internal and external use in mcs is not the same
+            # OS_REGION_NAME is internal and SLAVE_REGION is external
+            # look more here:
+            # https://mcs.mail.ru/docs/en/additionals/start/start-intro/help-glossary
+            # https://mcs.mail.ru/app/<mcs project name>/project/keys/
+            - key: "OS_REGION_NAME"
+              value: "{{ os_region_name }}"
+            - key: "SLAVE_REGION"
+              value: "{{ hostvars[host].region }}"
+            - key: "OS_NETWORK"
+              value: "{{ hostvars[host].default_network }}"
+            - key: "OS_SG"
+              value: "default"
 {% endfor %}
 {% endif %}
 {% endif %}
@@ -125,14 +158,12 @@ unclassified:
           verdictValue: "Code-Review"
         - verdictDescription: "Verified"
           verdictValue: "Verified"
-        - verdictDescription: "Approved"
-          verdictValue: "Approved"
         enableManualTrigger: false
-        gerritAuthKeyFile: "/var/jenkins_home/.ssh/zuul-tf_id_rsa"
-        gerritFrontEndUrl: "https://gerrit.tungsten.io/"
-        gerritHostName: "gerrit.tungsten.io"
-        gerritUserName: "zuul-tf"
-      name: "gerrit.tungsten.io"
+        gerritAuthKeyFile: "/var/jenkins_home/.ssh/gerrit_rsa"
+        gerritFrontEndUrl: "https://tf-gerrit.progmaticlab.com/"
+        gerritHostName: "tf-gerrit.progmaticlab.com"
+        gerritUserName: "tf-gerrit"
+      name: "tf-gerrit.progmaticlab.com"
       noConnectionOnStartup: false
 security:
   scriptApproval:

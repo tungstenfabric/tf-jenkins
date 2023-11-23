@@ -5,7 +5,7 @@
     properties:
       - build-discarder:
           num-to-keep: 30
-    node: vexxhost
+    node: openstack
 #    triggers:
 #      - timed: 'H H(3-4) * * 1'
     parameters:
@@ -15,9 +15,9 @@
             - ALL
             - CENTOS7
             - CENTOS8
-            - RHEL7
-            - RHEL82
-            - RHEL84
+            # - RHEL7
+            # - RHEL82
+            # - RHEL84
             - UBUNTU18
             - UBUNTU20
             - RHCOS45
@@ -30,31 +30,31 @@
       - timestamps
       - credentials-binding:
           - text:
-              credential-id: VEXX_OS_USERNAME
+              credential-id: OS_USERNAME
               variable: OS_USERNAME
           - text:
-              credential-id: VEXX_OS_PROJECT_NAME
-              variable: OS_PROJECT_NAME
+              credential-id: OS_PROJECT_ID
+              variable: OS_PROJECT_ID
           - text:
-              credential-id: VEXX_OS_PASSWORD
+              credential-id: OS_PASSWORD
               variable: OS_PASSWORD
           - text:
-              credential-id: VEXX_OS_DOMAIN_NAME
+              credential-id: OS_DOMAIN_NAME
               variable: OS_USER_DOMAIN_NAME
           - text:
-              credential-id: VEXX_OS_DOMAIN_NAME
+              credential-id: OS_DOMAIN_NAME
               variable: OS_PROJECT_DOMAIN_NAME
           - text:
-              credential-id: VEXX_OS_AUTH_URL
+              credential-id: OS_AUTH_URL
               variable: OS_AUTH_URL
-          - username-password-separated:
-              credential-id: rhel-creds
-              username: RHEL_USER
-              password: RHEL_PASSWORD
+        #   - username-password-separated:
+        #       credential-id: rhel-creds
+        #       username: RHEL_USER
+        #       password: RHEL_PASSWORD
     builders:
       - shell: |
           echo "DESCRIPTION Image type=$IMAGE_TYPE"
       - description-setter:
           regexp: "DESCRIPTION (.*)"
       - shell: |
-          ./src/tungstenfabric/tf-jenkins/infra/vexxhost/update_prepared_images.sh
+          ./src/tungstenfabric/tf-jenkins/infra/openstack/update_prepared_images.sh

@@ -1,0 +1,49 @@
+export PROVIDER=openstack
+
+# OS variables are defined in the properties of the Jenkins node
+# comment next line: public endpoint for image service in gz1 region not found
+#export OS_REGION_NAME=$SLAVE_REGION
+export OS_NETWORK="${OS_NETWORK:-management}"
+export OS_DATA_NETWORK="data"
+export OS_SG="${OS_SG:-default}"
+export RESERVED_INSTANCES_COUNT=3
+export RESERVED_CORES_COUNT=16
+
+export VM_BOOT_RETRIES="${VM_BOOT_RETRIES:-120}"
+export VM_BOOT_DELAY="${VM_BOOT_DELAY:-60}"
+
+# vm_type  CPU     Memory    AWS (Canada) analog
+# xsmall   1       4 GB      t2.small
+# small    2       8 GB      t2.large
+# medium   4       16 GB     t2.xlarge
+# large    8       32 GB     m4.2xlarge
+
+ENVIRONMENT_OS=${ENVIRONMENT_OS:-'centos7'}
+
+declare -A VM_TYPES=( ['xsmall']='Basic-1-4-50' \
+                      ['small']='Standard-2-8-50' \
+                      ['medium']='Advanced-8-16-100' \
+                      ['large']='Advanced-8-32-50' )
+
+declare -A OS_IMAGES=( ['CENTOS7']='prepared-centos7' \
+                       ['CENTOS8']='prepared-centos8' \
+                       ['UBUNTU18']='prepared-ubuntu18' \
+                       ['UBUNTU20']='prepared-ubuntu20' )
+
+declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' \
+                            ['CENTOS8']='centos' \
+                            ['UBUNTU18']='ubuntu' \
+                            ['UBUNTU20']='ubuntu' )
+
+declare -A OS_IMAGES_UP=( ['CENTOS7']='centos' \
+                          ['CENTOS8']='centos' \
+                          ['UBUNTU18']='ubuntu' \
+                          ['UBUNTU20']='ubuntu' )
+
+declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
+                            ['CENTOS8']='' \
+                            ['UBUNTU18']='' \
+                            ['UBUNTU20']='' )
+
+
+SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"

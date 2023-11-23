@@ -12,7 +12,7 @@ all:
 #        aws:
 #          hosts:
 #            aws01.region.progmaticlab.com:
-        vexxhost:
+        openstack:
           hosts:
             199.19.213.80:
               region: ca-ymq-1
@@ -51,8 +51,10 @@ all:
     # private ssh key to those hosts
     ansible_ssh_private_key_file: "{{ lookup('env', 'HOME') }}/.ssh/some_key"
 
+    #Set letsencrypt_enable: false if you want use jenkins without TLS
+    letsencrypt_enable: true
     ci_domain: "some_ci_domain"
-  
+
     nexus_password: "some_password"
 
     jenkins_default_user_password: "some_password"
@@ -76,6 +78,8 @@ all:
     rhel_user: "rhel_user"
     rhel_password: "rhel_password"
     rhel_pool_id: "rhel_pool_id"
+
+    nameserver_list: "10.20.30.40,10.30.5.100"
 
     dockerhub_user: "dockerhub_user"
     dockerhub_password: "dockerhub_password"

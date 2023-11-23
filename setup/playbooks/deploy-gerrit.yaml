@@ -1,0 +1,15 @@
+- hosts: geriit
+  remote_user: "{{ remote_user }}"
+  become: yes
+  gather_facts: no
+
+- hosts: gerrit
+  remote_user: "{{ remote_user }}"
+  become: yes
+  gather_facts: yes
+  roles:
+    - pip
+    - ntp
+    - common
+    - docker
+    - gerrit

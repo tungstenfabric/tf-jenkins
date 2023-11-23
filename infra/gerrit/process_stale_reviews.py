@@ -71,7 +71,7 @@ def main():
 
     check_op = strategy_hooks[args.strategy][0]
     process_op = strategy_hooks[args.strategy][1]
-    labels = ['Code-Review=2', 'Approved=1']
+    labels = ['Code-Review=2']
     while True:
         found = False
         for commit in gerrit.list_active_changes(args.branch, labels=labels):

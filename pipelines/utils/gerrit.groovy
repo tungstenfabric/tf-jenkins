@@ -5,7 +5,7 @@ VERIFIED_SUCCESS_VALUES = ['check': 1, 'gate': 2, 'nightly': 1, 'templates': nul
 VERIFIED_FAIL_VALUES = ['check': -1, 'gate': -2, 'nightly': -1, 'templates': null, 'stage-repos': -1, 'init-repos': -1]
 
 def resolve_gerrit_url() {
-  def url = "http://${env.GERRIT_HOST}/"
+  def url = "https://${env.GERRIT_HOST}/"
   while (true) {
     def getr = new URL(url).openConnection()
     getr.setFollowRedirects(false)
@@ -168,6 +168,9 @@ def report_timeline(job_results) {
 def publish_results_to_monitoring(streams, results, verified) {
   // TODO: handle flag pre_build_done - if it false then results will be empty
   // Log stream result
+
+  // TODO: restore it
+  return
 
   println("publish_results_to_monitoring: " + results)
   println(streams)

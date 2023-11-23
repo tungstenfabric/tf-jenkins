@@ -13,7 +13,6 @@ required_pkgs:
     - libyaml-dev
     - jq
     - libxml-xpath-perl
-    - python-minimal
     - lsof
     - unzip
 jenkins_user: jenkins

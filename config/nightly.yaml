@@ -8,16 +8,16 @@
         #- build-r1912-ubi
         #- build-r2011-ubi
         #- build-r2011-centos
-        - build-r21.3-centos
-        - build-r21.4-centos
+        # - build-r21.3-centos
+        # - build-r21.4-centos
         - test-unit
         - test-unit-ui
         - k8s-manifests
-        - k8s-manifests-ha
-        - ansible-k8s
-        - ansible-k8s-ha
+        # - k8s-manifests-ha
+        # - ansible-k8s
+        # - ansible-k8s-ha
         - ansible-os
-        - ansible-os-ha-ziu
+        #- ansible-os-ha-ziu
         - juju-k8s
         - juju-os
         #- juju-os-maas
@@ -33,14 +33,14 @@
         #- rhosp13-bmc
         #- rhosp16.2-bmc
         - operator
-        - operator-ha
+        # - operator-ha
         #- operator-ha-ipa
         #- operator-2011
         - juju-os-not-implemented-targets
         - juju-k8s-not-implemented-targets
         - juju-hybrid-not-implemented-targets
-        - rhosp13-os-not-implemented-targets
-        - rhosp16-os-not-implemented-targets
+        # - rhosp13-os-not-implemented-targets
+        # - rhosp16-os-not-implemented-targets
         - ansible-os-not-implemented-targets
         - cleanup
       streams:
@@ -75,10 +75,10 @@
           frequency: 7
         juju-os-1912:
           frequency: 7
-        rhosp13-1912:
-          frequency: 7
-        rhosp13-ha-ziu:
-          frequency: 7
+        # rhosp13-1912:
+        #   frequency: 7
+        # rhosp13-ha-ziu:
+        #   frequency: 7
         operator-2011:
           frequency: 7
         # hack with locks due to lack of resources
@@ -112,6 +112,7 @@
           job-name: publish
           depends-on:
             - package-centos
+
         #publish-r2011-centos-nightly:
         #  job-name: publish
         #  depends-on:
@@ -165,20 +166,20 @@
         #  vars:
         #    TAG_SUFFIX: "-r1912"
         #    PUBLISH_TAGS: "R1912"
-        publish-r21.3-centos-nightly:
-          job-name: publish
-          depends-on:
-            - package-r21.3-centos
-          vars:
-            TAG_SUFFIX: "-r21.3-centos"
-            GERRIT_BRANCH: "R21.3"
-        publish-r21.4-centos-nightly:
-          job-name: publish
-          depends-on:
-            - package-r21.4-centos
-          vars:
-            TAG_SUFFIX: "-r21.4-centos"
-            GERRIT_BRANCH: "R21.4"
+        # publish-r21.3-centos-nightly:
+        #   job-name: publish
+        #   depends-on:
+        #     - package-r21.3-centos
+        #   vars:
+        #     TAG_SUFFIX: "-r21.3-centos"
+        #     GERRIT_BRANCH: "R21.3"
+        # publish-r21.4-centos-nightly:
+        #   job-name: publish
+        #   depends-on:
+        #     - package-r21.4-centos
+        #   vars:
+        #     TAG_SUFFIX: "-r21.4-centos"
+        #     GERRIT_BRANCH: "R21.4"
 
         #aquascan-ubi-nightly:
         #  job-name: aquascan

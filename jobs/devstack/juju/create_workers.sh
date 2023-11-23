@@ -9,7 +9,7 @@ my_dir="$(dirname $my_file)"
 source "$my_dir/definitions${JUMPHOST:+.$JUMPHOST}"
 
 if [[ -z "$JUMPHOST" ]] ; then
-  # vexxhost/aws branch
+  # openstack/aws branch
   "$my_dir/../common/create_workers.sh"
   exit
 fi
@@ -17,8 +17,8 @@ fi
 # here we have just one option - JUMPHOST=openlab2
 # it's a bmc setup with MAAS
 
-if [[ "$SLAVE" != 'vexxhost' ]]; then
-  echo "ERROR: currently maas setup is accessible only from vexxhost slave"
+if [[ "$SLAVE" != 'openstack' ]]; then
+  echo "ERROR: currently maas setup is accessible only from openstack slave"
   exit 1
 fi
 

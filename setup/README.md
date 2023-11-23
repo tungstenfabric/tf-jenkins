@@ -16,7 +16,7 @@ Required names:
 
 ## VM-s creation
 
-For now fully worked setup was made on vexxhost OpenStack provider and below steps are related to OpenStack specific. But similar setup was brought up in AWS and it's also work but with some bugs.
+For now fully worked setup was made on OpenStack provider and below steps are related to OpenStack specific. But similar setup was brought up in AWS and it's also work but with some bugs.
 
 CI uses one VM for Jenkins master (monitoring also is placed on that machine) for any number of regions.
 CI uses 4 VM-s in each region: on VM for Jenkins's slave, one VM for Nexus and logs storage, one VM for mirrors storage, one VM for Aquascan service.
@@ -62,6 +62,12 @@ ansible-playbook -i hosts.yaml playbooks/generate-keys.yaml
 ```
 
 After generation ssh keys you can overwrite them with previous keys in $HOME/tfci/ssh/ folder
+
+Deploy gerrit
+
+```bash
+ansible-playbook -i hosts.yaml playbooks/deploy-gerrit.yaml
+```
 
 Deploy mirrors, nexus, logserver
 
@@ -110,7 +116,7 @@ Infra must be initiallised to be able to run CI and infra checks/jobs. Please ne
 - Run job **update-tpc-source-repository**. This will compile and publish some yum packages to use them later in build Contrail process. These packages are changed rarely and should be pre-build.
 - Run job **update-caches** for all items in dropdown one by one. This will upload to CI caches some predefined yum packages, third-party cache, VM images for sanity tests, and other similar objects.
 - Run job **update-prepared-images** for RHEL7, RHEL8
-- Clear all parameters in GerritTrigger -> Edit gerrit node -> Gerrit Reporting Values and Gerrit Verified Commands 
+- Clear all parameters in GerritTrigger -> Edit gerrit node -> Gerrit Reporting Values and Gerrit Verified Commands
 
 After this point CI should be ready to run checks. For ensure that all steps were made correctly plelase run job **pipline-nightly** and check results.
 

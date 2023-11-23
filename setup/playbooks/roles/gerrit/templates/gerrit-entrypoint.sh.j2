@@ -1,0 +1,23 @@
+#!/bin/bash -e
+
+export JAVA_OPTS='--add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED'
+
+if [ ! -d /var/gerrit/git/All-Projects.git ] || [ "$1" == "init" ]
+then
+  echo "Initializing Gerrit site ..."
+  java $JAVA_OPTS -jar /var/gerrit/bin/gerrit.war init --batch --install-all-plugins -d /var/gerrit
+  git config -f /var/gerrit/etc/secure.config --add plugin.gerrit-oauth-provider-github-oauth.client-secret {{ client_secret }}
+  git config -f /var/gerrit/etc/gerrit.config --add plugin.gerrit-oauth-provider-github-oauth.client-id {{ client_id }}
+  git config -f /var/gerrit/etc/gerrit.config --replace-all auth.type OAUTH
+  git config -f /var/gerrit/etc/gerrit.config --replace-all gerrit.canonicalWebUrl https://{{ gerrit_name }}.{{ region }}.{{ ci_domain }}
+  git config -f /var/gerrit/etc/gerrit.config --replace-all httpd.listenUrl "proxy-http://{{ gerrit_host }}:8080"
+  git config -f /var/gerrit/etc/gerrit.config --unset httpd.filterClass
+  git config -f /var/gerrit/etc/gerrit.config --unset httpd.firstTimeRedirectUrl
+  java $JAVA_OPTS -jar /var/gerrit/bin/gerrit.war reindex -d /var/gerrit
+fi
+
+if [ "$1" != "init" ]
+then
+  echo "Running Gerrit ..."
+  exec /var/gerrit/bin/gerrit.sh run
+fi

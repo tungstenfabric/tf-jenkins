@@ -1,0 +1,91 @@
+---
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: "{{ required_pkgs }}"
+
+- name: Install pip packages
+  pip:
+    name:
+      - docker
+      - requests
+
+- name: Create gerrit
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - /etc/traefik/
+    - /etc/gerrit/
+
+- name: Create temporary build directory
+  tempfile:
+    state: directory
+    suffix: docker-build
+  register: docker_build_dir
+
+- name: Copy gerrit Dockerfile
+  template:
+    src: "gerrit-{{ item }}.j2"
+    dest: "{{ docker_build_dir.path }}/{{ item }}"
+  with_items:
+    - Dockerfile
+    - entrypoint.sh
+
+- name: Copy entrypoint to build directory
+  copy:
+    src: "{{ item }}"
+    dest: "{{ docker_build_dir.path }}/{{ item }}"
+  with_items:
+    - oauth.jar
+
+- name: Build gerrit image
+  docker_image:
+    build:
+      path: "{{ docker_build_dir.path }}"
+      pull: yes
+    name: gerrit
+    source: build
+    tag: latest
+    force_tag: yes
+    force_source: yes
+  register: gerrit_image
+
+- name: Create gerrit container
+  docker_container:
+    name: gerrit
+    image: "{{ gerrit_image.image.RepoTags | join('\n') }}"
+    volumes:
+      - gerrit_home:/var/gerrit
+    network_mode: host
+    restart_policy: always
+
+- name: Configure proxy
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/traefik/{{ item }}"
+    mode: 0644
+  with_items:
+    - gerrit.traefik.yaml
+    - gerrit.traefik.provider.yaml
+    - docker-compose.yaml
+
+- name: apply docker-compose.yaml
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/traefik/{{ item }}"
+    mode: 0644
+  with_items:
+    - docker-compose.yaml
+
+- name: wait for gerrit to come up
+  uri:
+    url: "https://{{ gerrit_name }}.{{ region }}.{{ ci_domain }}/"
+    status_code: "200"
+  register: result
+  until: result.status == 200
+  retries: 12
+  delay: 5

@@ -64,7 +64,7 @@ function list_instances() {
   local i
   for (( i=1; i<=5 ; ++i )) ; do
     local res
-    if res=$(nova list $opts --minimal 2>&1) ; then
+    if res=$(nova list $opts --minimal 2>/dev/null) ; then
       echo "$res" | awk '{print $2}' | grep -v ID | grep -v "^$" | tr '\n' ' '
       return
     fi
@@ -125,13 +125,15 @@ function wait_for_free_resources() {
   local project_id
   local i
   for (( i=1; i<=5 ; ++i )) ; do
-    if project_id=$(openstack project show $OS_PROJECT_NAME | awk '/ id /{print $4}') ; then
+    # MCS cli doesn't support authorization by os_project_name, only by id
+    # so we don't specify os_project_name on startup at all
+    if project_id=$(openstack project show $OS_PROJECT_ID | awk '/ id /{print $4}') ; then
       break
     fi
     sleep 10
   done
   if [[ -z "$project_id" ]]; then
-    echo "ERROR: Can't get project_id by name $OS_PROJECT_NAME"
+    echo "ERROR: Can't get project_id by name $OS_PROJECT_ID"
     return 1
   fi
   echo "INFO: project_id=$project_id"
@@ -139,21 +141,23 @@ function wait_for_free_resources() {
   echo "INFO: wait for enough resources for required_instances=$required_instances and required_cores=$required_cores  $(date)"
   while true ; do
     local quotas
-    if ! quotas=$(openstack quota list --project $project_id --detail --compute) ; then
-      sleep $VM_BOOT_DELAY
-      continue
+    local token=$(openstack token issue -c id -f value)
+    local nova_endpoint=$(openstack catalog show nova -f value -c endpoints | python3 -c "import ast;print([e['url'] for e in ast.literal_eval(input()) if e['interface']=='public'][0])")
+    if ! quotas=$(curl -s $nova_endpoint/limits -X GET -H "X-Auth-Token: $token" -H "Content-Type: application/json") ; then
+        sleep $VM_BOOT_DELAY
+        continue
     fi
-    local instances_used=$(echo "$quotas" | awk '/ instances /{print $4}')
-    local instances_limit=$(echo "$quotas" | awk '/ instances /{print $8}')
-    local cores_used=$(echo "$quotas" | awk '/ cores /{print $4}')
-    local cores_limit=$(echo "$quotas" | awk '/ cores /{print $8}')
-    echo "INFO: instances used=$instances_used  required=$NODES_COUNT  reserved=$RESERVED_INSTANCES_COUNT  limit=$instances_limit"
-    echo "INFO: cores used=$cores_used  required=$required_cores  reserved=$RESERVED_CORES_COUNT  limit=$cores_limit"
+    local instances_used=$(echo "$quotas" | jq .limits.absolute.totalInstacesUsed)
+    local instances_limit=$(echo "$quotas" | jq .limits.absolute.maxTotalInstances)
+    local cores_used=$(echo "$quotas" | jq .limits.absolute.totalCoresUsed)
+    local cores_limit=$(echo "$quotas" | jq .limits.absolute.maxTotalCores)
     if (( instances_used + required_instances + RESERVED_INSTANCES_COUNT < instances_limit )) &&
         (( cores_used + required_cores + RESERVED_CORES_COUNT < cores_limit )) ; then
       break
     fi
     echo "INFO: waiting for free resources...  $(date)"
+    echo "INFO: instances used=$instances_used  required=$NODES_COUNT  reserved=$RESERVED_INSTANCES_COUNT  limit=$instances_limit"
+    echo "INFO: cores used=$cores_used  required=$required_cores  reserved=$RESERVED_CORES_COUNT  limit=$cores_limit"
     sleep $VM_BOOT_DELAY
   done
   echo "INFO: waiting for resources is finished  $(date)"

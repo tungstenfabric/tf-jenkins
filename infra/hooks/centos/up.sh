@@ -54,5 +54,6 @@ fi
 # TODO: detect interface name
 echo "INFO: do not set default gateway for second interface"
 if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
-  $ssh_cmd $IMAGE_SSH_USER@$instance_ip "printf 'DEFROUTE=no\nPEERDNS=no\n' | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-eth1 ; sudo systemctl restart network.service"
+  $ssh_cmd $IMAGE_SSH_USER@$instance_ip \
+    "printf 'BOOTPROTO=dhcp\nDEVICE=eth1\nHWADDR=\$mac\nMTU=1500\nONBOOT=yes\nSTARTMODE=auto\nTYPE=Ethernet\nUSERCTL=no\nDEFROUTE=no\nPEERDNS=no\n' | sudo tee -a /etc/sysconfig/network-scripts/ifcfg-eth1 ; sudo systemctl restart network.service"
 fi

@@ -1,0 +1,36 @@
+{% set rule = "Host(`" + gerrit_name + "." + region + "." + ci_domain + "`)" -%}
+{% if default_region is defined  and default_region -%}
+{% set rule = rule + " || Host(`" + gerrit_name + "." + ci_domain + "`)" -%}
+{% endif -%}
+
+http:
+  routers:
+    r1:
+      rule: "{{ rule }}"
+      service: "https"
+      entryPoints:
+        - "https"
+      tls:
+        certResolver: "letsencrypt"
+        domains:
+          - main: "{{ gerrit_name }}.{{ region }}.{{ ci_domain }}"
+{% if default_region is defined  and default_region %}
+            sans: "{{ gerrit_name }}.{{ ci_domain }}"
+{% endif %}
+    r2:
+      rule: "{{ rule }}"
+      service: "https"
+      entryPoints:
+        - "http"
+      tls:
+        certResolver: "letsencrypt"
+        domains:
+          - main: "{{ gerrit_name }}.{{ region }}.{{ ci_domain }}"
+{% if default_region is defined  and default_region %}
+            sans: "{{ gerrit_name }}.{{ ci_domain }}"
+{% endif %}
+  services:
+    https:
+      loadBalancer:
+        servers:
+        - url: http://{{ gerrit_host }}:8080

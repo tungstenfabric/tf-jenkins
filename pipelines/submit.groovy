@@ -5,7 +5,7 @@ gerrit_utils = null
 
 timestamps {
   timeout(time: 10, unit: 'MINUTES') {
-    node('vexxhost') {
+    node('openstack') {
       if (env.GERRIT_PIPELINE != 'submit')
         throw new Exception("ERROR: This pipeline only for submit trigger!")
 

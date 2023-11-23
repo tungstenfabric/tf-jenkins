@@ -25,9 +25,9 @@
   with_items:
     - devpi
     - centos7
-    - rhel7
-    - rhel82
-    - rhel84
+    # - rhel7
+    # - rhel82
+    # - rhel84
     - ubuntu
 
 - name: Install required python modules
@@ -50,10 +50,10 @@
     mode: '0755'
   with_items:
     - centos7
-    - centos8
-    - rhel7
-    - rhel82
-    - rhel84
+    # - centos8
+    # - rhel7
+    # - rhel82
+    # - rhel84
     - ubuntu
 
 - name: Build repos images
@@ -66,10 +66,10 @@
     force_source: yes
   with_items:
     - centos7
-    - centos8
-    - rhel7
-    - rhel82
-    - rhel84
+    # - centos8
+    # - rhel7
+    # - rhel82
+    # - rhel84
     - ubuntu
 
 - name: Set devpi secret
