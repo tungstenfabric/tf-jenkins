@@ -73,7 +73,9 @@ function cleanup () {
         openstack server delete "$instance_id" --wait
       fi
     done
-    openstack volume delete $volumes
+    if [[ -n "$volumes" ]] ; then
+      openstack volume delete $volumes
+    fi
   fi
 }
 

@@ -37,7 +37,9 @@ if [[ -n "$TERMINATION_LIST_TAGS" ]]; then
     down_instances $TERMINATION_LIST_INSTANCE || true
     volumes=$(get_volume_list $TERMINATION_LIST_INSTANCE)
     openstack server delete --wait $TERMINATION_LIST_INSTANCE
-    openstack volume delete $volumes
+    if [[ -n "$volumes" ]] ; then
+      openstack volume delete $volumes
+    fi
   fi
   TERMINATION_LIST_SUBNET=$(openstack subnet list --any-tags $(IFS=","; echo "${TAGS[*]}") -c ID -f value)
   if [[ -n "$TERMINATION_LIST_SUBNET" ]]; then

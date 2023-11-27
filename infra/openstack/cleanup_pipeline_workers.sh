@@ -27,5 +27,7 @@ if TERMINATION_LIST=$(list_instances PipelineBuildTag=${PIPELINE_BUILD_TAG}) ; t
 
   echo "INFO: Instances to terminate: $TERMINATION_LIST"
   openstack server delete --wait $(echo "$TERMINATION_LIST")
-  openstack volume delete $volumes
+  if [[ -n "$volumes" ]] ; then
+    openstack volume delete $volumes
+  fi
 fi
