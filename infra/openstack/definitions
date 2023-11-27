@@ -11,6 +11,7 @@ export RESERVED_CORES_COUNT=16
 
 export VM_BOOT_RETRIES="${VM_BOOT_RETRIES:-120}"
 export VM_BOOT_DELAY="${VM_BOOT_DELAY:-60}"
+export VOLUME_TYPE="${VOLUME_TYPE:-ceph-ssd}"
 
 # vm_type  CPU     Memory    AWS (Canada) analog
 # xsmall   1       4 GB      t2.small
@@ -24,6 +25,11 @@ declare -A VM_TYPES=( ['xsmall']='Basic-1-4-50' \
                       ['small']='Standard-2-8-50' \
                       ['medium']='Advanced-8-16-100' \
                       ['large']='Advanced-8-32-50' )
+
+declare -A VOLUME_SIZE=( ['xsmall']='50' \
+                         ['small']='50' \
+                         ['medium']='80' \
+                         ['large']='80' )
 
 declare -A OS_IMAGES=( ['CENTOS7']='prepared-centos7' \
                        ['CENTOS8']='prepared-centos8' \

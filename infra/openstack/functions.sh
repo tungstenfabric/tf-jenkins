@@ -128,6 +128,25 @@ function get_volume_list() {
   echo $volumes
 }
 
+function wait_for_volume_ready() {
+  local volume_name=$1
+  for ((i=0; i<30; i++)) ; do
+    status=$(openstack volume show $volume_name | grep status)
+    if [[ "$status" =~ 'available' ]] ; then
+      echo "Volume $volume_name is available"
+      return 0
+    elif [[ "$status" =~ 'error' ]] ; then
+      echo "Volume $volume_name is in error state, would be deleted"
+      openstack volume show $volume_name
+      openstack volume delete $volume_name
+      return 1
+    fi
+    sleep 10
+  done
+  echo "Waiting for availability of volume $volume_name too long, would be deleted"
+  return 1
+}
+
 function wait_for_free_resources() {
   local required_instances=$1
   local required_cores=$2

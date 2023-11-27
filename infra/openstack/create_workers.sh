@@ -55,10 +55,16 @@ echo "export IMAGE_SSH_USER=$IMAGE_SSH_USER" >> "$ENV_FILE"
 
 INSTANCE_TYPE=${VM_TYPES[$VM_TYPE]}
 if [[ -z "$INSTANCE_TYPE" ]]; then
-  echo "ERROR: invalid VM_TYPE=$VM_TYPE"
+  echo "ERROR: invalid VM_TYPE=$VM_TYPE (can't get from VM_TYPES)"
   exit 1
 fi
-echo "INFO: VM_TYPE=$VM_TYPE  INSTANCE_TYPE=$INSTANCE_TYPE"
+VOLUME_SIZE=${VOLUME_SIZE[$VM_TYPE]}
+if [[ -z "$VOLUME_SIZE" ]]; then
+  echo "ERROR: invalid VM_TYPE=$VM_TYPE (can't get from VOLUME_SIZE)"
+  exit 1
+fi
+echo "INFO: VM_TYPE=$VM_TYPE  INSTANCE_TYPE=$INSTANCE_TYPE  VOLUME_SIZE=$VOLUME_SIZE"
+
 
 function cleanup () {
   local cleanup_tag=$1
@@ -166,30 +172,35 @@ for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
 
   res=0
 
-  # large instances flavor has a small hdd, so change it during creation
-  if [[ $INSTANCE_TYPE == 'Advanced-8-32-50' ]] ; then
-    boot_from_volume="--boot-from-volume 160"
-  fi
-  echo "INFO: openstack server create $boot_from_volume --flavor ${INSTANCE_TYPE} \
-    --security-group ${OS_SG} --availability-zone ${AZ} --key-name=worker --min ${NODES_COUNT} \
-    --max ${NODES_COUNT} --network ${OS_NETWORK} --image $IMAGE --wait ${instance_name}"
-  openstack server create \
-    $boot_from_volume \
-    --flavor ${INSTANCE_TYPE} \
-    --security-group ${OS_SG} \
-    --availability-zone ${AZ} \
-    --key-name=worker \
-    --min ${NODES_COUNT} \
-    --max ${NODES_COUNT} \
-    --network ${OS_NETWORK} \
-    --image $IMAGE \
-    --wait \
-    ${instance_name} || res=1
+  # Volumes creation
+  for i in $(seq 1 $NODES_COUNT) ; do
+    instance_name_num=${instance_name}_${i}
+    echo "INFO: openstack volume create --type $VOLUME_TYPE --size $VOLUME_SIZE \
+      --availability-zone $AZ --image $IMAGE --bootable ${instance_name_num}_volume"
+    openstack volume create \
+      --type "${VOLUME_TYPE}" \
+      --size "${VOLUME_SIZE}" \
+      --availability-zone "${AZ}" \
+      --image "${IMAGE}" \
+      --bootable \
+      ${instance_name_num}
 
-  # if there are several instances the instance name is changed and tag can't be added 
-  instances=$(openstack server list | grep ${instance_name} | awk '{print$2}')
-  for instance_id in $instances ; do
-    nova server-tag-add ${instance_id} PipelineBuildTag=${PIPELINE_BUILD_TAG} \
+    wait_for_volume_ready ${instance_name_num}
+
+    echo "INFO: openstack server create --volume ${instance_name_num} \
+      --flavor ${INSTANCE_TYPE} --security-group ${OS_SG} --availability-zone ${AZ} \
+      --key-name=worker --network ${OS_NETWORK} --wait ${instance_name_num}"
+    openstack server create \
+      --volume ${instance_name_num} \
+      --flavor ${INSTANCE_TYPE} \
+      --security-group ${OS_SG} \
+      --availability-zone ${AZ} \
+      --key-name=worker \
+      --network ${OS_NETWORK} \
+      --wait \
+      ${instance_name_num} || res=1
+
+    nova server-tag-add ${instance_name_num} PipelineBuildTag=${PIPELINE_BUILD_TAG} \
                                        ${job_tag} ${group_tag} SLAVE=${SLAVE} \
                                        DOWN=${OS_IMAGES_DOWN["${ENVIRONMENT_OS^^}"]}
   done
