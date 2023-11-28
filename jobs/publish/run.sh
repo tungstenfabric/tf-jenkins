@@ -48,7 +48,7 @@ fi
 EOF
 
 echo "INFO: Publish started"
-export PUBLISH_REGISTRY=${PUBLISH_REGISTRY:-'tungstenfabric'}
+export PUBLISH_REGISTRY=${PUBLISH_REGISTRY:-'progmaticlab'}
 cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip
 export WORKSPACE=\$HOME
 export CONTAINER_REGISTRY=$CONTAINER_REGISTRY
