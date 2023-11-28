@@ -144,6 +144,8 @@ function wait_for_volume_ready() {
     sleep 10
   done
   echo "Waiting for availability of volume $volume_name too long, would be deleted"
+  openstack volume show $volume_name
+  openstack volume delete $volume_name
   return 1
 }
 
