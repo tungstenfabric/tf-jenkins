@@ -20,7 +20,7 @@ for repo in ${REPOS[$1]} ; do
     fi
     sudo rm -f latest || /bin/true
     sudo ln -s ${new_latest} latest
-    if [[ -n "$old_latest" ]]; then
+    if [[ -n "$old_latest" && "$old_latest" != "$new_latest" ]]; then
         sudo rm -rf $old_latest
     fi
     popd
