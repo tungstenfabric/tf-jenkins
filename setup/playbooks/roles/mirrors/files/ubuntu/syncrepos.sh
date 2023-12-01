@@ -17,8 +17,8 @@ rm -f bionic-server-cloudimg-amd64*
 # wget -nv https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-lxd.tar.xz
 # wget -nv https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-root.tar.xz
 rm -f focal-server-cloudimg-amd64*
-# wget -nv https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-lxd.tar.xz
-# wget -nv https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-root.tar.xz
+wget -nv https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-lxd.tar.xz
+wget -nv https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-root.tar.xz
 rm -f jammy-server-cloudimg-amd64*
 wget -nv https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-lxd.tar.xz
 wget -nv https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-root.tar.xz
