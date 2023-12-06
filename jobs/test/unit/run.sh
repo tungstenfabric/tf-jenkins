@@ -44,8 +44,9 @@ done
 rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 function run_over_ssh() {
-  res=0
-cat <<EOF | ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $IMAGE_SSH_USER@$instance_ip || res=1
+  local res=0
+  local script="run-$STAGE-$TARGET.sh"
+cat <<EOF >$WORKSPACE/$script
 [ "${DEBUG,,}" == "true" ] && set -x
 export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
@@ -101,7 +102,14 @@ sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker-
 
 ./run.sh $@
 EOF
-return $res
+
+  chmod a+x $WORKSPACE/$script
+
+  ssh_cmd="ssh -i $WORKER_SSH_KEY $SSH_OPTIONS $SSH_EXTRA_OPTIONS"
+  rsync -a -e "$ssh_cmd" {$WORKSPACE/src,$WORKSPACE/$script} $IMAGE_SSH_USER@$instance_ip:./
+  # run this via eval due to special symbols in ssh_cmd
+  eval $ssh_cmd $IMAGE_SSH_USER@$instance_ip ./$script || res=1
+  return $res
 }
 
 if ! run_over_ssh $STAGE $TARGET ; then
