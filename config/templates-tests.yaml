@@ -44,6 +44,10 @@
     name: test-unit
     parents:
       - prepare-ut-sandbox
+    streams:
+      test-unit:
+        vars:
+          LINUX_DISTR: centos
     jobs:
       test-unit-agent:
         stream: test-unit
@@ -93,6 +97,10 @@
     name: test-unit-ui
     parents:
       - prepare-ut-sandbox
+    streams:
+      test-unit-ui:
+        vars:
+          LINUX_DISTR: centos
     jobs:
       test-unit-ui:
         depends-on:
@@ -137,6 +145,7 @@
           - fetch-sources-test-sandbox
         vars:
           TARGET_SET: pep8
+          LINUX_DISTR: centos
       cleanup-worker-test-sandbox:
         depends-on:
           - test-unit-tox-pep8
@@ -153,6 +162,7 @@
           - fetch-sources-test-sandbox
         vars:
           TARGET_SET: unit
+          LINUX_DISTR: centos
       cleanup-worker-test-sandbox:
         depends-on:
           - test-unit-tox-unit
@@ -169,6 +179,7 @@
           - fetch-sources-test-sandbox
         vars:
           TARGET_SET: py36
+          LINUX_DISTR: centos
       cleanup-worker-test-sandbox:
         depends-on:
           - test-unit-tox-py36
@@ -181,6 +192,8 @@
       test-unit-go:
         depends-on:
           - fetch-sources-test-sandbox
+        vars:
+          LINUX_DISTR: centos
       cleanup-worker-test-sandbox:
         depends-on:
           - test-unit-go

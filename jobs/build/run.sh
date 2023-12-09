@@ -47,7 +47,7 @@ if [[ ${LINUX_DISTR} == 'rhel7' ]]; then
   mirror_list_for_build="mirror-epel7.repo rhel84/mirror-rhel84-baseos.repo"
   mirror_list=""
 elif [[ ${LINUX_DISTR} == 'centos' ]]; then
-  mirror_list_for_build="mirror-epel7.repo mirror-docker.repo mirror-base-centos7.repo "
+  mirror_list_for_build="mirror-epel7.repo mirror-docker.repo mirror-base-centos7.repo"
   # epel must not be there - it cause incorrect installs and fails at runtime
   mirror_list="mirror-base-centos7.repo mirror-openstack.repo mirror-docker.repo"
   # add empty CentOS repos to disable them

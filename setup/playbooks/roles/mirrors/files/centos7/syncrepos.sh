@@ -1,9 +1,12 @@
 #!/bin/bash -e
 
-REPOS_CENTOS7=(base centosplus extras updates centos-sclo-rh)
+REPOS_CENTOS7=(base centosplus extras updates centos-sclo-rh base-debuginfo)
 REPOS_YUM7=(centos-openstack-queens dockerrepo epel k8s)
 MIRRORDIR=/repos
 DATE=$(date +"%Y%m%d")
+
+# exclude huge debuginfo
+echo "exclude=firefox-debuginfo* kde*debuginfo* java*debuginfo* kernel*debuginfo* webkit*debuginfo* libre*debuginfo* thunderbird*debuginfo* llvm*debuginfo* xulrunner*debuginfo* qt*debuginfo*" >> /etc/yum.conf
 
 echo "INFO: preparing temp folders for downloading"
 for repo in "centos7" "yum7" ; do

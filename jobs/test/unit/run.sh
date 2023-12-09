@@ -18,30 +18,27 @@ echo $TARGET_SET > $WORKSPACE/src/tungstenfabric/tf-dev-env/input/target_set
 
 STAGE=${STAGE:-test}
 
-echo "INFO: UT started"
+echo "INFO: UT started. ENVIRONMENT_OS=$ENVIRONMENT_OS LINUX_DISTR=$LINUX_DISTR"
 
 mirror_list=""
 # list of repos for building of tf-dev-sandbox container itself
 mirror_list_for_build=""
 # substitute repos only for centos7
 if [[ ${LINUX_DISTR} == 'centos' ]]; then
-  mirror_list_for_build="mirror-epel7.repo mirror-docker.repo mirror-base-centos7.repo "
+  mirror_list_for_build="mirror-epel7.repo mirror-docker.repo mirror-base-centos7.repo"
   # epel must not be there - it cause incorrect installs and fails at runtime
-  mirror_list="mirror-base-centos7.repo"
+  mirror_list="mirror-base-centos7.repo mirror-base-debuginfo-centos7.repo"
   # add empty CentOS repos to disable them
   mirror_list_for_build+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
   mirror_list_for_build+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
   mirror_list+=" centos7/CentOS-Base.repo centos7/CentOS-CR.repo centos7/CentOS-Debuginfo.repo centos7/CentOS-Media.repo"
   mirror_list+=" centos7/CentOS-Sources.repo centos7/CentOS-Vault.repo centos7/CentOS-fasttrack.repo centos7/CentOS-x86_64-kernel.repo"
 fi
-for repofile in $mirror_list_for_build $mirror_list mirror-base-centos7.repo mirror-docker.repo mirror-pip.conf mirror-docker-daemon.json ; do
+for repofile in $mirror_list_for_build $mirror_list mirror-pip.conf mirror-docker-daemon.json ; do
   file="${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}"
   cat $file | envsubst > $file.tmp
   mv $file.tmp $file
 done
-
-# sync should be made after optional repo URLs updating
-rsync -a -e "ssh -i $WORKER_SSH_KEY $SSH_OPTIONS" $WORKSPACE/src $IMAGE_SSH_USER@$instance_ip:./
 
 function run_over_ssh() {
   local res=0
@@ -92,6 +89,7 @@ done
 if [[ "${ENVIRONMENT_OS,,}" == 'centos7' ]]; then
   # copy base & docker repo to local machine
   sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-base-centos7.repo /etc/yum.repos.d/
+  sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-base-debuginfo-centos7.repo /etc/yum.repos.d/
   sudo cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-docker.repo /etc/yum.repos.d/
 fi
 

@@ -1,0 +1,6 @@
+[tf-mirrors.ci_repos_yum7-base-debuginfo]
+name=added from: http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/base-debuginfo
+baseurl=http://tf-mirrors.$SLAVE_REGION.$CI_DOMAIN/repos/centos7/$REPOS_CHANNEL/base-debuginfo
+enabled=1
+gpgcheck=0
+cost = 500
