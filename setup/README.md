@@ -133,3 +133,10 @@ subscription-manager unregister
 ## Gerrit integration
 
 To listen gerrit events and run CI checks some gerrit item should be registered in gerrit plugin via Jenkins configuration in UI. SSH keyfile is placed inside jenkins container at /var/jenkins_home/.ssh/${GERRIT_USER_NAME}_id_rsa
+
+
+## Gerrit known issues
+
+1. As gerrit said：The first people to log in gerrit is Administrator. But when installing with oauth, the first user gets the id '1000001', while the Administrator group contains id '1000000'. To resolve it we're using `./add_admin_to_gerrit.sh` script. It is some kind of brute force but we haven't found a better way. Use it on your own risk, please.
+
+2. The email address in your GitHub account must be public, otherwise it will not appear in gerrit's profile and some features may not be available (for example, notifications).
