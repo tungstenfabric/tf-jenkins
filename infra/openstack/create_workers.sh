@@ -172,20 +172,32 @@ for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
 
   res=0
 
-  # Volumes creation
   for i in $(seq 1 $NODES_COUNT) ; do
-    instance_name_num=${instance_name}_${i}
-    echo "INFO: openstack volume create --type $VOLUME_TYPE --size $VOLUME_SIZE \
-      --availability-zone $AZ --image $IMAGE --bootable ${instance_name_num}_volume"
-    openstack volume create \
-      --type "${VOLUME_TYPE}" \
-      --size "${VOLUME_SIZE}" \
-      --availability-zone "${AZ}" \
-      --image "${IMAGE}" \
-      --bootable \
-      ${instance_name_num}
+    # Volumes creation
+    VOLUME_RETRIES=${VOLUME_RETRIES:-5}
+    for (( k=1; k<=${VOLUME_RETRIES} ; ++k )) ; do
+      instance_name_num=${instance_name}_${i}
+      echo "INFO: openstack volume create --type $VOLUME_TYPE --size $VOLUME_SIZE \
+        --availability-zone $AZ --image $IMAGE --bootable ${instance_name_num}_volume"
+      openstack volume create \
+        --type "${VOLUME_TYPE}" \
+        --size "${VOLUME_SIZE}" \
+        --availability-zone "${AZ}" \
+        --image "${IMAGE}" \
+        --bootable \
+        ${instance_name_num}
 
-    wait_for_volume_ready ${instance_name_num}
+      if wait_for_volume_ready ${instance_name_num} ; then
+        break
+      fi
+      if [[ $k == ${VOLUME_RETRIES} ]] ; then
+        echo "ERROR: Volume creation failed for ${VOLUME_RETRIES} times. Terminating"
+        cleanup ${group_tag}
+        exit 1
+      else
+        echo "ERROR: Volume creation failed. Retry..."
+      fi
+    done
 
     echo "INFO: openstack server create --volume ${instance_name_num} \
       --flavor ${INSTANCE_TYPE} --security-group ${OS_SG} --availability-zone ${AZ} \

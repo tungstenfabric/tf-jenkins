@@ -59,3 +59,14 @@ TERMINATION_LIST_INSTANCE=$(openstack server list --status ERROR -c ID -f value)
 if [[ -n "$TERMINATION_LIST_INSTANCE" ]]; then
   nova delete $TERMINATION_LIST_INSTANCE
 fi
+
+TERMINATION_LIST_VOLUME=$(openstack volume list --status available -c ID -f value)
+if [[ -n "$TERMINATION_LIST_VOLUME" ]]; then
+  sleep 10 # add timeout to wait for not-attached volumes be attached to innstances
+  TERMINATION_LIST_VOLUME_NEW=$(openstack volume list --status available -c ID -f value)
+  for volume in $TERMINATION_LIST_VOLUME ; do
+    if [[ $TERMINATION_LIST_VOLUME_NEW =~ "$volume" ]] ; then
+      openstack volume delete $volume
+    fi
+  done
+fi
