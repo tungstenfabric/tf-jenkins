@@ -106,6 +106,16 @@
   when: jenkins_overwrite_configuration and volume_jenkins
   ignore_errors: True
 
+- name: Define jenkins URL-s without pulic name
+  set_fact:
+    jenkins_urls: "{{ jenkins_hostname }}.{{ ci_domain }},{{ jenkins_hostname }}.{{ region }}.{{ ci_domain }}"
+  when: not jenkins_url
+
+- name: Define jenkins URL-s with public name
+  set_fact:
+    jenkins_urls: "{{ jenkins_hostname }}.{{ ci_domain }},{{ jenkins_hostname }}.{{ region }}.{{ ci_domain }},{{ jenkins_url }}"
+  when: jenkins_url
+
 # TODO: add more names when master will be just one
 - name: Create jenkins container
   docker_container:
@@ -114,9 +124,9 @@
     ports:
       - "8080:8080"
     env:
-      VIRTUAL_HOST: "{{ jenkins_name }}.{{ ci_domain }},{{ jenkins_name }}.{{ region }}.{{ ci_domain }}"
+      VIRTUAL_HOST: "{{ jenkins_urls }}"
       VIRTUAL_PORT: "8080"
-      LETSENCRYPT_HOST: "{{ jenkins_name }}.{{ ci_domain }},{{ jenkins_name }}.{{ region }}.{{ ci_domain }}"
+      LETSENCRYPT_HOST: "{{ jenkins_urls }}"
       LETSENCRYPT_EMAIL: "{{ jenkins_admin_email }}"
     volumes:
       - jenkins_home:/var/jenkins_home
@@ -130,7 +140,7 @@
 
 - name: Pause play until a URL is reachable from this host
   uri:
-    url: "https://{{ jenkins_name }}.{{ region }}.{{ ci_domain }}/login"
+    url: "https://{{ jenkins_hostname }}.{{ region }}.{{ ci_domain }}/login"
     follow_redirects: none
     method: GET
   register: _result

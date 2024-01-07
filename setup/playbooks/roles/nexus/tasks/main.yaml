@@ -42,7 +42,7 @@
 
 - name: wait for nexus to come up
   uri:
-    url: "http://{{ nexus_name }}.{{ region }}.{{ ci_domain }}/"
+    url: "http://{{ nexus_hostname }}.{{ region }}.{{ ci_domain }}/"
     status_code: "200"
   register: result
   until: result.status == 200
@@ -57,7 +57,7 @@
 
 - name: wait for nexus to come up
   uri:
-    url: "http://{{ nexus_name }}.{{ region }}.{{ ci_domain }}/"
+    url: "http://{{ nexus_hostname }}.{{ region }}.{{ ci_domain }}/"
     status_code: "200"
   register: result
   until: result.status == 200

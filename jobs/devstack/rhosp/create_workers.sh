@@ -80,7 +80,6 @@ else
   cp $stackrc_file_path $stackrc_file_path.original
   for (( i=1; i<=$VM_BOOT_RETRIES ; ++i )) ; do
     cp $stackrc_file_path.original $stackrc_file_path
-    # vexxhost/aws
     source $my_dir/../../../infra/${SLAVE}/definitions
     source $my_dir/../../../infra/${SLAVE}/functions.sh
     IMAGE_SSH_USER=${OS_IMAGE_USERS["${ENVIRONMENT_OS^^}"]}
@@ -124,6 +123,7 @@ else
 
     # to prepare rhosp-environment.sh
     source $stackrc_file_path
+    # TODO: rename vexxrc to openrc
     export vexxrc="$stackrc_file_path"
     if $WORKSPACE/src/tungstenfabric/tf-devstack/rhosp/create_env.sh ; then
       echo "INFO: Running up hooks"

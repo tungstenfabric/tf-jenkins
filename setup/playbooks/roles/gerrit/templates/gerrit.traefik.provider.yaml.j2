@@ -1,6 +1,6 @@
-{% set rule = "Host(`" + gerrit_name + "." + region + "." + ci_domain + "`)" -%}
+{% set rule = "Host(`" + gerrit_hostname + "." + region + "." + ci_domain + "`)" -%}
 {% if default_region is defined  and default_region -%}
-{% set rule = rule + " || Host(`" + gerrit_name + "." + ci_domain + "`)" -%}
+{% set rule = rule + " || Host(`" + gerrit_hostname + "." + ci_domain + "`)" -%}
 {% endif -%}
 
 http:
@@ -13,9 +13,9 @@ http:
       tls:
         certResolver: "letsencrypt"
         domains:
-          - main: "{{ gerrit_name }}.{{ region }}.{{ ci_domain }}"
+          - main: "{{ gerrit_hostname }}.{{ region }}.{{ ci_domain }}"
 {% if default_region is defined  and default_region %}
-            sans: "{{ gerrit_name }}.{{ ci_domain }}"
+            sans: "{{ gerrit_hostname }}.{{ ci_domain }}"
 {% endif %}
     r2:
       rule: "{{ rule }}"
@@ -25,9 +25,9 @@ http:
       tls:
         certResolver: "letsencrypt"
         domains:
-          - main: "{{ gerrit_name }}.{{ region }}.{{ ci_domain }}"
+          - main: "{{ gerrit_hostname }}.{{ region }}.{{ ci_domain }}"
 {% if default_region is defined  and default_region %}
-            sans: "{{ gerrit_name }}.{{ ci_domain }}"
+            sans: "{{ gerrit_hostname }}.{{ ci_domain }}"
 {% endif %}
   services:
     https:

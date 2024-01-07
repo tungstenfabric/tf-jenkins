@@ -12,8 +12,6 @@
       - choice:
           name: SLAVE
           choices:
-            # - vexxhost
-            # - aws
             - openstack
           description: "Slave where all jobs will be run: openstack"
       - hidden:

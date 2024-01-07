@@ -32,7 +32,7 @@ jenkins:
       excludeClientIPFromCrumb: false
   remotingSecurity:
     enabled: true
-{% if ('aws' in groups and groups['aws']) or ('vexxhost' in groups and groups['vexxhost']) or ('openstack' in groups and groups['openstack']) %}
+{% if ('aws' in groups and groups['aws']) or ('openstack' in groups and groups['openstack']) %}
   nodes:
 {% if ('aws' in groups and groups['aws']) %}
 {% for host in groups['aws'] %}
@@ -48,33 +48,6 @@ jenkins:
         numExecutors: 20
         remoteFS: "/home/jenkins"
         retentionStrategy: "always"
-{% endfor %}
-{% endif %}
-{% if ('vexxhost' in groups and groups['vexxhost']) %}
-{% for host in groups['vexxhost'] %}
-    - permanent:
-        labelString: "vexxhost vexx"
-        launcher:
-          ssh:
-            credentialsId: "jenkins-ssh-key"
-            host: "{{ host }}"
-            port: 22
-            sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
-        name: "slave-vexxhost-{{ hostvars[host].region }}_{{ loop.index }}"
-        numExecutors: "{{ hostvars[host].executors | default(20) }}"
-        remoteFS: "/home/jenkins"
-        retentionStrategy: "always"
-        nodeProperties:
-        - envVars:
-            env:
-            - key: "SLAVE_REGION"
-              value: "{{ hostvars[host].region }}"
-            - key: "OS_NETWORK"
-              value: "{{ hostvars[host].default_network }}"
-            - key: "OS_SG"
-              value: "default"
-            # - key: "RHEL_POOL_ID"
-            #   value: "{{ rhel_pool_id | default('NotDefined') }}"
 {% endfor %}
 {% endif %}
 {% if ('openstack' in groups and groups['openstack']) %}
@@ -114,7 +87,11 @@ jenkins:
 unclassified:
   location:
     adminAddress: "{{ jenkins_admin_email }}"
-    url: "https://{{ jenkins_name }}.{{ region }}.{{ ci_domain }}/"
+{% if jenkins_url %}
+    url: "https://{{ jenkins_url }}/"
+{% else %}
+    url: "https://{{ jenkins_hostname }}.{{ region }}.{{ ci_domain }}/"
+{% endif %}
   shell:
     shell: "/bin/bash"
   email-ext:
@@ -160,10 +137,10 @@ unclassified:
           verdictValue: "Verified"
         enableManualTrigger: false
         gerritAuthKeyFile: "/var/jenkins_home/.ssh/gerrit_rsa"
-        gerritFrontEndUrl: "https://tf-gerrit.progmaticlab.com/"
-        gerritHostName: "tf-gerrit.progmaticlab.com"
+        gerritFrontEndUrl: "https://tf-gerrit.{{ region }}.{{ ci_domain }}/"
+        gerritHostName: "tf-gerrit.{{ region }}.{{ ci_domain }}"
         gerritUserName: "tf-gerrit"
-      name: "tf-gerrit.progmaticlab.com"
+      name: "tf-gerrit.{{ region }}.{{ ci_domain }}"
       noConnectionOnStartup: false
 security:
   scriptApproval:
@@ -209,6 +186,7 @@ security:
     - "new java.util.concurrent.Semaphore int"
     - "new java.util.concurrent.locks.ReentrantLock"
     - "staticMethod groovy.json.JsonOutput toJson java.lang.Object"
+    - "staticMethod java.net.HttpURLConnection setFollowRedirects boolean"
     - "staticMethod jenkins.model.Jenkins getInstanceOrNull"
     - "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods addAll java.util.List int java.lang.Object[]"
     - "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getText java.io.InputStream"

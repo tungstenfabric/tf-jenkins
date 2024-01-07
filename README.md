@@ -29,7 +29,7 @@ Ubuntu 18.04 based VM, 8 CPU, 32 Gb RAM, 300Gb for root volume.
 
 To be able to create/remove workers/networks infra must have individual slave in each region.
 
-For now we have only one slave in one region of vexxhost. But we checked that code can work with different slave on AWS.
+For now we have only one slave in one region of openstack. But we checked that code can work with different slave on AWS.
 
 ### Nexus
 

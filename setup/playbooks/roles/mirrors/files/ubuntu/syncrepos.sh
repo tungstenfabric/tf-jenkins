@@ -13,15 +13,13 @@ sed -i "s|%SLAVE_REGION%|${SLAVE_REGION}|" /etc/apt/sources.list
 
 mkdir -p ${DATE}/lxd
 pushd ${DATE}/lxd
-rm -f bionic-server-cloudimg-amd64*
-# wget -nv https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-lxd.tar.xz
-# wget -nv https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-root.tar.xz
-rm -f focal-server-cloudimg-amd64*
-wget -nv https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-lxd.tar.xz
-wget -nv https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-root.tar.xz
-rm -f jammy-server-cloudimg-amd64*
-wget -nv https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-lxd.tar.xz
-wget -nv https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-root.tar.xz
+
+for distro in "focal" "jammy"; do
+  rm -f $distro-server-cloudimg-amd64*
+  wget -nv https://cloud-images.ubuntu.com/$distro/current/$distro-server-cloudimg-amd64-lxd.tar.xz
+  wget -nv https://cloud-images.ubuntu.com/$distro/current/$distro-server-cloudimg-amd64-root.tar.xz
+done
+
 popd
 
 rm -f stage

@@ -4,13 +4,6 @@ slaves = [
       credentialsId: 'aws-creds',
       accessKeyVariable: 'AWS_ACCESS_KEY_ID',
       secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']],
-  'vexxhost': [
-    string(credentialsId: 'VEXX_OS_USERNAME', variable: 'OS_USERNAME'),
-    string(credentialsId: 'VEXX_OS_PROJECT_ID', variable: 'OS_PROJECT_ID'),
-    string(credentialsId: 'VEXX_OS_PASSWORD', variable: 'OS_PASSWORD'),
-    string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_USER_DOMAIN_NAME'),
-    string(credentialsId: 'VEXX_OS_DOMAIN_NAME', variable: 'OS_PROJECT_DOMAIN_NAME'),
-    string(credentialsId: 'VEXX_OS_AUTH_URL', variable: 'OS_AUTH_URL')],
   'openstack': [
     string(credentialsId: 'OS_USERNAME', variable: 'OS_USERNAME'),
     string(credentialsId: 'OS_PROJECT_ID', variable: 'OS_PROJECT_ID'),
@@ -49,14 +42,9 @@ timestamps {
         cleanWs()
         if (jobs_code.containsKey('aws'))
           unstash("aws")
-        if (jobs_code.containsKey('vexxhost'))
-          unstash("vexxhost")
         if (jobs_code.containsKey('openstack'))
           unstash("openstack")
         sh '''
-        if [[ -f "$WORKSPACE/vexxhost.report.txt" ]]; then
-          cat $WORKSPACE/vexxhost.report.txt >> report.txt
-        fi
         if [[ -f "$WORKSPACE/aws.report.txt" ]]; then
           cat $WORKSPACE/aws.report.txt >> report.txt
         fi

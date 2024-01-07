@@ -9,7 +9,7 @@ then
   git config -f /var/gerrit/etc/secure.config --add plugin.gerrit-oauth-provider-github-oauth.client-secret {{ client_secret }}
   git config -f /var/gerrit/etc/gerrit.config --add plugin.gerrit-oauth-provider-github-oauth.client-id {{ client_id }}
   git config -f /var/gerrit/etc/gerrit.config --replace-all auth.type OAUTH
-  git config -f /var/gerrit/etc/gerrit.config --replace-all gerrit.canonicalWebUrl https://{{ gerrit_name }}.{{ region }}.{{ ci_domain }}
+  git config -f /var/gerrit/etc/gerrit.config --replace-all gerrit.canonicalWebUrl https://{{ gerrit_hostname }}.{{ region }}.{{ ci_domain }}
   git config -f /var/gerrit/etc/gerrit.config --replace-all httpd.listenUrl "proxy-http://{{ gerrit_host }}:8080"
   git config -f /var/gerrit/etc/gerrit.config --unset httpd.filterClass
   git config -f /var/gerrit/etc/gerrit.config --unset httpd.firstTimeRedirectUrl

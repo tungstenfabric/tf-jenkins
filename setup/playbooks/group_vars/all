@@ -2,16 +2,16 @@
 
 remote_user: ubuntu
 
-jenkins_name: "tf-jenkins"
+jenkins_hostname: "jenkins"
 jenkins_default_user: "self-jenkins"
 
-nexus_name: "tf-nexus"
+nexus_hostname: "nexus"
 nexus_user: "admin"
 
-gerrit_name: "tf-gerrit"
+gerrit_hostname: "gerrit"
 gerrit_user: "gerrit"
 
-monitoring_name: "tf-monitoring"
+monitoring_hostname: "monitoring"
 
 ssh_keys_dir: "{{ lookup('env', 'HOME') }}/tfci/ssh" 
 

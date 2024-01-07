@@ -50,9 +50,9 @@ services:
       - grafana
       - fixvars
     environment:
-      - VIRTUAL_HOST={{ monitoring_name }}.{{ ci_domain }},{{ monitoring_name }}.{{ region }}.{{ ci_domain }}
+      - VIRTUAL_HOST={{ monitoring_hostname }}.{{ ci_domain }},{{ monitoring_hostname }}.{{ region }}.{{ ci_domain }}
       - VIRTUAL_PORT=8082
-      - LETSENCRYPT_HOST={{ monitoring_name }}.{{ ci_domain }},{{ monitoring_name }}.{{ region }}.{{ ci_domain }}
+      - LETSENCRYPT_HOST={{ monitoring_hostname }}.{{ ci_domain }},{{ monitoring_hostname }}.{{ region }}.{{ ci_domain }}
       - LETSENCRYPT_EMAIL={{ letsencrypt_email }}
     restart: on-failure
 

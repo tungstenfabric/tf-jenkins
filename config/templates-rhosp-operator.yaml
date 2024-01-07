@@ -100,7 +100,7 @@
           CONTAINER_RUNTIME: docker
           K8S_CA: ipa
           CERT_SIGNER: External
-          DOMAIN: 'vexxhost.local'
+          DOMAIN: 'nova.local'
     parents:
       - build-ubi8
     jobs:

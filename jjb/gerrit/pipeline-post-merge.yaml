@@ -14,8 +14,6 @@
           name: SLAVE
           choices:
             - openstack
-            # - vexxhost
-            # - aws
           description: "Slave where all jobs will be run: openstack"
       - hidden:
           name: GERRIT_PIPELINE

@@ -14,17 +14,6 @@ set _tilde 0
 #
 ############# end config ##############
 
-#deb http://archive.ubuntu.com/ubuntu bionic main restricted universe multiverse
-#deb http://archive.ubuntu.com/ubuntu bionic-security main restricted universe multiverse
-#deb http://archive.ubuntu.com/ubuntu bionic-updates main restricted universe multiverse
-#deb http://archive.ubuntu.com/ubuntu bionic-proposed main restricted universe multiverse
-#deb http://archive.ubuntu.com/ubuntu bionic-backports main restricted universe multiverse
-
-#deb-src http://archive.ubuntu.com/ubuntu bionic main restricted universe multiverse
-#deb-src http://archive.ubuntu.com/ubuntu bionic-security main restricted universe multiverse
-#deb-src http://archive.ubuntu.com/ubuntu bionic-updates main restricted universe multiverse
-#deb-src http://archive.ubuntu.com/ubuntu bionic-proposed main restricted universe multiverse
-#deb-src http://archive.ubuntu.com/ubuntu bionic-backports main restricted universe multiverse
 
 deb http://archive.ubuntu.com/ubuntu focal main restricted universe multiverse
 deb http://archive.ubuntu.com/ubuntu focal-security main restricted universe multiverse

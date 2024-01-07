@@ -1,6 +1,6 @@
-{% set rule = "Host(`" + nexus_name + "." + region + "." + ci_domain + "`)" -%}
+{% set rule = "Host(`" + nexus_hostname + "." + region + "." + ci_domain + "`)" -%}
 {% if default_region is defined  and default_region -%}
-{% set rule = rule + " || Host(`" + nexus_name + "." + ci_domain + "`)" -%}
+{% set rule = rule + " || Host(`" + nexus_hostname + "." + ci_domain + "`)" -%}
 {% endif -%}
 
 http:
@@ -13,9 +13,9 @@ http:
       tls:
         certResolver: "letsencrypt"
         domains:
-          - main: "{{ nexus_name }}.{{ region }}.{{ ci_domain }}"
+          - main: "{{ nexus_hostname }}.{{ region }}.{{ ci_domain }}"
 {% if default_region is defined  and default_region %}
-            sans: "{{ nexus_name }}.{{ ci_domain }}"
+            sans: "{{ nexus_hostname }}.{{ ci_domain }}"
 {% endif %}
     r2:
       rule: "{{ rule }}"
@@ -25,17 +25,17 @@ http:
       tls:
         certResolver: "letsencrypt"
         domains:
-          - main: "{{ nexus_name }}.{{ region }}.{{ ci_domain }}"
+          - main: "{{ nexus_hostname }}.{{ region }}.{{ ci_domain }}"
 {% if default_region is defined  and default_region %}
-            sans: "{{ nexus_name }}.{{ ci_domain }}"
+            sans: "{{ nexus_hostname }}.{{ ci_domain }}"
 {% endif %}
   services:
     s1:
       loadBalancer:
         servers:
-        - url: http://{{ nexus_name }}.{{ region }}.{{ ci_domain }}:5001/
+        - url: http://{{ nexus_hostname }}.{{ region }}.{{ ci_domain }}:5001/
     s2:
       loadBalancer:
         servers:
-        - url: http://{{ nexus_name }}.{{ region }}.{{ ci_domain }}:5002/
+        - url: http://{{ nexus_hostname }}.{{ region }}.{{ ci_domain }}:5002/
 

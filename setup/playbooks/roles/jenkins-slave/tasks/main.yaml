@@ -17,7 +17,7 @@
   when: "'aws' in group_names"
 
 # don't remove python3-yaml !!!
-# it leads to removing nplan and server becomes unaccessible after reboot!
+# it leads to removing netplan and server becomes unaccessible after reboot!
 
 - name: Install pip packages for openstack
   pip:
@@ -27,7 +27,7 @@
       - python-glanceclient>=2.8.0
       - python-novaclient
     executable: pip3
-  when: "'vexxhost' in group_names or 'openstack' in group_names"
+  when: "'openstack' in group_names"
 
 - name: Add user jenkins
   user:

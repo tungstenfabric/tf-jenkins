@@ -22,8 +22,8 @@ all:
       hosts:
         199.19.213.181:
           region: ca-ymq-1
-          # if this is true then cert will be created also for 'tf-nexus.$ci_domain'
-          # in case of false only 'tf-nexus.$region.$ci_domain' will be used
+          # if this is true then cert will be created also for 'nexus.$ci_domain'
+          # in case of false only 'nexus.$region.$ci_domain' will be used
           default_region: true
     # we deploy aquasec on nexus
     aquasec:
@@ -57,9 +57,12 @@ all:
 
     nexus_password: "some_password"
 
+    jenkins_overwrite_configuration: true
+    jenkins_default_user: "self-jenkins"
     jenkins_default_user_password: "some_password"
+    jenkins_url: "jenkins.opensdn.io"
 
-    jenkins_admin_email: "tf-jenkins@some_email_domain"
+    jenkins_admin_email: "jenkins@some_email_domain"
     letsencrypt_email: "null@some_email_domain"
 
     grafana_password: "some_password"
