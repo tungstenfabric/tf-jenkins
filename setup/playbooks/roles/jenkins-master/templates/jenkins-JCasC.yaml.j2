@@ -87,10 +87,10 @@ jenkins:
 unclassified:
   location:
     adminAddress: "{{ jenkins_admin_email }}"
-{% if jenkins_url %}
+{% if jenkins_url is defined %}
     url: "https://{{ jenkins_url }}/"
 {% else %}
-    url: "https://{{ jenkins_hostname }}.{{ region }}.{{ ci_domain }}/"
+    url: "https://{{ jenkins_hostname }}.{{ ci_domain }}/"
 {% endif %}
   shell:
     shell: "/bin/bash"
@@ -137,10 +137,10 @@ unclassified:
           verdictValue: "Verified"
         enableManualTrigger: false
         gerritAuthKeyFile: "/var/jenkins_home/.ssh/gerrit_rsa"
-        gerritFrontEndUrl: "https://tf-gerrit.{{ region }}.{{ ci_domain }}/"
-        gerritHostName: "tf-gerrit.{{ region }}.{{ ci_domain }}"
+        gerritFrontEndUrl: "https://gerrit.{{ ci_domain }}/"
+        gerritHostName: "gerrit.{{ ci_domain }}"
         gerritUserName: "tf-gerrit"
-      name: "tf-gerrit.{{ region }}.{{ ci_domain }}"
+      name: "gerrit.{{ ci_domain }}"
       noConnectionOnStartup: false
 security:
   scriptApproval:

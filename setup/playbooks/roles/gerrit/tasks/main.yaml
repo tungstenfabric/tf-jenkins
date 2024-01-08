@@ -1,4 +1,7 @@
 ---
+
+# TODO: download proper plugin https://gerrit-ci.gerritforge.com/job/Gerrit-bazel-stable-3.8/lastSuccessfulBuild/artifact/gerrit/bazel-bin/plugins/plugin-manager/plugin-manager.jar
+
 - name: Install required packages
   apt:
     name: "{{ item }}"
@@ -18,7 +21,6 @@
     state: directory
     mode: 0755
   with_items:
-    - /etc/traefik/
     - /etc/gerrit/
 
 - name: Create temporary build directory
@@ -54,36 +56,67 @@
     force_source: yes
   register: gerrit_image
 
+- name: Create nginx-proxy container
+  docker_container:
+    name: nginx-proxy
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+      - certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    network_mode: bridge
+    restart_policy: unless-stopped
+
+- name: Create letsencrypt container
+  docker_container:
+    name: letsencrypt
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    env:
+      NGINX_PROXY_CONTAINER: nginx-proxy
+    volumes:
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    network_mode: bridge
+    restart_policy: unless-stopped
+
+- name: Define gerrit URL-s without pulic name
+  set_fact:
+    gerrit_urls: "{{ gerrit_hostname }}.{{ ci_domain }}"
+  when: gerrit_url is not defined
+
+- name: Define gerrit URL-s with public name
+  set_fact:
+    gerrit_urls: "{{ gerrit_hostname }}.{{ ci_domain }},{{ gerrit_url }}"
+  when: gerrit_url is defined
+
 - name: Create gerrit container
   docker_container:
     name: gerrit
     image: "{{ gerrit_image.image.RepoTags | join('\n') }}"
+    ports:
+      - "8080:8080"
+      - "29418:29418"
+    env:
+      VIRTUAL_HOST: "{{ gerrit_urls }}"
+      VIRTUAL_PORT: "8080"
+      LETSENCRYPT_HOST: "{{ gerrit_urls }}"
+      LETSENCRYPT_EMAIL: "{{ jenkins_admin_email }}"
     volumes:
       - gerrit_home:/var/gerrit
-    network_mode: host
+    network_mode: bridge
     restart_policy: always
-
-- name: Configure proxy
-  template:
-    src: "{{ item }}.j2"
-    dest: "/etc/traefik/{{ item }}"
-    mode: 0644
-  with_items:
-    - gerrit.traefik.yaml
-    - gerrit.traefik.provider.yaml
-    - docker-compose.yaml
-
-- name: apply docker-compose.yaml
-  template:
-    src: "{{ item }}.j2"
-    dest: "/etc/traefik/{{ item }}"
-    mode: 0644
-  with_items:
-    - docker-compose.yaml
 
 - name: wait for gerrit to come up
   uri:
-    url: "https://{{ gerrit_hostname }}.{{ region }}.{{ ci_domain }}/"
+    url: "https://{{ gerrit_hostname }}.{{ ci_domain }}/"
     status_code: "200"
   register: result
   until: result.status == 200

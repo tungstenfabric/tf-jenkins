@@ -15,7 +15,7 @@
     make test
     make update
   environment:
-    JENKINS_URL: "https://{{ jenkins_hostname }}.{{ region }}.{{ ci_domain }}/"
+    JENKINS_URL: "https://{{ jenkins_hostname }}.{{ ci_domain }}/"
     USER: "{{ jenkins_default_user }}"
     PASSWORD: "{{ jenkins_default_user_password }}"
 

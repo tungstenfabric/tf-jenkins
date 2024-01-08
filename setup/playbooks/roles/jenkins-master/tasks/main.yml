@@ -108,13 +108,13 @@
 
 - name: Define jenkins URL-s without pulic name
   set_fact:
-    jenkins_urls: "{{ jenkins_hostname }}.{{ ci_domain }},{{ jenkins_hostname }}.{{ region }}.{{ ci_domain }}"
-  when: not jenkins_url
+    jenkins_urls: "{{ jenkins_hostname }}.{{ ci_domain }}"
+  when: jenkins_url is not defined
 
 - name: Define jenkins URL-s with public name
   set_fact:
-    jenkins_urls: "{{ jenkins_hostname }}.{{ ci_domain }},{{ jenkins_hostname }}.{{ region }}.{{ ci_domain }},{{ jenkins_url }}"
-  when: jenkins_url
+    jenkins_urls: "{{ jenkins_hostname }}.{{ ci_domain }},{{ jenkins_url }}"
+  when: jenkins_url is defined
 
 # TODO: add more names when master will be just one
 - name: Create jenkins container
@@ -140,13 +140,14 @@
 
 - name: Pause play until a URL is reachable from this host
   uri:
-    url: "https://{{ jenkins_hostname }}.{{ region }}.{{ ci_domain }}/login"
+    url: "https://{{ jenkins_hostname }}.{{ ci_domain }}/login"
     follow_redirects: none
     method: GET
   register: _result
   until: _result.status == 200
-  retries: 100
+  retries: 10
   delay: 5
+  ignore_errors: True
 
 - name: Clean JCasC config file after jenkins deploy
   file:
@@ -170,7 +171,7 @@
 - name: copy private keypair for gerrit user
   copy:
     src: "{{ ssh_keys_dir }}/gerrit_rsa"
-    dest: "{{ volume_jenkins.volume.Mountpoint }}/.ssh/{{ gerrit_user }}_id_rsa"
+    dest: "{{ volume_jenkins.volume.Mountpoint }}/.ssh/gerrit_rsa"
     owner: "{{ st.stat.uid }}"
     group: "{{ st.stat.gid }}"
     mode: "0600"
