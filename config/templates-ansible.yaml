@@ -170,7 +170,7 @@
     streams:
       ansible-os-ha-ziu:
         vars:
-          CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
+          CONTAINER_REGISTRY: nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011-centos
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: ansible

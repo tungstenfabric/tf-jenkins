@@ -10,7 +10,7 @@ Required names:
 - tf-jenkins.some_region.tungsten.io and tf-jenkins.tungsten.io with public IP
 - tf-monitoring.some_region.tungsten.io and tf-monitoring.tungsten.io with public IP (same to tf-jenkins)
 - tf-mirrors.some_region.tungsten.io with private IP
-- tf-nexus.some_region.tungsten.io with public IP
+- nexus.some_region.tungsten.io with public IP
 - tf-aquascan.some_region.tungsten.io with private IP
 - slave-1.some_region.tungsten.io with public IP
 

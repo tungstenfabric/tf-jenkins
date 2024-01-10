@@ -29,7 +29,7 @@ export WORKSPACE=\$HOME
 export DEBUG=$DEBUG
 export TPC_REPO_USER=$TPC_REPO_USER
 export TPC_REPO_PASS=$TPC_REPO_PASS
-export REPO_SOURCE=http://tf-nexus.$SLAVE_REGION.$CI_DOMAIN/repository
+export REPO_SOURCE=http://nexus.$SLAVE_REGION.$CI_DOMAIN/repository
 export DOCKER_MIRROR=tf-mirrors.$SLAVE_REGION.$CI_DOMAIN:5005
 
 $update_func

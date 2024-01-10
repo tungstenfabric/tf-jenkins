@@ -2,7 +2,7 @@
 
 # howto: https://support.sonatype.com/hc/en-us/articles/360009696054-How-to-delete-docker-images-from-Nexus-Repository-Manager
 
-nexus_rest_url="http://tf-nexus.$SLAVE_REGION.$CI_DOMAIN/service/rest/v1"
+nexus_rest_url="http://nexus.$SLAVE_REGION.$CI_DOMAIN/service/rest/v1"
 registries="tungsten_ci tungsten_gate_cache"
 image_name="tf-dev-sandbox"
 

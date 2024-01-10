@@ -12,8 +12,8 @@
           MONITORING_ORCHESTRATOR: k8s
           CONTRAIL_CONTAINER_TAG: 'nightly-ubi8'
           CONTRAIL_DEPLOYER_CONTAINER_TAG: 'nightly-ubi8'
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
+          CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
+          DEPLOYER_CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
     #parents:
     #  - build-ubi
     jobs:
@@ -57,8 +57,8 @@
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
           # need to use secure registries
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           TAG_SUFFIX: "-ubi8"
           OPENSHIFT_AI_INSTALLER: false
     parents:
@@ -101,8 +101,8 @@
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
           # need to use secure registries
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           TAG_SUFFIX: "-ubi8"
           OPENSHIFT_AI_INSTALLER: false
           DEBUG: true
@@ -146,8 +146,8 @@
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
           # need to use secure registries
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           TAG_SUFFIX: "-ubi8"
           OPENSHIFT_AI_INSTALLER: true
     parents:
@@ -190,8 +190,8 @@
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
           # need to use secure registries
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           TAG_SUFFIX: "-ubi8"
           OPENSHIFT_AI_INSTALLER: true
     parents:
@@ -234,8 +234,8 @@
           MONITORING_DEPLOYER: openshift
           MONITORING_ORCHESTRATOR: k8s
           # need to use secure registries
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
-          DEPLOYER_CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
+          DEPLOYER_CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5101'
           TAG_SUFFIX: "-ubi8"
           OPENSHIFT_VERSION: "4.5"
     parents:

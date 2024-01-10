@@ -223,7 +223,7 @@ It implies that you have file focal-server-cloudimg-amd64.img for ubuntu-focal g
 2. Use script *openstack_create_flavors.sh* for creating openstack flavors
 
 3. Use commands from file *openstack_create_infra_instances.sh* for creating infra instances and for setup second volumes
-inside the tf-mirrors and tf-nexus instances.
+inside the tf-mirrors and nexus instances.
 
 4. Use commands from file *openstack_set_quotas.sh* for managing tenant quotes.
 

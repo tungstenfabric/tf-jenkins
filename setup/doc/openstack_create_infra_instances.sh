@@ -10,13 +10,13 @@ openstack server create --flavor v3-standard-8 --key-name plab --network managem
 openstack floating ip create --floating-ip-address 10.87.85.54 public1
 openstack server add floating ip tf-jenkins-slave 10.87.85.54
 
-#tf-nexus
-openstack volume create --size 2000 --image ubuntu-focal --bootable tf-nexus-root
-openstack volume create --size 2000  tf-nexus-data
-openstack server create --flavor v2-standard-4 --key-name plab --network management --volume tf-nexus-root  --security-group allow_all tf-nexus
-openstack server add volume tf-nexus tf-nexus-data
+#nexus
+openstack volume create --size 2000 --image ubuntu-focal --bootable nexus-root
+openstack volume create --size 2000  nexus-data
+openstack server create --flavor v2-standard-4 --key-name plab --network management --volume nexus-root  --security-group allow_all nexus
+openstack server add volume nexus nexus-data
 openstack floating ip create --floating-ip-address 10.87.85.70 public1
-openstack server add floating ip tf-nexus 10.87.85.70
+openstack server add floating ip nexus 10.87.85.70
 
 #tf-mirrors
 openstack volume create --size 200 --image ubuntu-focal --bootable tf-mirrors-root
@@ -26,7 +26,7 @@ openstack server add volume tf-mirrors tf-mirrors-data
 openstack floating ip create --floating-ip-address 10.87.85.47 public1
 openstack server add floating ip tf-mirrors 10.87.85.47
 
-#Setup second volume on tf-mirrors and tf-nexus
+#Setup second volume on tf-mirrors and nexus
 #tf-mirrors
 sudo su -
 parted /dev/vdb
@@ -35,7 +35,7 @@ parted /dev/vdb
 mkfs.ext4 -L mirrorsdata /dev/vdb1
 edit /etc/fstab (LABEL=mirrorsdata /var/local/mirror)
 
-#tf-nexus
+#nexus
 sudo su -
 parted /dev/vdb
 (parted) mklabel gpt

@@ -34,7 +34,7 @@ For now we have only one slave in one region of openstack. But we checked that c
 ### Nexus
 
 Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 1Tb for root volume, 2Tb for /var/lib/docker.
-URL: <https://tf-nexus.progmaticlab.com/>
+URL: <https://nexus.progmaticlab.com/>
 
 For now it serves:
 
@@ -51,7 +51,7 @@ Nginx is deployed on nexus to provide https access to those CI registries on por
 ### Logs storage
 
 Currently resides on Nexus VM.
-URL: <http://tf-nexus.progmaticlab.com:8082/jenkins_logs/>
+URL: <http://nexus.progmaticlab.com:8082/jenkins_logs/>
 
 Contains logs for most jobs. Divived into nightly, review, infra folders.
 Clean up policy - one month.

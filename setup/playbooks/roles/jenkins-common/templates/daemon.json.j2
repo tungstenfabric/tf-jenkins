@@ -8,6 +8,6 @@
     "max-file": "3" 
   }
   {% if 'jenkins_slave' in group_names %}
-  ,"insecure-registries":["tf-nexus.{{ region }}.{{ ci_domain }}:5001", "tf-nexus.{{ region }}.{{ ci_domain }}:5002"]
+  ,"insecure-registries":["nexus.{{ region }}.{{ ci_domain }}:5001", "nexus.{{ region }}.{{ ci_domain }}:5002"]
   {% endif -%}
 }

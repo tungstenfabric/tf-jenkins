@@ -185,7 +185,7 @@
       juju-os-1912:
         vars:
           CONTRAIL_CONTAINER_TAG: 'nightly-r1912'
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
+          CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
           SSL_ENABLE: 'true'
           OPENSTACK_VERSION: 'queens'
     jobs:
@@ -222,7 +222,7 @@
       juju-os-2011:
         vars:
           CONTRAIL_CONTAINER_TAG: 'nightly-r2011-centos'
-          CONTAINER_REGISTRY: 'tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
+          CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5002'
           SSL_ENABLE: 'true'
           MONITORING_DEPLOY_TARGET: ILTS
           MONITORING_DEPLOYER: juju
@@ -373,9 +373,9 @@
       juju-hybrid-ha-ziu:
         vars:
           CONTRAIL_DEPLOYER_BRANCH: R2011
-          CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
+          CONTAINER_REGISTRY: nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011-centos
-          DEPLOYER_CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
+          DEPLOYER_CONTAINER_REGISTRY: nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_DEPLOYER_CONTAINER_TAG: nightly-r2011-centos
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju
@@ -428,9 +428,9 @@
       juju-os-ha-ziu:
         vars:
           CONTRAIL_DEPLOYER_BRANCH: R2011
-          CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
+          CONTAINER_REGISTRY: nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_CONTAINER_TAG: nightly-r2011-centos
-          DEPLOYER_CONTAINER_REGISTRY: tf-nexus.$SLAVE_REGION.$CI_DOMAIN:5002
+          DEPLOYER_CONTAINER_REGISTRY: nexus.$SLAVE_REGION.$CI_DOMAIN:5002
           CONTRAIL_DEPLOYER_CONTAINER_TAG: nightly-r2011-centos
           MONITORING_DEPLOY_TARGET: HA,ZIU
           MONITORING_DEPLOYER: juju

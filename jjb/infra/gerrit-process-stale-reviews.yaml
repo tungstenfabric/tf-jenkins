@@ -11,7 +11,7 @@
     parameters:
       - hidden:
           name: GERRIT_HOST
-          default: tf-gerrit.progmaticlab.com
+          default: gerrit.opensdn.io
       - hidden:
           name: GERRIT_PIPELINE
           default: gate
@@ -34,7 +34,7 @@
     parameters:
       - hidden:
           name: GERRIT_HOST
-          default: tf-gerrit.progmaticlab.com
+          default: gerrit.opensdn.io
       - hidden:
           name: GERRIT_PIPELINE
           default: submit
