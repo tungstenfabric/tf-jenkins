@@ -90,7 +90,8 @@ all:
     gerrit_user: "gerrit_user"
     #Gerrit http token which has been generated in gerrit UI
     gerrit_password: "gerrit_password"
-
+    gerrit_admin_email: "gerrit@some_email_domain"
+    smtp_address: "10.0.0.1"
     maas_api_key: "maas_api_key"
 
     openshift_pull_secret: |
