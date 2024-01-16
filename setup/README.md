@@ -134,6 +134,10 @@ subscription-manager unregister
 
 To listen gerrit events and run CI checks some gerrit item should be registered in gerrit plugin via Jenkins configuration in UI. SSH keyfile is placed inside jenkins container at /var/jenkins_home/.ssh/${GERRIT_USER_NAME}_id_rsa
 
+## Gerrit additional configuration
+
+1. Copy `./project.config` and `./config_project.sh` to gerrit container, set GERRIT_USER (gerrit user with administrative rights) and GERRIT_HOST variables and run `./config_project.sh`. The script will add label 'Verified' and corresponding rights to the project.config, and fill gerrit with tf repositories.
+2. Add http password to gerrit user - Settings - HTTP Credentials - Generate new password - copy it to the credentials "TF's gerrit REST API credentials"
 
 ## Gerrit known issues
 

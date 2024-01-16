@@ -37,7 +37,7 @@
     - Dockerfile
     - entrypoint.sh
 
-- name: Copy entrypoint to build directory
+- name: Copy plugin to build directory
   copy:
     src: "{{ item }}"
     dest: "{{ docker_build_dir.path }}/{{ item }}"
