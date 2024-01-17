@@ -110,7 +110,11 @@
       LETSENCRYPT_HOST: "{{ gerrit_urls }}"
       LETSENCRYPT_EMAIL: "{{ jenkins_admin_email }}"
     volumes:
-      - gerrit_home:/var/gerrit
+      - gerrit_git:/var/gerrit/git
+      - gerrit_etc:/var/gerrit/etc
+      - gerrit_db:/var/gerrit/db
+      - gerrit_index://var/gerrit/index
+      - gerrit_cache://var/gerrit/cache
     network_mode: bridge
     restart_policy: always
 

@@ -1,18 +1,23 @@
-#!/bin/bash -x
+#!/bin/bash -ex
 
 gerrit_user=$GERRIT_USER
+gerrit_email=$GERRIT_EMAIL
 gerrit_host=$GERRIT_HOST
 
+dir=$PWD
 cd /var/gerrit/
 
 # config All-Projects for Verified
+rm -rf gitproject
 mkdir gitproject
 cd gitproject
 git init
+git config --global user.email "$gerrit_email"
+git config --global user.name "$gerrit_user"
 git remote add origin "ssh://$gerrit_user@$gerrit_host:29418/All-Projects"
 git fetch origin refs/meta/config:refs/remotes/origin/meta/config
 git checkout meta/config
-cp project.config ./
+cp $dir/project.config ./
 git commit -a -m "Added label - Verified"
 git push origin meta/config:meta/config
 cd ..
@@ -20,7 +25,7 @@ rm -rf gitproject
 
 # fill repos
 cd git
-mkdir tungstenfabric
+mkdir -p tungstenfabric
 cd tungstenfabric
 
 repos="tf-analytics \
