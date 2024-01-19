@@ -142,9 +142,9 @@ To authenticate via github you need register OAuth application in github profile
 The procedure is descripted in gerrit known issues. Use it on your own risk. The restart of gerrit is needed.
 3. Set 'Verified' label and add corresponding rights. Fill gerrit with tf projects.
 - In UI add 'Approvers' to the Groups in Gerrit. Add any rights in All-Project repo to Approvers. (Otherwise, the group won't appear in groups in All-Projects repo.)
-- Create ssh key inside gerrit container in /var/gerrit/.ssh and add public key to gerrit user ssh-keys in UI.
+- Add gerrit_rsa ssh keys inside gerrit container in /var/gerrit/.ssh as default and add public key to gerrit user ssh-keys in UI.
 - Copy `./project.config` and `./config_project.sh` to gerrit container, export GERRIT_USER (gerrit user with administrative rights), GERRIT_EMAIL (email of gerrit user) and GERRIT_HOST variables and run `./config_project.sh`. The script will add label 'Verified' and corresponding rights to the project.config, and fill gerrit with tf repositories. The restart of gerrit is needed.
-4. Add http password to gerrit user - Settings - HTTP Credentials - Generate new password - copy it to the credentials "TF's gerrit REST API credentials"
+4. Add http password to gerrit user - Settings - HTTP Credentials - Generate new password - copy it to the credentials "TF's gerrit REST API credentials".
 
 ## Gerrit known issues
 
