@@ -9,7 +9,7 @@
         #- build-r2011-ubi
         #- build-r2011-centos
         # - build-r21.3-centos
-        # - build-r21.4-centos
+        - build-r21.4-centos
         - test-unit
         - test-unit-ui
         - k8s-manifests
