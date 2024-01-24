@@ -2,7 +2,7 @@
 
 TF Jenkins is a common name of whole infra which serves:
 
-- checking and gating for reviews from <https://gerrit.tungsten.io>
+- checking and gating for reviews from <https://gerrit.opensdn.io>
 - running various checks for whole functionality (nightly)
 - publishing artifacts to dockerhub
 
@@ -78,7 +78,7 @@ Ubuntu 18.04 based VM, 4 CPU, 16 Gb RAM, 200Mb for root volume, 2Tb for /var/loc
 
 Contains various mirrors of yum, pip, apt, docker, ...
 
-## Support of https://gerrit.tungsten.io
+## Support of https://gerrit.opensdn.io
 
 We provide the ability to run jobs to check your patchsets sent for review.
 We have similar terminology as OpenStack CI - checking and gating ('check' and 'gate' pipelines).

@@ -7,12 +7,12 @@ CI is based on idea that just one Jenkins master is used for all regions, one sl
 User has to configure DNS somewhere to address CI resources. All services use some common domain - we call it CI_DOMAIN. Also each service is placed in a region. Jenkins and monitoring may have simpler name due to one replica.
 Required names:
 
-- tf-jenkins.some_region.tungsten.io and tf-jenkins.tungsten.io with public IP
-- tf-monitoring.some_region.tungsten.io and tf-monitoring.tungsten.io with public IP (same to tf-jenkins)
-- tf-mirrors.some_region.tungsten.io with private IP
-- nexus.some_region.tungsten.io with public IP
-- tf-aquascan.some_region.tungsten.io with private IP
-- slave-1.some_region.tungsten.io with public IP
+- tf-jenkins.some_region.opensdn.io and tf-jenkins.opensdn.io with public IP
+- tf-monitoring.some_region.opensdn.io and tf-monitoring.opensdn.io with public IP (same to tf-jenkins)
+- tf-mirrors.some_region.opensdn.io with private IP
+- nexus.some_region.opensdn.io with public IP
+- tf-aquascan.some_region.opensdn.io with private IP
+- slave-1.some_region.opensdn.io with public IP
 
 ## VM-s creation
 

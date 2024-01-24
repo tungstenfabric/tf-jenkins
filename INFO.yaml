@@ -12,11 +12,11 @@ project_lead: &tungstenfabric_tf-jenkins_ptl
 primary_contact: *tungstenfabric_tf-jenkins_ptl
 issue_tracking:
     type: 'jira'
-    url: 'https://jira.tungsten.io/projects/'
+    url: 'https://plane.opensdn.io/opensdn/projects/b3809659-33c6-4514-a0c8-0c5016d5a8f7'
     key: ''
 mailing_list:
     type: 'groups.io'
-    url: ''
+    url: 'https://groups.io/g/OpenSDN/'
     tag: '[]'
 realtime_discussion:
     type: ''
