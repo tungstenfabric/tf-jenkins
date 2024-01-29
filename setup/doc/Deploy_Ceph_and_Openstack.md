@@ -63,7 +63,7 @@ Every node itself should be assigned to 127.0.1.1 loopback (according ceph docum
 Names of the node must coincide to their own hostnames (hostname -s)
 
 ```
-127.0.1.1 tfci-node1.englab.juniper.net tfci-node1
+127.0.1.1 tfci-node1.opensdn.io tfci-node1
 #10.87.85.1 tfci-node1
 10.87.85.2 tfci-node2
 10.87.85.3 tfci-node3
