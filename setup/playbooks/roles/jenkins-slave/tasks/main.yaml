@@ -122,3 +122,9 @@
     dest: /usr/local/bin
     remote_src: yes
   when: (packer_state.stat.exists == False) or (packer_version.stdout != packer_ver)
+
+- name: setup syncing docs to s3
+  include: sync-docs.yaml
+  when:
+    - aws_access_key is defined
+    - aws_secret_key is defined

@@ -1,0 +1,36 @@
+- name: Create temporary build directory
+  tempfile:
+    state: directory
+    suffix: docker-build
+  register: docker_build_dir
+
+- name: Copy syncdocs entrypoint
+  template:
+    src: "syncdocs-entrypoint.sh.j2"
+    dest: "{{ docker_build_dir.path }}/entrypoint.sh"
+
+- name: Copy entrypoint to build directory
+  copy:
+    src: "{{ item }}"
+    dest: "{{ docker_build_dir.path }}/{{ item }}"
+  with_items:
+    - Dockerfile
+    - sync_docs.sh
+
+- name: Build syncdocs image
+  docker_image:
+    build:
+      path: "{{ docker_build_dir.path }}"
+      pull: yes
+    name: sync-docs
+    source: build
+    tag: latest
+    force_tag: yes
+    force_source: yes
+  register: sync-docs
+
+- name: Create syncdocs container
+  docker_container:
+    name: sync-docs
+    image: sync-docs
+    restart_policy: unless-stopped

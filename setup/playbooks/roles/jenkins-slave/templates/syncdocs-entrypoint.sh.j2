@@ -1,0 +1,23 @@
+#!/bin/bash -ex
+
+mkdir -p /.aws
+cat <<EOF >> /.aws/credentials
+[osdnwebsite]
+aws_access_key_id = {{ aws_access_key }}
+aws_secret_access_key = {{ aws_secret_key }}
+EOF
+
+if [ ! -d docs ] ; then
+  git clone http://github.com/opensdn-io/docs
+fi
+
+touch /var/log/sync_docs.log
+
+cat <<EOF > /etc/cron.d/sync_docs
+20 */6 * * * /sync_docs.sh >> /var/log/sync_docs.log
+EOF
+
+crontab /etc/cron.d/sync_docs
+service cron start
+
+tail -f /dev/null
