@@ -87,10 +87,28 @@
           export FULL_LOGS_PATH="$LOGS_PATH/$STREAM"
           # main run
           ./src/tungstenfabric/tf-jenkins/jobs/test/unit/run.sh || res=1
-          # collect logs
-          ./src/tungstenfabric/tf-jenkins/jobs/test/unit/collect_logs.sh
           exit $res
     publishers:
+      - postbuildscript:
+          builders:
+            - role: SLAVE
+              build-on:
+                - SUCCESS
+                - FAILURE
+                - ABORTED
+                - NOT_BUILT
+                - UNSTABLE
+              build-steps:
+                - shell: |
+                    set -eo pipefail
+                    export TARGET={target}
+                    source "$WORKSPACE/global.env"
+                    source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
+                    source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
+
+                    # collect logs
+                    export FULL_LOGS_PATH="$LOGS_PATH/$STREAM"
+                    ./src/tungstenfabric/tf-jenkins/jobs/test/unit/collect_logs.sh
       - archive:
           artifacts: '*.env'
 
