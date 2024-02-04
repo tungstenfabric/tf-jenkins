@@ -71,7 +71,6 @@
     - templates.yaml
     - templates-ansible.yaml
     - templates-build.yaml
-    - templates-build-juniper.yaml
     - templates-juju.yaml
     - templates-k8s-manifests.yaml
     - templates-operator.yaml
