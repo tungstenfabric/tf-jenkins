@@ -1,4 +1,0 @@
-declare -A vm_types=(['kubernetes']='large' ['openstack']='large')
-export VM_TYPE=${vm_types[$ORCHESTRATOR]}
-
-export SSH_OPTIONS="-T -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"

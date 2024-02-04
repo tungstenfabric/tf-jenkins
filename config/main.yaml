@@ -72,14 +72,11 @@
     - templates-ansible.yaml
     - templates-build.yaml
     - templates-build-juniper.yaml
-    - templates-helm.yaml
     - templates-juju.yaml
     - templates-k8s-manifests.yaml
     - templates-operator.yaml
     # - templates-rhosp.yaml
-    # - templates-rhosp-operator.yaml
     - templates-tests.yaml
-    # - templates-openshift4.yaml
     - nightly.yaml
     - staging.yaml
     - projects.yaml

@@ -38,13 +38,10 @@ contrail-external-stunnel \
 contrail-external-zookeeper \
 contrail-kubernetes-cni-init \
 contrail-kubernetes-kube-manager \
-contrail-mesosphere-cni-init \
-contrail-mesosphere-mesos-manager \
 contrail-node-init \
 contrail-nodemgr \
 contrail-openstack-compute-init \
 contrail-openstack-heat-init \
-contrail-openstack-ironic-notification-manager \
 contrail-openstack-neutron-init \
 contrail-openstack-neutron-ml2-init \
 contrail-provisioner \
@@ -52,9 +49,6 @@ contrail-status \
 contrail-test-test \
 contrail-tools \
 contrail-tor-agent \
-contrail-vcenter-fabric-manager \
-contrail-vcenter-manager \
-contrail-vcenter-plugin \
 contrail-vrouter-agent \
 contrail-vrouter-agent-dpdk \
 contrail-vrouter-kernel-build-init \
@@ -69,8 +63,6 @@ tf-container-builder-src \
 tf-deployment-test \
 tf-helm-deployer-src \
 tf-kolla-ansible-src \
-tf-openshift-ansible-src \
-tf-openshift-src \
 tf-operator \
 tf-operator-bundle
 tf-operator-src \

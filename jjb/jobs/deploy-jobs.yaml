@@ -280,14 +280,6 @@
           environment_os: centos7
           deployer: k8s_manifests
           orchestrator: kubernetes
-      - helm-k8s:
-          environment_os: centos7
-          deployer: helm
-          orchestrator: kubernetes
-      - helm-os:
-          environment_os: centos7
-          deployer: helm
-          orchestrator: openstack
       - juju-k8s:
           environment_os: ubuntu18
           deployer: juju
@@ -308,17 +300,9 @@
           environment_os: centos7
           deployer: ansible
           orchestrator: openstack
-      - rhosp13:
-          environment_os: rhel7
-          deployer: rhosp
-          orchestrator: openstack
       - rhosp16:
           environment_os: rhel82
           deployer: rhosp
-          orchestrator: openstack
-      - rhosp-operator:
-          environment_os: rhel84
-          deployer: rhosp-operator
           orchestrator: openstack
       - operator:
           environment_os: centos7

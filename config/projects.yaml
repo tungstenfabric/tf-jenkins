@@ -8,25 +8,6 @@
       jobs:
         update-caches:
 
-# just build projects
-- project:
-    names:
-      - tungstenfabric/tf-deployers-containers
-      - tungstenfabric/tf-openshift-ansible
-      - tungstenfabric/tf-java-api
-      - tungstenfabric/tf-vijava
-      - tungstenfabric/tf-vrouter-java-api
-      - tungstenfabric/tf-vro-plugin
-      - tungstenfabric/tf-vcenter-plugin
-    check:
-      templates:
-        - build-centos
-        - cleanup
-    gate:
-      templates:
-        - build-centos
-        - cleanup
-
 # just build projects including ubi8
 - project:
     names:
@@ -240,62 +221,30 @@
 
 - project:
     name: tungstenfabric/tf-charms
-    streams:
-      juju-os-2011:
-        voting: false
     check:
       templates:
         - test-tox-pep8
         - juju-k8s
         - juju-os
-        - juju-os-2011
         - cleanup
     gate:
       templates:
         - juju-k8s
         - juju-os
 
-# - project:
-#     name: tungstenfabric/tf-tripleo-puppet
-#     check:
-#       templates:
-#         - rhosp13-2011
-#         - rhosp16.1-2011:
-#             branch: R.+
-#         - rhosp16.2:
-#             branch: master
-#         - cleanup
-#     gate:
-#       templates:
-#         - rhosp13-2011
-#         - rhosp16.1-2011:
-#             branch: R.+
-#         - rhosp16.2:
-#             branch: master
-#         - cleanup
+- project:
+    name: tungstenfabric/tf-tripleo-puppet
+    check:
+      templates:
+    gate:
+      templates:
 
-# - project:
-#     name: tungstenfabric/tf-tripleo-heat-templates
-#     check:
-#       templates:
-#         - rhosp13-2011:
-#             branch: stable/queens
-#         - rhosp13-1912:
-#             branch: stable/queens
-#         - rhosp16.2:
-#             branch: stable/train
-#         - cleanup
-#     gate:
-#       templates:
-#         - rhosp13-2011:
-#             branch: stable/queens
-#         - rhosp13-1912:
-#             branch: stable/queens
-#         - rhosp16.1-2011:
-#             branch: stable/train
-#         - rhosp16.2:
-#             branch: stable/train
-#         - cleanup
+- project:
+    name: tungstenfabric/tf-tripleo-heat-templates
+    check:
+      templates:
+    gate:
+      templates:
 
 - project:
     name: tungstenfabric/tf-operator
@@ -307,21 +256,6 @@
     gate:
       templates:
         - operator
-        - cleanup
-
-- project:
-    names:
-      - tungstenfabric/tf-vcenter-fabric-manager
-      - tungstenfabric/tf-vcenter-manager
-    check:
-      templates:
-        - test-unit
-        - build-centos
-        - cleanup
-    gate:
-      templates:
-        - test-unit
-        - build-centos
         - cleanup
 
 - project:
@@ -350,7 +284,7 @@
     gate:
       templates:
         - build-centos
-        - build-r2011-centos
+        - build-r21.4-centos
         - juju-k8s
         - ansible-os
         - cleanup

@@ -4,11 +4,6 @@
     name: tungstenfabric
     nightly:
       templates:
-        #- build-r1912
-        #- build-r1912-ubi
-        #- build-r2011-ubi
-        #- build-r2011-centos
-        # - build-r21.3-centos
         - build-r21.4-centos
         - test-unit
         - test-unit-ui
@@ -20,27 +15,16 @@
         #- ansible-os-ha-ziu
         - juju-k8s
         - juju-os
+        - juju-os-ha-ziu
         #- juju-os-maas
-        #- juju-os-1912
-        #- juju-os-2011
         #- juju-hybrid-ha-ziu
-        #- rhosp13-1912
-        #- rhosp13-2011
-        #- rhosp13-ha-ziu
-        #- rhosp16.1-2011
-        #- rhosp16.1-ha-ziu
         #- rhosp16.2-ha
-        #- rhosp13-bmc
-        #- rhosp16.2-bmc
         - operator
-        # - operator-ha
-        #- operator-ha-ipa
-        #- operator-2011
+        #- operator-ha
         - juju-os-not-implemented-targets
         - juju-k8s-not-implemented-targets
         - juju-hybrid-not-implemented-targets
-        # - rhosp13-os-not-implemented-targets
-        # - rhosp16-os-not-implemented-targets
+        #- rhosp16-os-not-implemented-targets
         - ansible-os-not-implemented-targets
         - cleanup
       streams:
@@ -50,36 +34,11 @@
         #build-ubi8:
         #  vars:
         #    DEBUGINFO: "TRUE"
-        #build-r1912:
-        #  frequency: 7
-        #  vars:
-        #    DEBUGINFO: "TRUE"
-        #build-r1912-ubi:
-        #  frequency: 7
-        #  vars:
-        #    DEBUGINFO: "TRUE"
-        #build-r2011-ubi:
-        #  vars:
-        #    DEBUGINFO: "TRUE"
-        #build-r2011-centos:
-        #  vars:
-        #    DEBUGINFO: "TRUE"
-        build-r21.3-centos:
-          vars:
-            DEBUGINFO: "TRUE"
         build-r21.4-centos:
           vars:
             DEBUGINFO: "TRUE"
         # additional schedule for some streams
         ansible-k8s:
-          frequency: 7
-        juju-os-1912:
-          frequency: 7
-        # rhosp13-1912:
-        #   frequency: 7
-        # rhosp13-ha-ziu:
-        #   frequency: 7
-        operator-2011:
           frequency: 7
         # hack with locks due to lack of resources
         operator-ha:
@@ -99,87 +58,33 @@
           lock: group-one-ha
         k8s-manifests-ha:
           lock: group-one-ha
-        openshift4-slave01:
-          vars:
-            CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
-            DEPLOYER_CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
-        openshift4-slave04:
-          vars:
-            CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
-            DEPLOYER_CONTAINER_REGISTRY: 'nexus.$SLAVE_REGION.$CI_DOMAIN:5102'
       jobs:
         publish-centos-nightly:
           job-name: publish
           depends-on:
             - package-centos
 
-        #publish-r2011-centos-nightly:
-        #  job-name: publish
-        #  depends-on:
-        #    - package-r2011-centos
-        #  vars:
-        #    TAG_SUFFIX: "-r2011-centos"
-        #    GERRIT_BRANCH: "R2011"
-
         # to use just built nightly images
-        #deploy-tf-juju-os-1912:
-        #  # additional deps
-        #  depends-on:
-        #    - package-r1912
-        #deploy-tf-juju-os-2011:
-        #  # additional deps
-        #  depends-on:
-        #    - package-r2011-centos
-        #deploy-tf-rhosp13-1912:
-        #  # additional deps
-        #  depends-on:
-        #    - package-r1912-ubi
-        #deploy-tf-rhosp13-2011:
-        #  # additional deps
-        #  depends-on:
-        #    - package-r2011-ubi
-        #deploy-tf-rhosp16.1-2011:
-        #  # additional deps
-        #  depends-on:
-        #    - package-r2011-ubi
         #deploy-platform-ansible-os-ha-ziu:
         #  # additional deps
         #  depends-on:
-        #    - package-deployers-r2011-centos
+        #    - package-deployers-r21.4-centos
         #deploy-tf-juju-hybrid-ha-ziu:
         #  # additional deps
         #  depends-on:
-        #    - package-r2011-ubi
-        #deploy-tf-rhosp13-ha-ziu:
+        #    - package-r21.4-ubi
+        #deploy-tf-rhosp16.2-ha-ziu:
         #  # additional deps
         #  depends-on:
-        #    - package-r2011-ubi
-        #deploy-tf-rhosp16.1-ha-ziu:
-        #  # additional deps
-        #  depends-on:
-        #    - package-r2011-ubi
+        #    - package-r21.4-ubi
 
-        #publish-centos-r1912:
-        #  job-name: publish
-        #  depends-on:
-        #    - package-r1912
-        #  vars:
-        #    TAG_SUFFIX: "-r1912"
-        #    PUBLISH_TAGS: "R1912"
-        # publish-r21.3-centos-nightly:
-        #   job-name: publish
-        #   depends-on:
-        #     - package-r21.3-centos
-        #   vars:
-        #     TAG_SUFFIX: "-r21.3-centos"
-        #     GERRIT_BRANCH: "R21.3"
-        # publish-r21.4-centos-nightly:
-        #   job-name: publish
-        #   depends-on:
-        #     - package-r21.4-centos
-        #   vars:
-        #     TAG_SUFFIX: "-r21.4-centos"
-        #     GERRIT_BRANCH: "R21.4"
+        publish-r21.4-centos-nightly:
+          job-name: publish
+          depends-on:
+            - package-r21.4-centos
+          vars:
+            TAG_SUFFIX: "-r21.4-centos"
+            GERRIT_BRANCH: "R21.4"
 
         #aquascan-ubi-nightly:
         #  job-name: aquascan
