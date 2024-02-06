@@ -20,6 +20,9 @@ case $TARGET in
   "smoke" )
     script="src/tungstenfabric/tf-dev-test/smoke-test/run.sh"
     ;;
+  "tempest" )
+    script="src/tungstenfabric/tf-dev-test/tempest/run.sh"
+    ;;
   *)
     echo "Variable TARGET is not set or incorrect"
     exit 1

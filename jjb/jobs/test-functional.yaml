@@ -74,5 +74,6 @@
       - sanity
       - deployment
       - smoke
+      - tempest
     jobs:
       - 'test-{target}'
