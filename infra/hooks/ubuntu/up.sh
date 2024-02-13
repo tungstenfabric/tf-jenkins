@@ -43,6 +43,14 @@ echo "APT::Acquire::Retries \"10\";" | sudo tee /etc/apt/apt.conf.d/80-retries
 sudo cp -f /usr/share/unattended-upgrades/20auto-upgrades-disabled /etc/apt/apt.conf.d/ || /bin/true
 
 if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
+
+  # hack to reconfig netplan
+  # https://askubuntu.com/questions/1104285/how-do-i-reload-network-configuration-with-cloud-init/1503265#1503265
+  wget http://launchpadlibrarian.net/713462297/cloud-init_23.4.3-0ubuntu0~22.04.1_all.deb
+  sudo apt-get install ./cloud-init_23.4.*.deb
+  sudo cloud-init clean --configs network
+  sudo cloud-init init --local
+
   echo "            dhcp4-overrides:" | sudo tee -a /etc/netplan/50-cloud-init.yaml
   echo "                use-routes: false" | sudo tee -a /etc/netplan/50-cloud-init.yaml
   echo "                use-dns: false" | sudo tee -a /etc/netplan/50-cloud-init.yaml
