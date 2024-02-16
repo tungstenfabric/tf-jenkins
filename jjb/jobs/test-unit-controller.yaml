@@ -115,9 +115,9 @@
                     export FULL_LOGS_PATH="$LOGS_PATH/$STREAM"
                     if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ]; then
                       echo "INFO: stackrc file found. collect logs."
+                      source "$WORKSPACE/stackrc.$JOB_NAME.env"
                       ./src/tungstenfabric/tf-jenkins/jobs/test/unit/collect_logs.sh
                       echo "INFO: remove workers."
-                      source "$WORKSPACE/stackrc.$JOB_NAME.env"
                       ./src/tungstenfabric/tf-jenkins/infra/$SLAVE/remove_workers.sh
                     else
                       echo "INFO: stackrc file could not be found."
