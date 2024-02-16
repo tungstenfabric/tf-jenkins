@@ -84,6 +84,18 @@ if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
   images="$images base-rhcos45-$date_suffix prepared-rhcos45-$date_suffix"
 fi
 
+if [[ ${IMAGE_TYPE^^} == 'ALL' || ${IMAGE_TYPE^^} == 'ROCKY9' ]]; then
+  echo "INFO: download rocky linux 9 from download.rockylinux.org"
+  curl -LOs "https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2"
+  curl -Ls "https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2.CHECKSUM" -o rocky9-SHA256SUMS
+  sha256sum -c rocky9-SHA256SUMS --ignore-missing --status
+
+  echo "INFO: upload rocky9 to openstack"
+  openstack image create --disk-format qcow2 --tag rocky9 --file Rocky-9-GenericCloud-Base.latest.x86_64.qcow2 base-rocky9-$date_suffix
+  rm -f Rocky-9-GenericCloud-Base.latest.x86_64.qcow2
+  images="$images base-rocky9-$date_suffix"
+fi
+
 sleep 10
 printf "\n\nINFO: uploaded images"
 for image in $images ; do
