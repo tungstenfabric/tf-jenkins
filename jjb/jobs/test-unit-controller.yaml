@@ -113,11 +113,10 @@
                     source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
                     source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
                     export FULL_LOGS_PATH="$LOGS_PATH/$STREAM"
-                    # collect logs
-                    ./src/tungstenfabric/tf-jenkins/jobs/test/unit/collect_logs.sh
-                    # remove workers
                     if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ]; then
-                      echo "INFO: stackrc file found. remove workers."
+                      echo "INFO: stackrc file found. collect logs."
+                      ./src/tungstenfabric/tf-jenkins/jobs/test/unit/collect_logs.sh
+                      echo "INFO: remove workers."
                       source "$WORKSPACE/stackrc.$JOB_NAME.env"
                       ./src/tungstenfabric/tf-jenkins/infra/$SLAVE/remove_workers.sh
                     else
