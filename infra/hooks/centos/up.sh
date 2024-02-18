@@ -59,4 +59,10 @@ if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
 fi
 
 # install and run atop
+echo "INFO: install and run atop for logging purporses"
 $ssh_cmd $IMAGE_SSH_USER@$instance_ip "sudo yum install -y atop"
+
+echo "INFO: check dns"
+$ssh_cmd $IMAGE_SSH_USER@$instance_ip "time nslookup $(hostname)"
+echo "INFO: cat /etc/resolv.conf"
+$ssh_cmd $IMAGE_SSH_USER@$instance_ip "cat /etc/resolv.conf"

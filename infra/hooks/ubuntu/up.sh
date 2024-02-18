@@ -57,6 +57,13 @@ if [[ "${USE_DATAPLANE_NETWORK,,}" == "true" ]]; then
   sudo netplan apply
 fi
 cat /etc/netplan/50-cloud-init.yaml
+
+echo "INFO: check dns"
+time nslookup $(hostname)
+echo "INFO: cat /etc/resolv.conf"
+cat /etc/resolv.conf
+echo "INFO: cat /run/systemd/resolve/resolv.conf"
+cat /run/systemd/resolve/resolv.conf
 EOF
 
 if [ -f $my_dir/../../mirrors/ubuntu-environment ]; then
