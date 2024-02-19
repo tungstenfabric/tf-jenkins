@@ -305,7 +305,7 @@
           MONITORING_ORCHESTRATOR: os,hybrid,k8s
           OPENSTACK_VERSION: train
           HUGE_PAGES_2MB: 512
-          ENVIRONMENT_OS: ubuntu18
+          ENVIRONMENT_OS: ubuntu20
     jobs:
       deploy-platform-juju-hybrid-ha-ziu:
         job-name: deploy-platform-juju-hybrid
@@ -360,7 +360,7 @@
           MONITORING_ORCHESTRATOR: os
           OPENSTACK_VERSION: train
           HUGE_PAGES_2MB: 512
-          ENVIRONMENT_OS: ubuntu18
+          ENVIRONMENT_OS: ubuntu20
     jobs:
       deploy-platform-juju-os-ha-ziu:
         job-name: deploy-platform-juju-os
