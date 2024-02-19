@@ -63,8 +63,7 @@ elif [[ "${LINUX_DISTR}" =~ 'ubi8' ]] ; then
   mirror_list="rhel84/ubi.repo rhel84/mirror-rhel84.repo"
 fi
 
-# here we need only ubuntu18 mirror file cause we based build-init container on ubuntu18 only
-export UBUNTU_CODENAME='bionic'
+export UBUNTU_CODENAME='jammy'
 for repofile in $mirror_list_for_build $mirror_list mirror-base-centos7.repo mirror-docker.repo mirror-pip.conf mirror-docker-daemon.json ubuntu-sources.list ; do
   file="${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/${repofile}"
   cat $file | envsubst > $file.tmp
@@ -137,7 +136,7 @@ for mirror in $mirror_list ; do
 done
 
 mkdir -p ./config/etc/apt
-cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/ubuntu18-sources.list ./config/etc/apt/sources.list
+cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/ubuntu-sources.list ./config/etc/apt/sources.list
 
 cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./config/etc/pip.conf
 cp \${WORKSPACE}/src/tungstenfabric/tf-jenkins/infra/mirrors/mirror-pip.conf ./container/pip.conf

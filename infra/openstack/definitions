@@ -33,28 +33,24 @@ declare -A VOLUME_SIZE=( ['xsmall']='50' \
 
 declare -A OS_IMAGES=( ['CENTOS7']='prepared-centos7' \
                        ['CENTOS8']='prepared-centos8' \
-                       ['UBUNTU18']='prepared-ubuntu18' \
                        ['UBUNTU20']='prepared-ubuntu20' \
                        ['UBUNTU22']='prepared-ubuntu22' \
                        ['ROCKY9']='prepared-rocky9')
 
 declare -A OS_IMAGE_USERS=( ['CENTOS7']='centos' \
                             ['CENTOS8']='centos' \
-                            ['UBUNTU18']='ubuntu' \
                             ['UBUNTU20']='ubuntu' \
                             ['UBUNTU22']='ubuntu' \
                             ['ROCKY9']='rocky')
 
 declare -A OS_IMAGES_UP=( ['CENTOS7']='centos' \
                           ['CENTOS8']='centos' \
-                          ['UBUNTU18']='ubuntu' \
                           ['UBUNTU20']='ubuntu' \
                           ['UBUNTU22']='ubuntu' \
                           ['ROCKY9']='rocky' )
 
 declare -A OS_IMAGES_DOWN=( ['CENTOS7']='' \
                             ['CENTOS8']='' \
-                            ['UBUNTU18']='' \
                             ['UBUNTU20']='' \
                             ['UBUNTU22']='' \
                             ['ROCKY9']='' )

@@ -15,14 +15,9 @@
             - ALL
             - CENTOS7
             - CENTOS8
-            # - RHEL7
-            # - RHEL82
-            # - RHEL84
-            - UBUNTU18
             - UBUNTU20
             - UBUNTU22
             - ROCKY9
-            #- RHCOS45
           description: "Image type for update or ALL(default)"
     scm:
       - tf-jenkins
