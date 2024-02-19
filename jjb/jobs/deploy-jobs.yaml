@@ -281,15 +281,15 @@
           deployer: k8s_manifests
           orchestrator: kubernetes
       - juju-k8s:
-          environment_os: ubuntu18
+          environment_os: ubuntu20
           deployer: juju
           orchestrator: kubernetes
       - juju-os:
-          environment_os: ubuntu18
+          environment_os: ubuntu20
           deployer: juju
           orchestrator: openstack
       - juju-hybrid:
-          environment_os: ubuntu18
+          environment_os: ubuntu20
           deployer: juju
           orchestrator: hybrid
       - ansible-k8s:
