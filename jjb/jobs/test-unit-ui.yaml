@@ -106,17 +106,9 @@
               build-steps:
                 - shell: |
                     source "$WORKSPACE/global.env"
-                    source "$WORKSPACE/vars.$JOB_NAME.$JOB_RND.env" || /bin/true
-                    source "$WORKSPACE/deps.$JOB_NAME.$JOB_RND.env" || /bin/true
-                    export ENVIRONMENT_OS=centos7
-                    export FULL_LOGS_PATH="$LOGS_PATH/$STREAM"
                     if [ -e "$WORKSPACE/stackrc.$JOB_NAME.env" ]; then
-                      echo "INFO: stackrc file found."
+                      echo "INFO: stackrc file found. remove workers."
                       source "$WORKSPACE/stackrc.$JOB_NAME.env"
-                      echo "INFO: collect logs."
-                      export DEBUG=true
-                      ./src/tungstenfabric/tf-jenkins/jobs/test/unit/collect_logs.sh
-                      echo "INFO: remove workers."
                       ./src/tungstenfabric/tf-jenkins/infra/$SLAVE/remove_workers.sh
                     else
                       echo "INFO: stackrc file could not be found."
