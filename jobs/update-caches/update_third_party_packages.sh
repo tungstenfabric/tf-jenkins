@@ -100,7 +100,7 @@ for kernel in $kernels ; do
   wget -nv $kernel
 done
 
-wget -nv -O - https://object-storage.public.mtl1.vexxhost.net/swift/v1/558a8ca6c0484c09b4dc140698842c7a/tf-ci/tpc.tar | tar -xv
+wget -nv -O - https://tf-ci.hb.ru-msk.vkcs.cloud/tpc.tar | tar -xv
 
 for file in $(find . -type f) ; do
   echo "INFO: upload $file"

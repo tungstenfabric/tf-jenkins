@@ -15,7 +15,7 @@ mkdir -p sanity_images
 pushd sanity_images
 
 # this archive already has 'images' prefix in file's path
-wget -nv https://object-storage.public.mtl1.vexxhost.net/swift/v1/558a8ca6c0484c09b4dc140698842c7a/tf-ci/images.tgz
+wget -nv https://tf-ci.hb.ru-msk.vkcs.cloud/images.tgz
 tar -xvf images.tgz
 rm images.tgz
 for file in $(find . -type f) ; do
