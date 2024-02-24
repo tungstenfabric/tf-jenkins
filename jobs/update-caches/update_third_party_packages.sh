@@ -96,8 +96,16 @@ kernels+="
   https://vault.centos.org/8.4.2105/BaseOS/x86_64/os/Packages/kernel-devel-4.18.0-305.12.1.el8_4.x86_64.rpm
 "
 
+# rocky9 kernel
+kernels+="
+  https://cbs.centos.org/kojifiles/packages/kernel/5.14.0/362.el9s/x86_64/kernel-5.14.0-362.el9s.x86_64.rpm
+  https://cbs.centos.org/kojifiles/packages/kernel/5.14.0/362.el9s/x86_64/kernel-core-5.14.0-362.el9s.x86_64.rpm
+  https://cbs.centos.org/kojifiles/packages/kernel/5.14.0/362.el9s/x86_64/kernel-modules-5.14.0-362.el9s.x86_64.rpm
+  https://cbs.centos.org/kojifiles/packages/kernel/5.14.0/362.el9s/x86_64/kernel-modules-core-5.14.0-362.el9s.x86_64.rpm
+"
+
 for kernel in $kernels ; do
-  wget -nv $kernel
+  wget -nv --no-check-certificate $kernel
 done
 
 wget -nv -O - https://tf-ci.hb.ru-msk.vkcs.cloud/tpc.tar | tar -xv
