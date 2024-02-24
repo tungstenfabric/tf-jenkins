@@ -17,6 +17,7 @@
           MONITORING_DEPLOY_TARGET: AIO
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: k8s
+          ENVIRONMENT_OS: rocky9
     parents:
       - build-centos
     jobs:
@@ -58,6 +59,7 @@
           MONITORING_DEPLOY_TARGET: HA
           MONITORING_DEPLOYER: ansible
           MONITORING_ORCHESTRATOR: k8s
+          ENVIRONMENT_OS: rocky9
     parents:
       - build-centos
     jobs:
