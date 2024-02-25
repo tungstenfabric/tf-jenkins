@@ -16,6 +16,10 @@ if [[ ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
   exit
 fi
 
+# install plugin
+# TODO: move it to setup for proper user
+packer plugins install github.com/hashicorp/openstack
+
 for i in "${!OS_IMAGE_USERS[@]}"; do
   if [[ ${IMAGE_TYPE^^} == 'ALL' && ${IMAGE_TYPE^^} == 'RHCOS45' ]]; then
     # skip preparation for RHCOS image

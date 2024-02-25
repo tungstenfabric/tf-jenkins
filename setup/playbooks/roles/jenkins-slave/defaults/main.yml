@@ -17,4 +17,4 @@ required_pkgs:
     - unzip
 jenkins_user: jenkins
 jenkins_overwrite_configuration: false
-packer_ver: "1.5.1"
+packer_ver: "1.10.1"
