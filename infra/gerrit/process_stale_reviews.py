@@ -11,11 +11,11 @@ import gerrit_utils
 
 
 def info(msg):
-    logging.info(msg)
+    print("INFO: " + msg)
 
 
 def err(msg):
-    logging.error(msg)
+    print("ERROR: " + msg)
 
 
 def is_eligible_for_gating(expert, change):
@@ -43,7 +43,6 @@ def main():
     parser = argparse.ArgumentParser(
         description="TF tool for auto-submitting stale Gerrit reviews")
     parser.add_argument("--strategy", dest="strategy", type=str)
-    parser.add_argument("--debug", dest="debug", action="store_true")
     parser.add_argument("--gerrit", help="Gerrit URL", dest="gerrit", type=str)
     parser.add_argument(
         "--branch", required=False,
@@ -54,9 +53,6 @@ def main():
         "--password", help="Gerrit API password",
         dest="password", type=str)
     args = parser.parse_args()
-
-    log_level = logging.DEBUG if args.debug else logging.INFO
-    logging.basicConfig(level=log_level)
 
     gerrit = gerrit_utils.Gerrit(args.gerrit, args.user, args.password)
     expert = gerrit_utils.Expert(gerrit)

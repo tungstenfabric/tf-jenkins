@@ -14,11 +14,11 @@ import gerrit_utils
 
 
 def dbg(msg):
-    logging.debug(msg)
+    print("DEBUG: " + msg)
 
 
 def err(msg):
-    logging.error(msg)
+    print("DEBUG: " + msg)
 
 
 class DependencyLoopError(Exception):
@@ -66,7 +66,6 @@ def format_result(changes_list):
 def main():
     parser = argparse.ArgumentParser(
         description="TF tool for Gerrit patchset dependencies resolving")
-    parser.add_argument("--debug", dest="debug", action="store_true")
     parser.add_argument("--gerrit", help="Gerrit URL", dest="gerrit", type=str)
     parser.add_argument("--review", help="Review ID", dest="review", type=str)
     parser.add_argument("--branch", help="Branch", dest="branch", type=str)
@@ -76,8 +75,7 @@ def main():
         help="Save result into the file instead stdout",
         default=None, dest="output", type=str)
     args = parser.parse_args()
-    log_level = logging.DEBUG if args.debug else logging.INFO
-    logging.basicConfig(level=log_level)
+
     try:
         gerrit = gerrit_utils.Gerrit(args.gerrit)
         change = gerrit.get_current_change(args.review, args.branch)

@@ -11,11 +11,11 @@ DEPENDS_RE = re.compile('depends-on:[ ]*[a-zA-Z0-9]+', re.IGNORECASE)
 
 
 def dbg(msg):
-    logging.debug(msg)
+    print("DEBUG: " + msg)
 
 
 def err(msg):
-    logging.error(msg)
+    print("ERROR: " + msg)
 
 
 class GerritRequestError(Exception):

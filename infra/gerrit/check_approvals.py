@@ -11,18 +11,17 @@ import gerrit_utils
 
 
 def dbg(msg):
-    logging.debug(msg)
+    print("DEBUG: " + msg)
 
 
 def err(msg):
-    logging.error(msg)
+    print("ERROR: " + msg)
 
 
 def main():
     parser = argparse.ArgumentParser(
         description="TF tool for pushing messages to Gerrit review")
     parser.add_argument("--strategy", help="What to check: gate or submit", dest="strategy", type=str)
-    parser.add_argument("--debug", dest="debug", action="store_true")
     parser.add_argument("--gerrit", help="Gerrit URL", dest="gerrit", type=str)
     parser.add_argument("--review", help="Review ID", dest="review", type=str)
     parser.add_argument(
@@ -34,16 +33,6 @@ def main():
         "--password", help="Gerrit API password",
         dest="password", type=str)
     args = parser.parse_args()
-
-    log_level = logging.NOTSET if args.debug else logging.INFO
-
-    h = logging.StreamHandler(sys.stdout)
-    h.setLevel(log_level)
-    h.setFormatter(logging.Formatter('%(asctime)s.%(msecs)03d %(levelname)s: %(message)s', datefmt='%m-%d %H:%M:%S'))
-
-    L = logging.getLogger()
-    L.handlers *= 0
-    L.addHandler(h)
 
     strategy_hooks = {
         'gate': 'is_eligible_for_gating',
