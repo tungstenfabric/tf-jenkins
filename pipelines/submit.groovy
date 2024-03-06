@@ -10,8 +10,8 @@ timestamps {
         throw new Exception("ERROR: This pipeline only for submit trigger!")
 
       clone_self()
-      constants = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/constants.groovy")
-      gerrit_utils = load("${WORKSPACE}/src/tungstenfabric/tf-jenkins/pipelines/utils/gerrit.groovy")
+      constants = load("${WORKSPACE}/src/opensdn-io/tf-jenkins/pipelines/constants.groovy")
+      gerrit_utils = load("${WORKSPACE}/src/opensdn-io/tf-jenkins/pipelines/utils/gerrit.groovy")
       if (gerrit_utils.has_gate_submits()) {
         gerrit_utils.notify_gerrit("Submit for merge", null, true)
       } else {
@@ -31,7 +31,7 @@ def clone_self() {
     extensions: [
       [$class: 'CleanBeforeCheckout'],
       [$class: 'CloneOption', depth: 1],
-      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src/tungstenfabric/tf-jenkins']
+      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src/opensdn-io/tf-jenkins']
     ]
   ])
 }

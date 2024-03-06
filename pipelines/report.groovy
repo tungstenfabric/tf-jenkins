@@ -26,7 +26,7 @@ timestamps {
               withCredentials(bindings: slaves[label]) {
                 sh """
                   export SLAVE="${label}"
-                  $WORKSPACE/src/tungstenfabric/tf-jenkins/infra/${label}/report.sh
+                  $WORKSPACE/src/opensdn-io/tf-jenkins/infra/${label}/report.sh
                 """
                 stash(allowEmpty: true, name: "${label}", excludes: "src/**")
               }
@@ -73,7 +73,7 @@ def clone_self() {
     extensions: [
       [$class: 'CleanBeforeCheckout'],
       [$class: 'CloneOption', depth: 1],
-      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src/tungstenfabric/tf-jenkins']
+      [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src/opensdn-io/tf-jenkins']
     ]
   ])
 }
